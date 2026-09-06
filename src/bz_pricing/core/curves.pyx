@@ -12,7 +12,7 @@ cdef class Curve:
     O método get_rate resolve a taxa no tempo t (geralmente DU).
     t_sec (geralmente DC) pode ser providenciado caso o modelo matemático exija ambos.
     """
-    cdef double get_rate(self, double t, double t_sec=0.0) except *:
+    cpdef double get_rate(self, double t, double t_sec=0.0) except *:
         raise NotImplementedError("Método base get_rate")
 
 cdef class FlatCurve(Curve):
@@ -23,7 +23,7 @@ cdef class FlatCurve(Curve):
     def __init__(self, double rate):
         self._rate = rate
         
-    cdef double get_rate(self, double t, double t_sec=0.0) except *:
+    cpdef double get_rate(self, double t, double t_sec=0.0) except *:
         return self._rate
 
 cdef class AdditiveCurve(Curve):
@@ -34,7 +34,7 @@ cdef class AdditiveCurve(Curve):
     def __init__(self, list curves):
         self._curves = curves
         
-    cdef double get_rate(self, double t, double t_sec=0.0) except *:
+    cpdef double get_rate(self, double t, double t_sec=0.0) except *:
         cdef double total = 0.0
         cdef Curve c
         for c in self._curves:
@@ -50,7 +50,7 @@ cdef class MultiplicativeCurve(Curve):
         self._curve = curve
         self._scalar = scalar
         
-    cdef double get_rate(self, double t, double t_sec=0.0) except *:
+    cpdef double get_rate(self, double t, double t_sec=0.0) except *:
         return self._scalar * self._curve.get_rate(t, t_sec)
 
 cdef class SimpleCurve(Curve):
@@ -71,7 +71,7 @@ cdef class SimpleCurve(Curve):
         self._n_nodes = t_nodes.shape[0]
         self._interpolator = interpolator
         
-    cdef double get_rate(self, double t, double t_sec=0.0) except *:
+    cpdef double get_rate(self, double t, double t_sec=0.0) except *:
         cdef double * t_sec_ptr = NULL
         if self._t_sec_nodes is not None:
             t_sec_ptr = &self._t_sec_nodes[0]
@@ -93,7 +93,7 @@ cdef class ComplexCurve(Curve):
         self._n_nodes = t_nodes.shape[0]
         self._interpolators = interpolators
         
-    cdef double get_rate(self, double t, double t_sec=0.0) except *:
+    cpdef double get_rate(self, double t, double t_sec=0.0) except *:
         cdef int i
         cdef Interpolator interp
         cdef double * t_sec_ptr = NULL

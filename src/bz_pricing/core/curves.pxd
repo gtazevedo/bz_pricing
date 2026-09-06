@@ -3,7 +3,7 @@
 from bz_pricing.core.interpolators cimport Interpolator
 
 cdef class Curve:
-    cdef double get_rate(self, double t, double t_sec=*) except *
+    cpdef double get_rate(self, double t, double t_sec=*) except *
 
 cdef class FlatCurve(Curve):
     cdef double _rate
