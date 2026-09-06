@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "bz_pricing"
+version = "0.0.1"
+description = "Biblioteca (Cython/Python) para precificação Onshore e Offshore."
+authors = ["Guilherme Azevedo [tolotti.azevedo@gmail.com]"]
+readme = "README.md"
+packages = [{include = "bz_pricing", from = "src"}]
+
+[tool.poetry.build]
+script = "build.py"
+generate-setup-file = true
+
+[tool.poetry.dependencies]
+python = "^3.10"
+numpy = "^1.24.0"
+google-genai = "^2.22.0"
+pymupdf = "^1.28.2"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0.0"
+cython = "^3.0.0"
+setuptools = "^69.0.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "setuptools>=69.0.0", "cython>=3.0.0", "numpy>=1.24.0"]
+build-backend = "poetry.core.masonry.api"
