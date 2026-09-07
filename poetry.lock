@@ -33,6 +33,22 @@ typing_extensions = {version = ">=4.16.0", markers = "python_version < \"3.15\""
 trio = ["trio (>=0.32.0)"]
 
 [[package]]
+name = "bizdays"
+version = "1.0.19"
+description = "Functions to handle business days calculations"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "bizdays-1.0.19-py3-none-any.whl", hash = "sha256:ae2540f83739c966e4fc62d8a52c79771d3b8cd872210e757b11c2e9fcc9b148"},
+    {file = "bizdays-1.0.19.tar.gz", hash = "sha256:e646d148ae048e35bb98bf57cb865a95a295fdc988133c8e1cce64b45805ef0f"},
+]
+
+[package.dependencies]
+pandas = ">=2,<3"
+pandas-market-calendars = ">=4,<5"
+
+[[package]]
 name = "certifi"
 version = "2026.7.22"
 description = "Python package for providing Mozilla's CA Bundle."
@@ -497,6 +513,26 @@ typing-extensions = {version = ">=4.6.0", markers = "python_version < \"3.13\""}
 test = ["pytest (>=6)"]
 
 [[package]]
+name = "exchange-calendars"
+version = "4.13.2"
+description = "Calendars for securities exchanges"
+optional = false
+python-versions = "<4,>=3.10"
+groups = ["main"]
+files = [
+    {file = "exchange_calendars-4.13.2-py3-none-any.whl", hash = "sha256:fc5a2ad0d61b5c3a6539a3061cd4cbb55c59f4a903455cec7926e4b798919996"},
+    {file = "exchange_calendars-4.13.2.tar.gz", hash = "sha256:a9459425dd64142cd54fbc639847403c7e0c33d60fbc326c94fc1d6bd127f002"},
+]
+
+[package.dependencies]
+korean_lunar_calendar = ">=0.3.1"
+numpy = ">=1.26.4"
+pandas = ">=1.5.0"
+pyluach = ">=2.3.0"
+toolz = ">=1.0.0"
+tzdata = ">=2025.2"
+
+[[package]]
 name = "google-auth"
 version = "2.57.1"
 description = "Google Authentication Library"
@@ -738,6 +774,18 @@ files = [
 ]
 
 [[package]]
+name = "korean-lunar-calendar"
+version = "0.4.0"
+description = "Convert the Korean lunar calendar to/from the Gregorian solar calendar (KARI standard)."
+optional = false
+python-versions = ">=3.6"
+groups = ["main"]
+files = [
+    {file = "korean_lunar_calendar-0.4.0-py3-none-any.whl", hash = "sha256:c042e20de0bb702add6bec8d0f6da1ea8d3b170838e63846f70420cf341fe4e7"},
+    {file = "korean_lunar_calendar-0.4.0.tar.gz", hash = "sha256:be56f27bc0594fdbbdf7bbe00f504a9f929a31e311bd7d9bb93561b645afade7"},
+]
+
+[[package]]
 name = "numpy"
 version = "1.26.4"
 description = "Fundamental package for array computing in Python"
@@ -896,6 +944,27 @@ test = ["hypothesis (>=6.46.1)", "pytest (>=7.3.2)", "pytest-xdist (>=2.2.0)"]
 xml = ["lxml (>=4.9.2)"]
 
 [[package]]
+name = "pandas-market-calendars"
+version = "4.6.1"
+description = "Market and exchange trading calendars for pandas"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "pandas_market_calendars-4.6.1-py3-none-any.whl", hash = "sha256:e3603bea8f1dce556fb21027a3ab73056296a145c5c440be1f5494e6fb34a4f1"},
+    {file = "pandas_market_calendars-4.6.1.tar.gz", hash = "sha256:cc17e3ccb07548603cf8dbd7050c83f8d6ee9ddf3987a05e1dceab53793a0da8"},
+]
+
+[package.dependencies]
+exchange-calendars = ">=3.3"
+pandas = ">=1.1"
+python-dateutil = "*"
+pytz = "*"
+
+[package.extras]
+dev = ["black", "build", "pre-commit", "pytest"]
+
+[[package]]
 name = "playwright"
 version = "1.62.0"
 description = "A high-level API to automate web browsers"
@@ -967,7 +1036,7 @@ description = "C parser in Python"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
-markers = "platform_python_implementation != \"PyPy\" and implementation_name != \"PyPy\""
+markers = "implementation_name != \"PyPy\" and platform_python_implementation != \"PyPy\""
 files = [
     {file = "pycparser-3.0-py3-none-any.whl", hash = "sha256:b727414169a36b7d524c1c3e31839a521725078d7b2ff038656844266160a992"},
     {file = "pycparser-3.0.tar.gz", hash = "sha256:600f49d217304a5902ac3c37e1281c9fe94e4d0489de643a9504c5cdfdfc6b29"},
@@ -1160,6 +1229,22 @@ files = [
 
 [package.extras]
 windows-terminal = ["colorama (>=0.4.6)"]
+
+[[package]]
+name = "pyluach"
+version = "2.3.0"
+description = "A Python package for dealing with Hebrew (Jewish) calendar dates."
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "pyluach-2.3.0-py3-none-any.whl", hash = "sha256:4497b731aef59508b079dbf5f00bc5bf4329ac45090a6cd37b5a83756f0e69ab"},
+    {file = "pyluach-2.3.0.tar.gz", hash = "sha256:ec6e30669d1df50c9ca160486da44a8195bb4c7a5d3d533990d0c5b03accd281"},
+]
+
+[package.extras]
+doc = ["sphinx (>=6.1.3,<6.2.0)", "sphinx_rtd_theme (>=1.2.0,<1.3.0)"]
+test = ["beautifulsoup4", "flake8", "pytest", "pytest-cov"]
 
 [[package]]
 name = "pymupdf"
@@ -1371,6 +1456,18 @@ files = [
 ]
 
 [[package]]
+name = "toolz"
+version = "1.1.0"
+description = "List processing tools and functional utilities"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "toolz-1.1.0-py3-none-any.whl", hash = "sha256:15ccc861ac51c53696de0a5d6d4607f99c210739caf987b5d2054f3efed429d8"},
+    {file = "toolz-1.1.0.tar.gz", hash = "sha256:27a5c770d068c110d9ed9323f24f1543e83b2f300a687b7891c1a6d56b697b5b"},
+]
+
+[[package]]
 name = "typing-extensions"
 version = "4.16.0"
 description = "Backported and Experimental Type Hints for Python 3.9+"
@@ -1550,4 +1647,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10"
-content-hash = "f35bfe4b7fa7eb567b039f48098dd13cbd16709038fece6ecae505f1596a9007"
+content-hash = "e08826831d78cb43819033898144d42c07b7f3d4b1bfc9f7183addbe2cd6380b"
