@@ -5,6 +5,18 @@ description = "Biblioteca (Cython/Python) para precificação Onshore e Offshore
 authors = ["Guilherme Azevedo [tolotti.azevedo@gmail.com]"]
 readme = "README.md"
 packages = [{include = "bz_pricing", from = "src"}]
+homepage = "https://github.com/gtazevedo/bz_pricing"
+repository = "https://github.com/gtazevedo/bz_pricing"
+keywords = ["b3", "pricing", "quant", "finance", "fixed-income", "cython", "brazil"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Financial and Insurance Industry",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Cython",
+    "Topic :: Office/Business :: Financial"
+]
 
 [tool.poetry.build]
 script = "build.py"
@@ -19,11 +31,15 @@ playwright = "^1.62.0"
 requests = "^2.34.2"
 pandas = "<3"
 bizdays = "^1.0.19"
+python-bcb = "^0.4.0"
+scipy = "^1.11.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.0"
 cython = "^3.0.0"
 setuptools = "^69.0.0"
+matplotlib = "<3.9.0"
+ipykernel = "^7.3.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "setuptools>=69.0.0", "cython>=3.0.0", "numpy>=1.24.0"]

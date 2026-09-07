@@ -11,61 +11,94 @@ class B3Scraper:
         self.output_dir = output_dir
         os.makedirs(self.output_dir, exist_ok=True)
         
+    VALID_PRODUCTS = {
+        "ACC": "Ajuste cupom",
+        "APR": "Ajuste pré",
+        "DCO": "Cupom Cambial OC1",
+        "DOC": "Cupom limpo",
+        "DOL": "DI x dólar",
+        "EUC": "DI x euro",
+        "DIM": "DI x IGP-M",
+        "DIC": "DI x IPCA",
+        "PRE": "DI x pré",
+        "TR":  "DI x TR",
+        "DPL": "DPL - Cupom Limpo de IPCA",
+        "INP": "Ibovespa",
+        "BRP": "IBrX-50",
+        "LIB": "Libor",
+        "PDN": "Prob. não default",
+        "PTX": "Real x dólar",
+        "EUR": "Real x euro",
+        "JPY": "Real x iene",
+        "SLP": "Selic x pré",
+        "SDE": "Spread Libor Euro x Dólar",
+        "TFP": "TBF x pré",
+        "TP":  "TR x pré"
+    }
+
     def download_taxas_referenciais(self, produto: str, data: datetime.date) -> str:
         """
-        Usa o Playwright para emular um usuário, selecionando o produto 
-        e clicando no link de download do histórico para a data fornecida.
+        Baixa as Taxas Referenciais direto da API JSON da B3 (Muito mais rápido e robusto que Scraping via tela).
         """
-        date_str = data.strftime("%d/%m/%Y")
+        if produto not in self.VALID_PRODUCTS:
+            validos = ", ".join(self.VALID_PRODUCTS.keys())
+            raise ValueError(f"Produto '{produto}' inválido. Produtos disponíveis: {validos}")
+            
+        import base64
+        import json
         
-        with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
-            context = browser.new_context(accept_downloads=True)
-            page = context.new_page()
+        date_str = data.strftime("%Y-%m-%d")
+        
+        # A API da B3 limita o pageSize (geralmente em 100), então precisamos paginar
+        all_results = []
+        page = 1
+        
+        print(f"Baixando Taxas Referenciais ({produto}) via API...")
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+        
+        while True:
+            payload = {
+                "language": "pt-br",
+                "id": produto,
+                "pageNumber": page,
+                "pageSize": 100,
+                "date": date_str
+            }
             
-            # Vai para a página
-            page.goto("https://sistemaswebb3-derivativos.b3.com.br/referenceRatesPage/all?language=pt-br")
+            # Formata o JSON garantindo que não há espaços sobrando (separators) para a B3 não rejeitar
+            b64_payload = base64.b64encode(json.dumps(payload, separators=(',', ':')).encode('utf-8')).decode('utf-8')
+            url = f"https://sistemaswebb3-derivativos.b3.com.br/referenceRatesProxy/Search/GetList/{b64_payload}"
             
-            # Aguarda o select carregar e seleciona o produto (ex: 'PRE')
-            page.wait_for_selector('select#product', timeout=15000)
-            page.select_option('select#product', value=produto)
+            response = requests.get(url, headers=headers)
+            if response.status_code != 200:
+                raise ValueError(f"Erro ao baixar da API B3. Status: {response.status_code}")
+                
+            data_json = response.json()
+            results = data_json.get('results', [])
             
-            # Aguarda a tabela atualizar (clique em buscar se existir ou apenas aguardar API)
-            # A B3 carrega a tabela logo após o select
-            page.wait_for_timeout(3000) # delay para render
+            if not results:
+                break
+                
+            all_results.extend(results)
+            page += 1
             
-            # Navega até o final (histórico de arquivos)
-            page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+        if not all_results:
+            raise ValueError(f"Nenhum dado retornado da B3 para o produto {produto} na data {date_str}.")
             
-            # No frontend atual, o histórico normalmente carrega arquivos disponíveis
-            # Como a interface da B3 tem o link direto para download de XLS/CSV:
-            # O texto do link de download costuma conter a data
-            link_selector = f"a:has-text('{date_str}')"
+        df = pd.DataFrame(all_results)
+        
+        # O formato brasileiro de taxa devolvido na API vem como '13,90', convertemos para '13.90' e depois numérico
+        if 'rate' in df.columns:
+            df['rate'] = df['rate'].str.replace(',', '.').astype(float)
             
-            try:
-                # Vamos esperar o link aparecer (se disponível no histórico do frontend)
-                page.wait_for_selector(link_selector, timeout=10000)
-                
-                # Aguardamos o evento de download
-                with page.expect_download() as download_info:
-                    page.click(link_selector)
-                
-                download = download_info.value
-                
-                # Define o caminho de salvamento
-                ext = download.suggested_filename.split('.')[-1]
-                output_path = os.path.join(self.output_dir, f"taxas_{produto}_{data.strftime('%Y%m%d')}.{ext}")
-                download.save_as(output_path)
-                
-                # Se for CSV mas o usuário pediu um formato específico, apenas garantimos a extensão
-                # (A B3 geralmente envia como CSV ou XLS)
-                
-            except Exception as e:
-                browser.close()
-                raise ValueError(f"Não foi possível encontrar/clicar no link para {produto} na data {date_str}. Erro: {e}")
-                
-            browser.close()
-            return output_path
+        # Garante a formatação do dia útil
+        if 'day252' in df.columns:
+            df['day252'] = df['day252'].astype(int)
+            
+        output_path = os.path.join(self.output_dir, f"taxas_{produto}_{data.strftime('%Y%m%d')}.csv")
+        df.to_csv(output_path, index=False, sep=";")
+        
+        return output_path
 
     def _download_and_extract_xmls(self, url: str, target_tag: str, date_str: str, prefix: str) -> str:
         """
