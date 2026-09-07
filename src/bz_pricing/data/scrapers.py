@@ -253,3 +253,28 @@ class B3Scraper:
             
         print(f"Arquivo de Cupons salvo em: {csv_path}")
         return csv_path
+
+    def download_anbima_holidays(self, force: bool = False) -> str:
+        """
+        Baixa a planilha de feriados nacionais da ANBIMA.
+        Só baixa novamente se o arquivo não existir ou se force=True.
+        """
+        url = "https://www.anbima.com.br/feriados/arqs/feriados_nacionais.xls"
+        output_path = os.path.join(self.output_dir, "feriados_nacionais.xls")
+        
+        if not force and os.path.exists(output_path):
+            print(f"Arquivo de feriados já existe em: {output_path}. Use force=True para baixar novamente.")
+            return output_path
+            
+        print(f"Baixando feriados da ANBIMA: {url}")
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+        response = requests.get(url, headers=headers)
+        
+        if response.status_code != 200:
+            raise ValueError(f"Erro ao baixar feriados da ANBIMA. HTTP {response.status_code}")
+            
+        with open(output_path, 'wb') as f:
+            f.write(response.content)
+            
+        print(f"Arquivo de feriados salvo em: {output_path}")
+        return output_path

@@ -6,7 +6,7 @@
         "depends": [],
         "name": "bz_pricing.core.bonds",
         "sources": [
-            "src\\bz_pricing\\core\\bonds.pyx"
+            "D:\\projects\\bz_pricing\\src\\bz_pricing\\core\\bonds.pyx"
         ]
     },
     "module_name": "bz_pricing.core.bonds"

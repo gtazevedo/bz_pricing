@@ -2,11 +2,13 @@ import numpy as np
 import pandas as pd
 import datetime
 import bizdays
+from bz_pricing.core.calendars import get_calendar
 
 from bz_pricing.core.interpolators import (
     Interpolator,
     FlatForward252Interpolator,
     FlatForward252LinearInterpolator,
+    FlatForward252LogInterpolator,
     Exponential252Interpolator,
     Linear360Interpolator,
     Interpolation360Interpolator
@@ -19,14 +21,7 @@ class B3CurveBuilder:
         self._init_calendar()
 
     def _init_calendar(self):
-        """
-        Carrega os feriados do pandas_market_calendars e joga na engine super rápida do bizdays.
-        """
-        if self.calendar_name == "B3":
-            self.cal = bizdays.Calendar.load('B3')
-        else:
-            # Fallback para calendário atual (dias corridos sem feriados)
-            self.cal = bizdays.Calendar(weekdays=[], name='Actual')
+        self.cal = get_calendar(self.calendar_name)
 
     def build_curve(self,
                     dataset: pd.DataFrame,
@@ -110,7 +105,7 @@ class B3CurveBuilder:
                 y_list = new_y.tolist()
                 dc_list = new_dc.tolist()
             else:
-                from scipy.interpolate import UnivariateSpline
+                from scipy.interpolate import PchipInterpolator
                 
                 unique_t = []
                 unique_y = []
@@ -119,8 +114,8 @@ class B3CurveBuilder:
                         unique_t.append(t)
                         unique_y.append(y)
                         
-                # s is smoothing factor. Default heuristic if simply given as a boolean-like float, let scipy handle it or use the passed float.
-                spline = UnivariateSpline(unique_t, unique_y, s=smoothing)
+                # Utiliza PchipInterpolator para garantir monotonicidade (evita a curva suavizada 'feia' do Spline)
+                spline = PchipInterpolator(unique_t, unique_y)
                 
                 # Generate dense grid (daily)
                 max_du = int(max(unique_t))

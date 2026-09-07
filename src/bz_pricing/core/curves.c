@@ -6,7 +6,7 @@
         "depends": [],
         "name": "bz_pricing.core.curves",
         "sources": [
-            "src\\bz_pricing\\core\\curves.pyx"
+            "D:\\projects\\bz_pricing\\src\\bz_pricing\\core\\curves.pyx"
         ]
     },
     "module_name": "bz_pricing.core.curves"

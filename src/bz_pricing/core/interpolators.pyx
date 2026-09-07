@@ -278,3 +278,34 @@ cdef class PriceInterpolator(Interpolator):
         """
         return p1 * pow(p2 / p1, (t - t1) / (t2 - t1))
 
+
+cdef class FlatForward252LogInterpolator(Interpolator):
+    cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
+        cdef int i
+        if t <= t_nodes[0]:
+            if self._extrap_left == EXTRAP_FLAT:
+                return y_nodes[0]
+            i = 0
+        elif t >= t_nodes[n_nodes - 1]:
+            if self._extrap_right == EXTRAP_FLAT:
+                return y_nodes[n_nodes - 1]
+            i = n_nodes - 2
+        else:
+            for i in range(n_nodes - 1):
+                if t_nodes[i] <= t and t <= t_nodes[i+1]:
+                    break
+                    
+        cdef double t1 = t_nodes[i]
+        cdef double t2 = t_nodes[i+1]
+        cdef double y1 = y_nodes[i]
+        cdef double y2 = y_nodes[i+1]
+        
+        if t1 == t2:
+            return y1
+            
+        cdef double ln_f1 = (t1 / 252.0) * log(1.0 + y1)
+        cdef double ln_f2 = (t2 / 252.0) * log(1.0 + y2)
+        cdef double ln_forward = ln_f1 + (ln_f2 - ln_f1) * ((t - t1) / (t2 - t1))
+        
+        return exp(ln_forward * 252.0 / t) - 1.0
+

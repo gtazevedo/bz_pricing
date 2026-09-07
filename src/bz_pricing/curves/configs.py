@@ -2,6 +2,7 @@ from bz_pricing.core.interpolators import (
     FlatForward252Interpolator,
     Exponential252Interpolator,
     FlatForward252LinearInterpolator,
+    FlatForward252LogInterpolator,
     Linear360Interpolator,
     Interpolation360Interpolator
 )
@@ -72,6 +73,7 @@ CURVE_CONFIGS = {
     "CUPOM_LIMPO": {
         "description": "Curva de Cupom Cambial Limpo (FlatForward 252 Linear)",
         "interpolator_class": FlatForward252LinearInterpolator,
+    FlatForward252LogInterpolator,
         "extrap_left": 0,
         "extrap_right": 1,
         "rate_column": "AdjstdQtTax",
