@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 import datetime
 import bizdays
-import pandas_market_calendars as mcal
 
 from bz_pricing.core.interpolators import (
     Interpolator,
@@ -24,11 +23,7 @@ class B3CurveBuilder:
         Carrega os feriados do pandas_market_calendars e joga na engine super rápida do bizdays.
         """
         if self.calendar_name == "B3":
-            b3_cal = mcal.get_calendar('B3')
-            holidays = b3_cal.holidays().holidays
-            # Converte de datetime64 para datetime.date
-            holidays_dates = [pd.to_datetime(h).date() for h in holidays]
-            self.cal = bizdays.Calendar(holidays=holidays_dates, weekdays=['Sunday', 'Saturday'], name='B3')
+            self.cal = bizdays.Calendar.load('B3')
         else:
             # Fallback para calendário atual (dias corridos sem feriados)
             self.cal = bizdays.Calendar(weekdays=[], name='Actual')
@@ -95,7 +90,6 @@ class B3CurveBuilder:
             base_dc = np.array(dc_list, dtype=np.float64)
             base_interp = interpolator_class(extrap_left, extrap_right)
             
-            from bz_pricing.core.curves import SimpleCurve
             if use_dc:
                 base_curve = SimpleCurve(base_t, base_y, base_interp, t_sec_nodes=base_dc, round_decimals=-1)
             else:

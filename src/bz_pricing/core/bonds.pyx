@@ -10,6 +10,40 @@ cdef class Bond:
     cpdef double present_value(self, Curve curve) except *:
         raise NotImplementedError("Método base present_value")
 
+cdef class GenericCashflowBond(Bond):
+    """
+    Título Genérico baseado em um fluxo de caixa empírico (exato).
+    Não gera cupons, apenas desconta os fluxos passados pelo Python (após ajustes de VNA/Inflação).
+    """
+    def __init__(self, int[:] dus, double[:] cashflows):
+        if dus.shape[0] != cashflows.shape[0]:
+            raise ValueError("Arrays dus e cashflows devem ter o mesmo tamanho")
+        self._dus = dus
+        self._cashflows = cashflows
+        self._n_flows = dus.shape[0]
+
+    cpdef double present_value(self, Curve curve) except *:
+        cdef double total_pv = 0.0
+        cdef int i, du
+        cdef double rate, df, pv_fluxo
+        
+        for i in range(self._n_flows):
+            du = self._dus[i]
+            if du <= 0:
+                continue
+                
+            rate = curve.get_rate(du)
+            df = pow(1.0 + rate, du / 252.0)
+            
+            pv_fluxo = self._cashflows[i] / df
+            # A ANBIMA trunca cada fluxo descontado em 8 casas decimais
+            pv_fluxo = trunc(pv_fluxo * 100000000.0) / 100000000.0
+            
+            total_pv += pv_fluxo
+            
+        # O PU Final é truncado em 6 casas decimais
+        return trunc(total_pv * 1000000.0) / 1000000.0
+
 cdef class LTN(Bond):
     """
     Letra do Tesouro Nacional (Zero-Coupon)

@@ -2,7 +2,6 @@ import datetime
 import bizdays
 import numpy as np
 import pandas as pd
-import pandas_market_calendars as mcal
 
 from bz_pricing.core.curves import SimpleCurve
 from bz_pricing.core.bonds import LTN as _LTN_C, NTNF as _NTNF_C
@@ -11,11 +10,10 @@ class TituloPublico:
     def __init__(self, maturity_date: datetime.date, calendar_name: str = 'B3'):
         self.maturity_date = maturity_date
         
-        # Cria um calendário robusto usando pandas_market_calendars
-        b3 = mcal.get_calendar(calendar_name)
-        holidays = b3.holidays().holidays
-        holidays_dates = [pd.to_datetime(h).date() for h in holidays]
-        self.calendar = bizdays.Calendar(holidays_dates, weekdays=['Sunday', 'Saturday'], name=calendar_name)
+        if calendar_name == 'B3':
+            self.calendar = bizdays.Calendar.load('B3')
+        else:
+            self.calendar = bizdays.Calendar(weekdays=[], name='Actual')
         
     def present_value(self, base_date: datetime.date, curve: SimpleCurve) -> float:
         raise NotImplementedError

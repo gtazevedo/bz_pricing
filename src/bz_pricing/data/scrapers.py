@@ -198,3 +198,58 @@ class B3Scraper:
         url = f"https://www.b3.com.br/pesquisapregao/download?filelist=IN{date_str}.zip"
         # O Cadastro de instrumentos (BVBG.028) usa 'Instrm' como raiz de cada contrato
         return self._download_and_extract_xmls(url, 'Instrm', data.strftime('%Y%m%d'), 'BVBG_IN')
+
+    def download_anbima_ms(self, data: datetime.date) -> str:
+        """
+        Baixa o arquivo do Mercado Secundário da ANBIMA que contém as taxas e PUs oficiais (LTN, NTN-F, LFT, NTN-B, NTN-C).
+        """
+        date_str = data.strftime("%y%m%d")
+        url = f"https://www.anbima.com.br/informacoes/merc-sec/arqs/ms{date_str}.txt"
+        
+        print(f"Baixando arquivo MS ANBIMA: {url}")
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+        response = requests.get(url, headers=headers)
+        
+        if response.status_code != 200:
+            raise ValueError(f"Erro ao baixar arquivo MS da ANBIMA para {data}: HTTP {response.status_code}")
+            
+        csv_path = os.path.join(self.output_dir, f"ANBIMA_MS_{data.strftime('%Y%m%d')}.csv")
+        
+        # O arquivo usa @ como separador
+        # Vamos tratar possíveis inconsistências no enconding e pular o header inicial "ANBIMA - ..."
+        # Utilizar iso-8859-1 pois arquivos da B3/ANBIMA comumente usam esse encoding
+        try:
+            content = response.content.decode('iso-8859-1')
+        except UnicodeDecodeError:
+            content = response.text
+            
+        lines = content.splitlines()
+        valid_lines = [line for line in lines if line and '@' in line and not line.startswith('ANBIMA')]
+        
+        with open(csv_path, 'w', encoding='utf-8') as f:
+            for line in valid_lines:
+                f.write(line + '\n')
+                
+        print(f"Arquivo MS salvo em: {csv_path}")
+        return csv_path
+
+    def download_tesouro_transparente_cupons(self) -> str:
+        """
+        Baixa o CSV histórico de pagamentos de cupons do Tesouro Direto
+        a partir do portal Tesouro Transparente.
+        """
+        url = "https://www.tesourotransparente.gov.br/ckan/dataset/f30db6e4-6123-416c-b094-be8dfc823601/resource/b04812f4-c453-4298-a12e-0ad190998243/download/cupomjurostesourodireto.csv"
+        csv_path = os.path.join(self.output_dir, "Pagamento_Cupom_Juros_TD.csv")
+        
+        print(f"Baixando Cupons Históricos do Tesouro Transparente: {url}")
+        
+        # O Tesouro Transparente as vezes tem problema de certificado SSL, ignoramos o verify
+        response = requests.get(url, verify=False)
+        if response.status_code != 200:
+            raise ValueError(f"Erro ao baixar arquivo do Tesouro Transparente. HTTP: {response.status_code}")
+            
+        with open(csv_path, 'wb') as f:
+            f.write(response.content)
+            
+        print(f"Arquivo de Cupons salvo em: {csv_path}")
+        return csv_path

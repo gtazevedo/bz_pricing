@@ -84,3 +84,45 @@ class B3DataLoader:
             df_filtered = df_filtered.sort_values(by='XprtnDt')
             
         return df_filtered
+
+    def load_anbima_ms(self, data: datetime.date) -> pd.DataFrame:
+        """
+        Lê o arquivo do Mercado Secundário (MS) da ANBIMA e formata as colunas essenciais.
+        """
+        date_str = data.strftime("%Y%m%d")
+        path_csv = os.path.join(self.data_dir, f"ANBIMA_MS_{date_str}.csv")
+        
+        if not os.path.exists(path_csv):
+            raise FileNotFoundError(f"Arquivo MS ANBIMA não encontrado: {path_csv}. Execute scraper.download_anbima_ms(data) primeiro.")
+            
+        df = pd.read_csv(path_csv, sep='@', decimal=',', parse_dates=['Data Referencia', 'Data Base/Emissao', 'Data Vencimento'])
+        
+        # Limpeza de nomes das colunas
+        df.rename(columns={
+            'Titulo': 'Titulo',
+            'Codigo SELIC': 'CodigoSelic',
+            'Data Vencimento': 'DataVencimento',
+            'Data Base/Emissao': 'DataEmissao',
+            'Tx. Indicativas': 'TaxaIndicativa',
+            'PU': 'PU'
+        }, inplace=True)
+        
+        return df
+
+    def load_tesouro_transparente_cupons(self) -> pd.DataFrame:
+        """
+        Lê o CSV de pagamentos de cupons do Tesouro Direto.
+        """
+        path_csv = os.path.join(self.data_dir, "Pagamento_Cupom_Juros_TD.csv")
+        
+        df = pd.read_csv(path_csv, sep=';')
+        
+        # Converte as datas que vem no formato DD/MM/YYYY
+        df['Vencimento do Titulo'] = pd.to_datetime(df['Vencimento do Titulo'], format='%d/%m/%Y', errors='coerce')
+        df['Data Resgate'] = pd.to_datetime(df['Data Resgate'], format='%d/%m/%Y', errors='coerce')
+        
+        # Converte o PU que tem vírgula
+        if 'PU' in df.columns and df['PU'].dtype == object:
+            df['PU'] = df['PU'].str.replace(',', '.').astype(float)
+            
+        return df
