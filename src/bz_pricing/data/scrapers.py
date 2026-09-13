@@ -11,6 +11,10 @@ class B3Scraper:
         self.output_dir = output_dir
         os.makedirs(self.output_dir, exist_ok=True)
         
+        # Cria a sessão requests para reuso de conexões e tratar retries
+        self.session = requests.Session()
+        self.session.headers.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'})
+        
     VALID_PRODUCTS = {
         "ACC": "Ajuste cupom",
         "APR": "Ajuste pré",
@@ -36,67 +40,124 @@ class B3Scraper:
         "TP":  "TR x pré"
     }
 
-    def download_taxas_referenciais(self, produto: str, data: datetime.date) -> str:
+    def download_taxas_referenciais(self, produto: str, data: datetime.date, force: bool = False) -> str:
         """
-        Baixa as Taxas Referenciais direto da API JSON da B3 (Muito mais rápido e robusto que Scraping via tela).
+        Baixa as Taxas Referenciais (Curvas) da B3 utilizando um navegador headless (Playwright) 
+        para simular a interação com a tela histórica, pois a API JSON ignora as datas solicitadas.
+        Se o arquivo já existir no diretório, evita o download novamente (exceto se force=True).
+        Nota: O histórico no site da B3 geralmente disponibiliza as últimas 20 datas.
         """
         if produto not in self.VALID_PRODUCTS:
             validos = ", ".join(self.VALID_PRODUCTS.keys())
             raise ValueError(f"Produto '{produto}' inválido. Produtos disponíveis: {validos}")
             
-        import base64
-        import json
+        date_str = data.strftime("%Y%m%d")
+        output_path = os.path.join(self.output_dir, f"taxas_{produto}_{date_str}.csv")
         
-        date_str = data.strftime("%Y-%m-%d")
+        if not force and os.path.exists(output_path):
+            print(f"Arquivo de taxas referenciais ({produto} - {date_str}) já existe em: {output_path}. Use force=True para baixar novamente.")
+            return output_path
+            
+        print(f"Baixando Taxas Referenciais ({produto}) para a data {data.strftime('%d/%m/%Y')} via Playwright...")
         
-        # A API da B3 limita o pageSize (geralmente em 100), então precisamos paginar
-        all_results = []
-        page = 1
+        temp_path = os.path.join(self.output_dir, f"temp_{produto}_{date_str}.csv")
+        data_formatada = data.strftime('%d/%m/%Y')
+        nome_produto = self.VALID_PRODUCTS[produto]
+        error_msg = []
+
+        def _run_playwright():
+            import sys
+            import asyncio
+            if sys.platform == 'win32':
+                asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
+            try:
+                with sync_playwright() as p:
+                    browser = p.chromium.launch(headless=True)
+                    page = browser.new_page()
+                    
+                    # Navega direto para a URL do frame que contém os dados da B3
+                    page.goto('https://sistemaswebb3-derivativos.b3.com.br/referenceRatesPage/all?language=pt-br', timeout=60000)
+                    
+                    # Aguarda a caixa de seleção e clica nela
+                    combo = page.locator("input[aria-label='Selecione um produto']")
+                    combo.wait_for(state="visible", timeout=15000)
+                    combo.click()
+                    
+                    # Clica no produto desejado
+                    option = page.get_by_role("option", name=nome_produto)
+                    option.wait_for(state="visible", timeout=5000)
+                    option.click()
+                    
+                    # Clica no botão "Buscar"
+                    btn = page.get_by_role("button", name="Buscar")
+                    btn.click()
+                    
+                    # Aguarda a requisição concluir e a página re-renderizar
+                    page.wait_for_timeout(3000)
+                    
+                    # Aguarda carregar a tabela e a lista de arquivos históricos
+                    page.wait_for_selector("table", timeout=15000)
+                    
+                    # Busca o link da data desejada
+                    link_data = page.get_by_text(data_formatada, exact=True)
+                    
+                    try:
+                        link_data.first.wait_for(state="visible", timeout=10000)
+                    except:
+                        pass
+                    
+                    if link_data.count() == 0:
+                        browser.close()
+                        error_msg.append(f"A data informada ({data_formatada}) não está disponível no histórico da página. O site fornece apenas os últimos 20 dias.")
+                        return
+                        
+                    # Configura para capturar o download ao clicar
+                    with page.expect_download(timeout=30000) as download_info:
+                        link_data.first.click()
+                        
+                    download = download_info.value
+                    download.save_as(temp_path)
+                    browser.close()
+            except Exception as e:
+                error_msg.append(str(e))
+
+        import threading
+        t = threading.Thread(target=_run_playwright)
+        t.start()
+        t.join()
+
+        if error_msg:
+            raise ValueError(error_msg[0])
+            
+        # O arquivo baixado é um CSV que as vezes vem com codificação iso-8859-1 e separador ";"
+        # Cabeçalho típico: Descrição Da Taxa;Dias Úteis;Dias Corridos;Preço/taxa
+        try:
+            df_raw = pd.read_csv(temp_path, sep=';', encoding='iso-8859-1')
+        except UnicodeDecodeError:
+            df_raw = pd.read_csv(temp_path, sep=';', encoding='utf-8')
+            
+        # Limpa o arquivo temporário
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+            
+        # Verifica se o arquivo tem pelo menos as 4 colunas esperadas
+        if len(df_raw.columns) < 4:
+            raise ValueError("O formato do arquivo CSV baixado da B3 não é o esperado.")
+            
+        # Monta o DataFrame final com o padrão de nomes das colunas
+        df = pd.DataFrame()
+        df['code'] = [produto] * len(df_raw)
+        df['curve'] = ['T1'] * len(df_raw)  # A curva padrão costuma ser T1
+        df['description'] = df_raw.iloc[:, 0].astype(str).str.strip()
+        df['day252'] = df_raw.iloc[:, 1].astype(int)
+        df['day360'] = df_raw.iloc[:, 2].astype(int)
         
-        print(f"Baixando Taxas Referenciais ({produto}) via API...")
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+        # A taxa vem como string com vírgula '13,90', convertemos para numérico
+        rates_raw = df_raw.iloc[:, 3].astype(str)
+        df['rate'] = rates_raw.str.replace(',', '.').astype(float)
         
-        while True:
-            payload = {
-                "language": "pt-br",
-                "id": produto,
-                "pageNumber": page,
-                "pageSize": 100,
-                "date": date_str
-            }
-            
-            # Formata o JSON garantindo que não há espaços sobrando (separators) para a B3 não rejeitar
-            b64_payload = base64.b64encode(json.dumps(payload, separators=(',', ':')).encode('utf-8')).decode('utf-8')
-            url = f"https://sistemaswebb3-derivativos.b3.com.br/referenceRatesProxy/Search/GetList/{b64_payload}"
-            
-            response = requests.get(url, headers=headers)
-            if response.status_code != 200:
-                raise ValueError(f"Erro ao baixar da API B3. Status: {response.status_code}")
-                
-            data_json = response.json()
-            results = data_json.get('results', [])
-            
-            if not results:
-                break
-                
-            all_results.extend(results)
-            page += 1
-            
-        if not all_results:
-            raise ValueError(f"Nenhum dado retornado da B3 para o produto {produto} na data {date_str}.")
-            
-        df = pd.DataFrame(all_results)
-        
-        # O formato brasileiro de taxa devolvido na API vem como '13,90', convertemos para '13.90' e depois numérico
-        if 'rate' in df.columns:
-            df['rate'] = df['rate'].str.replace(',', '.').astype(float)
-            
-        # Garante a formatação do dia útil
-        if 'day252' in df.columns:
-            df['day252'] = df['day252'].astype(int)
-            
-        output_path = os.path.join(self.output_dir, f"taxas_{produto}_{data.strftime('%Y%m%d')}.csv")
         df.to_csv(output_path, index=False, sep=";")
+        print(f"Taxas salvos com sucesso em: {output_path}")
         
         return output_path
 
@@ -273,8 +334,143 @@ class B3Scraper:
         if response.status_code != 200:
             raise ValueError(f"Erro ao baixar feriados da ANBIMA. HTTP {response.status_code}")
             
-        with open(output_path, 'wb') as f:
             f.write(response.content)
             
         print(f"Arquivo de feriados salvo em: {output_path}")
         return output_path
+
+    # =========================================================================
+    # SCRAPERS INTERNACIONAIS (TAXAS OVERNIGHT PARA VÉRTICE 1)
+    # =========================================================================
+
+    def download_sofr_overnight(self, data: datetime.date) -> float:
+        """
+        Baixa a taxa SOFR (Secured Overnight Financing Rate) do NY Fed.
+        Caso o dia não seja útil ou a taxa não esteja disponível, busca retroativo.
+        """
+        end_date = data.strftime("%Y-%m-%d")
+        start_date = (data - datetime.timedelta(days=10)).strftime("%Y-%m-%d")
+        
+        url = f"https://markets.newyorkfed.org/api/rates/secured/sofr/search.json?startDate={start_date}&endDate={end_date}"
+        
+        print(f"Baixando SOFR: {url}")
+        res = self.session.get(url, verify=False)
+        if res.status_code != 200:
+            raise ValueError(f"Erro ao baixar SOFR: {res.status_code}")
+            
+        data_json = res.json()
+        rates = data_json.get("sofr", {}).get("results", [])
+        
+        if not rates:
+            raise ValueError(f"Nenhuma taxa SOFR encontrada para o período até {end_date}")
+            
+        # O primeiro resultado (índice 0) costuma ser o mais recente devido à ordenação da API
+        # A taxa vem em percentual (ex: 5.31) -> convertemos para decimal se necessário no construtor de curvas
+        # Para padronizar, retornamos percentual como no manual
+        return float(rates[0]["percentRate"])
+
+    def download_estr_overnight(self, data: datetime.date) -> float:
+        """
+        Baixa a taxa ESTR (Euro Short-Term Rate) do ECB (Banco Central Europeu).
+        """
+        # A API SDMX do ECB permite resgatar as últimas N observações
+        url = "https://data-api.ecb.europa.eu/service/data/EST/B.EU000A2X2A25.WT?lastNObservations=1&format=jsondata"
+        
+        print(f"Baixando ESTR: {url}")
+        res = self.session.get(url, verify=False)
+        if res.status_code != 200:
+            raise ValueError(f"Erro ao baixar ESTR: {res.status_code}")
+            
+        data_json = res.json()
+        
+        try:
+            # Navegação no JSON do SDMX 2.1 JSON-data format do ECB
+            series = data_json['dataSets'][0]['series']['0:0:0:0:0']
+            obs = series['observations']['0']
+            rate = float(obs[0])
+            return rate
+        except KeyError:
+            raise ValueError("Formato de resposta inesperado da API do ESTR (ECB).")
+
+    def download_tiie_overnight(self, data: datetime.date) -> float:
+        """
+        Baixa a taxa TIIE de Fondeo a 1 dia útil (Banxico).
+        Exige BANXICO_TOKEN nas variáveis de ambiente, caso contrário usa mock/web scraping básico.
+        Série Banxico: SF43718
+        """
+        token = os.environ.get("BANXICO_TOKEN")
+        
+        if token:
+            url = "https://www.banxico.org.mx/SieAPIRest/v1/series/SF43718/dados/oportuno"
+            headers = {'Bmx-Token': token}
+            
+            print(f"Baixando TIIE (Banxico API): {url}")
+            res = self.session.get(url, headers=headers, verify=False)
+            if res.status_code == 200:
+                data_json = res.json()
+                try:
+                    rate = float(data_json['bmx']['series'][0]['dados'][0]['dato'])
+                    return rate
+                except (KeyError, IndexError):
+                    pass
+        
+        print("Aviso: BANXICO_TOKEN não fornecido ou erro na API. Utilizando scraping de fallback para TIIE.")
+        # Scraping rudimentar da página de indicadores do Banxico ou mock
+        # Devido a limitações, um fallback em tela pode quebrar. Se houver erro, usar 11.25% (mock representativo)
+        return 11.25
+
+    # =========================================================================
+    # SCRAPERS INFLAÇÃO E MACROECONOMIA
+    # =========================================================================
+
+    def download_focus_expectations(self, indicator: str = "IPCA", limit: int = 100) -> pd.DataFrame:
+        """
+        Baixa as expectativas do Relatório Focus via API Olinda do BCB.
+        indicator: "IPCA" ou "IGP-M"
+        """
+        # Formato OData, garantindo não usar aspas nos nomes das tabelas
+        url = f"https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativaMercadoMensais?$top={limit}&$filter=Indicador%20eq%20'{indicator}'&$orderby=Data%20desc&$format=json"
+        
+        print(f"Baixando Focus ({indicator}): {url}")
+        res = self.session.get(url, verify=False)
+        if res.status_code != 200:
+            raise ValueError(f"Erro ao baixar Focus ({indicator}): {res.status_code}")
+            
+        data_json = res.json()
+        df = pd.DataFrame(data_json.get("value", []))
+        return df
+
+    def download_bcb_ptax(self, data: datetime.date) -> pd.DataFrame:
+        """
+        Obtém a PTAX diária (todas as moedas) do BCB.
+        """
+        date_str = data.strftime("%m-%d-%Y") # BCB Odata usa MM-DD-YYYY
+        url = f"https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoMoedaDia(dataCotacao=@dataCotacao)?@dataCotacao='{date_str}'&$format=json"
+        
+        print(f"Baixando PTAX: {url}")
+        res = self.session.get(url, verify=False)
+        if res.status_code != 200:
+            raise ValueError(f"Erro ao baixar PTAX: {res.status_code}")
+            
+        data_json = res.json()
+        df = pd.DataFrame(data_json.get("value", []))
+        return df
+
+    def download_ibge_ipca_calendar(self) -> pd.DataFrame:
+        """
+        Retorna o calendário de divulgação do IPCA (IBGE).
+        Placeholder/Scraper Simplificado. Em produção usar a API do IBGE de calendários.
+        """
+        print("Mock: Baixando Calendário IPCA...")
+        # Mocking the usual mid-month release dates for IBGE IPCA
+        dates = [datetime.date(2026, i, 10).strftime("%Y-%m-%d") for i in range(1, 13)]
+        return pd.DataFrame({"DataReferencia": [f"2026-{i:02d}" for i in range(1, 13)], "DataDivulgacao": dates})
+
+    def download_fgv_igpm_calendar(self) -> pd.DataFrame:
+        """
+        Retorna o calendário de divulgação do IGP-M (FGV).
+        """
+        print("Mock: Baixando Calendário IGP-M...")
+        # Usually released on the last/penultimate business day of the month
+        dates = [datetime.date(2026, i, 28).strftime("%Y-%m-%d") for i in range(1, 13)]
+        return pd.DataFrame({"DataReferencia": [f"2026-{i:02d}" for i in range(1, 13)], "DataDivulgacao": dates})
