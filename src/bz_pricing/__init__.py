@@ -9,12 +9,14 @@ __version__ = "0.0.1"
 from bz_pricing.data.scrapers import B3Scraper
 from bz_pricing.data.loaders import B3DataLoader
 from bz_pricing.curves.builder import B3CurveBuilder
+from bz_pricing.curves.manager import CurveManager
 from bz_pricing.instruments.tpf import LTN, NTNF
 
 __all__ = [
     "B3Scraper",
     "B3DataLoader",
     "B3CurveBuilder",
+    "CurveManager",
     "LTN",
     "NTNF"
 ]

@@ -28,4 +28,7 @@ def build(setup_kwargs):
         })
 
 if __name__ == "__main__":
-    setup()
+    kwargs = {}
+    build(kwargs)
+    kwargs["package_dir"] = {"": "src"}
+    setup(**kwargs)

@@ -6,7 +6,7 @@
         "depends": [],
         "name": "bz_pricing.core.bonds",
         "sources": [
-            "D:\\projects\\bz_pricing\\src\\bz_pricing\\core\\bonds.pyx"
+            "src\\bz_pricing\\core\\bonds.pyx"
         ]
     },
     "module_name": "bz_pricing.core.bonds"
@@ -1765,8 +1765,7 @@ struct __pyx_obj_10bz_pricing_4core_6curves_AdditiveCurve;
 struct __pyx_obj_10bz_pricing_4core_6curves_MultiplicativeCurve;
 struct __pyx_obj_10bz_pricing_4core_6curves_SimpleCurve;
 struct __pyx_obj_10bz_pricing_4core_6curves_ComplexCurve;
-struct __pyx_obj_10bz_pricing_4core_6curves_TBFCurve;
-struct __pyx_obj_10bz_pricing_4core_6curves_TRCurve;
+struct __pyx_obj_10bz_pricing_4core_6curves_InflationCurve;
 struct __pyx_obj_10bz_pricing_4core_5bonds_Bond;
 struct __pyx_obj_10bz_pricing_4core_5bonds_GenericCashflowBond;
 struct __pyx_obj_10bz_pricing_4core_5bonds_LTN;
@@ -1833,9 +1832,9 @@ struct __pyx_opt_args_10bz_pricing_4core_13interpolators_12Interpolator_interpol
 };
 struct __pyx_opt_args_10bz_pricing_4core_6curves_5Curve_get_rate;
 
-/* "bz_pricing/core/curves.pxd":7
- * cdef class Curve:
+/* "bz_pricing/core/curves.pxd":8
  *     cdef int _round_decimals
+ *     cdef bint _is_trunc
  *     cpdef double get_rate(self, double t, double t_sec=*) except *             # <<<<<<<<<<<<<<
  * 
  * cdef class FlatCurve(Curve):
@@ -1865,16 +1864,17 @@ struct __pyx_obj_10bz_pricing_4core_13interpolators_Interpolator {
  * 
  * cdef class Curve:             # <<<<<<<<<<<<<<
  *     cdef int _round_decimals
- *     cpdef double get_rate(self, double t, double t_sec=*) except *
+ *     cdef bint _is_trunc
 */
 struct __pyx_obj_10bz_pricing_4core_6curves_Curve {
   PyObject_HEAD
   struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *__pyx_vtab;
   int _round_decimals;
+  int _is_trunc;
 };
 
 
-/* "bz_pricing/core/curves.pxd":9
+/* "bz_pricing/core/curves.pxd":10
  *     cpdef double get_rate(self, double t, double t_sec=*) except *
  * 
  * cdef class FlatCurve(Curve):             # <<<<<<<<<<<<<<
@@ -1887,7 +1887,7 @@ struct __pyx_obj_10bz_pricing_4core_6curves_FlatCurve {
 };
 
 
-/* "bz_pricing/core/curves.pxd":12
+/* "bz_pricing/core/curves.pxd":13
  *     cdef double _rate
  * 
  * cdef class AdditiveCurve(Curve):             # <<<<<<<<<<<<<<
@@ -1900,7 +1900,7 @@ struct __pyx_obj_10bz_pricing_4core_6curves_AdditiveCurve {
 };
 
 
-/* "bz_pricing/core/curves.pxd":15
+/* "bz_pricing/core/curves.pxd":16
  *     cdef list _curves
  * 
  * cdef class MultiplicativeCurve(Curve):             # <<<<<<<<<<<<<<
@@ -1914,7 +1914,7 @@ struct __pyx_obj_10bz_pricing_4core_6curves_MultiplicativeCurve {
 };
 
 
-/* "bz_pricing/core/curves.pxd":19
+/* "bz_pricing/core/curves.pxd":20
  *     cdef double _scalar
  * 
  * cdef class SimpleCurve(Curve):             # <<<<<<<<<<<<<<
@@ -1931,7 +1931,7 @@ struct __pyx_obj_10bz_pricing_4core_6curves_SimpleCurve {
 };
 
 
-/* "bz_pricing/core/curves.pxd":26
+/* "bz_pricing/core/curves.pxd":27
  *     cdef Interpolator _interpolator
  * 
  * cdef class ComplexCurve(Curve):             # <<<<<<<<<<<<<<
@@ -1948,29 +1948,17 @@ struct __pyx_obj_10bz_pricing_4core_6curves_ComplexCurve {
 };
 
 
-/* "bz_pricing/core/curves.pxd":33
+/* "bz_pricing/core/curves.pxd":34
  *     cdef list _interpolators # Lista de objetos Interpolator para cada tranche
  * 
- * cdef class TBFCurve(Curve):             # <<<<<<<<<<<<<<
- *     cdef Curve _pre_curve
- *     cdef double _media_tbf
+ * cdef class InflationCurve(Curve):             # <<<<<<<<<<<<<<
+ *     cdef Curve _nominal_curve
+ *     cdef Curve _real_curve
 */
-struct __pyx_obj_10bz_pricing_4core_6curves_TBFCurve {
+struct __pyx_obj_10bz_pricing_4core_6curves_InflationCurve {
   struct __pyx_obj_10bz_pricing_4core_6curves_Curve __pyx_base;
-  struct __pyx_obj_10bz_pricing_4core_6curves_Curve *_pre_curve;
-  double _media_tbf;
-};
-
-
-/* "bz_pricing/core/curves.pxd":37
- *     cdef double _media_tbf
- * 
- * cdef class TRCurve(Curve):             # <<<<<<<<<<<<<<
- *     cdef Curve _tbf_curve
-*/
-struct __pyx_obj_10bz_pricing_4core_6curves_TRCurve {
-  struct __pyx_obj_10bz_pricing_4core_6curves_Curve __pyx_base;
-  struct __pyx_obj_10bz_pricing_4core_6curves_Curve *_tbf_curve;
+  struct __pyx_obj_10bz_pricing_4core_6curves_Curve *_nominal_curve;
+  struct __pyx_obj_10bz_pricing_4core_6curves_Curve *_real_curve;
 };
 
 
@@ -2128,7 +2116,7 @@ static struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_Interpolator *
  * 
  * cdef class Curve:             # <<<<<<<<<<<<<<
  *     cdef int _round_decimals
- *     cpdef double get_rate(self, double t, double t_sec=*) except *
+ *     cdef bint _is_trunc
 */
 
 struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve {
@@ -2137,7 +2125,7 @@ struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve {
 static struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *__pyx_vtabptr_10bz_pricing_4core_6curves_Curve;
 
 
-/* "bz_pricing/core/curves.pxd":9
+/* "bz_pricing/core/curves.pxd":10
  *     cpdef double get_rate(self, double t, double t_sec=*) except *
  * 
  * cdef class FlatCurve(Curve):             # <<<<<<<<<<<<<<
@@ -2151,7 +2139,7 @@ struct __pyx_vtabstruct_10bz_pricing_4core_6curves_FlatCurve {
 static struct __pyx_vtabstruct_10bz_pricing_4core_6curves_FlatCurve *__pyx_vtabptr_10bz_pricing_4core_6curves_FlatCurve;
 
 
-/* "bz_pricing/core/curves.pxd":12
+/* "bz_pricing/core/curves.pxd":13
  *     cdef double _rate
  * 
  * cdef class AdditiveCurve(Curve):             # <<<<<<<<<<<<<<
@@ -2165,7 +2153,7 @@ struct __pyx_vtabstruct_10bz_pricing_4core_6curves_AdditiveCurve {
 static struct __pyx_vtabstruct_10bz_pricing_4core_6curves_AdditiveCurve *__pyx_vtabptr_10bz_pricing_4core_6curves_AdditiveCurve;
 
 
-/* "bz_pricing/core/curves.pxd":15
+/* "bz_pricing/core/curves.pxd":16
  *     cdef list _curves
  * 
  * cdef class MultiplicativeCurve(Curve):             # <<<<<<<<<<<<<<
@@ -2179,7 +2167,7 @@ struct __pyx_vtabstruct_10bz_pricing_4core_6curves_MultiplicativeCurve {
 static struct __pyx_vtabstruct_10bz_pricing_4core_6curves_MultiplicativeCurve *__pyx_vtabptr_10bz_pricing_4core_6curves_MultiplicativeCurve;
 
 
-/* "bz_pricing/core/curves.pxd":19
+/* "bz_pricing/core/curves.pxd":20
  *     cdef double _scalar
  * 
  * cdef class SimpleCurve(Curve):             # <<<<<<<<<<<<<<
@@ -2193,7 +2181,7 @@ struct __pyx_vtabstruct_10bz_pricing_4core_6curves_SimpleCurve {
 static struct __pyx_vtabstruct_10bz_pricing_4core_6curves_SimpleCurve *__pyx_vtabptr_10bz_pricing_4core_6curves_SimpleCurve;
 
 
-/* "bz_pricing/core/curves.pxd":26
+/* "bz_pricing/core/curves.pxd":27
  *     cdef Interpolator _interpolator
  * 
  * cdef class ComplexCurve(Curve):             # <<<<<<<<<<<<<<
@@ -2207,31 +2195,18 @@ struct __pyx_vtabstruct_10bz_pricing_4core_6curves_ComplexCurve {
 static struct __pyx_vtabstruct_10bz_pricing_4core_6curves_ComplexCurve *__pyx_vtabptr_10bz_pricing_4core_6curves_ComplexCurve;
 
 
-/* "bz_pricing/core/curves.pxd":33
+/* "bz_pricing/core/curves.pxd":34
  *     cdef list _interpolators # Lista de objetos Interpolator para cada tranche
  * 
- * cdef class TBFCurve(Curve):             # <<<<<<<<<<<<<<
- *     cdef Curve _pre_curve
- *     cdef double _media_tbf
+ * cdef class InflationCurve(Curve):             # <<<<<<<<<<<<<<
+ *     cdef Curve _nominal_curve
+ *     cdef Curve _real_curve
 */
 
-struct __pyx_vtabstruct_10bz_pricing_4core_6curves_TBFCurve {
+struct __pyx_vtabstruct_10bz_pricing_4core_6curves_InflationCurve {
   struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve __pyx_base;
 };
-static struct __pyx_vtabstruct_10bz_pricing_4core_6curves_TBFCurve *__pyx_vtabptr_10bz_pricing_4core_6curves_TBFCurve;
-
-
-/* "bz_pricing/core/curves.pxd":37
- *     cdef double _media_tbf
- * 
- * cdef class TRCurve(Curve):             # <<<<<<<<<<<<<<
- *     cdef Curve _tbf_curve
-*/
-
-struct __pyx_vtabstruct_10bz_pricing_4core_6curves_TRCurve {
-  struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve __pyx_base;
-};
-static struct __pyx_vtabstruct_10bz_pricing_4core_6curves_TRCurve *__pyx_vtabptr_10bz_pricing_4core_6curves_TRCurve;
+static struct __pyx_vtabstruct_10bz_pricing_4core_6curves_InflationCurve *__pyx_vtabptr_10bz_pricing_4core_6curves_InflationCurve;
 
 
 /* "bz_pricing/core/bonds.pyx":9
@@ -4090,8 +4065,7 @@ namespace {
     PyTypeObject *__pyx_ptype_10bz_pricing_4core_6curves_MultiplicativeCurve;
     PyTypeObject *__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve;
     PyTypeObject *__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve;
-    PyTypeObject *__pyx_ptype_10bz_pricing_4core_6curves_TBFCurve;
-    PyTypeObject *__pyx_ptype_10bz_pricing_4core_6curves_TRCurve;
+    PyTypeObject *__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve;
     PyObject *__pyx_type_10bz_pricing_4core_5bonds_Bond;
     PyObject *__pyx_type_10bz_pricing_4core_5bonds_GenericCashflowBond;
     PyObject *__pyx_type_10bz_pricing_4core_5bonds_LTN;
@@ -4337,8 +4311,7 @@ static CYTHON_SMALL_CODE int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_ptype_10bz_pricing_4core_6curves_MultiplicativeCurve);
   Py_CLEAR(clear_module_state->__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve);
   Py_CLEAR(clear_module_state->__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve);
-  Py_CLEAR(clear_module_state->__pyx_ptype_10bz_pricing_4core_6curves_TBFCurve);
-  Py_CLEAR(clear_module_state->__pyx_ptype_10bz_pricing_4core_6curves_TRCurve);
+  Py_CLEAR(clear_module_state->__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve);
   Py_CLEAR(clear_module_state->__pyx_ptype_10bz_pricing_4core_5bonds_Bond);
   Py_CLEAR(clear_module_state->__pyx_type_10bz_pricing_4core_5bonds_Bond);
   Py_CLEAR(clear_module_state->__pyx_ptype_10bz_pricing_4core_5bonds_GenericCashflowBond);
@@ -4392,8 +4365,7 @@ static CYTHON_SMALL_CODE int __pyx_m_traverse(PyObject *m, visitproc visit, void
   Py_VISIT(traverse_module_state->__pyx_ptype_10bz_pricing_4core_6curves_MultiplicativeCurve);
   Py_VISIT(traverse_module_state->__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve);
   Py_VISIT(traverse_module_state->__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve);
-  Py_VISIT(traverse_module_state->__pyx_ptype_10bz_pricing_4core_6curves_TBFCurve);
-  Py_VISIT(traverse_module_state->__pyx_ptype_10bz_pricing_4core_6curves_TRCurve);
+  Py_VISIT(traverse_module_state->__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve);
   Py_VISIT(traverse_module_state->__pyx_ptype_10bz_pricing_4core_5bonds_Bond);
   Py_VISIT(traverse_module_state->__pyx_type_10bz_pricing_4core_5bonds_Bond);
   Py_VISIT(traverse_module_state->__pyx_ptype_10bz_pricing_4core_5bonds_GenericCashflowBond);
@@ -25926,8 +25898,8 @@ static int __Pyx_modinit_Type_import_code(__pyx_mstatetype *__pyx_mstate) {
   #else
   sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_FlatCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_FlatCurve),
   #endif
-  __Pyx_ImportType_CheckSize_Warn_3_3_0); if (!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_FlatCurve) __PYX_ERR(3, 9, __pyx_L1_error)
-  if (unlikely(__Pyx_GetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_FlatCurve, (void**)&__pyx_vtabptr_10bz_pricing_4core_6curves_FlatCurve) != 1)) __PYX_ERR(3, 9, __pyx_L1_error)
+  __Pyx_ImportType_CheckSize_Warn_3_3_0); if (!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_FlatCurve) __PYX_ERR(3, 10, __pyx_L1_error)
+  if (unlikely(__Pyx_GetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_FlatCurve, (void**)&__pyx_vtabptr_10bz_pricing_4core_6curves_FlatCurve) != 1)) __PYX_ERR(3, 10, __pyx_L1_error)
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_AdditiveCurve = __Pyx_ImportType_3_3_0(__pyx_t_1, "bz_pricing.core.curves", "AdditiveCurve",
   #if defined(PYPY_VERSION_NUM) && PYPY_VERSION_NUM < 0x050B0000
   sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_AdditiveCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_AdditiveCurve),
@@ -25936,8 +25908,8 @@ static int __Pyx_modinit_Type_import_code(__pyx_mstatetype *__pyx_mstate) {
   #else
   sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_AdditiveCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_AdditiveCurve),
   #endif
-  __Pyx_ImportType_CheckSize_Warn_3_3_0); if (!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_AdditiveCurve) __PYX_ERR(3, 12, __pyx_L1_error)
-  if (unlikely(__Pyx_GetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_AdditiveCurve, (void**)&__pyx_vtabptr_10bz_pricing_4core_6curves_AdditiveCurve) != 1)) __PYX_ERR(3, 12, __pyx_L1_error)
+  __Pyx_ImportType_CheckSize_Warn_3_3_0); if (!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_AdditiveCurve) __PYX_ERR(3, 13, __pyx_L1_error)
+  if (unlikely(__Pyx_GetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_AdditiveCurve, (void**)&__pyx_vtabptr_10bz_pricing_4core_6curves_AdditiveCurve) != 1)) __PYX_ERR(3, 13, __pyx_L1_error)
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_MultiplicativeCurve = __Pyx_ImportType_3_3_0(__pyx_t_1, "bz_pricing.core.curves", "MultiplicativeCurve",
   #if defined(PYPY_VERSION_NUM) && PYPY_VERSION_NUM < 0x050B0000
   sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_MultiplicativeCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_MultiplicativeCurve),
@@ -25946,8 +25918,8 @@ static int __Pyx_modinit_Type_import_code(__pyx_mstatetype *__pyx_mstate) {
   #else
   sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_MultiplicativeCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_MultiplicativeCurve),
   #endif
-  __Pyx_ImportType_CheckSize_Warn_3_3_0); if (!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_MultiplicativeCurve) __PYX_ERR(3, 15, __pyx_L1_error)
-  if (unlikely(__Pyx_GetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_MultiplicativeCurve, (void**)&__pyx_vtabptr_10bz_pricing_4core_6curves_MultiplicativeCurve) != 1)) __PYX_ERR(3, 15, __pyx_L1_error)
+  __Pyx_ImportType_CheckSize_Warn_3_3_0); if (!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_MultiplicativeCurve) __PYX_ERR(3, 16, __pyx_L1_error)
+  if (unlikely(__Pyx_GetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_MultiplicativeCurve, (void**)&__pyx_vtabptr_10bz_pricing_4core_6curves_MultiplicativeCurve) != 1)) __PYX_ERR(3, 16, __pyx_L1_error)
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve = __Pyx_ImportType_3_3_0(__pyx_t_1, "bz_pricing.core.curves", "SimpleCurve",
   #if defined(PYPY_VERSION_NUM) && PYPY_VERSION_NUM < 0x050B0000
   sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_SimpleCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_SimpleCurve),
@@ -25956,8 +25928,8 @@ static int __Pyx_modinit_Type_import_code(__pyx_mstatetype *__pyx_mstate) {
   #else
   sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_SimpleCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_SimpleCurve),
   #endif
-  __Pyx_ImportType_CheckSize_Warn_3_3_0); if (!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve) __PYX_ERR(3, 19, __pyx_L1_error)
-  if (unlikely(__Pyx_GetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve, (void**)&__pyx_vtabptr_10bz_pricing_4core_6curves_SimpleCurve) != 1)) __PYX_ERR(3, 19, __pyx_L1_error)
+  __Pyx_ImportType_CheckSize_Warn_3_3_0); if (!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve) __PYX_ERR(3, 20, __pyx_L1_error)
+  if (unlikely(__Pyx_GetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve, (void**)&__pyx_vtabptr_10bz_pricing_4core_6curves_SimpleCurve) != 1)) __PYX_ERR(3, 20, __pyx_L1_error)
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve = __Pyx_ImportType_3_3_0(__pyx_t_1, "bz_pricing.core.curves", "ComplexCurve",
   #if defined(PYPY_VERSION_NUM) && PYPY_VERSION_NUM < 0x050B0000
   sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_ComplexCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_ComplexCurve),
@@ -25966,28 +25938,18 @@ static int __Pyx_modinit_Type_import_code(__pyx_mstatetype *__pyx_mstate) {
   #else
   sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_ComplexCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_ComplexCurve),
   #endif
-  __Pyx_ImportType_CheckSize_Warn_3_3_0); if (!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve) __PYX_ERR(3, 26, __pyx_L1_error)
-  if (unlikely(__Pyx_GetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve, (void**)&__pyx_vtabptr_10bz_pricing_4core_6curves_ComplexCurve) != 1)) __PYX_ERR(3, 26, __pyx_L1_error)
-  __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_TBFCurve = __Pyx_ImportType_3_3_0(__pyx_t_1, "bz_pricing.core.curves", "TBFCurve",
+  __Pyx_ImportType_CheckSize_Warn_3_3_0); if (!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve) __PYX_ERR(3, 27, __pyx_L1_error)
+  if (unlikely(__Pyx_GetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve, (void**)&__pyx_vtabptr_10bz_pricing_4core_6curves_ComplexCurve) != 1)) __PYX_ERR(3, 27, __pyx_L1_error)
+  __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve = __Pyx_ImportType_3_3_0(__pyx_t_1, "bz_pricing.core.curves", "InflationCurve",
   #if defined(PYPY_VERSION_NUM) && PYPY_VERSION_NUM < 0x050B0000
-  sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_TBFCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_TBFCurve),
+  sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_InflationCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_InflationCurve),
   #elif CYTHON_COMPILING_IN_LIMITED_API
-  sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_TBFCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_TBFCurve),
+  sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_InflationCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_InflationCurve),
   #else
-  sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_TBFCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_TBFCurve),
+  sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_InflationCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_InflationCurve),
   #endif
-  __Pyx_ImportType_CheckSize_Warn_3_3_0); if (!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_TBFCurve) __PYX_ERR(3, 33, __pyx_L1_error)
-  if (unlikely(__Pyx_GetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_TBFCurve, (void**)&__pyx_vtabptr_10bz_pricing_4core_6curves_TBFCurve) != 1)) __PYX_ERR(3, 33, __pyx_L1_error)
-  __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_TRCurve = __Pyx_ImportType_3_3_0(__pyx_t_1, "bz_pricing.core.curves", "TRCurve",
-  #if defined(PYPY_VERSION_NUM) && PYPY_VERSION_NUM < 0x050B0000
-  sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_TRCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_TRCurve),
-  #elif CYTHON_COMPILING_IN_LIMITED_API
-  sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_TRCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_TRCurve),
-  #else
-  sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_TRCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_TRCurve),
-  #endif
-  __Pyx_ImportType_CheckSize_Warn_3_3_0); if (!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_TRCurve) __PYX_ERR(3, 37, __pyx_L1_error)
-  if (unlikely(__Pyx_GetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_TRCurve, (void**)&__pyx_vtabptr_10bz_pricing_4core_6curves_TRCurve) != 1)) __PYX_ERR(3, 37, __pyx_L1_error)
+  __Pyx_ImportType_CheckSize_Warn_3_3_0); if (!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve) __PYX_ERR(3, 34, __pyx_L1_error)
+  if (unlikely(__Pyx_GetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve, (void**)&__pyx_vtabptr_10bz_pricing_4core_6curves_InflationCurve) != 1)) __PYX_ERR(3, 34, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;

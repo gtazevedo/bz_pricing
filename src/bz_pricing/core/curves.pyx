@@ -5,8 +5,9 @@
 from bz_pricing.core.interpolators cimport Interpolator
 from cpython cimport array
 import array
+import array
 import numpy as np
-from libc.math cimport round, pow
+from libc.math cimport round, pow, trunc
 
 cdef class Curve:
     """
@@ -22,14 +23,18 @@ cdef class FlatCurve(Curve):
     Estrutura Tipo 1: Flat
     Retorna uma taxa constante cravada para todos os vértices.
     """
-    def __init__(self, double rate, int round_decimals=-1):
+    def __init__(self, double rate, int round_decimals=-1, str round_mode='round'):
         self._rate = rate
         self._round_decimals = round_decimals
+        self._is_trunc = (round_mode == 'trunc')
         
     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
         cdef double rate = self._rate
         if self._round_decimals >= 0:
-            rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
+            if self._is_trunc:
+                rate = trunc(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
+            else:
+                rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
         return rate
 
 cdef class AdditiveCurve(Curve):
@@ -37,9 +42,10 @@ cdef class AdditiveCurve(Curve):
     Estrutura Tipo 2: Aditiva
     Soma os rates de um conjunto de curvas injetadas.
     """
-    def __init__(self, list curves, int round_decimals=-1):
+    def __init__(self, list curves, int round_decimals=-1, str round_mode='round'):
         self._curves = curves
         self._round_decimals = round_decimals
+        self._is_trunc = (round_mode == 'trunc')
         
     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
         cdef double total = 0.0
@@ -48,7 +54,10 @@ cdef class AdditiveCurve(Curve):
             total += c.get_rate(t, t_sec)
         
         if self._round_decimals >= 0:
-            total = round(total * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
+            if self._is_trunc:
+                total = trunc(total * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
+            else:
+                total = round(total * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
             
         return total
 
@@ -57,16 +66,20 @@ cdef class MultiplicativeCurve(Curve):
     Estrutura Tipo 3: Multiplicativa
     Multiplica os rates de uma curva de referência por um escalar.
     """
-    def __init__(self, Curve curve, double scalar, int round_decimals=-1):
+    def __init__(self, Curve curve, double scalar, int round_decimals=-1, str round_mode='round'):
         self._curve = curve
         self._scalar = scalar
         self._round_decimals = round_decimals
+        self._is_trunc = (round_mode == 'trunc')
         
     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
         cdef double rate = self._scalar * self._curve.get_rate(t, t_sec)
         
         if self._round_decimals >= 0:
-            rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
+            if self._is_trunc:
+                rate = trunc(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
+            else:
+                rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
             
         return rate
 
@@ -76,7 +89,7 @@ cdef class SimpleCurve(Curve):
     Aplica um objeto Interpolator (Injeção de Dependência) em toda a curva, 
     utilizando a grade de nós fornecida.
     """
-    def __init__(self, double[:] t_nodes, double[:] y_nodes, Interpolator interpolator, double[:] t_sec_nodes=None, int round_decimals=-1):
+    def __init__(self, double[:] t_nodes, double[:] y_nodes, Interpolator interpolator, double[:] t_sec_nodes=None, int round_decimals=-1, str round_mode='round'):
         if t_nodes.shape[0] != y_nodes.shape[0]:
             raise ValueError("t_nodes e y_nodes devem ter o mesmo tamanho")
         if t_sec_nodes is not None and t_sec_nodes.shape[0] != t_nodes.shape[0]:
@@ -88,6 +101,7 @@ cdef class SimpleCurve(Curve):
         self._n_nodes = t_nodes.shape[0]
         self._interpolator = interpolator
         self._round_decimals = round_decimals
+        self._is_trunc = (round_mode == 'trunc')
         
     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
         cdef double * t_sec_ptr = NULL
@@ -97,16 +111,30 @@ cdef class SimpleCurve(Curve):
         cdef double rate = self._interpolator.interpolate(t, &self._t_nodes[0], &self._y_nodes[0], self._n_nodes, t_sec, t_sec_ptr)
         
         if self._round_decimals >= 0:
-            rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
+            if self._is_trunc:
+                rate = trunc(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
+            else:
+                rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
             
         return rate
+
+    @property
+    def t_nodes(self):
+        import numpy as np
+        return np.asarray(self._t_nodes)
+
+    @property
+    def y_nodes(self):
+        import numpy as np
+        return np.asarray(self._y_nodes)
+
 
 cdef class ComplexCurve(Curve):
     """
     Estrutura Tipo 5: Construção Complexa
     Aplica um Interpolator DIFERENTE para cada tranche/seção de vértices da curva.
     """
-    def __init__(self, double[:] t_nodes, double[:] y_nodes, list interpolators, double[:] t_sec_nodes=None, int round_decimals=-1):
+    def __init__(self, double[:] t_nodes, double[:] y_nodes, list interpolators, double[:] t_sec_nodes=None, int round_decimals=-1, str round_mode='round'):
         if t_nodes.shape[0] != y_nodes.shape[0]:
             raise ValueError("t_nodes e y_nodes devem ter o mesmo tamanho")
         
@@ -116,6 +144,7 @@ cdef class ComplexCurve(Curve):
         self._n_nodes = t_nodes.shape[0]
         self._interpolators = interpolators
         self._round_decimals = round_decimals
+        self._is_trunc = (round_mode == 'trunc')
         
     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
         cdef int i
@@ -141,71 +170,36 @@ cdef class ComplexCurve(Curve):
         cdef double rate = interp.interpolate(t, &self._t_nodes[0], &self._y_nodes[0], self._n_nodes, t_sec, t_sec_ptr)
         
         if self._round_decimals >= 0:
-            rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
+            if self._is_trunc:
+                rate = trunc(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
+            else:
+                rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
             
         return rate
 
-cdef class TBFCurve(Curve):
+cdef class InflationCurve(Curve):
     """
-    Estrutura Tipo 6: Derivativa TBF x PRE
-    Matemática complexa construída on the fly.
-    tpf i,t = (((1+pre i+21,t)^(21/252)-1)*media tbf+1)^(252/21)-1
+    Estrutura Tipo 8: Derivativa de Inflação Implícita (Ex: DIC, DIM)
+    Calculada como (1 + Nominal) / (1 + Real) - 1
+    Ambas as curvas subjacentes devem estar anualizadas na base 252.
     """
-    def __init__(self, Curve pre_curve, double media_tbf, int round_decimals=-1):
-        self._pre_curve = pre_curve
-        self._media_tbf = media_tbf
+    def __init__(self, Curve nominal_curve, Curve real_curve, int round_decimals=-1, str round_mode='round'):
+        self._nominal_curve = nominal_curve
+        self._real_curve = real_curve
         self._round_decimals = round_decimals
+        self._is_trunc = (round_mode == 'trunc')
         
     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
-        # Busca a taxa PRE do vértice i + 21
-        cdef double pre_rate = self._pre_curve.get_rate(t + 21.0, t_sec)
+        cdef double pre_rate = self._nominal_curve.get_rate(t, t_sec)
+        cdef double dap_rate = self._real_curve.get_rate(t, t_sec)
         
-        cdef double term1 = pow(1.0 + pre_rate, 21.0 / 252.0) - 1.0
-        cdef double term2 = term1 * self._media_tbf + 1.0
-        cdef double rate = pow(term2, 252.0 / 21.0) - 1.0
+        cdef double rate = ((1.0 + pre_rate) / (1.0 + dap_rate)) - 1.0
         
         if self._round_decimals >= 0:
-            rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
-            
-        return rate
-
-cdef class TRCurve(Curve):
-    """
-    Estrutura Tipo 7: Derivativa TR x PRE
-    Aplica o redutor da Resolução 5.124 BCB sobre a Curva TBFxPRE.
-    """
-    def __init__(self, Curve tbf_curve, int round_decimals=-1):
-        self._tbf_curve = tbf_curve
-        self._round_decimals = round_decimals
-        
-    cpdef double get_rate(self, double t, double t_sec=0.0) except *:
-        cdef double tbf_rate = self._tbf_curve.get_rate(t, t_sec)
-        cdef double tfp_am = pow(1.0 + tbf_rate, 1.0 / 12.0) - 1.0
-        cdef double a, b
-        
-        # Res. 5.124 do BCB (Tabela de Redutores TR)
-        if tfp_am >= 0.013134:
-            a = 1.00500000
-            b = 0.48000000
-        elif tfp_am >= 0.009856:
-            a = 0.99869130
-            b = 0.96034591
-        elif tfp_am >= 0.008462:
-            a = 1.00500000
-            b = 0.32000000
-        elif tfp_am >= 0.007323:
-            a = 1.00010877
-            b = 0.89838243
-        else:
-            a = 1.00500000
-            b = 0.23000000
-            
-        cdef double redutor = a + b * tfp_am
-        cdef double tr_am_fator = (1.0 + tfp_am) / redutor
-        cdef double rate = pow(tr_am_fator, 12.0) - 1.0
-        
-        if self._round_decimals >= 0:
-            rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
+            if self._is_trunc:
+                rate = trunc(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
+            else:
+                rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
             
         return rate
 

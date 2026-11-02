@@ -13,7 +13,7 @@ from bz_pricing.core.interpolators import (
     Linear360Interpolator,
     Interpolation360Interpolator
 )
-from bz_pricing.core.curves import SimpleCurve, FlatCurve, TBFCurve, TRCurve, Curve
+from bz_pricing.core.curves import SimpleCurve, FlatCurve, Curve
 
 class B3CurveBuilder:
     def __init__(self, calendar_name: str = "B3"):
@@ -36,6 +36,7 @@ class B3CurveBuilder:
                     exp_date: str = 'XprtnDt',
                     use_dc: bool = False,
                     round_decimals: int = -1,
+                    round_mode: str = 'round',
                     smoothing: float = None,
                     use_cython_smoothing: bool = False) -> SimpleCurve:
         """
@@ -86,9 +87,9 @@ class B3CurveBuilder:
             base_interp = interpolator_class(extrap_left, extrap_right)
             
             if use_dc:
-                base_curve = SimpleCurve(base_t, base_y, base_interp, t_sec_nodes=base_dc, round_decimals=-1)
+                base_curve = SimpleCurve(base_t, base_y, base_interp, t_sec_nodes=base_dc, round_decimals=-1, round_mode=round_mode)
             else:
-                base_curve = SimpleCurve(base_t, base_y, base_interp, round_decimals=-1)
+                base_curve = SimpleCurve(base_t, base_y, base_interp, round_decimals=-1, round_mode=round_mode)
                 
             anchor_t = 10080.0 # Vértice âncora de 40 anos para travar a taxa forward
             anchor_y = base_curve.get_rate(anchor_t)
@@ -144,9 +145,9 @@ class B3CurveBuilder:
         # Construção da Curva Cython
         if use_dc:
             # Modelos como FlatForward252LinearInterpolator exigem Dias Corridos (DC) como sec_nodes
-            curve = SimpleCurve(t_nodes, y_nodes, interp, t_sec_nodes=dc_nodes, round_decimals=round_decimals)
+            curve = SimpleCurve(t_nodes, y_nodes, interp, t_sec_nodes=dc_nodes, round_decimals=round_decimals, round_mode=round_mode)
         else:
-            curve = SimpleCurve(t_nodes, y_nodes, interp, round_decimals=round_decimals)
+            curve = SimpleCurve(t_nodes, y_nodes, interp, round_decimals=round_decimals, round_mode=round_mode)
 
         return curve
 
@@ -186,6 +187,7 @@ class B3CurveBuilder:
             exp_date=config.get("exp_date", "XprtnDt"),
             use_dc=config.get("use_dc", False),
             round_decimals=config.get("round_decimals", -1),
+            round_mode=config.get("round_mode", "round"),
             smoothing=smoothing,
             use_cython_smoothing=use_cython_smoothing
         )
@@ -195,22 +197,171 @@ class B3CurveBuilder:
         Constrói uma FlatCurve estática (ex: TJLP).
         """
         round_decimals = -1
+        round_mode = 'round'
         if config_name:
             from .configs import CURVE_CONFIGS
             if config_name in CURVE_CONFIGS:
                 round_decimals = CURVE_CONFIGS[config_name].get("round_decimals", -1)
+                round_mode = CURVE_CONFIGS[config_name].get("round_mode", "round")
                 
         # rate já deve estar em decimal (ex: 0.10)
-        return FlatCurve(rate, round_decimals=round_decimals)
+        return FlatCurve(rate, round_decimals=round_decimals, round_mode=round_mode)
         
-    def build_tbf_curve(self, pre_curve: Curve, media_tbf: float, round_decimals: int = -1) -> TBFCurve:
+    def build_tbf_curve(self, pre_curve: Curve, media_tbf: float, round_decimals: int = -1, round_mode: str = 'round') -> SimpleCurve:
         """
-        Envelopa a Curva PRE em uma matemática Derivativa TBFxPRE no Cython.
+        Constrói a curva TBF x PRE (TFP) aplicando o fator médio histórico da TBF
+        aos vértices (t + 21) da curva DI x PRE.
+        TFP_{i} = ((((1 + PRE_{i+21})^(21/252) - 1) * media_tbf + 1)^(252/21)) - 1
         """
-        return TBFCurve(pre_curve, media_tbf, round_decimals=round_decimals)
+        from bz_pricing.core.interpolators import FlatForward252Interpolator
+        from bz_pricing.core.curves import SimpleCurve
+        import numpy as np
+        
+        t_nodes = pre_curve.t_nodes
+        new_y = []
+        
+        for t in t_nodes:
+            # Pega o valor da curva PRE interpolado no dia t + 21
+            pre_t21 = pre_curve.get_rate(t + 21.0)
+            
+            # Taxa mensal (21 DU) da PRE
+            pre_21_month = ((1.0 + pre_t21) ** (21.0 / 252.0)) - 1.0
+            
+            # Aplica o fator de spread (media_tbf)
+            tbf_month = pre_21_month * media_tbf
+            
+            # Reanualiza para 252
+            tbf_anual = ((1.0 + tbf_month) ** (252.0 / 21.0)) - 1.0
+            
+            new_y.append(tbf_anual)
+            
+        new_y_nodes = np.array(new_y, dtype=np.float64)
+        
+        # B3 usa FlatForward para curvas derivadas
+        interp = FlatForward252Interpolator(0, 1)
+        return SimpleCurve(t_nodes, new_y_nodes, interp, round_decimals=round_decimals, round_mode=round_mode)
 
-    def build_tr_curve(self, tbf_curve: Curve, round_decimals: int = -1) -> TRCurve:
+    def build_tr_curve(self, tbf_curve: Curve, round_decimals: int = -1, round_mode: str = 'round') -> SimpleCurve:
         """
-        Envelopa a Curva TBFxPRE em uma matemática TRxPRE no Cython (Res. 5.124 BCB).
+        Constrói a curva TR aplicando a regra do Redutor (Res. 5.124 BCB) sobre os vértices da Curva TBFxPRE.
+        Para evitar o formato distorcido "quadrado", a matemática é aplicada apenas nos vértices,
+        e a curva resultante é interpolada por FlatForward (como a B3 faz).
         """
-        return TRCurve(tbf_curve, round_decimals=round_decimals)
+        from bz_pricing.core.interpolators import FlatForward252Interpolator
+        from bz_pricing.core.curves import SimpleCurve
+        
+        t_nodes = tbf_curve.t_nodes
+        y_nodes = tbf_curve.y_nodes
+        
+        new_y = []
+        for i in range(len(t_nodes)):
+            tbf_anual = y_nodes[i]
+            # A curva TBFxPRE (agora "TBF Verdadeira") JÁ tem o 0.93 aplicado.
+            # 1. Desanualizamos a taxa TBF para 1 mês (21 dias úteis)
+            tfp_am = ((1.0 + tbf_anual) ** (21.0 / 252.0)) - 1.0
+
+            # Res. 5.124 do BCB (Tabela de Redutores TR)
+            if tfp_am >= 0.013134:
+                a = 1.00500000; b = 0.48000000
+            elif tfp_am >= 0.009856:
+                a = 0.99869130; b = 0.96034591
+            elif tfp_am >= 0.008462:
+                a = 1.00500000; b = 0.32000000
+            elif tfp_am >= 0.007323:
+                a = 1.00010877; b = 0.89838243
+            else:
+                a = 1.00500000; b = 0.23000000
+                
+            redutor = a + b * tfp_am
+            tr_am_fator = (1.0 + tfp_am) / redutor
+            
+            # Reanualiza a TR encontrada
+            rate = (tr_am_fator ** (252.0 / 21.0)) - 1.0
+            
+            # Piso para não ficar negativo
+            if rate <= 0.0:
+                rate = 0.0001
+                
+            new_y.append(rate)
+            
+        import numpy as np
+        new_y_nodes = np.array(new_y, dtype=np.float64)
+        
+        # B3 usa FlatForward para a TR
+        interp = FlatForward252Interpolator(0, 1)
+        return SimpleCurve(t_nodes, new_y_nodes, interp, round_decimals=round_decimals, round_mode=round_mode)
+
+    def build_inflation_curve(self, nominal_curve: Curve, real_curve: Curve, config_name: str = None) -> Curve:
+        """
+        Constrói a Curva de Inflação Implícita derivativamente (Ex: DIC e DIM).
+        Inflacao = (1 + Nominal) / (1 + Real) - 1
+        """
+        from bz_pricing.core.curves import InflationCurve
+        round_decimals = -1
+        round_mode = 'round'
+        if config_name:
+            from .configs import CURVE_CONFIGS
+            if config_name in CURVE_CONFIGS:
+                round_decimals = CURVE_CONFIGS[config_name].get("round_decimals", -1)
+                round_mode = CURVE_CONFIGS[config_name].get("round_mode", "round")
+                
+        return InflationCurve(nominal_curve, real_curve, round_decimals=round_decimals, round_mode=round_mode)
+
+    def build_currency_forward_curve(self, 
+                                     pre_curve: Curve, 
+                                     foreign_curve: Curve, 
+                                     spot_rate: float, 
+                                     du_nodes: np.ndarray, 
+                                     dc_nodes: np.ndarray, 
+                                     config_name: str) -> SimpleCurve:
+        """
+        Constrói a Curva de Forward de Moedas (PTX, EUR, JPY) 
+        projetando o spot rate através do diferencial de juros (PRE vs Cupom Estrangeiro).
+        Fwd_t = Spot * (1 + PRE_t)^(DU/252) / (1 + Cupom_t)^(DC/360)
+        """
+        from .configs import CURVE_CONFIGS
+        
+        if config_name not in CURVE_CONFIGS:
+            raise ValueError(f"Configuração '{config_name}' não encontrada.")
+            
+        config = CURVE_CONFIGS[config_name]
+        
+        n = len(du_nodes)
+        y_nodes = np.zeros(n, dtype=np.float64)
+        
+        for i in range(n):
+            du = du_nodes[i]
+            dc = dc_nodes[i]
+            
+            # Para o Vértice 1 (overnight), DU e DC podem ser 0. A curva de Forward retorna Spot.
+            if du <= 0 or dc <= 0:
+                y_nodes[i] = spot_rate
+                continue
+                
+            rate_pre = pre_curve.get_rate(du, dc)
+            rate_for = foreign_curve.get_rate(du, dc) # Passa du como primário e dc como secundário
+            
+            fator_pre = (1.0 + rate_pre) ** (du / 252.0)
+            
+            # Cupom Cambial Onshore (DOL/DDI/FRC) e Offshores usam juros simples (Linear) DC/360
+            if config.get("foreign_compounding", "linear") == "linear":
+                fator_for = 1.0 + rate_for * (dc / 360.0)
+            else:
+                fator_for = (1.0 + rate_for) ** (dc / 360.0)
+            
+            fwd = spot_rate * (fator_pre / fator_for)
+            y_nodes[i] = fwd
+
+        interp_class = config["interpolator_class"]
+        interp = interp_class(config.get("extrap_left", 0), config.get("extrap_right", 0))
+        
+        round_decimals = config.get("round_decimals", -1)
+        round_mode = config.get("round_mode", "round")
+        
+        use_dc = config.get("use_dc", False)
+        if use_dc:
+            curve = SimpleCurve(du_nodes, y_nodes, interp, t_sec_nodes=dc_nodes, round_decimals=round_decimals, round_mode=round_mode)
+        else:
+            curve = SimpleCurve(du_nodes, y_nodes, interp, round_decimals=round_decimals, round_mode=round_mode)
+            
+        return curve

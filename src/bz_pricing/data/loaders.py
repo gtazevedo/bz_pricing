@@ -109,6 +109,34 @@ class B3DataLoader:
         
         return df
 
+    def get_anbima_bonds(self, data: datetime.date, bond_type: str = 'LTN') -> pd.DataFrame:
+        """
+        Retorna os títulos públicos (ex: LTN, NTN-B) do Mercado Secundário da ANBIMA,
+        mascarados no formato B3 (XprtnDt, AdjstdQtTax) para serem usados
+        diretamente no B3CurveBuilder.
+        """
+        df = self.load_anbima_ms(data)
+        
+        # Filtra pelo tipo de título
+        df_filtered = df[df['Titulo'] == bond_type].copy()
+        
+        # A B3CurveBuilder espera as colunas XprtnDt (Data) e AdjstdQtTax (Taxa em %)
+        # A Tx. Indicativa do MS ANBIMA já está em % (ex: 13.76) e já foi lida como float
+        
+        # Cria as colunas esperadas pelo Builder
+        if pd.api.types.is_datetime64_any_dtype(df_filtered['DataVencimento']):
+            df_filtered['XprtnDt'] = df_filtered['DataVencimento']
+        else:
+            df_filtered['XprtnDt'] = pd.to_datetime(df_filtered['DataVencimento'], format='%Y%m%d', errors='coerce')
+            
+        df_filtered['AdjstdQtTax'] = df_filtered['TaxaIndicativa']
+        
+        # Retira NAs e ordena por vencimento
+        df_filtered = df_filtered.dropna(subset=['XprtnDt', 'AdjstdQtTax'])
+        df_filtered = df_filtered.sort_values(by='XprtnDt')
+        
+        return df_filtered
+
     def load_tesouro_transparente_cupons(self) -> pd.DataFrame:
         """
         Lê o CSV de pagamentos de cupons do Tesouro Direto.

@@ -4,6 +4,7 @@ from bz_pricing.core.interpolators cimport Interpolator
 
 cdef class Curve:
     cdef int _round_decimals
+    cdef bint _is_trunc
     cpdef double get_rate(self, double t, double t_sec=*) except *
 
 cdef class FlatCurve(Curve):
@@ -30,9 +31,6 @@ cdef class ComplexCurve(Curve):
     cdef int _n_nodes
     cdef list _interpolators # Lista de objetos Interpolator para cada tranche
 
-cdef class TBFCurve(Curve):
-    cdef Curve _pre_curve
-    cdef double _media_tbf
-
-cdef class TRCurve(Curve):
-    cdef Curve _tbf_curve
+cdef class InflationCurve(Curve):
+    cdef Curve _nominal_curve
+    cdef Curve _real_curve

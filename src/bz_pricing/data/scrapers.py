@@ -84,7 +84,7 @@ class B3Scraper:
                     combo.click()
                     
                     # Clica no produto desejado
-                    option = page.get_by_role("option", name=nome_produto)
+                    option = page.get_by_role("option", name=nome_produto, exact=True)
                     option.wait_for(state="visible", timeout=5000)
                     option.click()
                     
@@ -161,13 +161,18 @@ class B3Scraper:
         
         return output_path
 
-    def _download_and_extract_xmls(self, url: str, target_tag: str, date_str: str, prefix: str) -> str:
+    def _download_and_extract_xmls(self, url: str, target_tag: str, date_str: str, prefix: str, force: bool = False) -> str:
         """
         Faz o download de um zip duplo contendo XMLs da B3 (como SPRD ou IN).
         Extrai e achata todas as tags iguais a `target_tag`.
         """
         import xml.etree.ElementTree as ET
         
+        csv_path = os.path.join(self.output_dir, f"{prefix}_{date_str}.csv")
+        if not force and os.path.exists(csv_path):
+            print(f"Arquivo já existe em: {csv_path}. Use force=True para baixar novamente.")
+            return csv_path
+            
         print(f"Baixando: {url}")
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
         response = requests.get(url, headers=headers)
@@ -243,30 +248,36 @@ class B3Scraper:
         
         return csv_path
 
-    def download_bvbg_187_01(self, data: datetime.date) -> str:
+    def download_bvbg_187_01(self, data: datetime.date, force: bool = False) -> str:
         """
         Faz o download do boletim de negociação (SPRD) que contém os preços de fechamento.
         """
         date_str = data.strftime("%y%m%d")
         url = f"https://www.b3.com.br/pesquisapregao/download?filelist=SPRD{date_str}.zip"
-        return self._download_and_extract_xmls(url, 'PricRpt', data.strftime('%Y%m%d'), 'BVBG_SPRD')
+        return self._download_and_extract_xmls(url, 'PricRpt', data.strftime('%Y%m%d'), 'BVBG_SPRD', force)
         
-    def download_instruments(self, data: datetime.date) -> str:
+    def download_instruments(self, data: datetime.date, force: bool = False) -> str:
         """
         Faz o download do cadastro de instrumentos (IN) que contém os vencimentos, strikes, etc.
         """
         date_str = data.strftime("%y%m%d")
         url = f"https://www.b3.com.br/pesquisapregao/download?filelist=IN{date_str}.zip"
         # O Cadastro de instrumentos (BVBG.028) usa 'Instrm' como raiz de cada contrato
-        return self._download_and_extract_xmls(url, 'Instrm', data.strftime('%Y%m%d'), 'BVBG_IN')
+        return self._download_and_extract_xmls(url, 'Instrm', data.strftime('%Y%m%d'), 'BVBG_IN', force)
 
-    def download_anbima_ms(self, data: datetime.date) -> str:
+    def download_anbima_ms(self, data: datetime.date, force: bool = False) -> str:
         """
         Baixa o arquivo do Mercado Secundário da ANBIMA que contém as taxas e PUs oficiais (LTN, NTN-F, LFT, NTN-B, NTN-C).
         """
         date_str = data.strftime("%y%m%d")
         url = f"https://www.anbima.com.br/informacoes/merc-sec/arqs/ms{date_str}.txt"
         
+        csv_path = os.path.join(self.output_dir, f"ANBIMA_MS_{data.strftime('%Y%m%d')}.csv")
+        
+        if not force and os.path.exists(csv_path):
+            print(f"Arquivo MS ANBIMA já existe em: {csv_path}. Use force=True para baixar novamente.")
+            return csv_path
+            
         print(f"Baixando arquivo MS ANBIMA: {url}")
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
         response = requests.get(url, headers=headers)
@@ -274,8 +285,6 @@ class B3Scraper:
         if response.status_code != 200:
             raise ValueError(f"Erro ao baixar arquivo MS da ANBIMA para {data}: HTTP {response.status_code}")
             
-        csv_path = os.path.join(self.output_dir, f"ANBIMA_MS_{data.strftime('%Y%m%d')}.csv")
-        
         # O arquivo usa @ como separador
         # Vamos tratar possíveis inconsistências no enconding e pular o header inicial "ANBIMA - ..."
         # Utilizar iso-8859-1 pois arquivos da B3/ANBIMA comumente usam esse encoding
@@ -362,6 +371,19 @@ class B3Scraper:
         rates = data_json.get("sofr", {}).get("results", [])
         
         if not rates:
+            today = datetime.date.today()
+            if data > today:
+                # Fallback para datas futuras
+                print(f"[Aviso] Data {data} no futuro. Buscando a SOFR mais recente...")
+                fallback_start = (today - datetime.timedelta(days=10)).strftime('%Y-%m-%d')
+                fallback_end = today.strftime('%Y-%m-%d')
+                url = f"https://markets.newyorkfed.org/api/rates/secured/sofr/search.json?startDate={fallback_start}&endDate={fallback_end}"
+                res = self.session.get(url, verify=False)
+                if res.status_code == 200:
+                    data_json = res.json()
+                    rates = data_json.get("sofr", {}).get("results", [])
+                    
+        if not rates:
             raise ValueError(f"Nenhuma taxa SOFR encontrada para o período até {end_date}")
             
         # O primeiro resultado (índice 0) costuma ser o mais recente devido à ordenação da API
@@ -443,18 +465,30 @@ class B3Scraper:
     def download_bcb_ptax(self, data: datetime.date) -> pd.DataFrame:
         """
         Obtém a PTAX diária (todas as moedas) do BCB.
+        Nesta versão, utilizamos a lib nativa `python-bcb`.
+        Como a API exige end > start, recuamos 5 dias e pegamos a última cotação.
         """
-        date_str = data.strftime("%m-%d-%Y") # BCB Odata usa MM-DD-YYYY
-        url = f"https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoMoedaDia(dataCotacao=@dataCotacao)?@dataCotacao='{date_str}'&$format=json"
-        
-        print(f"Baixando PTAX: {url}")
-        res = self.session.get(url, verify=False)
-        if res.status_code != 200:
-            raise ValueError(f"Erro ao baixar PTAX: {res.status_code}")
+        try:
+            from bcb import currency
+        except ImportError:
+            raise ImportError("Pacote python-bcb não instalado. Execute: pip install python-bcb")
             
-        data_json = res.json()
-        df = pd.DataFrame(data_json.get("value", []))
-        return df
+        start_date = data - datetime.timedelta(days=5)
+        # O módulo get da currency puxa a cotação de venda por padrão
+        df = currency.get(['USD'], start=start_date.strftime("%Y-%m-%d"), end=data.strftime("%Y-%m-%d"))
+        
+        if df.empty:
+            return pd.DataFrame()
+            
+        # Transformar para o formato que o rest do código espera (ou aproximado)
+        # O antigo scraper raw do BCB retornava colunas como 'simbolo', 'cotacaoVenda'
+        # A lib bcb retorna um DataFrame com a data no índice e a coluna 'USD'
+        last_val = df.iloc[-1]['USD']
+        
+        return pd.DataFrame([{
+            'simbolo': 'USD',
+            'cotacaoVenda': last_val
+        }])
 
     def download_ibge_ipca_calendar(self) -> pd.DataFrame:
         """
