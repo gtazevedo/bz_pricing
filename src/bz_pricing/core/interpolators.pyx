@@ -183,19 +183,20 @@ cdef class Interpolation360Interpolator(Interpolator):
         cdef double f1 = 1.0 + (y1 * dc1) / 360.0
         cdef double f2 = 1.0 + (y2 * dc2) / 360.0
         
+        if t_sec == 0.0:
+            # Fallback para aproximação de t_sec caso não seja informado (útil para plotting)
+            t_sec = dc1 + (dc2 - dc1) * ((t - t_nodes[i]) / (t_nodes[i+1] - t_nodes[i]))
+            
+            if t_sec == 0.0:
+                return y1
+                
         cdef double forward = f1 * pow(f2 / f1, (t_sec - dc1) / (dc2 - dc1))
-        
-        if t_sec == 0:
-            return y1
             
         return (forward - 1.0) * (360.0 / t_sec)
 
 
 cdef class Linear360Interpolator(Interpolator):
     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
-        if t_sec_nodes == NULL:
-            raise ValueError("t_sec_nodes (DC) é obrigatório para Linear360Interpolator")
-            
         cdef int i
         if t <= t_nodes[0]:
             if self._extrap_left == EXTRAP_FLAT:
@@ -210,8 +211,20 @@ cdef class Linear360Interpolator(Interpolator):
                 if t_nodes[i] <= t and t <= t_nodes[i+1]:
                     break
                     
-        cdef double dc1 = t_sec_nodes[i]
-        cdef double dc2 = t_sec_nodes[i+1]
+        cdef double dc1
+        cdef double dc2
+        if t_sec_nodes != NULL:
+            dc1 = t_sec_nodes[i]
+            dc2 = t_sec_nodes[i+1]
+            if t_sec == 0.0:
+                t_sec = dc1 + (dc2 - dc1) * ((t - t_nodes[i]) / (t_nodes[i+1] - t_nodes[i]))
+        else:
+            # Caso a curva seja pura em Dias Corridos (DC), t_nodes é o próprio vetor de DC
+            dc1 = t_nodes[i]
+            dc2 = t_nodes[i+1]
+            if t_sec == 0.0:
+                t_sec = t
+                
         cdef double y1 = y_nodes[i]
         cdef double y2 = y_nodes[i+1]
         
@@ -221,14 +234,11 @@ cdef class Linear360Interpolator(Interpolator):
         cdef double f1 = (y1 * dc1) / 360.0
         cdef double f2 = (y2 * dc2) / 360.0
         
-        cdef double forward = f1 + (f2 - f1) * ((t - t_nodes[i]) / (t_nodes[i+1] - t_nodes[i]))
-        
         if t_sec == 0.0:
-            # Fallback para aproximação de t_sec caso não seja informado (útil para plotting)
-            t_sec = dc1 + (dc2 - dc1) * ((t - t_nodes[i]) / (t_nodes[i+1] - t_nodes[i]))
-            
-            if t_sec == 0.0:
-                t_sec = 1.0 # Previne divisão por zero extrema
+            t_sec = 1.0 # Previne divisão por zero extrema
+                
+        # Item 1.4.11 Manual de Curvas B3: ponderação linear pelos dias corridos (DC / t_sec)
+        cdef double forward = f1 + (f2 - f1) * ((t_sec - dc1) / (dc2 - dc1))
             
         return (forward * 360.0) / t_sec
 
@@ -300,4 +310,3 @@ cdef class FlatForward252LogInterpolator(Interpolator):
         cdef double ln_forward = ln_f1 + (ln_f2 - ln_f1) * ((t - t1) / (t2 - t1))
         
         return exp(ln_forward * 252.0 / t) - 1.0
-

@@ -7,7 +7,7 @@ import pandas as pd
 from playwright.sync_api import sync_playwright
 
 class B3Scraper:
-    def __init__(self, output_dir: str):
+    def __init__(self, output_dir: str = "dados/b3"):
         self.output_dir = output_dir
         os.makedirs(self.output_dir, exist_ok=True)
         
@@ -445,13 +445,18 @@ class B3Scraper:
     # SCRAPERS INFLAÇÃO E MACROECONOMIA
     # =========================================================================
 
-    def download_focus_expectations(self, indicator: str = "IPCA", limit: int = 100) -> pd.DataFrame:
+    def download_focus_expectations(self, indicator: str = "IPCA", limit: int = 200, base_date: datetime.date = None) -> pd.DataFrame:
         """
         Baixa as expectativas do Relatório Focus via API Olinda do BCB.
         indicator: "IPCA" ou "IGP-M"
+        base_date: se informada, filtra expectativas divulgadas até base_date (Data le 'YYYY-MM-DD').
         """
         # Formato OData, garantindo não usar aspas nos nomes das tabelas
-        url = f"https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativaMercadoMensais?$top={limit}&$filter=Indicador%20eq%20'{indicator}'&$orderby=Data%20desc&$format=json"
+        filter_str = f"Indicador%20eq%20'{indicator}'"
+        if base_date is not None:
+            dt_str = base_date.strftime("%Y-%m-%d")
+            filter_str += f"%20and%20Data%20le%20'{dt_str}'%20and%20baseCalculo%20eq%200"
+        url = f"https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativaMercadoMensais?$top={limit}&$filter={filter_str}&$orderby=Data%20desc&$format=json"
         
         print(f"Baixando Focus ({indicator}): {url}")
         res = self.session.get(url, verify=False)

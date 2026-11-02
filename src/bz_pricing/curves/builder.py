@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import datetime
+from dateutil.relativedelta import relativedelta
 import bizdays
 from bz_pricing.core.calendars import get_calendar
 
@@ -13,7 +14,7 @@ from bz_pricing.core.interpolators import (
     Linear360Interpolator,
     Interpolation360Interpolator
 )
-from bz_pricing.core.curves import SimpleCurve, FlatCurve, Curve
+from bz_pricing.core.curves import SimpleCurve, FlatCurve, Curve, InflationCurve
 
 class B3CurveBuilder:
     def __init__(self, calendar_name: str = "B3"):
@@ -55,8 +56,8 @@ class B3CurveBuilder:
         df['DU'] = [self.cal.bizdays(base_date, x) for x in df['XprtnDt_date']]
         df['DC'] = [(x - base_date).days for x in df['XprtnDt_date']]
         
-        # Filtra prazos negativos ou zero
-        df = df[df['DU'] > 0]
+        # Filtra prazos negativos ou zero e ordena por DU crescente
+        df = df[df['DU'] > 0].sort_values('DU').copy()
         
         # Preparação dos arrays
         t_list = df['DU'].tolist()
@@ -65,6 +66,14 @@ class B3CurveBuilder:
 
         # Injeção do Vértice 1 (ex: CDI 1 dia)
         if v1_rate is not None:
+            if v1_dc == 1 and v1_du == 1:
+                try:
+                    next_bday = self.cal.offset(base_date, 1)
+                    if hasattr(next_bday, 'date'):
+                        next_bday = next_bday.date()
+                    v1_dc = max(1, (next_bday - base_date).days)
+                except Exception:
+                    v1_dc = 1
             # Garante que o Vértice 1 venha antes inserindo no índice 0
             if v1_du not in t_list:
                 t_list.insert(0, v1_du)
@@ -74,6 +83,7 @@ class B3CurveBuilder:
                 # Se já existe o vértice no dataset, sobrescrevemos com a taxa v1_rate
                 idx = t_list.index(v1_du)
                 y_list[idx] = v1_rate
+                dc_list[idx] = v1_dc
 
         if len(t_list) == 0:
             raise ValueError("Não há vértices válidos para construir a curva.")
@@ -233,6 +243,9 @@ class B3CurveBuilder:
             # Reanualiza para 252
             tbf_anual = ((1.0 + tbf_month) ** (252.0 / 21.0)) - 1.0
             
+            if round_decimals >= 0:
+                tbf_anual = round(tbf_anual, round_decimals)
+                
             new_y.append(tbf_anual)
             
         new_y_nodes = np.array(new_y, dtype=np.float64)
@@ -282,6 +295,9 @@ class B3CurveBuilder:
             if rate <= 0.0:
                 rate = 0.0001
                 
+            if round_decimals >= 0:
+                rate = round(rate, round_decimals)
+                
             new_y.append(rate)
             
         import numpy as np
@@ -306,6 +322,220 @@ class B3CurveBuilder:
                 round_mode = CURVE_CONFIGS[config_name].get("round_mode", "round")
                 
         return InflationCurve(nominal_curve, real_curve, round_decimals=round_decimals, round_mode=round_mode)
+
+    def build_dpl_curve(self,
+                        pre_curve: Curve,
+                        dap_df: pd.DataFrame,
+                        base_date: datetime.date,
+                        eipca_0: float = None,
+                        rate_column: str = 'AdjstdQtTax',
+                        exp_date: str = 'XprtnDt',
+                        round_decimals: int = 4,
+                        round_mode: str = 'round') -> Curve:
+        """
+        Constrói a curva DI x IPCA Cupom Limpo (DPL) conforme Seção 3.2 do Manual de Curvas B3 (págs. 32-42).
+        1. Calcula o Vértice 1 dia útil (DPL_{0,t}) usando CDI e EIPCA_0 / DU_{15a,15p} (pág. 33).
+        2. Nos vértices coincidentes com vencimentos de DAP, extrai a inflação implícita:
+           implicita_{n,t} = (1 + PRE_{n,t}) / (1 + DPL_{n,t}) - 1 (pág. 35, item a).
+        3. Interpola a inflação implícita via FlatForward 252 (pág. 35, item b).
+        4. Transforma novamente no cupom limpo DPL para todos os vértices n:
+           DPL_{n,t} = (1 + PRE_{n,t}) / (1 + implicita_{n,t}) - 1 (pág. 35, item c).
+        """
+        df = dap_df.dropna(subset=[rate_column, exp_date]).copy()
+        df['XprtnDt_date'] = pd.to_datetime(df[exp_date]).dt.date
+        df['DU'] = [self.cal.bizdays(base_date, x) for x in df['XprtnDt_date']]
+        df = df[df['DU'] > 0].sort_values('DU').copy()
+
+        t_list = df['DU'].astype(float).tolist()
+        dpl_list = (df[rate_column] / 100.0).tolist()
+
+        # Vértice 1 dia útil (Seção 3.2, pág. 33)
+        if eipca_0 is not None:
+            # Determina 15a (15 anterior corrigido para dia útil) e 15p (15 posterior corrigido para dia útil)
+            dt_15_curr = self.cal.following(datetime.date(base_date.year, base_date.month, 15))
+            if hasattr(dt_15_curr, 'date'):
+                dt_15_curr = dt_15_curr.date()
+            if base_date < dt_15_curr:
+                prev_m = base_date - relativedelta(months=1)
+                dt_15a = self.cal.following(datetime.date(prev_m.year, prev_m.month, 15))
+                dt_15p = dt_15_curr
+            else:
+                next_m = base_date + relativedelta(months=1)
+                dt_15a = dt_15_curr
+                dt_15p = self.cal.following(datetime.date(next_m.year, next_m.month, 15))
+            if hasattr(dt_15a, 'date'):
+                dt_15a = dt_15a.date()
+            if hasattr(dt_15p, 'date'):
+                dt_15p = dt_15p.date()
+            du_15a_15p = max(1, self.cal.bizdays(dt_15a, dt_15p))
+            cdi_rate = pre_curve.get_rate(1.0)
+            f_cdi = (1.0 + cdi_rate) ** (1.0 / 252.0)
+            f_ipca = (1.0 + eipca_0) ** (1.0 / float(du_15a_15p))
+            dpl_v1 = ((f_cdi / f_ipca) ** 252.0) - 1.0
+            if 1.0 not in t_list:
+                t_list.insert(0, 1.0)
+                dpl_list.insert(0, dpl_v1)
+            else:
+                idx = t_list.index(1.0)
+                dpl_list[idx] = dpl_v1
+
+        # Passo a (pág. 35): implicita_{n,t} = (1 + PRE_{n,t}) / (1 + DPL_{n,t}) - 1
+        imp_list = []
+        for du_val, dpl_val in zip(t_list, dpl_list):
+            pre_val = pre_curve.get_rate(float(du_val))
+            imp_val = ((1.0 + pre_val) / (1.0 + dpl_val)) - 1.0
+            imp_list.append(imp_val)
+
+        # Passo b (pág. 35): interpolação Flat Forward 252 sobre a inflação implícita
+        imp_curve = SimpleCurve(
+            np.array(t_list, dtype=np.float64),
+            np.array(imp_list, dtype=np.float64),
+            FlatForward252Interpolator(0, 1),
+            round_decimals=-1
+        )
+
+        # Passo c (pág. 35): DPL_{n,t} = (1 + PRE_{n,t}) / (1 + implicita_{n,t}) - 1
+        return InflationCurve(pre_curve, imp_curve, round_decimals=round_decimals, round_mode=round_mode)
+
+    def build_dirty_inflation_coupon_curve(self,
+                                           pre_curve: Curve,
+                                           base_date: datetime.date,
+                                           indicator: str = "IPCA",
+                                           focus_monthly: dict = None,
+                                           focus_annual: dict = None,
+                                           dpl_curve: Curve = None,
+                                           round_decimals: int = 4,
+                                           round_mode: str = 'round') -> SimpleCurve:
+        """
+        Constrói as curvas de cupom sujo de inflação:
+        - DIC: DI x IPCA Cupom Sujo (Seção 3.1 do Manual de Curvas B3, págs. 29-32)
+        - DIM: DI x IGP-M Cupom Sujo (Seção 3.3 do Manual de Curvas B3, págs. 43-47)
+
+        Aplica a contagem discreta de divulgações do índice (k_i) e o fator acumulado
+        1 + E(Indice)_{k_i,t} nos vértices referenciais da curva intermediária (Equações 3.1.3 e 3.3.3),
+        interpolando os demais vértices por Interpolation252Year (FlatForward252Interpolator).
+        """
+        focus_monthly = focus_monthly or {}
+        focus_annual = focus_annual or {}
+        max_du = int(max(pre_curve.t_nodes)) if len(pre_curve.t_nodes) > 0 else 10080
+
+        t_knots = []
+        y_knots = []
+
+        if indicator.upper() == "IPCA":
+            # Seção 3.1 (DIC): Antes da 1ª divulgação do IPCA (k_i = 0), E(IPCA)_{0,t} = 0 => Cp_{1,t} = PRE_{1,t}
+            t_knots.append(1.0)
+            y_knots.append(pre_curve.get_rate(1.0))
+
+            F_acc = 1.0
+            curr_month = datetime.date(base_date.year, base_date.month, 1)
+            for m_idx in range(1, 500):
+                dt_15 = self.cal.following(datetime.date(curr_month.year, curr_month.month, 15))
+                if hasattr(dt_15, 'date'):
+                    dt_15 = dt_15.date()
+                next_month = curr_month + relativedelta(months=1)
+                dt_01_next = self.cal.following(next_month)
+                if hasattr(dt_01_next, 'date'):
+                    dt_01_next = dt_01_next.date()
+
+                du_15 = self.cal.bizdays(base_date, dt_15)
+                du_01_next = self.cal.bizdays(base_date, dt_01_next)
+                if du_15 <= 1:
+                    curr_month = next_month
+                    continue
+                if du_15 > max_du:
+                    break
+
+                prev_month = curr_month - relativedelta(months=1)
+                ref_key = (prev_month.year, prev_month.month)
+                if m_idx <= 18 and ref_key in focus_monthly:
+                    pi_m = focus_monthly[ref_key]
+                    F_acc *= (1.0 + pi_m)
+                elif dpl_curve is not None:
+                    r_pre_15 = pre_curve.get_rate(float(du_15))
+                    r_dpl_15 = dpl_curve.get_rate(float(du_15))
+                    F_acc = ((1.0 + r_pre_15) / (1.0 + r_dpl_15)) ** (float(du_15) / 252.0)
+                else:
+                    ann_rate = focus_annual.get(prev_month.year, 0.038)
+                    pi_m = (1.0 + ann_rate) ** (1.0 / 12.0) - 1.0
+                    F_acc *= (1.0 + pi_m)
+
+                # Equação 3.1.3 nos vértices referenciais do patamar k_i = m_idx [du_15 .. du_01_next]
+                for du_p in range(du_15, min(du_01_next, max_du) + 1):
+                    if du_p > t_knots[-1]:
+                        r_pre = pre_curve.get_rate(float(du_p))
+                        f_pre = (1.0 + r_pre) ** (float(du_p) / 252.0)
+                        cp = ((f_pre / F_acc) ** (252.0 / float(du_p))) - 1.0
+                        if round_decimals >= 0:
+                            cp = round(cp, round_decimals)
+                        t_knots.append(float(du_p))
+                        y_knots.append(cp)
+
+                curr_month = next_month
+        else:
+            # Seção 3.3 (DIM - IGP-M): Antes da 1ª divulgação do IGP-M no fim do mês (até dia 15 útil), k_i = 0 => E(IGPM) = 0
+            curr_month = datetime.date(base_date.year, base_date.month, 1)
+            dt_15_first = self.cal.following(datetime.date(curr_month.year, curr_month.month, 15))
+            if hasattr(dt_15_first, 'date'):
+                dt_15_first = dt_15_first.date()
+            du_15_first = max(1, self.cal.bizdays(base_date, dt_15_first))
+            for du_p in range(1, du_15_first + 1):
+                t_knots.append(float(du_p))
+                y_knots.append(pre_curve.get_rate(float(du_p)))
+
+            F_acc = 1.0
+            for m_idx in range(1, 500):
+                next_month = curr_month + relativedelta(months=1)
+                dt_end = self.cal.preceding(next_month - datetime.timedelta(days=1))
+                if hasattr(dt_end, 'date'):
+                    dt_end = dt_end.date()
+                dt_15_next = self.cal.following(datetime.date(next_month.year, next_month.month, 15))
+                if hasattr(dt_15_next, 'date'):
+                    dt_15_next = dt_15_next.date()
+
+                du_end = self.cal.bizdays(base_date, dt_end)
+                du_15_next = self.cal.bizdays(base_date, dt_15_next)
+                if du_end <= 1:
+                    curr_month = next_month
+                    continue
+                if du_end > max_du:
+                    break
+
+                ref_key = (curr_month.year, curr_month.month)
+                if m_idx <= 15 and ref_key in focus_monthly:
+                    pi_m = focus_monthly[ref_key]
+                    F_acc *= (1.0 + pi_m)
+                elif dpl_curve is not None:
+                    r_pre_end = pre_curve.get_rate(float(du_end))
+                    r_dpl_end = dpl_curve.get_rate(float(du_end))
+                    F_acc = ((1.0 + r_pre_end) / (1.0 + r_dpl_end)) ** (float(du_end) / 252.0)
+                else:
+                    ann_rate = focus_annual.get(curr_month.year, 0.038)
+                    pi_m = (1.0 + ann_rate) ** (1.0 / 12.0) - 1.0
+                    F_acc *= (1.0 + pi_m)
+
+                # Equação 3.3.3 nos vértices referenciais do patamar k_i = m_idx [du_end .. du_15_next]
+                for du_p in range(du_end, min(du_15_next, max_du) + 1):
+                    if not t_knots or du_p > t_knots[-1]:
+                        r_pre = pre_curve.get_rate(float(du_p))
+                        f_pre = (1.0 + r_pre) ** (float(du_p) / 252.0)
+                        cp = ((f_pre / F_acc) ** (252.0 / float(du_p))) - 1.0
+                        if round_decimals >= 0:
+                            cp = round(cp, round_decimals)
+                        t_knots.append(float(du_p))
+                        y_knots.append(cp)
+
+                curr_month = next_month
+
+        # Interpolação Interpolation252Year (FlatForward252Interpolator) para os demais vértices (págs. 32 e 47)
+        interp = FlatForward252Interpolator(0, 1)
+        return SimpleCurve(
+            np.array(t_knots, dtype=np.float64),
+            np.array(y_knots, dtype=np.float64),
+            interp,
+            round_decimals=round_decimals,
+            round_mode=round_mode
+        )
 
     def build_currency_forward_curve(self, 
                                      pre_curve: Curve, 

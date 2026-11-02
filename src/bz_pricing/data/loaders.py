@@ -6,7 +6,7 @@ class B3DataLoader:
     """
     Carrega e consolida os dados de negociação (SPRD) com o cadastro (IN).
     """
-    def __init__(self, data_dir: str):
+    def __init__(self, data_dir: str = "dados/b3"):
         self.data_dir = data_dir
         
     def load_derivatives(self, data: datetime.date) -> pd.DataFrame:

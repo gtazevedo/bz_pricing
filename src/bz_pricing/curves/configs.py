@@ -90,7 +90,16 @@ CURVE_CONFIGS = {
         "extrap_right": 1,
         "rate_column": "AdjstdQtTax",
         "exp_date": "XprtnDt",
-        "use_dc": False
+        "use_dc": False,
+        "asset": "DAP"
+    },
+    "DPL": {
+        "description": "Curva DI x IPCA Cupom Limpo (Seção 3.2 Manual B3)",
+        "type": "derived",
+        "nominal_curve": "PRE",
+        "real_curve": "DAP",
+        "round_decimals": 4,
+        "round_mode": "round"
     },
     "CUPOM_LIMPO": {
         "description": "Curva de Cupom Cambial Limpo (FlatForward 252 Linear)",
@@ -141,39 +150,47 @@ CURVE_CONFIGS = {
         "v1_source": "ECB"
     },
     "ZMX": {
-        "description": "Curva Zero Coupon F-TIIE (Interpolation 360)",
-        "interpolator_class": Interpolation360Interpolator,
+        "description": "Curva Zero Coupon F-TIIE (Linear 360 - Seção 2.10 Manual B3)",
+        "interpolator_class": Linear360Interpolator,
         "extrap_left": 0,
-        "extrap_right": 1,
+        "extrap_right": 0,
         "round_decimals": 5,
         "round_mode": "round",
         "use_dc": True
     },
     "ZUS": {
-        "description": "Curva Zero Coupon SOFR (Interpolation 360)",
-        "interpolator_class": Interpolation360Interpolator,
+        "description": "Curva Zero Coupon SOFR (Linear 360 - Seção 2.11 Manual B3)",
+        "interpolator_class": Linear360Interpolator,
         "extrap_left": 0,
-        "extrap_right": 1,
+        "extrap_right": 0,
         "round_decimals": 5,
         "round_mode": "round",
         "use_dc": True
     },
     "ZEU": {
-        "description": "Curva Zero Coupon ESTR (Interpolation 360)",
-        "interpolator_class": Interpolation360Interpolator,
+        "description": "Curva Zero Coupon ESTR (Linear 360 - Seção 2.12 Manual B3)",
+        "interpolator_class": Linear360Interpolator,
         "extrap_left": 0,
-        "extrap_right": 1,
+        "extrap_right": 0,
         "round_decimals": 5,
         "round_mode": "round",
         "use_dc": True
     },
     "DIC": {
-        "description": "Configurações de arredondamento para a Curva de Inflação Implícita (DIC).",
+        "description": "Curva DI x IPCA Cupom Sujo (Seção 3.1 Manual B3)",
+        "type": "derived",
+        "nominal_curve": "PRE",
+        "real_curve": "DAP",
+        "indicator": "IPCA",
         "round_decimals": 4,
         "round_mode": "round"
     },
     "DIM": {
-        "description": "Configurações de arredondamento para a Curva de Inflação Implícita (DIM).",
+        "description": "Curva DI x IGP-M Cupom Sujo (Seção 3.3 Manual B3)",
+        "type": "derived",
+        "nominal_curve": "PRE",
+        "real_curve": "DGI",
+        "indicator": "IGP-M",
         "round_decimals": 4,
         "round_mode": "round"
     },
@@ -183,7 +200,8 @@ CURVE_CONFIGS = {
         "extrap_left": 0,
         "extrap_right": 1,
         "round_decimals": -1,
-        "use_dc": False
+        "use_dc": False,
+        "asset": "DGI"
     },
     "PTX": {
         "description": "Curva Forward Reais x Dolar (Construção Simples / Flat Forward)",
