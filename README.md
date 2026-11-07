@@ -205,6 +205,68 @@ print(f"Cupom de Euro EUC (252 DU): {curva_euc.get_rate(252.0) * 100:.4f}% a.a."
 print(f"Ibovespa Futuro INP (31 DU): {curva_inp.get_rate(31.0):.2f} pts | CYI: {curva_cyi.get_rate(31.0) * 100:.2f}% a.a.")
 ```
 
+### 5.3 Precificação de Títulos Públicos Federais (TPFs) Baseada em Objetos de Curvas
+
+A precificação de títulos públicos federais (ANBIMA / STN) é executada em Cython através das classes de instrumentos, as quais recebem os objetos de curvas de desconto e projeção:
+
+```python
+import datetime
+from bz_pricing.core.curves import SimpleCurve, FlatCurve
+from bz_pricing.core.interpolators import FlatForward252Interpolator
+from bz_pricing.instruments.tpf import LTN, NTNF, LFT, NTNB, NTNBPrincipal, NTNC
+from bz_pricing.curves.builder import B3CurveBuilder
+
+base_date = datetime.date(2026, 10, 30)
+builder = B3CurveBuilder()
+
+# Curva prefixada construída a partir de nós customizados
+curva_pre = builder.build_from_vertices(
+    t_nodes=[1, 42, 102, 252],
+    y_nodes=[0.1415, 0.135793, 0.137844, 0.1420],
+    round_decimals=6,
+    round_mode='trunc'
+)
+
+# 1. LTN (Zero-Cupom Prefixado)
+ltn = LTN(maturity_date=datetime.date(2027, 4, 1))
+pu_ltn = ltn.present_value(base_date, curva_pre)
+dur_ltn = ltn.duration(base_date, curva_pre)
+print(f"LTN 2027: PU = R$ {pu_ltn:.6f} | Duration = {dur_ltn:.1f} DU")
+
+# 2. NTN-F (Cupom Semestral de 10,00% a.a.)
+ntnf = NTNF(maturity_date=datetime.date(2027, 1, 1), coupon_rate=0.10)
+pu_ntnf = ntnf.present_value(base_date, curva_pre)
+print(f"NTN-F 2027: PU = R$ {pu_ntnf:.6f}")
+
+# 3. LFT (Curva de Ágio/Deságio + VNA)
+curva_agio = FlatCurve(0.000232)
+lft = LFT(maturity_date=datetime.date(2027, 3, 1))
+pu_lft = lft.present_value(base_date, curva_agio, vna=20201.049997)
+print(f"LFT 2027: PU = R$ {pu_lft:.6f}")
+
+# 4. NTN-B (Curva de Juros Reais + VNA de IPCA)
+curva_real = FlatCurve(0.046629)
+ntnb = NTNB(maturity_date=datetime.date(2027, 5, 15), coupon_rate=0.06)
+pu_ntnb = ntnb.present_value(base_date, curva_real, vna=4771.575461)
+print(f"NTN-B 2027: PU = R$ {pu_ntnb:.6f}")
+
+# 5. NTN-C (Indexada ao IGP-M com Cupons Semestrais)
+ntnc = NTNC(maturity_date=datetime.date(2031, 1, 1), coupon_rate=0.06)
+pu_ntnc = ntnc.present_value(base_date, FlatCurve(0.077739), vna=8321.942046)
+print(f"NTN-C 2031: PU = R$ {pu_ntnc:.6f}")
+
+# 6. Precificação Multi-Curva (Taxa Real + Projeção de Inflação Implícita)
+curva_dic = FlatCurve(0.0450)
+pu_multi = ntnb.present_value(
+    base_date=base_date,
+    real_curve=curva_real,
+    inflation_curve=curva_dic,
+    base_vna=4750.00,
+    base_vna_date=datetime.date(2026, 9, 15)
+)
+print(f"NTN-B 2027 Multi-Curva: PU = R$ {pu_multi:.6f}")
+```
+
 ---
 
 ## 6. Validação Empírica por Vértices
@@ -227,6 +289,19 @@ Para validar a exatidão dos interpoladores em Cython e das formulações algéb
 | `EUR` | Taxa de Câmbio a Termo Reais x Euro | 94 | 262 | R\$ 0,0005 | R\$ 0,0021 |
 | `INP` | Índice Bovespa Futuro (Spot + Futuros `IND`) | 15 | 259 | 0,0000 pt | 0,0000 pt |
 | `BRP` | Índice IBrX-50 Futuro (Spot + Futuros `BRI`) | 3 | 250 | 0,0000 pt | 0,0000 pt |
+
+### 6.1 Validação de Títulos Públicos Federais (ANBIMA — Data-Base 30/10/2026)
+
+O teste automatizado em lote (`test_all_anbima_bonds_20261030` em `tests/test_bonds.py`) confronta os preços calculados pelo motor analítico contra todos os 50 títulos públicos federais ativos divulgados pela ANBIMA no arquivo oficial `ANBIMA_MS_20261030.csv`:
+
+| Família de Títulos | Quantidade de Títulos Vigentes | Vencimentos Analisados | Divergência Máxima Observada |
+| :---: | :---: | :---: | :---: |
+| **LTN** | 11 | 2027 a 2032 | R\$ 0,000000 |
+| **NTN-F** | 6 | 2027 a 2037 | R\$ 0,000000 |
+| **LFT** | 18 | 2027 a 2032 | R\$ 0,000000 |
+| **NTN-B** | 14 | 2027 a 2060 | R\$ 0,000000 |
+| **NTN-C** | 1 | 2031 | R\$ 0,000000 |
+| **Total Consolidado** | **50** | **100% dos títulos do mercado** | **R\$ 0,000000** |
 
 ---
 

@@ -361,7 +361,52 @@ class B3CurveBuilder:
     # Factory Methods usando Configurações (Mapeamento)
     # -------------------------------------------------------------
 
-    def build_from_config(self, df: pd.DataFrame, config_name: str, base_date: datetime.date, v1_rate: float = None, v1_du: int = 1, v1_dc: int = 1, smoothing: float = None, use_cython_smoothing: bool = False) -> SimpleCurve:
+    def build_from_vertices(self,
+                            t_nodes: any,
+                            y_nodes: any,
+                            interpolator: Interpolator = None,
+                            t_sec_nodes: any = None,
+                            round_decimals: int = -1,
+                            round_mode: str = 'round') -> SimpleCurve:
+        """
+        Constrói uma SimpleCurve a partir de vértices de prazos e taxas especificados diretamente.
+
+        Parâmetros:
+        -----------
+        t_nodes : array-like
+            Vértices temporais primários (em dias úteis, DU).
+        y_nodes : array-like
+            Taxas de juros correspondentes em formato decimal (ex.: 0.1375 para 13,75% a.a.).
+        interpolator : Interpolator, opcional
+            Objeto interpolador de taxas (padrão: FlatForward252Interpolator(0, 0)).
+        t_sec_nodes : array-like, opcional
+            Vértices temporais secundários (em dias corridos, DC), se exigido pelo modelo.
+        round_decimals : int, padrão -1
+            Número de casas decimais para truncamento ou arredondamento da taxa interpolada.
+            Se -1, preserva precisão contínua em dupla precisão nativa.
+        round_mode : str, padrão 'round'
+            Modo de ajuste: 'trunc' para truncamento ou 'round' para arredondamento padrão.
+        """
+        if interpolator is None:
+            interpolator = FlatForward252Interpolator(0, 0)
+
+        t_arr = np.asarray(t_nodes, dtype=np.float64)
+        y_arr = np.asarray(y_nodes, dtype=np.float64)
+        t_sec_arr = np.asarray(t_sec_nodes, dtype=np.float64) if t_sec_nodes is not None else None
+
+        return SimpleCurve(
+            t_nodes=t_arr,
+            y_nodes=y_arr,
+            interpolator=interpolator,
+            t_sec_nodes=t_sec_arr,
+            round_decimals=round_decimals,
+            round_mode=round_mode
+        )
+
+    def build_from_config(self, df: pd.DataFrame, config_name: str, base_date: datetime.date,
+                          v1_rate: float = None, v1_du: int = 1, v1_dc: int = 1,
+                          smoothing: float = None, use_cython_smoothing: bool = False,
+                          round_decimals: int = None, round_mode: str = None) -> SimpleCurve:
         """
         Constrói uma curva baseada nas configurações predefinidas no arquivo configs.py.
         """
@@ -379,6 +424,9 @@ class B3CurveBuilder:
             has_trades = dataset.get('RglrTxsQty', pd.Series(0, index=dataset.index)) > 0
             has_oi = dataset.get('OpnIntrst', pd.Series(0, index=dataset.index)) > 0
             dataset = dataset[has_trades | has_oi].copy()
+
+        final_rd = round_decimals if round_decimals is not None else config.get("round_decimals", -1)
+        final_rm = round_mode if round_mode is not None else config.get("round_mode", "round")
             
         return self.build_curve(
             dataset=dataset,
@@ -393,8 +441,8 @@ class B3CurveBuilder:
             exp_date=config.get("exp_date", "XprtnDt"),
             use_dc=config.get("use_dc", False),
             index_by_dc=config.get("index_by_dc", False),
-            round_decimals=config.get("round_decimals", -1),
-            round_mode=config.get("round_mode", "round"),
+            round_decimals=final_rd,
+            round_mode=final_rm,
             smoothing=smoothing,
             use_cython_smoothing=use_cython_smoothing
         )

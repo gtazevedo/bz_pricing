@@ -160,34 +160,150 @@ print(f"Taxa interpolada em 100 DU: {curva.get_rate(100.0) * 100:.4f}% a.a.")
 
 ---
 
-## 4. Precificação de Títulos Públicos Federais (`TPF` e `BondBuilder`)
+## 4. Precificação de Títulos Públicos Federais Baseada em Objetos de Curvas
 
-Os módulos [`bz_pricing.instruments.tpf`](../src/bz_pricing/instruments/tpf.py) e [`bz_pricing.core.bonds`](../src/bz_pricing/core/bonds.pyx) implementam a precificação determinística, o cálculo de Valor Nominal Atualizado (`VNAEngine`), cotação em base 100 e medidas de sensibilidade (*Duration* de Macaulay, *Duration* Modificada, DV01 e Convexidade) para **LTN**, **NTN-F**, **NTN-B** e **LFT**:
+Os módulos [`bz_pricing.instruments.tpf`](../src/bz_pricing/instruments/tpf.py) e [`bz_pricing.core.bonds`](../src/bz_pricing/core/bonds.pyx) implementam a precificação analítica, a cotação percentual e as medidas de sensibilidade (*Duration* de Macaulay, *Duration* Modificada e DV01) para **LTN**, **NTN-F**, **LFT**, **NTN-B**, **NTN-B Principal** e **NTN-C** conforme os padrões oficiais da ANBIMA e do Tesouro Nacional.
+
+As funções de precificação operam sobre instâncias compiladas de [`Curve`](../src/bz_pricing/core/curves.pyx), admitindo curvas construídas diretamente a partir de nós customizados de mercado ou recuperadas via [`CurveManager`](../src/bz_pricing/curves/manager.py). Instrumentos que exigem indexadores compostos recebem múltiplas estruturas a termo de forma simultânea (multi-curvas).
 
 ```python
 import datetime
-from bz_pricing.instruments.tpf import TPF
+import numpy as np
+from bz_pricing.core.curves import SimpleCurve, FlatCurve
+from bz_pricing.core.interpolators import FlatForward252Interpolator
+from bz_pricing.instruments.tpf import LTN, NTNF, LFT, NTNB, NTNBPrincipal, NTNC
 
-base_date = datetime.date(2026, 9, 4)
+base_date = datetime.date(2026, 10, 30)
 
-# 1. Precificação de LTN (Zero Cupom Prefixado, Valor Nominal = R$ 1.000,00)
-ltn = TPF(
-    bond_type="LTN",
-    maturity_date=datetime.date(2027, 1, 1),
-    base_date=base_date
-)
-pu_ltn = ltn.price_from_ytm(ytm=0.1350)
-metrics_ltn = ltn.risk_metrics(ytm=0.1350)
+# 1. Construção da curva prefixada a partir de vértices empíricos
+t_pre = np.array([1.0, 42.0, 102.0, 252.0], dtype=np.float64)
+y_pre = np.array([0.1415, 0.135793, 0.137844, 0.1420], dtype=np.float64)
+curve_pre = SimpleCurve(t_pre, y_pre, FlatForward252Interpolator(0, 0))
 
-print(f"PU LTN: R$ {pu_ltn:.6f} | Macaulay Duration: {metrics_ltn['macaulay_duration']:.4f} anos")
+# 2. Construção da curva de juros reais (IPCA) a partir de vértices
+t_real = np.array([10.0, 133.0, 252.0, 504.0], dtype=np.float64)
+y_real = np.array([0.0450, 0.046629, 0.0520, 0.0580], dtype=np.float64)
+curve_real = SimpleCurve(t_real, y_real, FlatForward252Interpolator(0, 0))
 
-# 2. Precificação de NTN-B (Cupom Semestral de 6,00% a.a. sobre VNA de IPCA)
-ntnb = TPF(
-    bond_type="NTN-B",
-    maturity_date=datetime.date(2035, 5, 15),
+# 3. Precificação de LTN (Zero-Cupom Prefixado)
+ltn = LTN(maturity_date=datetime.date(2027, 4, 1))
+pu_ltn = ltn.present_value(base_date, curve_pre)
+dur_ltn = ltn.duration(base_date, curve_pre)
+dv01_ltn = ltn.dv01(base_date, curve_pre)
+print(f"LTN 2027: PU = R$ {pu_ltn:.6f} | Duration = {dur_ltn:.1f} DU | DV01 = R$ {dv01_ltn:.6f}")
+
+# 4. Precificação de NTN-F (Cupom Semestral de 10,00% a.a.)
+ntnf = NTNF(maturity_date=datetime.date(2027, 1, 1), coupon_rate=0.10)
+pu_ntnf = ntnf.present_value(base_date, curve_pre)
+mod_ntnf = ntnf.modified_duration(base_date, curve_pre)
+print(f"NTN-F 2027: PU = R$ {pu_ntnf:.6f} | Duration Modificada = {mod_ntnf:.4f} anos")
+
+# 5. Precificação de LFT (Curva de Ágio/Deságio + VNA)
+curve_agio = FlatCurve(0.000232)
+lft = LFT(maturity_date=datetime.date(2027, 3, 1))
+cot_lft = lft.cotacao(base_date, curve_agio)
+pu_lft = lft.present_value(base_date, curve_agio, vna=20201.049997)
+print(f"LFT 2027: Cotação = {cot_lft:.4f}% | PU = R$ {pu_lft:.6f}")
+
+# 6. Precificação de NTN-B (Curva de Juros Reais + VNA Oficial)
+ntnb = NTNB(maturity_date=datetime.date(2027, 5, 15), coupon_rate=0.06)
+cot_ntnb = ntnb.cotacao(base_date, curve_real)
+pu_ntnb = ntnb.present_value(base_date, curve_real, vna=4771.575461)
+print(f"NTN-B 2027: Cotação = {cot_ntnb:.4f}% | PU = R$ {pu_ntnb:.6f}")
+
+# 7. Precificação Multi-Curva da NTN-B (Curva Real + Curva de Inflação Implícita para Projeção de VNA)
+curve_dic = FlatCurve(0.0450)
+pu_ntnb_multi = ntnb.present_value(
     base_date=base_date,
-    vna_override=4325.684120
+    real_curve=curve_real,
+    inflation_curve=curve_dic,
+    base_vna=4750.00,
+    base_vna_date=datetime.date(2026, 9, 15)
 )
-pu_ntnb = ntnb.price_from_ytm(ytm=0.0645)
-print(f"PU NTN-B: R$ {pu_ntnb:.6f}")
+print(f"NTN-B 2027 Multi-Curva: PU = R$ {pu_ntnb_multi:.6f}")
+```
+
+### 4.1 Padrões de Arredondamento e Truncamento Normativos da ANBIMA
+
+O motor de cálculo segue com rigor os critérios de arredondamento e truncamento padronizados pela ANBIMA, Banco Central do Brasil e Secretaria do Tesouro Nacional para liquidação no Selic:
+
+| Variável | Operação e Precisão | Instrumentos Aplicáveis |
+|---|---|---|
+| **Taxa de Retorno (% a.a.)** | Truncada em 4 casas percentuais (`T-4`) | LTN, NTN-F, NTN-B, NTN-C, LFT |
+| **Exponencial de Dias** | Truncado em 14 casas decimais (`T-14`): $\text{trunc}_{14}\left((1 + y)^{\frac{\text{DU}}{252}}\right)$ | LTN, NTN-F, NTN-B, NTN-C, LFT |
+| **Juros Semestrais (%)** | Arredondado em 5 casas (`A-5`) para NTN-F ($4{,}88088\%$); arredondado em 6 casas (`A-6`) para NTN-B e NTN-C ($2{,}956301\%$) | NTN-F, NTN-B, NTN-C |
+| **Fluxos Descontados** | Arredondados em 9 casas (`A-9`) para NTN-F; arredondados em 10 casas (`A-10`) para NTN-B e NTN-C | NTN-F, NTN-B, NTN-C |
+| **Cotação (% do VNA)** | Truncada em 4 casas decimais (`T-4`) | NTN-B, NTN-B Principal, NTN-C, LFT |
+| **Valor Nominal Atualizado (VNA)** | Truncado em 6 casas decimais (`T-6`) | NTN-B, NTN-B Principal, NTN-C, LFT |
+| **Preço Unitário (PU)** | Truncado em 6 casas decimais (`T-6`) | Todos os TPFs |
+
+### 4.2 Ajuste Paramétrico de Truncamento na Interpolação de Curvas
+
+Todas as estruturas de curva compiladas em Cython ([`SimpleCurve`](../src/bz_pricing/core/curves.pyx), [`FlatCurve`](../src/bz_pricing/core/curves.pyx), [`ComplexCurve`](../src/bz_pricing/core/curves.pyx), [`InflationCurve`](../src/bz_pricing/core/curves.pyx)) suportam os parâmetros opcionais `round_decimals` e `round_mode`:
+
+- Se omitidos ou quando `round_decimals = -1` (comportamento padrão), a curva preserva a representação analítica exata em ponto flutuante de dupla precisão nativa (64 bits), sem truncamentos intermediários.
+- Se configurados explicitamente (por exemplo, `round_decimals=6, round_mode='trunc'` para taxas unitárias equivalentes a 4 casas decimais percentuais), a curva aplica o truncamento normativo a cada avaliação de `get_rate`.
+
+```python
+from bz_pricing.curves.builder import B3CurveBuilder
+from bz_pricing.curves.manager import CurveManager
+
+builder = B3CurveBuilder()
+
+# Curva contínua nativa (round_decimals = -1)
+curva_continua = builder.build_from_vertices(
+    t_nodes=[1, 42, 102, 252],
+    y_nodes=[0.1415, 0.135793, 0.137844, 0.1420]
+)
+
+# Curva com truncamento em 6 casas decimais unitárias (4 casas decimais em % a.a.)
+curva_anbima = builder.build_from_vertices(
+    t_nodes=[1, 42, 102, 252],
+    y_nodes=[0.1415, 0.135793, 0.137844, 0.1420],
+    round_decimals=6,
+    round_mode='trunc'
+)
+```
+
+### 4.3 Decomposição Fluxo a Fluxo e Tabela de Amortizações
+
+Os instrumentos públicos federais suportam a decomposição fluxo a fluxo por meio do método `cashflow_table(base_date, ...)` e do argumento booleano `return_cashflows: bool = False` disponível em `present_value(...)`.
+
+A chamada com `return_cashflows=False` preserva o retorno do escalar numérico do Preço Unitário (`pu`). Quando o parâmetro recebe o valor `True`, o método retorna a tupla `(pu, df_fluxos)`, na qual `df_fluxos` é uma estrutura `pandas.DataFrame` contendo os elementos determinísticos de cada pagamento:
+
+- `data_fluxo`: Data de liquidação financeira de cada evento (ajustada para o dia útil subsequente caso a data nominal coincida com dia não útil).
+- `du`: Prazo decorrido em dias úteis entre a data de referência e o fluxo.
+- `tipo`: Classificação do evento (`Cupom`, `Principal` ou `Cupom + Principal`).
+- `fluxo_nominal` ou `fluxo_cotação`: Valor contratual do evento (em reais para títulos prefixados ou em pontos percentuais para títulos com cotação indexada).
+- `taxa` ou `taxa_real`: Taxa anual obtida na curva correspondente para o prazo `du`.
+- `fator_desconto`: Fator financeiro composto truncated em 14 casas decimais ($T-14$), definido por $\text{trunc}_{14}\left((1 + y)^{\frac{\text{DU}}{252}}\right)$.
+- `valor_presente`: Valor presente individualizado de cada fluxo.
+
+```python
+import datetime
+from bz_pricing.core.curves import FlatCurve
+from bz_pricing.instruments.tpf import NTNF, NTNB
+
+base_date = datetime.date(2026, 10, 30)
+
+# Extração de fluxos detalhados para NTN-F com vencimento em 2029
+curva_pre = FlatCurve(0.149501)
+ntnf = NTNF(maturity_date=datetime.date(2029, 1, 1), coupon_rate=0.10)
+pu_ntnf, df_ntnf = ntnf.present_value(base_date, curva_pre, return_cashflows=True)
+
+print(f"PU NTN-F: R$ {pu_ntnf:.6f}")
+print(df_ntnf[["data_fluxo", "du", "tipo", "fluxo_nominal", "valor_presente"]])
+
+# Extração de fluxos detalhados para NTN-B com vencimento em 2027
+curva_real = FlatCurve(0.046629)
+ntnb = NTNB(maturity_date=datetime.date(2027, 5, 15), coupon_rate=0.06)
+pu_ntnb, df_ntnb = ntnb.present_value(
+    base_date,
+    curva_real,
+    vna=4771.575461,
+    return_cashflows=True
+)
+
+print(f"\nPU NTN-B: R$ {pu_ntnb:.6f}")
+print(df_ntnb[["data_fluxo", "du", "tipo", "fluxo_cotação", "cotação_descontada", "valor_presente"]])
 ```

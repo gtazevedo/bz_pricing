@@ -38,6 +38,25 @@ class CurveManager:
         self.builder = builder if builder is not None else B3CurveBuilder()
         self.scraper = B3Scraper(output_dir=self.loader.data_dir)
         self.allow_download = allow_download
+
+    def build_from_vertices(self,
+                            t_nodes: any,
+                            y_nodes: any,
+                            interpolator: any = None,
+                            t_sec_nodes: any = None,
+                            round_decimals: int = -1,
+                            round_mode: str = 'round') -> SimpleCurve:
+        """
+        Constrói uma SimpleCurve diretamente a partir de nós de prazos e taxas passados pelo usuário.
+        """
+        return self.builder.build_from_vertices(
+            t_nodes=t_nodes,
+            y_nodes=y_nodes,
+            interpolator=interpolator,
+            t_sec_nodes=t_sec_nodes,
+            round_decimals=round_decimals,
+            round_mode=round_mode
+        )
         
     def get_curve(self, curve_name: str, base_date: datetime.date = None, data: any = None, 
                   allow_download: bool = None, **kwargs) -> Curve:
@@ -524,13 +543,16 @@ class CurveManager:
         else:
             y_nodes = raw_rates
 
+        round_decimals = kwargs.get("round_decimals", config.get("round_decimals", -1))
+        round_mode = kwargs.get("round_mode", config.get("round_mode", "round"))
+
         return SimpleCurve(
             t_nodes,
             y_nodes,
             interp,
             t_sec_nodes=t_sec_nodes,
-            round_decimals=config.get("round_decimals", -1),
-            round_mode=config.get("round_mode", "round")
+            round_decimals=round_decimals,
+            round_mode=round_mode
         )
 
     def _build_simple_curve(self, curve_name: str, config: dict, base_date: datetime.date,
@@ -678,7 +700,9 @@ class CurveManager:
             base_date=base_date,
             v1_rate=v1_rate,
             smoothing=smoothing,
-            use_cython_smoothing=False
+            use_cython_smoothing=False,
+            round_decimals=kwargs.get("round_decimals"),
+            round_mode=kwargs.get("round_mode")
         )
 
     def _build_derived_curve(self, curve_name: str, config: dict, base_date: datetime.date, 

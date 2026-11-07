@@ -220,7 +220,7 @@ Construídas a partir da cotação à vista de fechamento do índice ($\text{Spo
 $$P(\text{DU}_v) = \text{Spot}_t \times \left( \frac{\text{Fut}_1}{\text{Spot}_t} \right)^{\frac{\text{DU}_v}{\text{DU}_1}}$$
 
 No método `B3CurveBuilder.build_equity_index_curve`, a inserção de uma âncora exata em $\text{DU} = 2$ com valor $\text{Spot}_t \cdot (\text{Fut}_1 / \text{Spot}_t)^{2 / \text{DU}_1}$ permite que o `PriceInterpolator(0, 0)` reproduza analiticamente a expressão acima em todo o intervalo $[2, \text{DU}_1]$, preservando os nós esparsos dos vencimentos futuros.
-3. **Prazos entre Vencimentos e Após o Último Futuro:** Interpolados exponencialmente por `PriceInterpolator(extrap_left=0, extrap_right=0)`, mantendo o último preço futuro constante após o derradeiro vencimento listado.
+3. **Prazos entre Vencimentos e Após o Último Futuro:** Interpolados exponencialmente por `PriceInterpolator(extrap_left=0, extrap_right=0)`, o que mantém o último preço futuro constante após o derradeiro vencimento listado.
 
 ### 7.2 Estruturas a Termo de Custo de Carrego / Convenience Yield (`CYI`, `CYM`, `CYX` e Ações)
 
@@ -231,7 +231,7 @@ Implementadas em Cython na classe [`ConvenienceYieldCurve`](../src/bz_pricing/co
 
 $$\text{TxCY}_n = \left[ \frac{\text{Spot}_t \times \left(1 + \text{PRE}_n\right)^{\frac{\text{DU}_n}{252}}}{\text{Fut}_n} \right]^{\frac{252}{\text{DU}_n}} - 1$$
 
-3. **Prazos Intermediários e Extrapolação:** Os vértices $(\text{DU}_n, \text{TxCY}_n)$ são interpolados por `FlatForward252Interpolator(extrap_left=0, extrap_right=0)`, mantendo patamar constante antes do primeiro vencimento ($2 \le \text{DU} < \text{DU}_1$) e após o último vencimento ($\text{DU} > \text{DU}_{\text{último}}$).
+3. **Prazos Intermediários e Extrapolação:** Os vértices $(\text{DU}_n, \text{TxCY}_n)$ são interpolados por `FlatForward252Interpolator(extrap_left=0, extrap_right=0)`, com patamar constante antes do primeiro vencimento ($2 \le \text{DU} < \text{DU}_1$) e após o último vencimento ($\text{DU} > \text{DU}_{\text{último}}$).
 
 ---
 

@@ -15,8 +15,20 @@ cdef class Curve:
     O método get_rate resolve a taxa no tempo t (geralmente DU).
     t_sec (geralmente DC) pode ser providenciado caso o modelo matemático exija ambos.
     """
+    def __init__(self, int round_decimals=-1, str round_mode='round'):
+        self._round_decimals = round_decimals
+        self._is_trunc = (round_mode == 'trunc')
+
     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
         raise NotImplementedError("Método base get_rate")
+
+    @property
+    def round_decimals(self):
+        return self._round_decimals
+
+    @property
+    def round_mode(self):
+        return 'trunc' if self._is_trunc else 'round'
 
 cdef class FlatCurve(Curve):
     """

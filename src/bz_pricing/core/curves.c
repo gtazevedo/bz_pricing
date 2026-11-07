@@ -6,7 +6,7 @@
         "depends": [],
         "name": "bz_pricing.core.curves",
         "sources": [
-            "src\\bz_pricing\\core\\curves.pyx"
+            "src/bz_pricing/core/curves.pyx"
         ]
     },
     "module_name": "bz_pricing.core.curves"
@@ -2025,7 +2025,7 @@ struct __pyx_opt_args_10bz_pricing_4core_6curves_extract_linear360_knot_indices 
   double tolerance;
 };
 
-/* "bz_pricing/core/curves.pyx":31
+/* "bz_pricing/core/curves.pyx":43
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -2037,7 +2037,7 @@ struct __pyx_opt_args_10bz_pricing_4core_6curves_9FlatCurve_get_rate {
   double t_sec;
 };
 
-/* "bz_pricing/core/curves.pyx":50
+/* "bz_pricing/core/curves.pyx":62
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -2049,7 +2049,7 @@ struct __pyx_opt_args_10bz_pricing_4core_6curves_13AdditiveCurve_get_rate {
   double t_sec;
 };
 
-/* "bz_pricing/core/curves.pyx":75
+/* "bz_pricing/core/curves.pyx":87
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -2061,7 +2061,7 @@ struct __pyx_opt_args_10bz_pricing_4core_6curves_19MultiplicativeCurve_get_rate 
   double t_sec;
 };
 
-/* "bz_pricing/core/curves.pyx":106
+/* "bz_pricing/core/curves.pyx":118
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -2073,7 +2073,7 @@ struct __pyx_opt_args_10bz_pricing_4core_6curves_11SimpleCurve_get_rate {
   double t_sec;
 };
 
-/* "bz_pricing/core/curves.pyx":156
+/* "bz_pricing/core/curves.pyx":168
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -2085,7 +2085,7 @@ struct __pyx_opt_args_10bz_pricing_4core_6curves_12ComplexCurve_get_rate {
   double t_sec;
 };
 
-/* "bz_pricing/core/curves.pyx":199
+/* "bz_pricing/core/curves.pyx":211
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -2097,7 +2097,7 @@ struct __pyx_opt_args_10bz_pricing_4core_6curves_14InflationCurve_get_rate {
   double t_sec;
 };
 
-/* "bz_pricing/core/curves.pyx":269
+/* "bz_pricing/core/curves.pyx":281
  *                 )
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -2109,7 +2109,7 @@ struct __pyx_opt_args_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_get_rat
   double t_sec;
 };
 
-/* "bz_pricing/core/curves.pyx":317
+/* "bz_pricing/core/curves.pyx":329
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -2374,8 +2374,8 @@ struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve {
 static struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *__pyx_vtabptr_10bz_pricing_4core_6curves_Curve;
 
 
-/* "bz_pricing/core/curves.pyx":21
- *         raise NotImplementedError("Mtodo base get_rate")
+/* "bz_pricing/core/curves.pyx":33
+ *         return 'trunc' if self._is_trunc else 'round'
  * 
  * cdef class FlatCurve(Curve):             # <<<<<<<<<<<<<<
  *     """
@@ -2388,7 +2388,7 @@ struct __pyx_vtabstruct_10bz_pricing_4core_6curves_FlatCurve {
 static struct __pyx_vtabstruct_10bz_pricing_4core_6curves_FlatCurve *__pyx_vtabptr_10bz_pricing_4core_6curves_FlatCurve;
 
 
-/* "bz_pricing/core/curves.pyx":40
+/* "bz_pricing/core/curves.pyx":52
  *         return rate
  * 
  * cdef class AdditiveCurve(Curve):             # <<<<<<<<<<<<<<
@@ -2402,7 +2402,7 @@ struct __pyx_vtabstruct_10bz_pricing_4core_6curves_AdditiveCurve {
 static struct __pyx_vtabstruct_10bz_pricing_4core_6curves_AdditiveCurve *__pyx_vtabptr_10bz_pricing_4core_6curves_AdditiveCurve;
 
 
-/* "bz_pricing/core/curves.pyx":64
+/* "bz_pricing/core/curves.pyx":76
  *         return total
  * 
  * cdef class MultiplicativeCurve(Curve):             # <<<<<<<<<<<<<<
@@ -2416,7 +2416,7 @@ struct __pyx_vtabstruct_10bz_pricing_4core_6curves_MultiplicativeCurve {
 static struct __pyx_vtabstruct_10bz_pricing_4core_6curves_MultiplicativeCurve *__pyx_vtabptr_10bz_pricing_4core_6curves_MultiplicativeCurve;
 
 
-/* "bz_pricing/core/curves.pyx":86
+/* "bz_pricing/core/curves.pyx":98
  *         return rate
  * 
  * cdef class SimpleCurve(Curve):             # <<<<<<<<<<<<<<
@@ -2430,7 +2430,7 @@ struct __pyx_vtabstruct_10bz_pricing_4core_6curves_SimpleCurve {
 static struct __pyx_vtabstruct_10bz_pricing_4core_6curves_SimpleCurve *__pyx_vtabptr_10bz_pricing_4core_6curves_SimpleCurve;
 
 
-/* "bz_pricing/core/curves.pyx":139
+/* "bz_pricing/core/curves.pyx":151
  * 
  * 
  * cdef class ComplexCurve(Curve):             # <<<<<<<<<<<<<<
@@ -2444,7 +2444,7 @@ struct __pyx_vtabstruct_10bz_pricing_4core_6curves_ComplexCurve {
 static struct __pyx_vtabstruct_10bz_pricing_4core_6curves_ComplexCurve *__pyx_vtabptr_10bz_pricing_4core_6curves_ComplexCurve;
 
 
-/* "bz_pricing/core/curves.pyx":187
+/* "bz_pricing/core/curves.pyx":199
  *         return rate
  * 
  * cdef class InflationCurve(Curve):             # <<<<<<<<<<<<<<
@@ -2458,7 +2458,7 @@ struct __pyx_vtabstruct_10bz_pricing_4core_6curves_InflationCurve {
 static struct __pyx_vtabstruct_10bz_pricing_4core_6curves_InflationCurve *__pyx_vtabptr_10bz_pricing_4core_6curves_InflationCurve;
 
 
-/* "bz_pricing/core/curves.pyx":213
+/* "bz_pricing/core/curves.pyx":225
  *         return rate
  * 
  * cdef class ConvenienceYieldCurve(Curve):             # <<<<<<<<<<<<<<
@@ -2472,7 +2472,7 @@ struct __pyx_vtabstruct_10bz_pricing_4core_6curves_ConvenienceYieldCurve {
 static struct __pyx_vtabstruct_10bz_pricing_4core_6curves_ConvenienceYieldCurve *__pyx_vtabptr_10bz_pricing_4core_6curves_ConvenienceYieldCurve;
 
 
-/* "bz_pricing/core/curves.pyx":306
+/* "bz_pricing/core/curves.pyx":318
  *         return np.array([], dtype=np.float64)
  * 
  * cdef class SpreadCurve(Curve):             # <<<<<<<<<<<<<<
@@ -3375,11 +3375,11 @@ static void __Pyx_RaiseUnboundLocalError(const char *varname);
 /* DivInt[long].proto */
 static CYTHON_INLINE long __Pyx_div_long(long, long, int b_is_constant);
 
-/* PyNotImplementedError_Check.proto */
-#define __Pyx_PyExc_NotImplementedError_Check(obj)  __Pyx_TypeCheck(obj, PyExc_NotImplementedError)
-
 /* PyObjectCompare.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyObject_CompareEq_str_str(PyObject *op1, PyObject *op2, int pyop);
+
+/* PyNotImplementedError_Check.proto */
+#define __Pyx_PyExc_NotImplementedError_Check(obj)  __Pyx_TypeCheck(obj, PyExc_NotImplementedError)
 
 /* ImportFrom.export */
 static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name);
@@ -4299,9 +4299,12 @@ static void __pyx_memoryviewslice___pyx_pf_15View_dot_MemoryView_16_memoryviewsl
 static PyObject *__pyx_pf___pyx_memoryviewslice___reduce_cython__(CYTHON_UNUSED struct __pyx_memoryviewslice_obj *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf___pyx_memoryviewslice_2__setstate_cython__(CYTHON_UNUSED struct __pyx_memoryviewslice_obj *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_pf_15View_dot_MemoryView___pyx_unpickle_Enum(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state); /* proto */
-static PyObject *__pyx_pf_10bz_pricing_4core_6curves_5Curve_get_rate(struct __pyx_obj_10bz_pricing_4core_6curves_Curve *__pyx_v_self, double __pyx_v_t, double __pyx_v_t_sec); /* proto */
-static PyObject *__pyx_pf_10bz_pricing_4core_6curves_5Curve_2__reduce_cython__(struct __pyx_obj_10bz_pricing_4core_6curves_Curve *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10bz_pricing_4core_6curves_5Curve_4__setstate_cython__(struct __pyx_obj_10bz_pricing_4core_6curves_Curve *__pyx_v_self, PyObject *__pyx_v___pyx_state); /* proto */
+static int __pyx_pf_10bz_pricing_4core_6curves_5Curve___init__(struct __pyx_obj_10bz_pricing_4core_6curves_Curve *__pyx_v_self, int __pyx_v_round_decimals, PyObject *__pyx_v_round_mode); /* proto */
+static PyObject *__pyx_pf_10bz_pricing_4core_6curves_5Curve_2get_rate(struct __pyx_obj_10bz_pricing_4core_6curves_Curve *__pyx_v_self, double __pyx_v_t, double __pyx_v_t_sec); /* proto */
+static PyObject *__pyx_pf_10bz_pricing_4core_6curves_5Curve_14round_decimals___get__(struct __pyx_obj_10bz_pricing_4core_6curves_Curve *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10bz_pricing_4core_6curves_5Curve_10round_mode___get__(struct __pyx_obj_10bz_pricing_4core_6curves_Curve *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10bz_pricing_4core_6curves_5Curve_4__reduce_cython__(struct __pyx_obj_10bz_pricing_4core_6curves_Curve *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10bz_pricing_4core_6curves_5Curve_6__setstate_cython__(struct __pyx_obj_10bz_pricing_4core_6curves_Curve *__pyx_v_self, PyObject *__pyx_v___pyx_state); /* proto */
 static int __pyx_pf_10bz_pricing_4core_6curves_9FlatCurve___init__(struct __pyx_obj_10bz_pricing_4core_6curves_FlatCurve *__pyx_v_self, double __pyx_v_rate, int __pyx_v_round_decimals, PyObject *__pyx_v_round_mode); /* proto */
 static PyObject *__pyx_pf_10bz_pricing_4core_6curves_9FlatCurve_2get_rate(struct __pyx_obj_10bz_pricing_4core_6curves_FlatCurve *__pyx_v_self, double __pyx_v_t, double __pyx_v_t_sec); /* proto */
 static PyObject *__pyx_pf_10bz_pricing_4core_6curves_9FlatCurve_4__reduce_cython__(struct __pyx_obj_10bz_pricing_4core_6curves_FlatCurve *__pyx_v_self); /* proto */
@@ -4372,6 +4375,12 @@ static PyObject *__pyx_tp_new_10bz_pricing_4core_6curves_Curve(PyTypeObject *t, 
 #endif
 #if CYTHON_VECTORCALL_TPNEW
 static PyObject *__pyx_tp_vectorcall_10bz_pricing_4core_6curves_Curve(PyObject *t, PyObject *const *args, size_t nargsf, PyObject *kwnames); /*proto*/
+#endif
+#if CYTHON_VECTORCALL_TPNEW
+static int __pyx_tp_init_10bz_pricing_4core_6curves_Curve(PyObject *o, PyObject *args, PyObject *kwds); /*proto*/
+#endif
+#if !CYTHON_VECTORCALL_TPNEW
+#define __pyx_tp_init_10bz_pricing_4core_6curves_Curve __pyx_pw_10bz_pricing_4core_6curves_5Curve_1__init__
 #endif
 static PyObject *__pyx_tp_new__initialisation_10bz_pricing_4core_6curves_FlatCurve(PyObject *o, 
 #if CYTHON_VECTORCALL_TPNEW
@@ -20138,12 +20147,184 @@ static CYTHON_INLINE void __pyx_f_7cpython_5array_zero(arrayobject *__pyx_v_self
 /* "bz_pricing/core/curves.pyx":18
  *     t_sec (geralmente DC) pode ser providenciado caso o modelo matemtico exija ambos.
  *     """
+ *     def __init__(self, int round_decimals=-1, str round_mode='round'):             # <<<<<<<<<<<<<<
+ *         self._round_decimals = round_decimals
+ *         self._is_trunc = (round_mode == 'trunc')
+*/
+
+/* Python wrapper */
+static int __pyx_pw_10bz_pricing_4core_6curves_5Curve_1__init__(PyObject *__pyx_v_self, 
+#if CYTHON_VECTORCALL_TPNEW
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+); /*proto*/
+static int __pyx_pw_10bz_pricing_4core_6curves_5Curve_1__init__(PyObject *__pyx_v_self, 
+#if CYTHON_VECTORCALL_TPNEW
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+) {
+  int __pyx_v_round_decimals;
+  PyObject *__pyx_v_round_mode = 0;
+  #if !CYTHON_VECTORCALL_TPNEW
+  CYTHON_UNUSED Py_ssize_t __pyx_nargs;
+  #endif
+  CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
+  PyObject* values[2] = {0,0};
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__init__ (wrapper)", 0);
+  #if !CYTHON_VECTORCALL_TPNEW
+  #if CYTHON_ASSUME_SAFE_SIZE
+  __pyx_nargs = PyTuple_GET_SIZE(__pyx_args);
+  #else
+  __pyx_nargs = PyTuple_Size(__pyx_args); if (unlikely(__pyx_nargs < 0)) return -1;
+  #endif
+  #endif
+  __pyx_kwvalues = __Pyx_KwValues_FASTCALL_TPNEW(__pyx_args, __pyx_nargs);
+  {
+    PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_round_decimals,&__pyx_mstate_global->__pyx_n_u_round_mode,0};
+    const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL_TPNEW(__pyx_kwds) : 0;
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 18, __pyx_L3_error)
+    if (__pyx_kwds_len > 0) {
+      switch (__pyx_nargs) {
+        case  2:
+        values[1] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 1);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 18, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  1:
+        values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 18, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      const Py_ssize_t kwd_pos_args = __pyx_nargs;
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 18, __pyx_L3_error)
+      if (!values[1]) values[1] = __Pyx_NewRef(((PyObject*)__pyx_mstate_global->__pyx_n_u_round));
+    } else {
+      switch (__pyx_nargs) {
+        case  2:
+        values[1] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 1);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 18, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  1:
+        values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 18, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      if (!values[1]) values[1] = __Pyx_NewRef(((PyObject*)__pyx_mstate_global->__pyx_n_u_round));
+    }
+    if (values[0]) {
+      __pyx_v_round_decimals = __Pyx_PyLong_As_int(values[0]); if (unlikely((__pyx_v_round_decimals == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 18, __pyx_L3_error)
+    } else {
+      __pyx_v_round_decimals = ((int)-1);
+    }
+    __pyx_v_round_mode = ((PyObject*)values[1]);
+  }
+  goto __pyx_L6_skip;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("__init__", 0, 0, 2, __pyx_nargs); __PYX_ERR(0, 18, __pyx_L3_error)
+  __pyx_L6_skip:;
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L3_error:;
+  for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+    Py_XDECREF(values[__pyx_temp]);
+  }
+  __Pyx_AddTraceback("bz_pricing.core.curves.Curve.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return -1;
+  __pyx_L4_argument_unpacking_done:;
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_round_mode), (&PyUnicode_Type), 1, "round_mode", 1))) __PYX_ERR(0, 18, __pyx_L1_error)
+  __pyx_r = __pyx_pf_10bz_pricing_4core_6curves_5Curve___init__(((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_v_self), __pyx_v_round_decimals, __pyx_v_round_mode);
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = -1;
+  for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+    Py_XDECREF(values[__pyx_temp]);
+  }
+  goto __pyx_L7_cleaned_up;
+  __pyx_L0:;
+  for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+    Py_XDECREF(values[__pyx_temp]);
+  }
+  __pyx_L7_cleaned_up:;
+
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_10bz_pricing_4core_6curves_5Curve___init__(struct __pyx_obj_10bz_pricing_4core_6curves_Curve *__pyx_v_self, int __pyx_v_round_decimals, PyObject *__pyx_v_round_mode) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_t_2;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__init__", 0);
+
+  /* "bz_pricing/core/curves.pyx":19
+ *     """
+ *     def __init__(self, int round_decimals=-1, str round_mode='round'):
+ *         self._round_decimals = round_decimals             # <<<<<<<<<<<<<<
+ *         self._is_trunc = (round_mode == 'trunc')
+ * 
+*/
+  __pyx_v_self->_round_decimals = __pyx_v_round_decimals;
+
+  /* "bz_pricing/core/curves.pyx":20
+ *     def __init__(self, int round_decimals=-1, str round_mode='round'):
+ *         self._round_decimals = round_decimals
+ *         self._is_trunc = (round_mode == 'trunc')             # <<<<<<<<<<<<<<
+ * 
+ *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
+*/
+  __pyx_t_1 = __Pyx_PyObject_CompareEq_str_str(__pyx_v_round_mode, __pyx_mstate_global->__pyx_n_u_trunc, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 20, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_self->_is_trunc = __pyx_t_2;
+
+  /* "bz_pricing/core/curves.pyx":18
+ *     t_sec (geralmente DC) pode ser providenciado caso o modelo matemtico exija ambos.
+ *     """
+ *     def __init__(self, int round_decimals=-1, str round_mode='round'):             # <<<<<<<<<<<<<<
+ *         self._round_decimals = round_decimals
+ *         self._is_trunc = (round_mode == 'trunc')
+*/
+
+  /* function exit code */
+  __pyx_r = 0;
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("bz_pricing.core.curves.Curve.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = -1;
+  __pyx_L0:;
+
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "bz_pricing/core/curves.pyx":22
+ *         self._is_trunc = (round_mode == 'trunc')
+ * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
  *         raise NotImplementedError("Mtodo base get_rate")
  * 
 */
 
-static PyObject *__pyx_pw_10bz_pricing_4core_6curves_5Curve_1get_rate(PyObject *__pyx_v_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_6curves_5Curve_3get_rate(PyObject *__pyx_v_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -20187,15 +20368,15 @@ static double __pyx_f_10bz_pricing_4core_6curves_5Curve_get_rate(CYTHON_UNUSED s
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_get_rate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 18, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_get_rate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_6curves_5Curve_1get_rate)) {
+      if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_6curves_5Curve_3get_rate)) {
         __pyx_t_3 = NULL;
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; 
-        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_t); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 18, __pyx_L1_error)
+        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_t); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 22, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_t_sec); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 18, __pyx_L1_error)
+        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_t_sec); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 22, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_t_7 = 1;
         #if CYTHON_UNPACK_METHODS
@@ -20216,10 +20397,10 @@ static double __pyx_f_10bz_pricing_4core_6curves_5Curve_get_rate(CYTHON_UNUSED s
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 18, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 22, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_8 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 18, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 22, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_8;
@@ -20240,12 +20421,12 @@ static double __pyx_f_10bz_pricing_4core_6curves_5Curve_get_rate(CYTHON_UNUSED s
     #endif
   }
 
-  /* "bz_pricing/core/curves.pyx":19
- *     """
+  /* "bz_pricing/core/curves.pyx":23
+ * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
  *         raise NotImplementedError("Mtodo base get_rate")             # <<<<<<<<<<<<<<
  * 
- * cdef class FlatCurve(Curve):
+ *     @property
 */
   __pyx_t_2 = NULL;
   __pyx_t_7 = 1;
@@ -20253,16 +20434,16 @@ static double __pyx_f_10bz_pricing_4core_6curves_5Curve_get_rate(CYTHON_UNUSED s
     PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_mstate_global->__pyx_kp_u_Mtodo_base_get_rate};
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_NotImplementedError)), __pyx_callargs+__pyx_t_7, (2-__pyx_t_7) | (__pyx_t_7*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 19, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 23, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __PYX_ERR(0, 19, __pyx_L1_error)
+  __PYX_ERR(0, 23, __pyx_L1_error)
 
-  /* "bz_pricing/core/curves.pyx":18
- *     t_sec (geralmente DC) pode ser providenciado caso o modelo matemtico exija ambos.
- *     """
+  /* "bz_pricing/core/curves.pyx":22
+ *         self._is_trunc = (round_mode == 'trunc')
+ * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
  *         raise NotImplementedError("Mtodo base get_rate")
  * 
@@ -20285,15 +20466,15 @@ static double __pyx_f_10bz_pricing_4core_6curves_5Curve_get_rate(CYTHON_UNUSED s
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10bz_pricing_4core_6curves_5Curve_1get_rate(PyObject *__pyx_v_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_6curves_5Curve_3get_rate(PyObject *__pyx_v_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_10bz_pricing_4core_6curves_5Curve_1get_rate = {"get_rate", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_6curves_5Curve_1get_rate, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_10bz_pricing_4core_6curves_5Curve_1get_rate(PyObject *__pyx_v_self, 
+static PyMethodDef __pyx_mdef_10bz_pricing_4core_6curves_5Curve_3get_rate = {"get_rate", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_6curves_5Curve_3get_rate, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_10bz_pricing_4core_6curves_5Curve_3get_rate(PyObject *__pyx_v_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -20324,48 +20505,48 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_t,&__pyx_mstate_global->__pyx_n_u_t_sec,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 18, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 22, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 18, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 22, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 18, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 22, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "get_rate", 0) < (0)) __PYX_ERR(0, 18, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "get_rate", 0) < (0)) __PYX_ERR(0, 22, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, i); __PYX_ERR(0, 18, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, i); __PYX_ERR(0, 22, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 18, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 22, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 18, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 22, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_t = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_t == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 18, __pyx_L3_error)
+    __pyx_v_t = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_t == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 22, __pyx_L3_error)
     if (values[1]) {
-      __pyx_v_t_sec = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_t_sec == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 18, __pyx_L3_error)
+      __pyx_v_t_sec = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_t_sec == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 22, __pyx_L3_error)
     } else {
       __pyx_v_t_sec = ((double)0.0);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 18, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 22, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -20376,7 +20557,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_10bz_pricing_4core_6curves_5Curve_get_rate(((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_v_self), __pyx_v_t, __pyx_v_t_sec);
+  __pyx_r = __pyx_pf_10bz_pricing_4core_6curves_5Curve_2get_rate(((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_v_self), __pyx_v_t, __pyx_v_t_sec);
 
   /* function exit code */
   for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
@@ -20388,7 +20569,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10bz_pricing_4core_6curves_5Curve_get_rate(struct __pyx_obj_10bz_pricing_4core_6curves_Curve *__pyx_v_self, double __pyx_v_t, double __pyx_v_t_sec) {
+static PyObject *__pyx_pf_10bz_pricing_4core_6curves_5Curve_2get_rate(struct __pyx_obj_10bz_pricing_4core_6curves_Curve *__pyx_v_self, double __pyx_v_t, double __pyx_v_t_sec) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   double __pyx_t_1;
@@ -20400,8 +20581,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_5Curve_get_rate(struct __py
   __Pyx_RefNannySetupContext("get_rate", 0);
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.t_sec = __pyx_v_t_sec;
-  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_6curves_Curve->get_rate(__pyx_v_self, __pyx_v_t, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 18, __pyx_L1_error)
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 18, __pyx_L1_error)
+  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_6curves_Curve->get_rate(__pyx_v_self, __pyx_v_t, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 22, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 22, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
   {
@@ -20426,6 +20607,146 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_5Curve_get_rate(struct __py
   return __pyx_r;
 }
 
+/* "bz_pricing/core/curves.pyx":25
+ *         raise NotImplementedError("Mtodo base get_rate")
+ * 
+ *     @property             # <<<<<<<<<<<<<<
+ *     def round_decimals(self):
+ *         return self._round_decimals
+*/
+
+/* Python wrapper */
+static PyObject *__pyx_pw_10bz_pricing_4core_6curves_5Curve_14round_decimals_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_10bz_pricing_4core_6curves_5Curve_14round_decimals_1__get__(PyObject *__pyx_v_self) {
+  CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
+  __pyx_kwvalues = __Pyx_KwValues_VARARGS(__pyx_args, __pyx_nargs);
+  __pyx_r = __pyx_pf_10bz_pricing_4core_6curves_5Curve_14round_decimals___get__(((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_10bz_pricing_4core_6curves_5Curve_14round_decimals___get__(struct __pyx_obj_10bz_pricing_4core_6curves_Curve *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__get__", 0);
+
+  /* "bz_pricing/core/curves.pyx":27
+ *     @property
+ *     def round_decimals(self):
+ *         return self._round_decimals             # <<<<<<<<<<<<<<
+ * 
+ *     @property
+*/
+  __pyx_t_1 = __Pyx_PyLong_From_int(__pyx_v_self->_round_decimals); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  {
+    PyObject *__pyx_temp;
+    {
+      __pyx_temp = __pyx_r;
+      __pyx_r = __pyx_t_1;
+    }
+    __Pyx_XDECREF(__pyx_temp);
+  }
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "bz_pricing/core/curves.pyx":25
+ *         raise NotImplementedError("Mtodo base get_rate")
+ * 
+ *     @property             # <<<<<<<<<<<<<<
+ *     def round_decimals(self):
+ *         return self._round_decimals
+*/
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("bz_pricing.core.curves.Curve.round_decimals.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "bz_pricing/core/curves.pyx":29
+ *         return self._round_decimals
+ * 
+ *     @property             # <<<<<<<<<<<<<<
+ *     def round_mode(self):
+ *         return 'trunc' if self._is_trunc else 'round'
+*/
+
+/* Python wrapper */
+static PyObject *__pyx_pw_10bz_pricing_4core_6curves_5Curve_10round_mode_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_10bz_pricing_4core_6curves_5Curve_10round_mode_1__get__(PyObject *__pyx_v_self) {
+  CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
+  __pyx_kwvalues = __Pyx_KwValues_VARARGS(__pyx_args, __pyx_nargs);
+  __pyx_r = __pyx_pf_10bz_pricing_4core_6curves_5Curve_10round_mode___get__(((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_10bz_pricing_4core_6curves_5Curve_10round_mode___get__(struct __pyx_obj_10bz_pricing_4core_6curves_Curve *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  __Pyx_RefNannySetupContext("__get__", 0);
+
+  /* "bz_pricing/core/curves.pyx":31
+ *     @property
+ *     def round_mode(self):
+ *         return 'trunc' if self._is_trunc else 'round'             # <<<<<<<<<<<<<<
+ * 
+ * cdef class FlatCurve(Curve):
+*/
+  if (__pyx_v_self->_is_trunc) {
+    __Pyx_INCREF(__pyx_mstate_global->__pyx_n_u_trunc);
+    __pyx_t_1 = __pyx_mstate_global->__pyx_n_u_trunc;
+  } else {
+    __Pyx_INCREF(__pyx_mstate_global->__pyx_n_u_round);
+    __pyx_t_1 = __pyx_mstate_global->__pyx_n_u_round;
+  }
+  {
+    PyObject *__pyx_temp;
+    {
+      __pyx_temp = __pyx_r;
+      __pyx_r = __pyx_t_1;
+    }
+    __Pyx_XDECREF(__pyx_temp);
+  }
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "bz_pricing/core/curves.pyx":29
+ *         return self._round_decimals
+ * 
+ *     @property             # <<<<<<<<<<<<<<
+ *     def round_mode(self):
+ *         return 'trunc' if self._is_trunc else 'round'
+*/
+
+  /* function exit code */
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
  *     cdef tuple state
@@ -20433,15 +20754,15 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_5Curve_get_rate(struct __py
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10bz_pricing_4core_6curves_5Curve_3__reduce_cython__(PyObject *__pyx_v_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_6curves_5Curve_5__reduce_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_10bz_pricing_4core_6curves_5Curve_3__reduce_cython__ = {"__reduce_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_6curves_5Curve_3__reduce_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_10bz_pricing_4core_6curves_5Curve_3__reduce_cython__(PyObject *__pyx_v_self, 
+static PyMethodDef __pyx_mdef_10bz_pricing_4core_6curves_5Curve_5__reduce_cython__ = {"__reduce_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_6curves_5Curve_5__reduce_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_10bz_pricing_4core_6curves_5Curve_5__reduce_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -20467,14 +20788,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   const Py_ssize_t __pyx_kwds_len = unlikely(__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
   if (unlikely(__pyx_kwds_len < 0)) return NULL;
   if (unlikely(__pyx_kwds_len > 0)) {__Pyx_RejectKeywords("__reduce_cython__", __pyx_kwds); return NULL;}
-  __pyx_r = __pyx_pf_10bz_pricing_4core_6curves_5Curve_2__reduce_cython__(((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10bz_pricing_4core_6curves_5Curve_4__reduce_cython__(((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10bz_pricing_4core_6curves_5Curve_2__reduce_cython__(struct __pyx_obj_10bz_pricing_4core_6curves_Curve *__pyx_v_self) {
+static PyObject *__pyx_pf_10bz_pricing_4core_6curves_5Curve_4__reduce_cython__(struct __pyx_obj_10bz_pricing_4core_6curves_Curve *__pyx_v_self) {
   PyObject *__pyx_v_state = 0;
   PyObject *__pyx_v__dict = 0;
   int __pyx_v_use_setstate;
@@ -20766,15 +21087,15 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_5Curve_2__reduce_cython__(s
 */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10bz_pricing_4core_6curves_5Curve_5__setstate_cython__(PyObject *__pyx_v_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_6curves_5Curve_7__setstate_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_10bz_pricing_4core_6curves_5Curve_5__setstate_cython__ = {"__setstate_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_6curves_5Curve_5__setstate_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_10bz_pricing_4core_6curves_5Curve_5__setstate_cython__(PyObject *__pyx_v_self, 
+static PyMethodDef __pyx_mdef_10bz_pricing_4core_6curves_5Curve_7__setstate_cython__ = {"__setstate_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_6curves_5Curve_7__setstate_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_10bz_pricing_4core_6curves_5Curve_7__setstate_cython__(PyObject *__pyx_v_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -20840,7 +21161,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_10bz_pricing_4core_6curves_5Curve_4__setstate_cython__(((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_v_self), __pyx_v___pyx_state);
+  __pyx_r = __pyx_pf_10bz_pricing_4core_6curves_5Curve_6__setstate_cython__(((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_v_self), __pyx_v___pyx_state);
 
   /* function exit code */
   for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
@@ -20850,7 +21171,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10bz_pricing_4core_6curves_5Curve_4__setstate_cython__(struct __pyx_obj_10bz_pricing_4core_6curves_Curve *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_10bz_pricing_4core_6curves_5Curve_6__setstate_cython__(struct __pyx_obj_10bz_pricing_4core_6curves_Curve *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -20898,7 +21219,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_5Curve_4__setstate_cython__
   return __pyx_r;
 }
 
-/* "bz_pricing/core/curves.pyx":26
+/* "bz_pricing/core/curves.pyx":38
  *     Retorna uma taxa constante cravada para todos os vrtices.
  *     """
  *     def __init__(self, double rate, int round_decimals=-1, str round_mode='round'):             # <<<<<<<<<<<<<<
@@ -20946,51 +21267,51 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_rate,&__pyx_mstate_global->__pyx_n_u_round_decimals,&__pyx_mstate_global->__pyx_n_u_round_mode,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL_TPNEW(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 26, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 38, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 26, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 38, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 26, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 38, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 26, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 38, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 26, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 38, __pyx_L3_error)
       if (!values[2]) values[2] = __Pyx_NewRef(((PyObject*)__pyx_mstate_global->__pyx_n_u_round));
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 0, 1, 3, i); __PYX_ERR(0, 26, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 0, 1, 3, i); __PYX_ERR(0, 38, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 26, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 38, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 26, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 38, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 26, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 38, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
       if (!values[2]) values[2] = __Pyx_NewRef(((PyObject*)__pyx_mstate_global->__pyx_n_u_round));
     }
-    __pyx_v_rate = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_rate == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 26, __pyx_L3_error)
+    __pyx_v_rate = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_rate == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 38, __pyx_L3_error)
     if (values[1]) {
-      __pyx_v_round_decimals = __Pyx_PyLong_As_int(values[1]); if (unlikely((__pyx_v_round_decimals == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 26, __pyx_L3_error)
+      __pyx_v_round_decimals = __Pyx_PyLong_As_int(values[1]); if (unlikely((__pyx_v_round_decimals == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 38, __pyx_L3_error)
     } else {
       __pyx_v_round_decimals = ((int)-1);
     }
@@ -20998,7 +21319,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 0, 1, 3, __pyx_nargs); __PYX_ERR(0, 26, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 0, 1, 3, __pyx_nargs); __PYX_ERR(0, 38, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -21009,7 +21330,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_round_mode), (&PyUnicode_Type), 1, "round_mode", 1))) __PYX_ERR(0, 26, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_round_mode), (&PyUnicode_Type), 1, "round_mode", 1))) __PYX_ERR(0, 38, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_6curves_9FlatCurve___init__(((struct __pyx_obj_10bz_pricing_4core_6curves_FlatCurve *)__pyx_v_self), __pyx_v_rate, __pyx_v_round_decimals, __pyx_v_round_mode);
 
   /* function exit code */
@@ -21041,7 +21362,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_9FlatCurve___init__(struct __pyx_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "bz_pricing/core/curves.pyx":27
+  /* "bz_pricing/core/curves.pyx":39
  *     """
  *     def __init__(self, double rate, int round_decimals=-1, str round_mode='round'):
  *         self._rate = rate             # <<<<<<<<<<<<<<
@@ -21050,7 +21371,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_9FlatCurve___init__(struct __pyx_
 */
   __pyx_v_self->_rate = __pyx_v_rate;
 
-  /* "bz_pricing/core/curves.pyx":28
+  /* "bz_pricing/core/curves.pyx":40
  *     def __init__(self, double rate, int round_decimals=-1, str round_mode='round'):
  *         self._rate = rate
  *         self._round_decimals = round_decimals             # <<<<<<<<<<<<<<
@@ -21059,19 +21380,19 @@ static int __pyx_pf_10bz_pricing_4core_6curves_9FlatCurve___init__(struct __pyx_
 */
   __pyx_v_self->__pyx_base._round_decimals = __pyx_v_round_decimals;
 
-  /* "bz_pricing/core/curves.pyx":29
+  /* "bz_pricing/core/curves.pyx":41
  *         self._rate = rate
  *         self._round_decimals = round_decimals
  *         self._is_trunc = (round_mode == 'trunc')             # <<<<<<<<<<<<<<
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
 */
-  __pyx_t_1 = __Pyx_PyObject_CompareEq_str_str(__pyx_v_round_mode, __pyx_mstate_global->__pyx_n_u_trunc, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 29, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CompareEq_str_str(__pyx_v_round_mode, __pyx_mstate_global->__pyx_n_u_trunc, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->__pyx_base._is_trunc = __pyx_t_2;
 
-  /* "bz_pricing/core/curves.pyx":26
+  /* "bz_pricing/core/curves.pyx":38
  *     Retorna uma taxa constante cravada para todos os vrtices.
  *     """
  *     def __init__(self, double rate, int round_decimals=-1, str round_mode='round'):             # <<<<<<<<<<<<<<
@@ -21092,7 +21413,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_9FlatCurve___init__(struct __pyx_
   return __pyx_r;
 }
 
-/* "bz_pricing/core/curves.pyx":31
+/* "bz_pricing/core/curves.pyx":43
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -21147,15 +21468,15 @@ static double __pyx_f_10bz_pricing_4core_6curves_9FlatCurve_get_rate(struct __py
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_get_rate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_get_rate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 43, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_6curves_9FlatCurve_3get_rate)) {
         __pyx_t_3 = NULL;
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; 
-        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_t); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 31, __pyx_L1_error)
+        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_t); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 43, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_t_sec); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 31, __pyx_L1_error)
+        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_t_sec); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 43, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_t_7 = 1;
         #if CYTHON_UNPACK_METHODS
@@ -21176,10 +21497,10 @@ static double __pyx_f_10bz_pricing_4core_6curves_9FlatCurve_get_rate(struct __py
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 31, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 43, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_8 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 31, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 43, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_8;
@@ -21200,7 +21521,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_9FlatCurve_get_rate(struct __py
     #endif
   }
 
-  /* "bz_pricing/core/curves.pyx":32
+  /* "bz_pricing/core/curves.pyx":44
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
  *         cdef double rate = self._rate             # <<<<<<<<<<<<<<
@@ -21211,7 +21532,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_9FlatCurve_get_rate(struct __py
 
   __pyx_v_rate = __pyx_t_8;
 
-  /* "bz_pricing/core/curves.pyx":33
+  /* "bz_pricing/core/curves.pyx":45
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
  *         cdef double rate = self._rate
  *         if self._round_decimals >= 0:             # <<<<<<<<<<<<<<
@@ -21223,7 +21544,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_9FlatCurve_get_rate(struct __py
   if (__pyx_t_9) {
 
 
-    /* "bz_pricing/core/curves.pyx":34
+    /* "bz_pricing/core/curves.pyx":46
  *         cdef double rate = self._rate
  *         if self._round_decimals >= 0:
  *             if self._is_trunc:             # <<<<<<<<<<<<<<
@@ -21232,7 +21553,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_9FlatCurve_get_rate(struct __py
 */
     if (__pyx_v_self->__pyx_base._is_trunc) {
 
-      /* "bz_pricing/core/curves.pyx":35
+      /* "bz_pricing/core/curves.pyx":47
  *         if self._round_decimals >= 0:
  *             if self._is_trunc:
  *                 rate = trunc(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)             # <<<<<<<<<<<<<<
@@ -21245,13 +21566,13 @@ static double __pyx_f_10bz_pricing_4core_6curves_9FlatCurve_get_rate(struct __py
 
       if (unlikely(__pyx_t_10 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        __PYX_ERR(0, 35, __pyx_L1_error)
+        __PYX_ERR(0, 47, __pyx_L1_error)
       }
       __pyx_v_rate = (__pyx_t_8 / __pyx_t_10);
 
 
 
-      /* "bz_pricing/core/curves.pyx":34
+      /* "bz_pricing/core/curves.pyx":46
  *         cdef double rate = self._rate
  *         if self._round_decimals >= 0:
  *             if self._is_trunc:             # <<<<<<<<<<<<<<
@@ -21261,7 +21582,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_9FlatCurve_get_rate(struct __py
       goto __pyx_L4;
     }
 
-    /* "bz_pricing/core/curves.pyx":37
+    /* "bz_pricing/core/curves.pyx":49
  *                 rate = trunc(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
  *             else:
  *                 rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)             # <<<<<<<<<<<<<<
@@ -21275,7 +21596,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_9FlatCurve_get_rate(struct __py
 
       if (unlikely(__pyx_t_8 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        __PYX_ERR(0, 37, __pyx_L1_error)
+        __PYX_ERR(0, 49, __pyx_L1_error)
       }
       __pyx_v_rate = (__pyx_t_10 / __pyx_t_8);
 
@@ -21283,7 +21604,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_9FlatCurve_get_rate(struct __py
     }
     __pyx_L4:;
 
-    /* "bz_pricing/core/curves.pyx":33
+    /* "bz_pricing/core/curves.pyx":45
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
  *         cdef double rate = self._rate
  *         if self._round_decimals >= 0:             # <<<<<<<<<<<<<<
@@ -21292,7 +21613,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_9FlatCurve_get_rate(struct __py
 */
   }
 
-  /* "bz_pricing/core/curves.pyx":38
+  /* "bz_pricing/core/curves.pyx":50
  *             else:
  *                 rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
  *         return rate             # <<<<<<<<<<<<<<
@@ -21305,7 +21626,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_9FlatCurve_get_rate(struct __py
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/curves.pyx":31
+  /* "bz_pricing/core/curves.pyx":43
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -21370,48 +21691,48 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_t,&__pyx_mstate_global->__pyx_n_u_t_sec,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 31, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 43, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 31, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 43, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 31, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 43, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "get_rate", 0) < (0)) __PYX_ERR(0, 31, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "get_rate", 0) < (0)) __PYX_ERR(0, 43, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, i); __PYX_ERR(0, 31, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, i); __PYX_ERR(0, 43, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 31, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 43, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 31, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 43, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_t = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_t == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 31, __pyx_L3_error)
+    __pyx_v_t = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_t == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 43, __pyx_L3_error)
     if (values[1]) {
-      __pyx_v_t_sec = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_t_sec == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 31, __pyx_L3_error)
+      __pyx_v_t_sec = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_t_sec == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 43, __pyx_L3_error)
     } else {
       __pyx_v_t_sec = ((double)0.0);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 31, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 43, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -21446,8 +21767,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_9FlatCurve_2get_rate(struct
   __Pyx_RefNannySetupContext("get_rate", 0);
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.t_sec = __pyx_v_t_sec;
-  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_6curves_FlatCurve->__pyx_base.get_rate(((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_v_self), __pyx_v_t, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 31, __pyx_L1_error)
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_6curves_FlatCurve->__pyx_base.get_rate(((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_v_self), __pyx_v_t, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 43, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
   {
@@ -21951,7 +22272,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_9FlatCurve_6__setstate_cyth
   return __pyx_r;
 }
 
-/* "bz_pricing/core/curves.pyx":45
+/* "bz_pricing/core/curves.pyx":57
  *     Soma os rates de um conjunto de curvas injetadas.
  *     """
  *     def __init__(self, list curves, int round_decimals=-1, str round_mode='round'):             # <<<<<<<<<<<<<<
@@ -21999,43 +22320,43 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_curves,&__pyx_mstate_global->__pyx_n_u_round_decimals,&__pyx_mstate_global->__pyx_n_u_round_mode,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL_TPNEW(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 45, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 57, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 45, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 57, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 45, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 57, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 45, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 57, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 45, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 57, __pyx_L3_error)
       if (!values[2]) values[2] = __Pyx_NewRef(((PyObject*)__pyx_mstate_global->__pyx_n_u_round));
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 0, 1, 3, i); __PYX_ERR(0, 45, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 0, 1, 3, i); __PYX_ERR(0, 57, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 45, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 57, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 45, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 57, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 45, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 57, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
@@ -22043,7 +22364,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
     }
     __pyx_v_curves = ((PyObject*)values[0]);
     if (values[1]) {
-      __pyx_v_round_decimals = __Pyx_PyLong_As_int(values[1]); if (unlikely((__pyx_v_round_decimals == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 45, __pyx_L3_error)
+      __pyx_v_round_decimals = __Pyx_PyLong_As_int(values[1]); if (unlikely((__pyx_v_round_decimals == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 57, __pyx_L3_error)
     } else {
       __pyx_v_round_decimals = ((int)-1);
     }
@@ -22051,7 +22372,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 0, 1, 3, __pyx_nargs); __PYX_ERR(0, 45, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 0, 1, 3, __pyx_nargs); __PYX_ERR(0, 57, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -22062,8 +22383,8 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_curves), (&PyList_Type), 1, "curves", 1))) __PYX_ERR(0, 45, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_round_mode), (&PyUnicode_Type), 1, "round_mode", 1))) __PYX_ERR(0, 45, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_curves), (&PyList_Type), 1, "curves", 1))) __PYX_ERR(0, 57, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_round_mode), (&PyUnicode_Type), 1, "round_mode", 1))) __PYX_ERR(0, 57, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_6curves_13AdditiveCurve___init__(((struct __pyx_obj_10bz_pricing_4core_6curves_AdditiveCurve *)__pyx_v_self), __pyx_v_curves, __pyx_v_round_decimals, __pyx_v_round_mode);
 
   /* function exit code */
@@ -22094,7 +22415,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_13AdditiveCurve___init__(struct _
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "bz_pricing/core/curves.pyx":46
+  /* "bz_pricing/core/curves.pyx":58
  *     """
  *     def __init__(self, list curves, int round_decimals=-1, str round_mode='round'):
  *         self._curves = curves             # <<<<<<<<<<<<<<
@@ -22107,7 +22428,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_13AdditiveCurve___init__(struct _
   __Pyx_DECREF(__pyx_v_self->_curves);
   __pyx_v_self->_curves = __pyx_v_curves;
 
-  /* "bz_pricing/core/curves.pyx":47
+  /* "bz_pricing/core/curves.pyx":59
  *     def __init__(self, list curves, int round_decimals=-1, str round_mode='round'):
  *         self._curves = curves
  *         self._round_decimals = round_decimals             # <<<<<<<<<<<<<<
@@ -22116,19 +22437,19 @@ static int __pyx_pf_10bz_pricing_4core_6curves_13AdditiveCurve___init__(struct _
 */
   __pyx_v_self->__pyx_base._round_decimals = __pyx_v_round_decimals;
 
-  /* "bz_pricing/core/curves.pyx":48
+  /* "bz_pricing/core/curves.pyx":60
  *         self._curves = curves
  *         self._round_decimals = round_decimals
  *         self._is_trunc = (round_mode == 'trunc')             # <<<<<<<<<<<<<<
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
 */
-  __pyx_t_1 = __Pyx_PyObject_CompareEq_str_str(__pyx_v_round_mode, __pyx_mstate_global->__pyx_n_u_trunc, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 48, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CompareEq_str_str(__pyx_v_round_mode, __pyx_mstate_global->__pyx_n_u_trunc, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 60, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->__pyx_base._is_trunc = __pyx_t_2;
 
-  /* "bz_pricing/core/curves.pyx":45
+  /* "bz_pricing/core/curves.pyx":57
  *     Soma os rates de um conjunto de curvas injetadas.
  *     """
  *     def __init__(self, list curves, int round_decimals=-1, str round_mode='round'):             # <<<<<<<<<<<<<<
@@ -22149,7 +22470,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_13AdditiveCurve___init__(struct _
   return __pyx_r;
 }
 
-/* "bz_pricing/core/curves.pyx":50
+/* "bz_pricing/core/curves.pyx":62
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -22207,15 +22528,15 @@ static double __pyx_f_10bz_pricing_4core_6curves_13AdditiveCurve_get_rate(struct
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_get_rate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 50, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_get_rate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 62, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_6curves_13AdditiveCurve_3get_rate)) {
         __pyx_t_3 = NULL;
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; 
-        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_t); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 50, __pyx_L1_error)
+        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_t); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 62, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_t_sec); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 50, __pyx_L1_error)
+        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_t_sec); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 62, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_t_7 = 1;
         #if CYTHON_UNPACK_METHODS
@@ -22236,10 +22557,10 @@ static double __pyx_f_10bz_pricing_4core_6curves_13AdditiveCurve_get_rate(struct
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 50, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 62, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_8 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 50, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 62, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_8;
@@ -22260,7 +22581,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_13AdditiveCurve_get_rate(struct
     #endif
   }
 
-  /* "bz_pricing/core/curves.pyx":51
+  /* "bz_pricing/core/curves.pyx":63
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
  *         cdef double total = 0.0             # <<<<<<<<<<<<<<
@@ -22269,7 +22590,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_13AdditiveCurve_get_rate(struct
 */
   __pyx_v_total = 0.0;
 
-  /* "bz_pricing/core/curves.pyx":53
+  /* "bz_pricing/core/curves.pyx":65
  *         cdef double total = 0.0
  *         cdef Curve c
  *         for c in self._curves:             # <<<<<<<<<<<<<<
@@ -22278,7 +22599,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_13AdditiveCurve_get_rate(struct
 */
   if (unlikely(__pyx_v_self->_curves == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "\047NoneType\047 object is not iterable");
-    __PYX_ERR(0, 53, __pyx_L1_error)
+    __PYX_ERR(0, 65, __pyx_L1_error)
   }
   __pyx_t_1 = __pyx_v_self->_curves; __Pyx_INCREF(__pyx_t_1);
   __pyx_t_9 = 0;
@@ -22286,19 +22607,19 @@ static double __pyx_f_10bz_pricing_4core_6curves_13AdditiveCurve_get_rate(struct
     {
       Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_1);
       #if !CYTHON_ASSUME_SAFE_SIZE
-      if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 53, __pyx_L1_error)
+      if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 65, __pyx_L1_error)
       #endif
       if (__pyx_t_9 >= __pyx_temp) break;
     }
     __pyx_t_2 = __Pyx_PyList_GET_ITEM_REF(__pyx_t_1, __pyx_t_9, __Pyx_ReferenceSharing_OwnStrongReference);
     ++__pyx_t_9;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 53, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 65, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve))))) __PYX_ERR(0, 53, __pyx_L1_error)
+    if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve))))) __PYX_ERR(0, 65, __pyx_L1_error)
     __Pyx_XDECREF_SET(__pyx_v_c, ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_t_2));
     __pyx_t_2 = 0;
 
-    /* "bz_pricing/core/curves.pyx":54
+    /* "bz_pricing/core/curves.pyx":66
  *         cdef Curve c
  *         for c in self._curves:
  *             total += c.get_rate(t, t_sec)             # <<<<<<<<<<<<<<
@@ -22307,11 +22628,11 @@ static double __pyx_f_10bz_pricing_4core_6curves_13AdditiveCurve_get_rate(struct
 */
     __pyx_t_10.__pyx_n = 1;
     __pyx_t_10.t_sec = __pyx_v_t_sec;
-    __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_c->__pyx_vtab)->get_rate(__pyx_v_c, __pyx_v_t, 0, &__pyx_t_10); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 54, __pyx_L1_error)
+    __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_c->__pyx_vtab)->get_rate(__pyx_v_c, __pyx_v_t, 0, &__pyx_t_10); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 66, __pyx_L1_error)
     __pyx_v_total = (__pyx_v_total + __pyx_t_8);
 
 
-    /* "bz_pricing/core/curves.pyx":53
+    /* "bz_pricing/core/curves.pyx":65
  *         cdef double total = 0.0
  *         cdef Curve c
  *         for c in self._curves:             # <<<<<<<<<<<<<<
@@ -22321,7 +22642,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_13AdditiveCurve_get_rate(struct
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/curves.pyx":56
+  /* "bz_pricing/core/curves.pyx":68
  *             total += c.get_rate(t, t_sec)
  * 
  *         if self._round_decimals >= 0:             # <<<<<<<<<<<<<<
@@ -22333,7 +22654,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_13AdditiveCurve_get_rate(struct
   if (__pyx_t_11) {
 
 
-    /* "bz_pricing/core/curves.pyx":57
+    /* "bz_pricing/core/curves.pyx":69
  * 
  *         if self._round_decimals >= 0:
  *             if self._is_trunc:             # <<<<<<<<<<<<<<
@@ -22342,7 +22663,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_13AdditiveCurve_get_rate(struct
 */
     if (__pyx_v_self->__pyx_base._is_trunc) {
 
-      /* "bz_pricing/core/curves.pyx":58
+      /* "bz_pricing/core/curves.pyx":70
  *         if self._round_decimals >= 0:
  *             if self._is_trunc:
  *                 total = trunc(total * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)             # <<<<<<<<<<<<<<
@@ -22355,13 +22676,13 @@ static double __pyx_f_10bz_pricing_4core_6curves_13AdditiveCurve_get_rate(struct
 
       if (unlikely(__pyx_t_12 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        __PYX_ERR(0, 58, __pyx_L1_error)
+        __PYX_ERR(0, 70, __pyx_L1_error)
       }
       __pyx_v_total = (__pyx_t_8 / __pyx_t_12);
 
 
 
-      /* "bz_pricing/core/curves.pyx":57
+      /* "bz_pricing/core/curves.pyx":69
  * 
  *         if self._round_decimals >= 0:
  *             if self._is_trunc:             # <<<<<<<<<<<<<<
@@ -22371,7 +22692,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_13AdditiveCurve_get_rate(struct
       goto __pyx_L7;
     }
 
-    /* "bz_pricing/core/curves.pyx":60
+    /* "bz_pricing/core/curves.pyx":72
  *                 total = trunc(total * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
  *             else:
  *                 total = round(total * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)             # <<<<<<<<<<<<<<
@@ -22385,7 +22706,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_13AdditiveCurve_get_rate(struct
 
       if (unlikely(__pyx_t_8 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        __PYX_ERR(0, 60, __pyx_L1_error)
+        __PYX_ERR(0, 72, __pyx_L1_error)
       }
       __pyx_v_total = (__pyx_t_12 / __pyx_t_8);
 
@@ -22393,7 +22714,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_13AdditiveCurve_get_rate(struct
     }
     __pyx_L7:;
 
-    /* "bz_pricing/core/curves.pyx":56
+    /* "bz_pricing/core/curves.pyx":68
  *             total += c.get_rate(t, t_sec)
  * 
  *         if self._round_decimals >= 0:             # <<<<<<<<<<<<<<
@@ -22402,7 +22723,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_13AdditiveCurve_get_rate(struct
 */
   }
 
-  /* "bz_pricing/core/curves.pyx":62
+  /* "bz_pricing/core/curves.pyx":74
  *                 total = round(total * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
  * 
  *         return total             # <<<<<<<<<<<<<<
@@ -22415,7 +22736,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_13AdditiveCurve_get_rate(struct
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/curves.pyx":50
+  /* "bz_pricing/core/curves.pyx":62
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -22481,48 +22802,48 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_t,&__pyx_mstate_global->__pyx_n_u_t_sec,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 50, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 62, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 50, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 62, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 50, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 62, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "get_rate", 0) < (0)) __PYX_ERR(0, 50, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "get_rate", 0) < (0)) __PYX_ERR(0, 62, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, i); __PYX_ERR(0, 50, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, i); __PYX_ERR(0, 62, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 50, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 62, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 50, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 62, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_t = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_t == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 50, __pyx_L3_error)
+    __pyx_v_t = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_t == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 62, __pyx_L3_error)
     if (values[1]) {
-      __pyx_v_t_sec = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_t_sec == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 50, __pyx_L3_error)
+      __pyx_v_t_sec = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_t_sec == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 62, __pyx_L3_error)
     } else {
       __pyx_v_t_sec = ((double)0.0);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 50, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 62, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -22557,8 +22878,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_13AdditiveCurve_2get_rate(s
   __Pyx_RefNannySetupContext("get_rate", 0);
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.t_sec = __pyx_v_t_sec;
-  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_6curves_AdditiveCurve->__pyx_base.get_rate(((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_v_self), __pyx_v_t, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 50, __pyx_L1_error)
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 50, __pyx_L1_error)
+  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_6curves_AdditiveCurve->__pyx_base.get_rate(((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_v_self), __pyx_v_t, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 62, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 62, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
   {
@@ -23059,7 +23380,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_13AdditiveCurve_6__setstate
   return __pyx_r;
 }
 
-/* "bz_pricing/core/curves.pyx":69
+/* "bz_pricing/core/curves.pyx":81
  *     Multiplica os rates de uma curva de referncia por um escalar.
  *     """
  *     def __init__(self, Curve curve, double scalar, int round_decimals=-1, str round_mode='round'):             # <<<<<<<<<<<<<<
@@ -23108,58 +23429,58 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_curve,&__pyx_mstate_global->__pyx_n_u_scalar,&__pyx_mstate_global->__pyx_n_u_round_decimals,&__pyx_mstate_global->__pyx_n_u_round_mode,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL_TPNEW(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 69, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 81, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 69, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 81, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 69, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 81, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 69, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 81, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 69, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 81, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 69, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 81, __pyx_L3_error)
       if (!values[3]) values[3] = __Pyx_NewRef(((PyObject*)__pyx_mstate_global->__pyx_n_u_round));
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 0, 2, 4, i); __PYX_ERR(0, 69, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 0, 2, 4, i); __PYX_ERR(0, 81, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 69, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 81, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 69, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 81, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 69, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 81, __pyx_L3_error)
         values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 69, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 81, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
       if (!values[3]) values[3] = __Pyx_NewRef(((PyObject*)__pyx_mstate_global->__pyx_n_u_round));
     }
     __pyx_v_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
-    __pyx_v_scalar = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_scalar == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 69, __pyx_L3_error)
+    __pyx_v_scalar = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_scalar == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 81, __pyx_L3_error)
     if (values[2]) {
-      __pyx_v_round_decimals = __Pyx_PyLong_As_int(values[2]); if (unlikely((__pyx_v_round_decimals == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 69, __pyx_L3_error)
+      __pyx_v_round_decimals = __Pyx_PyLong_As_int(values[2]); if (unlikely((__pyx_v_round_decimals == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 81, __pyx_L3_error)
     } else {
       __pyx_v_round_decimals = ((int)-1);
     }
@@ -23167,7 +23488,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 0, 2, 4, __pyx_nargs); __PYX_ERR(0, 69, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 0, 2, 4, __pyx_nargs); __PYX_ERR(0, 81, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -23178,8 +23499,8 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "curve", 0))) __PYX_ERR(0, 69, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_round_mode), (&PyUnicode_Type), 1, "round_mode", 1))) __PYX_ERR(0, 69, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "curve", 0))) __PYX_ERR(0, 81, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_round_mode), (&PyUnicode_Type), 1, "round_mode", 1))) __PYX_ERR(0, 81, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_6curves_19MultiplicativeCurve___init__(((struct __pyx_obj_10bz_pricing_4core_6curves_MultiplicativeCurve *)__pyx_v_self), __pyx_v_curve, __pyx_v_scalar, __pyx_v_round_decimals, __pyx_v_round_mode);
 
   /* function exit code */
@@ -23211,7 +23532,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_19MultiplicativeCurve___init__(st
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "bz_pricing/core/curves.pyx":70
+  /* "bz_pricing/core/curves.pyx":82
  *     """
  *     def __init__(self, Curve curve, double scalar, int round_decimals=-1, str round_mode='round'):
  *         self._curve = curve             # <<<<<<<<<<<<<<
@@ -23224,7 +23545,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_19MultiplicativeCurve___init__(st
   __Pyx_DECREF((PyObject *)__pyx_v_self->_curve);
   __pyx_v_self->_curve = __pyx_v_curve;
 
-  /* "bz_pricing/core/curves.pyx":71
+  /* "bz_pricing/core/curves.pyx":83
  *     def __init__(self, Curve curve, double scalar, int round_decimals=-1, str round_mode='round'):
  *         self._curve = curve
  *         self._scalar = scalar             # <<<<<<<<<<<<<<
@@ -23233,7 +23554,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_19MultiplicativeCurve___init__(st
 */
   __pyx_v_self->_scalar = __pyx_v_scalar;
 
-  /* "bz_pricing/core/curves.pyx":72
+  /* "bz_pricing/core/curves.pyx":84
  *         self._curve = curve
  *         self._scalar = scalar
  *         self._round_decimals = round_decimals             # <<<<<<<<<<<<<<
@@ -23242,19 +23563,19 @@ static int __pyx_pf_10bz_pricing_4core_6curves_19MultiplicativeCurve___init__(st
 */
   __pyx_v_self->__pyx_base._round_decimals = __pyx_v_round_decimals;
 
-  /* "bz_pricing/core/curves.pyx":73
+  /* "bz_pricing/core/curves.pyx":85
  *         self._scalar = scalar
  *         self._round_decimals = round_decimals
  *         self._is_trunc = (round_mode == 'trunc')             # <<<<<<<<<<<<<<
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
 */
-  __pyx_t_1 = __Pyx_PyObject_CompareEq_str_str(__pyx_v_round_mode, __pyx_mstate_global->__pyx_n_u_trunc, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 73, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 73, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CompareEq_str_str(__pyx_v_round_mode, __pyx_mstate_global->__pyx_n_u_trunc, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 85, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 85, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->__pyx_base._is_trunc = __pyx_t_2;
 
-  /* "bz_pricing/core/curves.pyx":69
+  /* "bz_pricing/core/curves.pyx":81
  *     Multiplica os rates de uma curva de referncia por um escalar.
  *     """
  *     def __init__(self, Curve curve, double scalar, int round_decimals=-1, str round_mode='round'):             # <<<<<<<<<<<<<<
@@ -23275,7 +23596,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_19MultiplicativeCurve___init__(st
   return __pyx_r;
 }
 
-/* "bz_pricing/core/curves.pyx":75
+/* "bz_pricing/core/curves.pyx":87
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -23331,15 +23652,15 @@ static double __pyx_f_10bz_pricing_4core_6curves_19MultiplicativeCurve_get_rate(
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_get_rate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 75, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_get_rate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 87, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_6curves_19MultiplicativeCurve_3get_rate)) {
         __pyx_t_3 = NULL;
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; 
-        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_t); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 75, __pyx_L1_error)
+        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_t); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 87, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_t_sec); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 75, __pyx_L1_error)
+        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_t_sec); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 87, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_t_7 = 1;
         #if CYTHON_UNPACK_METHODS
@@ -23360,10 +23681,10 @@ static double __pyx_f_10bz_pricing_4core_6curves_19MultiplicativeCurve_get_rate(
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 75, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 87, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_8 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 75, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 87, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_8;
@@ -23384,7 +23705,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_19MultiplicativeCurve_get_rate(
     #endif
   }
 
-  /* "bz_pricing/core/curves.pyx":76
+  /* "bz_pricing/core/curves.pyx":88
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
  *         cdef double rate = self._scalar * self._curve.get_rate(t, t_sec)             # <<<<<<<<<<<<<<
@@ -23393,11 +23714,11 @@ static double __pyx_f_10bz_pricing_4core_6curves_19MultiplicativeCurve_get_rate(
 */
   __pyx_t_9.__pyx_n = 1;
   __pyx_t_9.t_sec = __pyx_v_t_sec;
-  __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_self->_curve->__pyx_vtab)->get_rate(__pyx_v_self->_curve, __pyx_v_t, 0, &__pyx_t_9); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_self->_curve->__pyx_vtab)->get_rate(__pyx_v_self->_curve, __pyx_v_t, 0, &__pyx_t_9); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 88, __pyx_L1_error)
   __pyx_v_rate = (__pyx_v_self->_scalar * __pyx_t_8);
 
 
-  /* "bz_pricing/core/curves.pyx":78
+  /* "bz_pricing/core/curves.pyx":90
  *         cdef double rate = self._scalar * self._curve.get_rate(t, t_sec)
  * 
  *         if self._round_decimals >= 0:             # <<<<<<<<<<<<<<
@@ -23409,7 +23730,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_19MultiplicativeCurve_get_rate(
   if (__pyx_t_10) {
 
 
-    /* "bz_pricing/core/curves.pyx":79
+    /* "bz_pricing/core/curves.pyx":91
  * 
  *         if self._round_decimals >= 0:
  *             if self._is_trunc:             # <<<<<<<<<<<<<<
@@ -23418,7 +23739,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_19MultiplicativeCurve_get_rate(
 */
     if (__pyx_v_self->__pyx_base._is_trunc) {
 
-      /* "bz_pricing/core/curves.pyx":80
+      /* "bz_pricing/core/curves.pyx":92
  *         if self._round_decimals >= 0:
  *             if self._is_trunc:
  *                 rate = trunc(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)             # <<<<<<<<<<<<<<
@@ -23431,13 +23752,13 @@ static double __pyx_f_10bz_pricing_4core_6curves_19MultiplicativeCurve_get_rate(
 
       if (unlikely(__pyx_t_11 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        __PYX_ERR(0, 80, __pyx_L1_error)
+        __PYX_ERR(0, 92, __pyx_L1_error)
       }
       __pyx_v_rate = (__pyx_t_8 / __pyx_t_11);
 
 
 
-      /* "bz_pricing/core/curves.pyx":79
+      /* "bz_pricing/core/curves.pyx":91
  * 
  *         if self._round_decimals >= 0:
  *             if self._is_trunc:             # <<<<<<<<<<<<<<
@@ -23447,7 +23768,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_19MultiplicativeCurve_get_rate(
       goto __pyx_L4;
     }
 
-    /* "bz_pricing/core/curves.pyx":82
+    /* "bz_pricing/core/curves.pyx":94
  *                 rate = trunc(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
  *             else:
  *                 rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)             # <<<<<<<<<<<<<<
@@ -23461,7 +23782,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_19MultiplicativeCurve_get_rate(
 
       if (unlikely(__pyx_t_8 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        __PYX_ERR(0, 82, __pyx_L1_error)
+        __PYX_ERR(0, 94, __pyx_L1_error)
       }
       __pyx_v_rate = (__pyx_t_11 / __pyx_t_8);
 
@@ -23469,7 +23790,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_19MultiplicativeCurve_get_rate(
     }
     __pyx_L4:;
 
-    /* "bz_pricing/core/curves.pyx":78
+    /* "bz_pricing/core/curves.pyx":90
  *         cdef double rate = self._scalar * self._curve.get_rate(t, t_sec)
  * 
  *         if self._round_decimals >= 0:             # <<<<<<<<<<<<<<
@@ -23478,7 +23799,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_19MultiplicativeCurve_get_rate(
 */
   }
 
-  /* "bz_pricing/core/curves.pyx":84
+  /* "bz_pricing/core/curves.pyx":96
  *                 rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
  * 
  *         return rate             # <<<<<<<<<<<<<<
@@ -23491,7 +23812,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_19MultiplicativeCurve_get_rate(
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/curves.pyx":75
+  /* "bz_pricing/core/curves.pyx":87
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -23556,48 +23877,48 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_t,&__pyx_mstate_global->__pyx_n_u_t_sec,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 75, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 87, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 75, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 87, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 75, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 87, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "get_rate", 0) < (0)) __PYX_ERR(0, 75, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "get_rate", 0) < (0)) __PYX_ERR(0, 87, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, i); __PYX_ERR(0, 75, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, i); __PYX_ERR(0, 87, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 75, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 87, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 75, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 87, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_t = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_t == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 75, __pyx_L3_error)
+    __pyx_v_t = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_t == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 87, __pyx_L3_error)
     if (values[1]) {
-      __pyx_v_t_sec = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_t_sec == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 75, __pyx_L3_error)
+      __pyx_v_t_sec = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_t_sec == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 87, __pyx_L3_error)
     } else {
       __pyx_v_t_sec = ((double)0.0);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 75, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 87, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -23632,8 +23953,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_19MultiplicativeCurve_2get_
   __Pyx_RefNannySetupContext("get_rate", 0);
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.t_sec = __pyx_v_t_sec;
-  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_6curves_MultiplicativeCurve->__pyx_base.get_rate(((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_v_self), __pyx_v_t, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 75, __pyx_L1_error)
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_6curves_MultiplicativeCurve->__pyx_base.get_rate(((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_v_self), __pyx_v_t, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 87, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
   {
@@ -24141,7 +24462,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_19MultiplicativeCurve_6__se
   return __pyx_r;
 }
 
-/* "bz_pricing/core/curves.pyx":92
+/* "bz_pricing/core/curves.pyx":104
  *     utilizando a grade de ns fornecida.
  *     """
  *     def __init__(self, double[:] t_nodes, double[:] y_nodes, Interpolator interpolator, double[:] t_sec_nodes=None, int round_decimals=-1, str round_mode='round'):             # <<<<<<<<<<<<<<
@@ -24192,79 +24513,79 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_t_nodes,&__pyx_mstate_global->__pyx_n_u_y_nodes,&__pyx_mstate_global->__pyx_n_u_interpolator,&__pyx_mstate_global->__pyx_n_u_t_sec_nodes,&__pyx_mstate_global->__pyx_n_u_round_decimals,&__pyx_mstate_global->__pyx_n_u_round_mode,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL_TPNEW(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 92, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 104, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  6:
         values[5] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 5);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 92, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 104, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 92, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 104, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 92, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 104, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 92, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 104, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 92, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 104, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 92, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 104, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 92, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 104, __pyx_L3_error)
       if (!values[5]) values[5] = __Pyx_NewRef(((PyObject*)__pyx_mstate_global->__pyx_n_u_round));
       for (Py_ssize_t i = __pyx_nargs; i < 3; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 6, i); __PYX_ERR(0, 92, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 6, i); __PYX_ERR(0, 104, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  6:
         values[5] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 5);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 92, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 104, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 92, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 104, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 92, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 104, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 92, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 104, __pyx_L3_error)
         values[1] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 92, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 104, __pyx_L3_error)
         values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 92, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 104, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
       if (!values[5]) values[5] = __Pyx_NewRef(((PyObject*)__pyx_mstate_global->__pyx_n_u_round));
     }
-    __pyx_v_t_nodes = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_t_nodes.memview)) __PYX_ERR(0, 92, __pyx_L3_error)
-    __pyx_v_y_nodes = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_y_nodes.memview)) __PYX_ERR(0, 92, __pyx_L3_error)
+    __pyx_v_t_nodes = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_t_nodes.memview)) __PYX_ERR(0, 104, __pyx_L3_error)
+    __pyx_v_y_nodes = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_y_nodes.memview)) __PYX_ERR(0, 104, __pyx_L3_error)
     __pyx_v_interpolator = ((struct __pyx_obj_10bz_pricing_4core_13interpolators_Interpolator *)values[2]);
     if (values[3]) {
-      __pyx_v_t_sec_nodes = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_t_sec_nodes.memview)) __PYX_ERR(0, 92, __pyx_L3_error)
+      __pyx_v_t_sec_nodes = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_t_sec_nodes.memview)) __PYX_ERR(0, 104, __pyx_L3_error)
     } else {
       __pyx_v_t_sec_nodes = __pyx_mstate_global->__pyx_k__5;
       __PYX_INC_MEMVIEW(&__pyx_v_t_sec_nodes, 1);
     }
     if (values[4]) {
-      __pyx_v_round_decimals = __Pyx_PyLong_As_int(values[4]); if (unlikely((__pyx_v_round_decimals == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 92, __pyx_L3_error)
+      __pyx_v_round_decimals = __Pyx_PyLong_As_int(values[4]); if (unlikely((__pyx_v_round_decimals == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 104, __pyx_L3_error)
     } else {
       __pyx_v_round_decimals = ((int)-1);
     }
@@ -24272,7 +24593,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 6, __pyx_nargs); __PYX_ERR(0, 92, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 6, __pyx_nargs); __PYX_ERR(0, 104, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -24286,8 +24607,8 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_interpolator), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator, 1, "interpolator", 0))) __PYX_ERR(0, 92, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_round_mode), (&PyUnicode_Type), 1, "round_mode", 1))) __PYX_ERR(0, 92, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_interpolator), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator, 1, "interpolator", 0))) __PYX_ERR(0, 104, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_round_mode), (&PyUnicode_Type), 1, "round_mode", 1))) __PYX_ERR(0, 104, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve___init__(((struct __pyx_obj_10bz_pricing_4core_6curves_SimpleCurve *)__pyx_v_self), __pyx_v_t_nodes, __pyx_v_y_nodes, __pyx_v_interpolator, __pyx_v_t_sec_nodes, __pyx_v_round_decimals, __pyx_v_round_mode);
 
   /* function exit code */
@@ -24324,7 +24645,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve___init__(struct __p
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "bz_pricing/core/curves.pyx":93
+  /* "bz_pricing/core/curves.pyx":105
  *     """
  *     def __init__(self, double[:] t_nodes, double[:] y_nodes, Interpolator interpolator, double[:] t_sec_nodes=None, int round_decimals=-1, str round_mode='round'):
  *         if t_nodes.shape[0] != y_nodes.shape[0]:             # <<<<<<<<<<<<<<
@@ -24336,7 +24657,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve___init__(struct __p
   if (unlikely(__pyx_t_1)) {
 
 
-    /* "bz_pricing/core/curves.pyx":94
+    /* "bz_pricing/core/curves.pyx":106
  *     def __init__(self, double[:] t_nodes, double[:] y_nodes, Interpolator interpolator, double[:] t_sec_nodes=None, int round_decimals=-1, str round_mode='round'):
  *         if t_nodes.shape[0] != y_nodes.shape[0]:
  *             raise ValueError("t_nodes e y_nodes devem ter o mesmo tamanho")             # <<<<<<<<<<<<<<
@@ -24349,14 +24670,14 @@ static int __pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve___init__(struct __p
       PyObject *__pyx_callargs[2] = {__pyx_t_3, __pyx_mstate_global->__pyx_kp_u_t_nodes_e_y_nodes_devem_ter_o_me};
       __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 94, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 106, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
     }
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __PYX_ERR(0, 94, __pyx_L1_error)
+    __PYX_ERR(0, 106, __pyx_L1_error)
 
-    /* "bz_pricing/core/curves.pyx":93
+    /* "bz_pricing/core/curves.pyx":105
  *     """
  *     def __init__(self, double[:] t_nodes, double[:] y_nodes, Interpolator interpolator, double[:] t_sec_nodes=None, int round_decimals=-1, str round_mode='round'):
  *         if t_nodes.shape[0] != y_nodes.shape[0]:             # <<<<<<<<<<<<<<
@@ -24365,7 +24686,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve___init__(struct __p
 */
   }
 
-  /* "bz_pricing/core/curves.pyx":95
+  /* "bz_pricing/core/curves.pyx":107
  *         if t_nodes.shape[0] != y_nodes.shape[0]:
  *             raise ValueError("t_nodes e y_nodes devem ter o mesmo tamanho")
  *         if t_sec_nodes is not None and t_sec_nodes.shape[0] != t_nodes.shape[0]:             # <<<<<<<<<<<<<<
@@ -24391,7 +24712,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve___init__(struct __p
   if (unlikely(__pyx_t_1)) {
 
 
-    /* "bz_pricing/core/curves.pyx":96
+    /* "bz_pricing/core/curves.pyx":108
  *             raise ValueError("t_nodes e y_nodes devem ter o mesmo tamanho")
  *         if t_sec_nodes is not None and t_sec_nodes.shape[0] != t_nodes.shape[0]:
  *             raise ValueError("t_sec_nodes deve ter o mesmo tamanho que t_nodes se informado")             # <<<<<<<<<<<<<<
@@ -24404,14 +24725,14 @@ static int __pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve___init__(struct __p
       PyObject *__pyx_callargs[2] = {__pyx_t_3, __pyx_mstate_global->__pyx_kp_u_t_sec_nodes_deve_ter_o_mesmo_tam};
       __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 96, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 108, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
     }
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __PYX_ERR(0, 96, __pyx_L1_error)
+    __PYX_ERR(0, 108, __pyx_L1_error)
 
-    /* "bz_pricing/core/curves.pyx":95
+    /* "bz_pricing/core/curves.pyx":107
  *         if t_nodes.shape[0] != y_nodes.shape[0]:
  *             raise ValueError("t_nodes e y_nodes devem ter o mesmo tamanho")
  *         if t_sec_nodes is not None and t_sec_nodes.shape[0] != t_nodes.shape[0]:             # <<<<<<<<<<<<<<
@@ -24420,7 +24741,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve___init__(struct __p
 */
   }
 
-  /* "bz_pricing/core/curves.pyx":98
+  /* "bz_pricing/core/curves.pyx":110
  *             raise ValueError("t_sec_nodes deve ter o mesmo tamanho que t_nodes se informado")
  * 
  *         self._t_nodes = t_nodes             # <<<<<<<<<<<<<<
@@ -24431,7 +24752,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve___init__(struct __p
   __PYX_INC_MEMVIEW(&__pyx_v_t_nodes, 1);
   __pyx_v_self->_t_nodes = __pyx_v_t_nodes;
 
-  /* "bz_pricing/core/curves.pyx":99
+  /* "bz_pricing/core/curves.pyx":111
  * 
  *         self._t_nodes = t_nodes
  *         self._y_nodes = y_nodes             # <<<<<<<<<<<<<<
@@ -24442,7 +24763,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve___init__(struct __p
   __PYX_INC_MEMVIEW(&__pyx_v_y_nodes, 1);
   __pyx_v_self->_y_nodes = __pyx_v_y_nodes;
 
-  /* "bz_pricing/core/curves.pyx":100
+  /* "bz_pricing/core/curves.pyx":112
  *         self._t_nodes = t_nodes
  *         self._y_nodes = y_nodes
  *         self._t_sec_nodes = t_sec_nodes             # <<<<<<<<<<<<<<
@@ -24453,7 +24774,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve___init__(struct __p
   __PYX_INC_MEMVIEW(&__pyx_v_t_sec_nodes, 1);
   __pyx_v_self->_t_sec_nodes = __pyx_v_t_sec_nodes;
 
-  /* "bz_pricing/core/curves.pyx":101
+  /* "bz_pricing/core/curves.pyx":113
  *         self._y_nodes = y_nodes
  *         self._t_sec_nodes = t_sec_nodes
  *         self._n_nodes = t_nodes.shape[0]             # <<<<<<<<<<<<<<
@@ -24462,7 +24783,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve___init__(struct __p
 */
   __pyx_v_self->_n_nodes = (__pyx_v_t_nodes.shape[0]);
 
-  /* "bz_pricing/core/curves.pyx":102
+  /* "bz_pricing/core/curves.pyx":114
  *         self._t_sec_nodes = t_sec_nodes
  *         self._n_nodes = t_nodes.shape[0]
  *         self._interpolator = interpolator             # <<<<<<<<<<<<<<
@@ -24475,7 +24796,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve___init__(struct __p
   __Pyx_DECREF((PyObject *)__pyx_v_self->_interpolator);
   __pyx_v_self->_interpolator = __pyx_v_interpolator;
 
-  /* "bz_pricing/core/curves.pyx":103
+  /* "bz_pricing/core/curves.pyx":115
  *         self._n_nodes = t_nodes.shape[0]
  *         self._interpolator = interpolator
  *         self._round_decimals = round_decimals             # <<<<<<<<<<<<<<
@@ -24484,19 +24805,19 @@ static int __pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve___init__(struct __p
 */
   __pyx_v_self->__pyx_base._round_decimals = __pyx_v_round_decimals;
 
-  /* "bz_pricing/core/curves.pyx":104
+  /* "bz_pricing/core/curves.pyx":116
  *         self._interpolator = interpolator
  *         self._round_decimals = round_decimals
  *         self._is_trunc = (round_mode == 'trunc')             # <<<<<<<<<<<<<<
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
 */
-  __pyx_t_2 = __Pyx_PyObject_CompareEq_str_str(__pyx_v_round_mode, __pyx_mstate_global->__pyx_n_u_trunc, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 104, __pyx_L1_error)
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 104, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_CompareEq_str_str(__pyx_v_round_mode, __pyx_mstate_global->__pyx_n_u_trunc, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 116, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 116, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_self->__pyx_base._is_trunc = __pyx_t_1;
 
-  /* "bz_pricing/core/curves.pyx":92
+  /* "bz_pricing/core/curves.pyx":104
  *     utilizando a grade de ns fornecida.
  *     """
  *     def __init__(self, double[:] t_nodes, double[:] y_nodes, Interpolator interpolator, double[:] t_sec_nodes=None, int round_decimals=-1, str round_mode='round'):             # <<<<<<<<<<<<<<
@@ -24518,7 +24839,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve___init__(struct __p
   return __pyx_r;
 }
 
-/* "bz_pricing/core/curves.pyx":106
+/* "bz_pricing/core/curves.pyx":118
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -24577,15 +24898,15 @@ static double __pyx_f_10bz_pricing_4core_6curves_11SimpleCurve_get_rate(struct _
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_get_rate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_get_rate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 118, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_6curves_11SimpleCurve_3get_rate)) {
         __pyx_t_3 = NULL;
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; 
-        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_t); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 106, __pyx_L1_error)
+        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_t); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 118, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_t_sec); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 106, __pyx_L1_error)
+        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_t_sec); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 118, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_t_7 = 1;
         #if CYTHON_UNPACK_METHODS
@@ -24606,10 +24927,10 @@ static double __pyx_f_10bz_pricing_4core_6curves_11SimpleCurve_get_rate(struct _
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 106, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 118, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_8 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 106, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 118, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_8;
@@ -24630,7 +24951,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_11SimpleCurve_get_rate(struct _
     #endif
   }
 
-  /* "bz_pricing/core/curves.pyx":107
+  /* "bz_pricing/core/curves.pyx":119
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
  *         cdef double * t_sec_ptr = NULL             # <<<<<<<<<<<<<<
@@ -24639,31 +24960,31 @@ static double __pyx_f_10bz_pricing_4core_6curves_11SimpleCurve_get_rate(struct _
 */
   __pyx_v_t_sec_ptr = NULL;
 
-  /* "bz_pricing/core/curves.pyx":108
+  /* "bz_pricing/core/curves.pyx":120
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
  *         cdef double * t_sec_ptr = NULL
  *         if self._t_sec_nodes is not None:             # <<<<<<<<<<<<<<
  *             t_sec_ptr = &self._t_sec_nodes[0]
  * 
 */
-  if (unlikely(!__pyx_v_self->_t_sec_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 108, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->_t_sec_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 120, __pyx_L1_error)}
   __pyx_t_9 = (((PyObject *) __pyx_v_self->_t_sec_nodes.memview) != Py_None);
 
   if (__pyx_t_9) {
 
 
-    /* "bz_pricing/core/curves.pyx":109
+    /* "bz_pricing/core/curves.pyx":121
  *         cdef double * t_sec_ptr = NULL
  *         if self._t_sec_nodes is not None:
  *             t_sec_ptr = &self._t_sec_nodes[0]             # <<<<<<<<<<<<<<
  * 
  *         cdef double rate = self._interpolator.interpolate(t, &self._t_nodes[0], &self._y_nodes[0], self._n_nodes, t_sec, t_sec_ptr)
 */
-    if (unlikely(!__pyx_v_self->_t_sec_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 109, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_t_sec_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 121, __pyx_L1_error)}
     __pyx_t_10 = 0;
     __pyx_v_t_sec_ptr = (&(*((double *) ( /* dim=0 */ (__pyx_v_self->_t_sec_nodes.data + __pyx_t_10 * __pyx_v_self->_t_sec_nodes.strides[0]) ))));
 
-    /* "bz_pricing/core/curves.pyx":108
+    /* "bz_pricing/core/curves.pyx":120
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
  *         cdef double * t_sec_ptr = NULL
  *         if self._t_sec_nodes is not None:             # <<<<<<<<<<<<<<
@@ -24672,24 +24993,24 @@ static double __pyx_f_10bz_pricing_4core_6curves_11SimpleCurve_get_rate(struct _
 */
   }
 
-  /* "bz_pricing/core/curves.pyx":111
+  /* "bz_pricing/core/curves.pyx":123
  *             t_sec_ptr = &self._t_sec_nodes[0]
  * 
  *         cdef double rate = self._interpolator.interpolate(t, &self._t_nodes[0], &self._y_nodes[0], self._n_nodes, t_sec, t_sec_ptr)             # <<<<<<<<<<<<<<
  * 
  *         if self._round_decimals >= 0:
 */
-  if (unlikely(!__pyx_v_self->_t_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 111, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->_t_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 123, __pyx_L1_error)}
   __pyx_t_10 = 0;
-  if (unlikely(!__pyx_v_self->_y_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 111, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->_y_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 123, __pyx_L1_error)}
   __pyx_t_11 = 0;
   __pyx_t_12.__pyx_n = 2;
   __pyx_t_12.t_sec = __pyx_v_t_sec;
   __pyx_t_12.t_sec_nodes = __pyx_v_t_sec_ptr;
-  __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_Interpolator *)__pyx_v_self->_interpolator->__pyx_vtab)->interpolate(__pyx_v_self->_interpolator, __pyx_v_t, (&(*((double *) ( /* dim=0 */ (__pyx_v_self->_t_nodes.data + __pyx_t_10 * __pyx_v_self->_t_nodes.strides[0]) )))), (&(*((double *) ( /* dim=0 */ (__pyx_v_self->_y_nodes.data + __pyx_t_11 * __pyx_v_self->_y_nodes.strides[0]) )))), __pyx_v_self->_n_nodes, &__pyx_t_12); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 111, __pyx_L1_error)
+  __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_Interpolator *)__pyx_v_self->_interpolator->__pyx_vtab)->interpolate(__pyx_v_self->_interpolator, __pyx_v_t, (&(*((double *) ( /* dim=0 */ (__pyx_v_self->_t_nodes.data + __pyx_t_10 * __pyx_v_self->_t_nodes.strides[0]) )))), (&(*((double *) ( /* dim=0 */ (__pyx_v_self->_y_nodes.data + __pyx_t_11 * __pyx_v_self->_y_nodes.strides[0]) )))), __pyx_v_self->_n_nodes, &__pyx_t_12); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 123, __pyx_L1_error)
   __pyx_v_rate = __pyx_t_8;
 
-  /* "bz_pricing/core/curves.pyx":113
+  /* "bz_pricing/core/curves.pyx":125
  *         cdef double rate = self._interpolator.interpolate(t, &self._t_nodes[0], &self._y_nodes[0], self._n_nodes, t_sec, t_sec_ptr)
  * 
  *         if self._round_decimals >= 0:             # <<<<<<<<<<<<<<
@@ -24701,7 +25022,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_11SimpleCurve_get_rate(struct _
   if (__pyx_t_9) {
 
 
-    /* "bz_pricing/core/curves.pyx":114
+    /* "bz_pricing/core/curves.pyx":126
  * 
  *         if self._round_decimals >= 0:
  *             if self._is_trunc:             # <<<<<<<<<<<<<<
@@ -24710,7 +25031,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_11SimpleCurve_get_rate(struct _
 */
     if (__pyx_v_self->__pyx_base._is_trunc) {
 
-      /* "bz_pricing/core/curves.pyx":115
+      /* "bz_pricing/core/curves.pyx":127
  *         if self._round_decimals >= 0:
  *             if self._is_trunc:
  *                 rate = trunc(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)             # <<<<<<<<<<<<<<
@@ -24723,13 +25044,13 @@ static double __pyx_f_10bz_pricing_4core_6curves_11SimpleCurve_get_rate(struct _
 
       if (unlikely(__pyx_t_13 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        __PYX_ERR(0, 115, __pyx_L1_error)
+        __PYX_ERR(0, 127, __pyx_L1_error)
       }
       __pyx_v_rate = (__pyx_t_8 / __pyx_t_13);
 
 
 
-      /* "bz_pricing/core/curves.pyx":114
+      /* "bz_pricing/core/curves.pyx":126
  * 
  *         if self._round_decimals >= 0:
  *             if self._is_trunc:             # <<<<<<<<<<<<<<
@@ -24739,7 +25060,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_11SimpleCurve_get_rate(struct _
       goto __pyx_L5;
     }
 
-    /* "bz_pricing/core/curves.pyx":117
+    /* "bz_pricing/core/curves.pyx":129
  *                 rate = trunc(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
  *             else:
  *                 rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)             # <<<<<<<<<<<<<<
@@ -24753,7 +25074,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_11SimpleCurve_get_rate(struct _
 
       if (unlikely(__pyx_t_8 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        __PYX_ERR(0, 117, __pyx_L1_error)
+        __PYX_ERR(0, 129, __pyx_L1_error)
       }
       __pyx_v_rate = (__pyx_t_13 / __pyx_t_8);
 
@@ -24761,7 +25082,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_11SimpleCurve_get_rate(struct _
     }
     __pyx_L5:;
 
-    /* "bz_pricing/core/curves.pyx":113
+    /* "bz_pricing/core/curves.pyx":125
  *         cdef double rate = self._interpolator.interpolate(t, &self._t_nodes[0], &self._y_nodes[0], self._n_nodes, t_sec, t_sec_ptr)
  * 
  *         if self._round_decimals >= 0:             # <<<<<<<<<<<<<<
@@ -24770,7 +25091,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_11SimpleCurve_get_rate(struct _
 */
   }
 
-  /* "bz_pricing/core/curves.pyx":119
+  /* "bz_pricing/core/curves.pyx":131
  *                 rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
  * 
  *         return rate             # <<<<<<<<<<<<<<
@@ -24783,7 +25104,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_11SimpleCurve_get_rate(struct _
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/curves.pyx":106
+  /* "bz_pricing/core/curves.pyx":118
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -24849,48 +25170,48 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_t,&__pyx_mstate_global->__pyx_n_u_t_sec,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 106, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 118, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 106, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 118, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 106, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 118, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "get_rate", 0) < (0)) __PYX_ERR(0, 106, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "get_rate", 0) < (0)) __PYX_ERR(0, 118, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, i); __PYX_ERR(0, 106, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, i); __PYX_ERR(0, 118, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 106, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 118, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 106, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 118, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_t = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_t == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 106, __pyx_L3_error)
+    __pyx_v_t = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_t == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 118, __pyx_L3_error)
     if (values[1]) {
-      __pyx_v_t_sec = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_t_sec == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 106, __pyx_L3_error)
+      __pyx_v_t_sec = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_t_sec == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 118, __pyx_L3_error)
     } else {
       __pyx_v_t_sec = ((double)0.0);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 106, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 118, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -24925,8 +25246,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve_2get_rate(str
   __Pyx_RefNannySetupContext("get_rate", 0);
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.t_sec = __pyx_v_t_sec;
-  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_6curves_SimpleCurve->__pyx_base.get_rate(((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_v_self), __pyx_v_t, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 106, __pyx_L1_error)
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_6curves_SimpleCurve->__pyx_base.get_rate(((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_v_self), __pyx_v_t, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 118, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
   {
@@ -24951,7 +25272,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve_2get_rate(str
   return __pyx_r;
 }
 
-/* "bz_pricing/core/curves.pyx":121
+/* "bz_pricing/core/curves.pyx":133
  *         return rate
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -24988,20 +25309,20 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve_7t_nodes___ge
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "bz_pricing/core/curves.pyx":123
+  /* "bz_pricing/core/curves.pyx":135
  *     @property
  *     def t_nodes(self):
  *         import numpy as np             # <<<<<<<<<<<<<<
  *         return np.asarray(self._t_nodes)
  * 
 */
-  __pyx_t_2 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_numpy, 0, 0, NULL, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 123, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_numpy, 0, 0, NULL, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 135, __pyx_L1_error)
   __pyx_t_1 = __pyx_t_2;
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_np = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/curves.pyx":124
+  /* "bz_pricing/core/curves.pyx":136
  *     def t_nodes(self):
  *         import numpy as np
  *         return np.asarray(self._t_nodes)             # <<<<<<<<<<<<<<
@@ -25010,8 +25331,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve_7t_nodes___ge
 */
   __pyx_t_3 = __pyx_v_np;
   __Pyx_INCREF(__pyx_t_3);
-  if (unlikely(!__pyx_v_self->_t_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 124, __pyx_L1_error)}
-  __pyx_t_4 = __pyx_memoryview_fromslice(__pyx_v_self->_t_nodes, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 124, __pyx_L1_error)
+  if (unlikely(!__pyx_v_self->_t_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 136, __pyx_L1_error)}
+  __pyx_t_4 = __pyx_memoryview_fromslice(__pyx_v_self->_t_nodes, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = 0;
   {
@@ -25019,7 +25340,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve_7t_nodes___ge
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_asarray, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 124, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 136, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   {
@@ -25033,7 +25354,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve_7t_nodes___ge
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bz_pricing/core/curves.pyx":121
+  /* "bz_pricing/core/curves.pyx":133
  *         return rate
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -25055,7 +25376,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve_7t_nodes___ge
   return __pyx_r;
 }
 
-/* "bz_pricing/core/curves.pyx":126
+/* "bz_pricing/core/curves.pyx":138
  *         return np.asarray(self._t_nodes)
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -25092,20 +25413,20 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve_7y_nodes___ge
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "bz_pricing/core/curves.pyx":128
+  /* "bz_pricing/core/curves.pyx":140
  *     @property
  *     def y_nodes(self):
  *         import numpy as np             # <<<<<<<<<<<<<<
  *         return np.asarray(self._y_nodes)
  * 
 */
-  __pyx_t_2 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_numpy, 0, 0, NULL, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 128, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_numpy, 0, 0, NULL, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 140, __pyx_L1_error)
   __pyx_t_1 = __pyx_t_2;
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_np = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/curves.pyx":129
+  /* "bz_pricing/core/curves.pyx":141
  *     def y_nodes(self):
  *         import numpy as np
  *         return np.asarray(self._y_nodes)             # <<<<<<<<<<<<<<
@@ -25114,8 +25435,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve_7y_nodes___ge
 */
   __pyx_t_3 = __pyx_v_np;
   __Pyx_INCREF(__pyx_t_3);
-  if (unlikely(!__pyx_v_self->_y_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 129, __pyx_L1_error)}
-  __pyx_t_4 = __pyx_memoryview_fromslice(__pyx_v_self->_y_nodes, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 129, __pyx_L1_error)
+  if (unlikely(!__pyx_v_self->_y_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 141, __pyx_L1_error)}
+  __pyx_t_4 = __pyx_memoryview_fromslice(__pyx_v_self->_y_nodes, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = 0;
   {
@@ -25123,7 +25444,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve_7y_nodes___ge
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_asarray, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 129, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 141, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   {
@@ -25137,7 +25458,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve_7y_nodes___ge
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bz_pricing/core/curves.pyx":126
+  /* "bz_pricing/core/curves.pyx":138
  *         return np.asarray(self._t_nodes)
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -25159,7 +25480,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve_7y_nodes___ge
   return __pyx_r;
 }
 
-/* "bz_pricing/core/curves.pyx":131
+/* "bz_pricing/core/curves.pyx":143
  *         return np.asarray(self._y_nodes)
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -25197,33 +25518,33 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve_11t_sec_nodes
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "bz_pricing/core/curves.pyx":133
+  /* "bz_pricing/core/curves.pyx":145
  *     @property
  *     def t_sec_nodes(self):
  *         import numpy as np             # <<<<<<<<<<<<<<
  *         if self._t_sec_nodes is None:
  *             return None
 */
-  __pyx_t_2 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_numpy, 0, 0, NULL, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 133, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_numpy, 0, 0, NULL, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 145, __pyx_L1_error)
   __pyx_t_1 = __pyx_t_2;
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_np = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/curves.pyx":134
+  /* "bz_pricing/core/curves.pyx":146
  *     def t_sec_nodes(self):
  *         import numpy as np
  *         if self._t_sec_nodes is None:             # <<<<<<<<<<<<<<
  *             return None
  *         return np.asarray(self._t_sec_nodes)
 */
-  if (unlikely(!__pyx_v_self->_t_sec_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 134, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->_t_sec_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 146, __pyx_L1_error)}
   __pyx_t_3 = (((PyObject *) __pyx_v_self->_t_sec_nodes.memview) == Py_None);
 
   if (__pyx_t_3) {
 
 
-    /* "bz_pricing/core/curves.pyx":135
+    /* "bz_pricing/core/curves.pyx":147
  *         import numpy as np
  *         if self._t_sec_nodes is None:
  *             return None             # <<<<<<<<<<<<<<
@@ -25240,7 +25561,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve_11t_sec_nodes
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/curves.pyx":134
+    /* "bz_pricing/core/curves.pyx":146
  *     def t_sec_nodes(self):
  *         import numpy as np
  *         if self._t_sec_nodes is None:             # <<<<<<<<<<<<<<
@@ -25249,7 +25570,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve_11t_sec_nodes
 */
   }
 
-  /* "bz_pricing/core/curves.pyx":136
+  /* "bz_pricing/core/curves.pyx":148
  *         if self._t_sec_nodes is None:
  *             return None
  *         return np.asarray(self._t_sec_nodes)             # <<<<<<<<<<<<<<
@@ -25258,8 +25579,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve_11t_sec_nodes
 */
   __pyx_t_4 = __pyx_v_np;
   __Pyx_INCREF(__pyx_t_4);
-  if (unlikely(!__pyx_v_self->_t_sec_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 136, __pyx_L1_error)}
-  __pyx_t_5 = __pyx_memoryview_fromslice(__pyx_v_self->_t_sec_nodes, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 136, __pyx_L1_error)
+  if (unlikely(!__pyx_v_self->_t_sec_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 148, __pyx_L1_error)}
+  __pyx_t_5 = __pyx_memoryview_fromslice(__pyx_v_self->_t_sec_nodes, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 148, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_6 = 0;
   {
@@ -25267,7 +25588,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve_11t_sec_nodes
     __pyx_t_1 = __Pyx_PyObject_FastCallMethod((PyObject*)__pyx_mstate_global->__pyx_n_u_asarray, __pyx_callargs+__pyx_t_6, (2-__pyx_t_6) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 136, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 148, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   {
@@ -25281,7 +25602,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve_11t_sec_nodes
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bz_pricing/core/curves.pyx":131
+  /* "bz_pricing/core/curves.pyx":143
  *         return np.asarray(self._y_nodes)
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -25810,7 +26131,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_11SimpleCurve_6__setstate_c
   return __pyx_r;
 }
 
-/* "bz_pricing/core/curves.pyx":144
+/* "bz_pricing/core/curves.pyx":156
  *     Aplica um Interpolator DIFERENTE para cada tranche/seo de vrtices da curva.
  *     """
  *     def __init__(self, double[:] t_nodes, double[:] y_nodes, list interpolators, double[:] t_sec_nodes=None, int round_decimals=-1, str round_mode='round'):             # <<<<<<<<<<<<<<
@@ -25861,79 +26182,79 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_t_nodes,&__pyx_mstate_global->__pyx_n_u_y_nodes,&__pyx_mstate_global->__pyx_n_u_interpolators,&__pyx_mstate_global->__pyx_n_u_t_sec_nodes,&__pyx_mstate_global->__pyx_n_u_round_decimals,&__pyx_mstate_global->__pyx_n_u_round_mode,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL_TPNEW(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 144, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 156, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  6:
         values[5] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 5);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 144, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 156, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 144, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 156, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 144, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 156, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 144, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 156, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 144, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 156, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 144, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 156, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 144, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 156, __pyx_L3_error)
       if (!values[5]) values[5] = __Pyx_NewRef(((PyObject*)__pyx_mstate_global->__pyx_n_u_round));
       for (Py_ssize_t i = __pyx_nargs; i < 3; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 6, i); __PYX_ERR(0, 144, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 6, i); __PYX_ERR(0, 156, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  6:
         values[5] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 5);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 144, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 156, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 144, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 156, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 144, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 156, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 144, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 156, __pyx_L3_error)
         values[1] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 144, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 156, __pyx_L3_error)
         values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 144, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 156, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
       if (!values[5]) values[5] = __Pyx_NewRef(((PyObject*)__pyx_mstate_global->__pyx_n_u_round));
     }
-    __pyx_v_t_nodes = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_t_nodes.memview)) __PYX_ERR(0, 144, __pyx_L3_error)
-    __pyx_v_y_nodes = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_y_nodes.memview)) __PYX_ERR(0, 144, __pyx_L3_error)
+    __pyx_v_t_nodes = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_t_nodes.memview)) __PYX_ERR(0, 156, __pyx_L3_error)
+    __pyx_v_y_nodes = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_y_nodes.memview)) __PYX_ERR(0, 156, __pyx_L3_error)
     __pyx_v_interpolators = ((PyObject*)values[2]);
     if (values[3]) {
-      __pyx_v_t_sec_nodes = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_t_sec_nodes.memview)) __PYX_ERR(0, 144, __pyx_L3_error)
+      __pyx_v_t_sec_nodes = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_t_sec_nodes.memview)) __PYX_ERR(0, 156, __pyx_L3_error)
     } else {
       __pyx_v_t_sec_nodes = __pyx_mstate_global->__pyx_k__6;
       __PYX_INC_MEMVIEW(&__pyx_v_t_sec_nodes, 1);
     }
     if (values[4]) {
-      __pyx_v_round_decimals = __Pyx_PyLong_As_int(values[4]); if (unlikely((__pyx_v_round_decimals == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 144, __pyx_L3_error)
+      __pyx_v_round_decimals = __Pyx_PyLong_As_int(values[4]); if (unlikely((__pyx_v_round_decimals == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 156, __pyx_L3_error)
     } else {
       __pyx_v_round_decimals = ((int)-1);
     }
@@ -25941,7 +26262,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 6, __pyx_nargs); __PYX_ERR(0, 144, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 6, __pyx_nargs); __PYX_ERR(0, 156, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -25955,8 +26276,8 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_interpolators), (&PyList_Type), 1, "interpolators", 1))) __PYX_ERR(0, 144, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_round_mode), (&PyUnicode_Type), 1, "round_mode", 1))) __PYX_ERR(0, 144, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_interpolators), (&PyList_Type), 1, "interpolators", 1))) __PYX_ERR(0, 156, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_round_mode), (&PyUnicode_Type), 1, "round_mode", 1))) __PYX_ERR(0, 156, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_6curves_12ComplexCurve___init__(((struct __pyx_obj_10bz_pricing_4core_6curves_ComplexCurve *)__pyx_v_self), __pyx_v_t_nodes, __pyx_v_y_nodes, __pyx_v_interpolators, __pyx_v_t_sec_nodes, __pyx_v_round_decimals, __pyx_v_round_mode);
 
   /* function exit code */
@@ -25992,7 +26313,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_12ComplexCurve___init__(struct __
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "bz_pricing/core/curves.pyx":145
+  /* "bz_pricing/core/curves.pyx":157
  *     """
  *     def __init__(self, double[:] t_nodes, double[:] y_nodes, list interpolators, double[:] t_sec_nodes=None, int round_decimals=-1, str round_mode='round'):
  *         if t_nodes.shape[0] != y_nodes.shape[0]:             # <<<<<<<<<<<<<<
@@ -26004,7 +26325,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_12ComplexCurve___init__(struct __
   if (unlikely(__pyx_t_1)) {
 
 
-    /* "bz_pricing/core/curves.pyx":146
+    /* "bz_pricing/core/curves.pyx":158
  *     def __init__(self, double[:] t_nodes, double[:] y_nodes, list interpolators, double[:] t_sec_nodes=None, int round_decimals=-1, str round_mode='round'):
  *         if t_nodes.shape[0] != y_nodes.shape[0]:
  *             raise ValueError("t_nodes e y_nodes devem ter o mesmo tamanho")             # <<<<<<<<<<<<<<
@@ -26017,14 +26338,14 @@ static int __pyx_pf_10bz_pricing_4core_6curves_12ComplexCurve___init__(struct __
       PyObject *__pyx_callargs[2] = {__pyx_t_3, __pyx_mstate_global->__pyx_kp_u_t_nodes_e_y_nodes_devem_ter_o_me};
       __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 146, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 158, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
     }
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __PYX_ERR(0, 146, __pyx_L1_error)
+    __PYX_ERR(0, 158, __pyx_L1_error)
 
-    /* "bz_pricing/core/curves.pyx":145
+    /* "bz_pricing/core/curves.pyx":157
  *     """
  *     def __init__(self, double[:] t_nodes, double[:] y_nodes, list interpolators, double[:] t_sec_nodes=None, int round_decimals=-1, str round_mode='round'):
  *         if t_nodes.shape[0] != y_nodes.shape[0]:             # <<<<<<<<<<<<<<
@@ -26033,7 +26354,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_12ComplexCurve___init__(struct __
 */
   }
 
-  /* "bz_pricing/core/curves.pyx":148
+  /* "bz_pricing/core/curves.pyx":160
  *             raise ValueError("t_nodes e y_nodes devem ter o mesmo tamanho")
  * 
  *         self._t_nodes = t_nodes             # <<<<<<<<<<<<<<
@@ -26044,7 +26365,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_12ComplexCurve___init__(struct __
   __PYX_INC_MEMVIEW(&__pyx_v_t_nodes, 1);
   __pyx_v_self->_t_nodes = __pyx_v_t_nodes;
 
-  /* "bz_pricing/core/curves.pyx":149
+  /* "bz_pricing/core/curves.pyx":161
  * 
  *         self._t_nodes = t_nodes
  *         self._y_nodes = y_nodes             # <<<<<<<<<<<<<<
@@ -26055,7 +26376,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_12ComplexCurve___init__(struct __
   __PYX_INC_MEMVIEW(&__pyx_v_y_nodes, 1);
   __pyx_v_self->_y_nodes = __pyx_v_y_nodes;
 
-  /* "bz_pricing/core/curves.pyx":150
+  /* "bz_pricing/core/curves.pyx":162
  *         self._t_nodes = t_nodes
  *         self._y_nodes = y_nodes
  *         self._t_sec_nodes = t_sec_nodes             # <<<<<<<<<<<<<<
@@ -26066,7 +26387,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_12ComplexCurve___init__(struct __
   __PYX_INC_MEMVIEW(&__pyx_v_t_sec_nodes, 1);
   __pyx_v_self->_t_sec_nodes = __pyx_v_t_sec_nodes;
 
-  /* "bz_pricing/core/curves.pyx":151
+  /* "bz_pricing/core/curves.pyx":163
  *         self._y_nodes = y_nodes
  *         self._t_sec_nodes = t_sec_nodes
  *         self._n_nodes = t_nodes.shape[0]             # <<<<<<<<<<<<<<
@@ -26075,7 +26396,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_12ComplexCurve___init__(struct __
 */
   __pyx_v_self->_n_nodes = (__pyx_v_t_nodes.shape[0]);
 
-  /* "bz_pricing/core/curves.pyx":152
+  /* "bz_pricing/core/curves.pyx":164
  *         self._t_sec_nodes = t_sec_nodes
  *         self._n_nodes = t_nodes.shape[0]
  *         self._interpolators = interpolators             # <<<<<<<<<<<<<<
@@ -26088,7 +26409,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_12ComplexCurve___init__(struct __
   __Pyx_DECREF(__pyx_v_self->_interpolators);
   __pyx_v_self->_interpolators = __pyx_v_interpolators;
 
-  /* "bz_pricing/core/curves.pyx":153
+  /* "bz_pricing/core/curves.pyx":165
  *         self._n_nodes = t_nodes.shape[0]
  *         self._interpolators = interpolators
  *         self._round_decimals = round_decimals             # <<<<<<<<<<<<<<
@@ -26097,19 +26418,19 @@ static int __pyx_pf_10bz_pricing_4core_6curves_12ComplexCurve___init__(struct __
 */
   __pyx_v_self->__pyx_base._round_decimals = __pyx_v_round_decimals;
 
-  /* "bz_pricing/core/curves.pyx":154
+  /* "bz_pricing/core/curves.pyx":166
  *         self._interpolators = interpolators
  *         self._round_decimals = round_decimals
  *         self._is_trunc = (round_mode == 'trunc')             # <<<<<<<<<<<<<<
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
 */
-  __pyx_t_2 = __Pyx_PyObject_CompareEq_str_str(__pyx_v_round_mode, __pyx_mstate_global->__pyx_n_u_trunc, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 154, __pyx_L1_error)
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 154, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_CompareEq_str_str(__pyx_v_round_mode, __pyx_mstate_global->__pyx_n_u_trunc, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 166, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 166, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_self->__pyx_base._is_trunc = __pyx_t_1;
 
-  /* "bz_pricing/core/curves.pyx":144
+  /* "bz_pricing/core/curves.pyx":156
  *     Aplica um Interpolator DIFERENTE para cada tranche/seo de vrtices da curva.
  *     """
  *     def __init__(self, double[:] t_nodes, double[:] y_nodes, list interpolators, double[:] t_sec_nodes=None, int round_decimals=-1, str round_mode='round'):             # <<<<<<<<<<<<<<
@@ -26131,7 +26452,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_12ComplexCurve___init__(struct __
   return __pyx_r;
 }
 
-/* "bz_pricing/core/curves.pyx":156
+/* "bz_pricing/core/curves.pyx":168
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -26196,15 +26517,15 @@ static double __pyx_f_10bz_pricing_4core_6curves_12ComplexCurve_get_rate(struct 
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_get_rate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 156, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_get_rate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 168, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_6curves_12ComplexCurve_3get_rate)) {
         __pyx_t_3 = NULL;
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; 
-        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_t); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 156, __pyx_L1_error)
+        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_t); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 168, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_t_sec); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 156, __pyx_L1_error)
+        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_t_sec); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 168, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_t_7 = 1;
         #if CYTHON_UNPACK_METHODS
@@ -26225,10 +26546,10 @@ static double __pyx_f_10bz_pricing_4core_6curves_12ComplexCurve_get_rate(struct 
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 156, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 168, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_8 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 156, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 168, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_8;
@@ -26249,7 +26570,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_12ComplexCurve_get_rate(struct 
     #endif
   }
 
-  /* "bz_pricing/core/curves.pyx":159
+  /* "bz_pricing/core/curves.pyx":171
  *         cdef int i
  *         cdef Interpolator interp
  *         cdef double * t_sec_ptr = NULL             # <<<<<<<<<<<<<<
@@ -26258,31 +26579,31 @@ static double __pyx_f_10bz_pricing_4core_6curves_12ComplexCurve_get_rate(struct 
 */
   __pyx_v_t_sec_ptr = NULL;
 
-  /* "bz_pricing/core/curves.pyx":161
+  /* "bz_pricing/core/curves.pyx":173
  *         cdef double * t_sec_ptr = NULL
  * 
  *         if self._t_sec_nodes is not None:             # <<<<<<<<<<<<<<
  *             t_sec_ptr = &self._t_sec_nodes[0]
  * 
 */
-  if (unlikely(!__pyx_v_self->_t_sec_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 161, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->_t_sec_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 173, __pyx_L1_error)}
   __pyx_t_9 = (((PyObject *) __pyx_v_self->_t_sec_nodes.memview) != Py_None);
 
   if (__pyx_t_9) {
 
 
-    /* "bz_pricing/core/curves.pyx":162
+    /* "bz_pricing/core/curves.pyx":174
  * 
  *         if self._t_sec_nodes is not None:
  *             t_sec_ptr = &self._t_sec_nodes[0]             # <<<<<<<<<<<<<<
  * 
  *         if t <= self._t_nodes[0]:
 */
-    if (unlikely(!__pyx_v_self->_t_sec_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 162, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_t_sec_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 174, __pyx_L1_error)}
     __pyx_t_10 = 0;
     __pyx_v_t_sec_ptr = (&(*((double *) ( /* dim=0 */ (__pyx_v_self->_t_sec_nodes.data + __pyx_t_10 * __pyx_v_self->_t_sec_nodes.strides[0]) ))));
 
-    /* "bz_pricing/core/curves.pyx":161
+    /* "bz_pricing/core/curves.pyx":173
  *         cdef double * t_sec_ptr = NULL
  * 
  *         if self._t_sec_nodes is not None:             # <<<<<<<<<<<<<<
@@ -26291,21 +26612,21 @@ static double __pyx_f_10bz_pricing_4core_6curves_12ComplexCurve_get_rate(struct 
 */
   }
 
-  /* "bz_pricing/core/curves.pyx":164
+  /* "bz_pricing/core/curves.pyx":176
  *             t_sec_ptr = &self._t_sec_nodes[0]
  * 
  *         if t <= self._t_nodes[0]:             # <<<<<<<<<<<<<<
  *             interp = <Interpolator>self._interpolators[0]
  *             return interp.interpolate(t, &self._t_nodes[0], &self._y_nodes[0], self._n_nodes, t_sec, t_sec_ptr)
 */
-  if (unlikely(!__pyx_v_self->_t_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 164, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->_t_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 176, __pyx_L1_error)}
   __pyx_t_10 = 0;
   __pyx_t_9 = (__pyx_v_t <= (*((double *) ( /* dim=0 */ (__pyx_v_self->_t_nodes.data + __pyx_t_10 * __pyx_v_self->_t_nodes.strides[0]) ))));
 
   if (__pyx_t_9) {
 
 
-    /* "bz_pricing/core/curves.pyx":165
+    /* "bz_pricing/core/curves.pyx":177
  * 
  *         if t <= self._t_nodes[0]:
  *             interp = <Interpolator>self._interpolators[0]             # <<<<<<<<<<<<<<
@@ -26314,34 +26635,34 @@ static double __pyx_f_10bz_pricing_4core_6curves_12ComplexCurve_get_rate(struct 
 */
     if (unlikely(__pyx_v_self->_interpolators == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "\047NoneType\047 object is not subscriptable");
-      __PYX_ERR(0, 165, __pyx_L1_error)
+      __PYX_ERR(0, 177, __pyx_L1_error)
     }
     __pyx_t_1 = __Pyx_PyList_GET_ITEM(__pyx_v_self->_interpolators, 0);
     __Pyx_INCREF(__pyx_t_1);
     __pyx_v_interp = ((struct __pyx_obj_10bz_pricing_4core_13interpolators_Interpolator *)__pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "bz_pricing/core/curves.pyx":166
+    /* "bz_pricing/core/curves.pyx":178
  *         if t <= self._t_nodes[0]:
  *             interp = <Interpolator>self._interpolators[0]
  *             return interp.interpolate(t, &self._t_nodes[0], &self._y_nodes[0], self._n_nodes, t_sec, t_sec_ptr)             # <<<<<<<<<<<<<<
  * 
  *         if t >= self._t_nodes[self._n_nodes - 1]:
 */
-    if (unlikely(!__pyx_v_self->_t_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 166, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_t_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 178, __pyx_L1_error)}
     __pyx_t_10 = 0;
-    if (unlikely(!__pyx_v_self->_y_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 166, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_y_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 178, __pyx_L1_error)}
     __pyx_t_11 = 0;
     __pyx_t_12.__pyx_n = 2;
     __pyx_t_12.t_sec = __pyx_v_t_sec;
     __pyx_t_12.t_sec_nodes = __pyx_v_t_sec_ptr;
-    __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_Interpolator *)__pyx_v_interp->__pyx_vtab)->interpolate(__pyx_v_interp, __pyx_v_t, (&(*((double *) ( /* dim=0 */ (__pyx_v_self->_t_nodes.data + __pyx_t_10 * __pyx_v_self->_t_nodes.strides[0]) )))), (&(*((double *) ( /* dim=0 */ (__pyx_v_self->_y_nodes.data + __pyx_t_11 * __pyx_v_self->_y_nodes.strides[0]) )))), __pyx_v_self->_n_nodes, &__pyx_t_12); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 166, __pyx_L1_error)
+    __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_Interpolator *)__pyx_v_interp->__pyx_vtab)->interpolate(__pyx_v_interp, __pyx_v_t, (&(*((double *) ( /* dim=0 */ (__pyx_v_self->_t_nodes.data + __pyx_t_10 * __pyx_v_self->_t_nodes.strides[0]) )))), (&(*((double *) ( /* dim=0 */ (__pyx_v_self->_y_nodes.data + __pyx_t_11 * __pyx_v_self->_y_nodes.strides[0]) )))), __pyx_v_self->_n_nodes, &__pyx_t_12); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 178, __pyx_L1_error)
     {
       __pyx_r = __pyx_t_8;
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/curves.pyx":164
+    /* "bz_pricing/core/curves.pyx":176
  *             t_sec_ptr = &self._t_sec_nodes[0]
  * 
  *         if t <= self._t_nodes[0]:             # <<<<<<<<<<<<<<
@@ -26350,21 +26671,21 @@ static double __pyx_f_10bz_pricing_4core_6curves_12ComplexCurve_get_rate(struct 
 */
   }
 
-  /* "bz_pricing/core/curves.pyx":168
+  /* "bz_pricing/core/curves.pyx":180
  *             return interp.interpolate(t, &self._t_nodes[0], &self._y_nodes[0], self._n_nodes, t_sec, t_sec_ptr)
  * 
  *         if t >= self._t_nodes[self._n_nodes - 1]:             # <<<<<<<<<<<<<<
  *             interp = <Interpolator>self._interpolators[self._n_nodes - 2]
  *             return interp.interpolate(t, &self._t_nodes[0], &self._y_nodes[0], self._n_nodes, t_sec, t_sec_ptr)
 */
-  if (unlikely(!__pyx_v_self->_t_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 168, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->_t_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 180, __pyx_L1_error)}
   __pyx_t_11 = (__pyx_v_self->_n_nodes - 1);
   __pyx_t_9 = (__pyx_v_t >= (*((double *) ( /* dim=0 */ (__pyx_v_self->_t_nodes.data + __pyx_t_11 * __pyx_v_self->_t_nodes.strides[0]) ))));
 
   if (__pyx_t_9) {
 
 
-    /* "bz_pricing/core/curves.pyx":169
+    /* "bz_pricing/core/curves.pyx":181
  * 
  *         if t >= self._t_nodes[self._n_nodes - 1]:
  *             interp = <Interpolator>self._interpolators[self._n_nodes - 2]             # <<<<<<<<<<<<<<
@@ -26373,7 +26694,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_12ComplexCurve_get_rate(struct 
 */
     if (unlikely(__pyx_v_self->_interpolators == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "\047NoneType\047 object is not subscriptable");
-      __PYX_ERR(0, 169, __pyx_L1_error)
+      __PYX_ERR(0, 181, __pyx_L1_error)
     }
     __pyx_t_13 = (__pyx_v_self->_n_nodes - 2);
 
@@ -26383,27 +26704,27 @@ static double __pyx_f_10bz_pricing_4core_6curves_12ComplexCurve_get_rate(struct 
     __pyx_v_interp = ((struct __pyx_obj_10bz_pricing_4core_13interpolators_Interpolator *)__pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "bz_pricing/core/curves.pyx":170
+    /* "bz_pricing/core/curves.pyx":182
  *         if t >= self._t_nodes[self._n_nodes - 1]:
  *             interp = <Interpolator>self._interpolators[self._n_nodes - 2]
  *             return interp.interpolate(t, &self._t_nodes[0], &self._y_nodes[0], self._n_nodes, t_sec, t_sec_ptr)             # <<<<<<<<<<<<<<
  * 
  *         for i in range(self._n_nodes - 1):
 */
-    if (unlikely(!__pyx_v_self->_t_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 170, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_t_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 182, __pyx_L1_error)}
     __pyx_t_11 = 0;
-    if (unlikely(!__pyx_v_self->_y_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 170, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_y_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 182, __pyx_L1_error)}
     __pyx_t_10 = 0;
     __pyx_t_12.__pyx_n = 2;
     __pyx_t_12.t_sec = __pyx_v_t_sec;
     __pyx_t_12.t_sec_nodes = __pyx_v_t_sec_ptr;
-    __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_Interpolator *)__pyx_v_interp->__pyx_vtab)->interpolate(__pyx_v_interp, __pyx_v_t, (&(*((double *) ( /* dim=0 */ (__pyx_v_self->_t_nodes.data + __pyx_t_11 * __pyx_v_self->_t_nodes.strides[0]) )))), (&(*((double *) ( /* dim=0 */ (__pyx_v_self->_y_nodes.data + __pyx_t_10 * __pyx_v_self->_y_nodes.strides[0]) )))), __pyx_v_self->_n_nodes, &__pyx_t_12); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 170, __pyx_L1_error)
+    __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_Interpolator *)__pyx_v_interp->__pyx_vtab)->interpolate(__pyx_v_interp, __pyx_v_t, (&(*((double *) ( /* dim=0 */ (__pyx_v_self->_t_nodes.data + __pyx_t_11 * __pyx_v_self->_t_nodes.strides[0]) )))), (&(*((double *) ( /* dim=0 */ (__pyx_v_self->_y_nodes.data + __pyx_t_10 * __pyx_v_self->_y_nodes.strides[0]) )))), __pyx_v_self->_n_nodes, &__pyx_t_12); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 182, __pyx_L1_error)
     {
       __pyx_r = __pyx_t_8;
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/curves.pyx":168
+    /* "bz_pricing/core/curves.pyx":180
  *             return interp.interpolate(t, &self._t_nodes[0], &self._y_nodes[0], self._n_nodes, t_sec, t_sec_ptr)
  * 
  *         if t >= self._t_nodes[self._n_nodes - 1]:             # <<<<<<<<<<<<<<
@@ -26412,7 +26733,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_12ComplexCurve_get_rate(struct 
 */
   }
 
-  /* "bz_pricing/core/curves.pyx":172
+  /* "bz_pricing/core/curves.pyx":184
  *             return interp.interpolate(t, &self._t_nodes[0], &self._y_nodes[0], self._n_nodes, t_sec, t_sec_ptr)
  * 
  *         for i in range(self._n_nodes - 1):             # <<<<<<<<<<<<<<
@@ -26426,14 +26747,14 @@ static double __pyx_f_10bz_pricing_4core_6curves_12ComplexCurve_get_rate(struct 
   for (__pyx_t_15 = 0; __pyx_t_15 < __pyx_t_14; __pyx_t_15+=1) {
     __pyx_v_i = __pyx_t_15;
 
-    /* "bz_pricing/core/curves.pyx":173
+    /* "bz_pricing/core/curves.pyx":185
  * 
  *         for i in range(self._n_nodes - 1):
  *             if self._t_nodes[i] <= t and t <= self._t_nodes[i+1]:             # <<<<<<<<<<<<<<
  *                 break
  * 
 */
-    if (unlikely(!__pyx_v_self->_t_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 173, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_t_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 185, __pyx_L1_error)}
     __pyx_t_10 = __pyx_v_i;
     __pyx_t_16 = ((*((double *) ( /* dim=0 */ (__pyx_v_self->_t_nodes.data + __pyx_t_10 * __pyx_v_self->_t_nodes.strides[0]) ))) <= __pyx_v_t);
 
@@ -26445,7 +26766,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_12ComplexCurve_get_rate(struct 
 
       goto __pyx_L9_bool_binop_done;
     }
-    if (unlikely(!__pyx_v_self->_t_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 173, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_t_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 185, __pyx_L1_error)}
     __pyx_t_10 = (__pyx_v_i + 1);
     __pyx_t_16 = (__pyx_v_t <= (*((double *) ( /* dim=0 */ (__pyx_v_self->_t_nodes.data + __pyx_t_10 * __pyx_v_self->_t_nodes.strides[0]) ))));
 
@@ -26456,7 +26777,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_12ComplexCurve_get_rate(struct 
     if (__pyx_t_9) {
 
 
-      /* "bz_pricing/core/curves.pyx":174
+      /* "bz_pricing/core/curves.pyx":186
  *         for i in range(self._n_nodes - 1):
  *             if self._t_nodes[i] <= t and t <= self._t_nodes[i+1]:
  *                 break             # <<<<<<<<<<<<<<
@@ -26465,7 +26786,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_12ComplexCurve_get_rate(struct 
 */
       goto __pyx_L7_break;
 
-      /* "bz_pricing/core/curves.pyx":173
+      /* "bz_pricing/core/curves.pyx":185
  * 
  *         for i in range(self._n_nodes - 1):
  *             if self._t_nodes[i] <= t and t <= self._t_nodes[i+1]:             # <<<<<<<<<<<<<<
@@ -26477,7 +26798,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_12ComplexCurve_get_rate(struct 
   __pyx_L7_break:;
 
 
-  /* "bz_pricing/core/curves.pyx":176
+  /* "bz_pricing/core/curves.pyx":188
  *                 break
  * 
  *         interp = <Interpolator>self._interpolators[i]             # <<<<<<<<<<<<<<
@@ -26486,31 +26807,31 @@ static double __pyx_f_10bz_pricing_4core_6curves_12ComplexCurve_get_rate(struct 
 */
   if (unlikely(__pyx_v_self->_interpolators == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "\047NoneType\047 object is not subscriptable");
-    __PYX_ERR(0, 176, __pyx_L1_error)
+    __PYX_ERR(0, 188, __pyx_L1_error)
   }
   __pyx_t_1 = __Pyx_PyList_GET_ITEM(__pyx_v_self->_interpolators, __pyx_v_i);
   __Pyx_INCREF(__pyx_t_1);
   __pyx_v_interp = ((struct __pyx_obj_10bz_pricing_4core_13interpolators_Interpolator *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/curves.pyx":177
+  /* "bz_pricing/core/curves.pyx":189
  * 
  *         interp = <Interpolator>self._interpolators[i]
  *         cdef double rate = interp.interpolate(t, &self._t_nodes[0], &self._y_nodes[0], self._n_nodes, t_sec, t_sec_ptr)             # <<<<<<<<<<<<<<
  * 
  *         if self._round_decimals >= 0:
 */
-  if (unlikely(!__pyx_v_self->_t_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 177, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->_t_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 189, __pyx_L1_error)}
   __pyx_t_10 = 0;
-  if (unlikely(!__pyx_v_self->_y_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 177, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->_y_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 189, __pyx_L1_error)}
   __pyx_t_11 = 0;
   __pyx_t_12.__pyx_n = 2;
   __pyx_t_12.t_sec = __pyx_v_t_sec;
   __pyx_t_12.t_sec_nodes = __pyx_v_t_sec_ptr;
-  __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_Interpolator *)__pyx_v_interp->__pyx_vtab)->interpolate(__pyx_v_interp, __pyx_v_t, (&(*((double *) ( /* dim=0 */ (__pyx_v_self->_t_nodes.data + __pyx_t_10 * __pyx_v_self->_t_nodes.strides[0]) )))), (&(*((double *) ( /* dim=0 */ (__pyx_v_self->_y_nodes.data + __pyx_t_11 * __pyx_v_self->_y_nodes.strides[0]) )))), __pyx_v_self->_n_nodes, &__pyx_t_12); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 177, __pyx_L1_error)
+  __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_Interpolator *)__pyx_v_interp->__pyx_vtab)->interpolate(__pyx_v_interp, __pyx_v_t, (&(*((double *) ( /* dim=0 */ (__pyx_v_self->_t_nodes.data + __pyx_t_10 * __pyx_v_self->_t_nodes.strides[0]) )))), (&(*((double *) ( /* dim=0 */ (__pyx_v_self->_y_nodes.data + __pyx_t_11 * __pyx_v_self->_y_nodes.strides[0]) )))), __pyx_v_self->_n_nodes, &__pyx_t_12); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 189, __pyx_L1_error)
   __pyx_v_rate = __pyx_t_8;
 
-  /* "bz_pricing/core/curves.pyx":179
+  /* "bz_pricing/core/curves.pyx":191
  *         cdef double rate = interp.interpolate(t, &self._t_nodes[0], &self._y_nodes[0], self._n_nodes, t_sec, t_sec_ptr)
  * 
  *         if self._round_decimals >= 0:             # <<<<<<<<<<<<<<
@@ -26522,7 +26843,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_12ComplexCurve_get_rate(struct 
   if (__pyx_t_9) {
 
 
-    /* "bz_pricing/core/curves.pyx":180
+    /* "bz_pricing/core/curves.pyx":192
  * 
  *         if self._round_decimals >= 0:
  *             if self._is_trunc:             # <<<<<<<<<<<<<<
@@ -26531,7 +26852,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_12ComplexCurve_get_rate(struct 
 */
     if (__pyx_v_self->__pyx_base._is_trunc) {
 
-      /* "bz_pricing/core/curves.pyx":181
+      /* "bz_pricing/core/curves.pyx":193
  *         if self._round_decimals >= 0:
  *             if self._is_trunc:
  *                 rate = trunc(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)             # <<<<<<<<<<<<<<
@@ -26544,13 +26865,13 @@ static double __pyx_f_10bz_pricing_4core_6curves_12ComplexCurve_get_rate(struct 
 
       if (unlikely(__pyx_t_17 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        __PYX_ERR(0, 181, __pyx_L1_error)
+        __PYX_ERR(0, 193, __pyx_L1_error)
       }
       __pyx_v_rate = (__pyx_t_8 / __pyx_t_17);
 
 
 
-      /* "bz_pricing/core/curves.pyx":180
+      /* "bz_pricing/core/curves.pyx":192
  * 
  *         if self._round_decimals >= 0:
  *             if self._is_trunc:             # <<<<<<<<<<<<<<
@@ -26560,7 +26881,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_12ComplexCurve_get_rate(struct 
       goto __pyx_L12;
     }
 
-    /* "bz_pricing/core/curves.pyx":183
+    /* "bz_pricing/core/curves.pyx":195
  *                 rate = trunc(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
  *             else:
  *                 rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)             # <<<<<<<<<<<<<<
@@ -26574,7 +26895,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_12ComplexCurve_get_rate(struct 
 
       if (unlikely(__pyx_t_8 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        __PYX_ERR(0, 183, __pyx_L1_error)
+        __PYX_ERR(0, 195, __pyx_L1_error)
       }
       __pyx_v_rate = (__pyx_t_17 / __pyx_t_8);
 
@@ -26582,7 +26903,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_12ComplexCurve_get_rate(struct 
     }
     __pyx_L12:;
 
-    /* "bz_pricing/core/curves.pyx":179
+    /* "bz_pricing/core/curves.pyx":191
  *         cdef double rate = interp.interpolate(t, &self._t_nodes[0], &self._y_nodes[0], self._n_nodes, t_sec, t_sec_ptr)
  * 
  *         if self._round_decimals >= 0:             # <<<<<<<<<<<<<<
@@ -26591,7 +26912,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_12ComplexCurve_get_rate(struct 
 */
   }
 
-  /* "bz_pricing/core/curves.pyx":185
+  /* "bz_pricing/core/curves.pyx":197
  *                 rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
  * 
  *         return rate             # <<<<<<<<<<<<<<
@@ -26604,7 +26925,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_12ComplexCurve_get_rate(struct 
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/curves.pyx":156
+  /* "bz_pricing/core/curves.pyx":168
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -26672,48 +26993,48 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_t,&__pyx_mstate_global->__pyx_n_u_t_sec,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 156, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 168, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 156, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 168, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 156, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 168, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "get_rate", 0) < (0)) __PYX_ERR(0, 156, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "get_rate", 0) < (0)) __PYX_ERR(0, 168, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, i); __PYX_ERR(0, 156, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, i); __PYX_ERR(0, 168, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 156, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 168, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 156, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 168, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_t = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_t == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 156, __pyx_L3_error)
+    __pyx_v_t = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_t == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 168, __pyx_L3_error)
     if (values[1]) {
-      __pyx_v_t_sec = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_t_sec == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 156, __pyx_L3_error)
+      __pyx_v_t_sec = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_t_sec == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 168, __pyx_L3_error)
     } else {
       __pyx_v_t_sec = ((double)0.0);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 156, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 168, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -26748,8 +27069,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_12ComplexCurve_2get_rate(st
   __Pyx_RefNannySetupContext("get_rate", 0);
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.t_sec = __pyx_v_t_sec;
-  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_6curves_ComplexCurve->__pyx_base.get_rate(((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_v_self), __pyx_v_t, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 156, __pyx_L1_error)
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 156, __pyx_L1_error)
+  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_6curves_ComplexCurve->__pyx_base.get_rate(((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_v_self), __pyx_v_t, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 168, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 168, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
   {
@@ -27281,7 +27602,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_12ComplexCurve_6__setstate_
   return __pyx_r;
 }
 
-/* "bz_pricing/core/curves.pyx":193
+/* "bz_pricing/core/curves.pyx":205
  *     Ambas as curvas subjacentes devem estar anualizadas na base 252.
  *     """
  *     def __init__(self, Curve nominal_curve, Curve real_curve, int round_decimals=-1, str round_mode='round'):             # <<<<<<<<<<<<<<
@@ -27330,49 +27651,49 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_nominal_curve,&__pyx_mstate_global->__pyx_n_u_real_curve,&__pyx_mstate_global->__pyx_n_u_round_decimals,&__pyx_mstate_global->__pyx_n_u_round_mode,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL_TPNEW(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 193, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 205, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 193, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 205, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 193, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 205, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 193, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 205, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 193, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 205, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 193, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 205, __pyx_L3_error)
       if (!values[3]) values[3] = __Pyx_NewRef(((PyObject*)__pyx_mstate_global->__pyx_n_u_round));
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 0, 2, 4, i); __PYX_ERR(0, 193, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 0, 2, 4, i); __PYX_ERR(0, 205, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 193, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 205, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 193, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 205, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 193, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 205, __pyx_L3_error)
         values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 193, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 205, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
@@ -27381,7 +27702,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
     __pyx_v_nominal_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
     __pyx_v_real_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[1]);
     if (values[2]) {
-      __pyx_v_round_decimals = __Pyx_PyLong_As_int(values[2]); if (unlikely((__pyx_v_round_decimals == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 193, __pyx_L3_error)
+      __pyx_v_round_decimals = __Pyx_PyLong_As_int(values[2]); if (unlikely((__pyx_v_round_decimals == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 205, __pyx_L3_error)
     } else {
       __pyx_v_round_decimals = ((int)-1);
     }
@@ -27389,7 +27710,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 0, 2, 4, __pyx_nargs); __PYX_ERR(0, 193, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 0, 2, 4, __pyx_nargs); __PYX_ERR(0, 205, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -27400,9 +27721,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_nominal_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "nominal_curve", 0))) __PYX_ERR(0, 193, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 193, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_round_mode), (&PyUnicode_Type), 1, "round_mode", 1))) __PYX_ERR(0, 193, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_nominal_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "nominal_curve", 0))) __PYX_ERR(0, 205, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 205, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_round_mode), (&PyUnicode_Type), 1, "round_mode", 1))) __PYX_ERR(0, 205, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_6curves_14InflationCurve___init__(((struct __pyx_obj_10bz_pricing_4core_6curves_InflationCurve *)__pyx_v_self), __pyx_v_nominal_curve, __pyx_v_real_curve, __pyx_v_round_decimals, __pyx_v_round_mode);
 
   /* function exit code */
@@ -27433,7 +27754,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_14InflationCurve___init__(struct 
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "bz_pricing/core/curves.pyx":194
+  /* "bz_pricing/core/curves.pyx":206
  *     """
  *     def __init__(self, Curve nominal_curve, Curve real_curve, int round_decimals=-1, str round_mode='round'):
  *         self._nominal_curve = nominal_curve             # <<<<<<<<<<<<<<
@@ -27446,7 +27767,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_14InflationCurve___init__(struct 
   __Pyx_DECREF((PyObject *)__pyx_v_self->_nominal_curve);
   __pyx_v_self->_nominal_curve = __pyx_v_nominal_curve;
 
-  /* "bz_pricing/core/curves.pyx":195
+  /* "bz_pricing/core/curves.pyx":207
  *     def __init__(self, Curve nominal_curve, Curve real_curve, int round_decimals=-1, str round_mode='round'):
  *         self._nominal_curve = nominal_curve
  *         self._real_curve = real_curve             # <<<<<<<<<<<<<<
@@ -27459,7 +27780,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_14InflationCurve___init__(struct 
   __Pyx_DECREF((PyObject *)__pyx_v_self->_real_curve);
   __pyx_v_self->_real_curve = __pyx_v_real_curve;
 
-  /* "bz_pricing/core/curves.pyx":196
+  /* "bz_pricing/core/curves.pyx":208
  *         self._nominal_curve = nominal_curve
  *         self._real_curve = real_curve
  *         self._round_decimals = round_decimals             # <<<<<<<<<<<<<<
@@ -27468,19 +27789,19 @@ static int __pyx_pf_10bz_pricing_4core_6curves_14InflationCurve___init__(struct 
 */
   __pyx_v_self->__pyx_base._round_decimals = __pyx_v_round_decimals;
 
-  /* "bz_pricing/core/curves.pyx":197
+  /* "bz_pricing/core/curves.pyx":209
  *         self._real_curve = real_curve
  *         self._round_decimals = round_decimals
  *         self._is_trunc = (round_mode == 'trunc')             # <<<<<<<<<<<<<<
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
 */
-  __pyx_t_1 = __Pyx_PyObject_CompareEq_str_str(__pyx_v_round_mode, __pyx_mstate_global->__pyx_n_u_trunc, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 197, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 197, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CompareEq_str_str(__pyx_v_round_mode, __pyx_mstate_global->__pyx_n_u_trunc, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 209, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->__pyx_base._is_trunc = __pyx_t_2;
 
-  /* "bz_pricing/core/curves.pyx":193
+  /* "bz_pricing/core/curves.pyx":205
  *     Ambas as curvas subjacentes devem estar anualizadas na base 252.
  *     """
  *     def __init__(self, Curve nominal_curve, Curve real_curve, int round_decimals=-1, str round_mode='round'):             # <<<<<<<<<<<<<<
@@ -27501,7 +27822,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_14InflationCurve___init__(struct 
   return __pyx_r;
 }
 
-/* "bz_pricing/core/curves.pyx":199
+/* "bz_pricing/core/curves.pyx":211
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -27559,15 +27880,15 @@ static double __pyx_f_10bz_pricing_4core_6curves_14InflationCurve_get_rate(struc
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_get_rate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 199, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_get_rate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 211, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_6curves_14InflationCurve_3get_rate)) {
         __pyx_t_3 = NULL;
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; 
-        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_t); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 199, __pyx_L1_error)
+        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_t); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 211, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_t_sec); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 199, __pyx_L1_error)
+        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_t_sec); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 211, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_t_7 = 1;
         #if CYTHON_UNPACK_METHODS
@@ -27588,10 +27909,10 @@ static double __pyx_f_10bz_pricing_4core_6curves_14InflationCurve_get_rate(struc
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 199, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 211, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_8 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 199, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 211, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_8;
@@ -27612,7 +27933,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_14InflationCurve_get_rate(struc
     #endif
   }
 
-  /* "bz_pricing/core/curves.pyx":200
+  /* "bz_pricing/core/curves.pyx":212
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
  *         cdef double pre_rate = self._nominal_curve.get_rate(t, t_sec)             # <<<<<<<<<<<<<<
@@ -27621,10 +27942,10 @@ static double __pyx_f_10bz_pricing_4core_6curves_14InflationCurve_get_rate(struc
 */
   __pyx_t_9.__pyx_n = 1;
   __pyx_t_9.t_sec = __pyx_v_t_sec;
-  __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_self->_nominal_curve->__pyx_vtab)->get_rate(__pyx_v_self->_nominal_curve, __pyx_v_t, 0, &__pyx_t_9); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 200, __pyx_L1_error)
+  __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_self->_nominal_curve->__pyx_vtab)->get_rate(__pyx_v_self->_nominal_curve, __pyx_v_t, 0, &__pyx_t_9); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 212, __pyx_L1_error)
   __pyx_v_pre_rate = __pyx_t_8;
 
-  /* "bz_pricing/core/curves.pyx":201
+  /* "bz_pricing/core/curves.pyx":213
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
  *         cdef double pre_rate = self._nominal_curve.get_rate(t, t_sec)
  *         cdef double dap_rate = self._real_curve.get_rate(t, t_sec)             # <<<<<<<<<<<<<<
@@ -27633,10 +27954,10 @@ static double __pyx_f_10bz_pricing_4core_6curves_14InflationCurve_get_rate(struc
 */
   __pyx_t_9.__pyx_n = 1;
   __pyx_t_9.t_sec = __pyx_v_t_sec;
-  __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_self->_real_curve->__pyx_vtab)->get_rate(__pyx_v_self->_real_curve, __pyx_v_t, 0, &__pyx_t_9); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 201, __pyx_L1_error)
+  __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_self->_real_curve->__pyx_vtab)->get_rate(__pyx_v_self->_real_curve, __pyx_v_t, 0, &__pyx_t_9); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 213, __pyx_L1_error)
   __pyx_v_dap_rate = __pyx_t_8;
 
-  /* "bz_pricing/core/curves.pyx":203
+  /* "bz_pricing/core/curves.pyx":215
  *         cdef double dap_rate = self._real_curve.get_rate(t, t_sec)
  * 
  *         cdef double rate = ((1.0 + pre_rate) / (1.0 + dap_rate)) - 1.0             # <<<<<<<<<<<<<<
@@ -27649,13 +27970,13 @@ static double __pyx_f_10bz_pricing_4core_6curves_14InflationCurve_get_rate(struc
 
   if (unlikely(__pyx_t_10 == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    __PYX_ERR(0, 203, __pyx_L1_error)
+    __PYX_ERR(0, 215, __pyx_L1_error)
   }
   __pyx_v_rate = ((__pyx_t_8 / __pyx_t_10) - 1.0);
 
 
 
-  /* "bz_pricing/core/curves.pyx":205
+  /* "bz_pricing/core/curves.pyx":217
  *         cdef double rate = ((1.0 + pre_rate) / (1.0 + dap_rate)) - 1.0
  * 
  *         if self._round_decimals >= 0:             # <<<<<<<<<<<<<<
@@ -27667,7 +27988,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_14InflationCurve_get_rate(struc
   if (__pyx_t_11) {
 
 
-    /* "bz_pricing/core/curves.pyx":206
+    /* "bz_pricing/core/curves.pyx":218
  * 
  *         if self._round_decimals >= 0:
  *             if self._is_trunc:             # <<<<<<<<<<<<<<
@@ -27676,7 +27997,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_14InflationCurve_get_rate(struc
 */
     if (__pyx_v_self->__pyx_base._is_trunc) {
 
-      /* "bz_pricing/core/curves.pyx":207
+      /* "bz_pricing/core/curves.pyx":219
  *         if self._round_decimals >= 0:
  *             if self._is_trunc:
  *                 rate = trunc(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)             # <<<<<<<<<<<<<<
@@ -27689,13 +28010,13 @@ static double __pyx_f_10bz_pricing_4core_6curves_14InflationCurve_get_rate(struc
 
       if (unlikely(__pyx_t_8 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        __PYX_ERR(0, 207, __pyx_L1_error)
+        __PYX_ERR(0, 219, __pyx_L1_error)
       }
       __pyx_v_rate = (__pyx_t_10 / __pyx_t_8);
 
 
 
-      /* "bz_pricing/core/curves.pyx":206
+      /* "bz_pricing/core/curves.pyx":218
  * 
  *         if self._round_decimals >= 0:
  *             if self._is_trunc:             # <<<<<<<<<<<<<<
@@ -27705,7 +28026,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_14InflationCurve_get_rate(struc
       goto __pyx_L4;
     }
 
-    /* "bz_pricing/core/curves.pyx":209
+    /* "bz_pricing/core/curves.pyx":221
  *                 rate = trunc(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
  *             else:
  *                 rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)             # <<<<<<<<<<<<<<
@@ -27719,7 +28040,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_14InflationCurve_get_rate(struc
 
       if (unlikely(__pyx_t_10 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        __PYX_ERR(0, 209, __pyx_L1_error)
+        __PYX_ERR(0, 221, __pyx_L1_error)
       }
       __pyx_v_rate = (__pyx_t_8 / __pyx_t_10);
 
@@ -27727,7 +28048,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_14InflationCurve_get_rate(struc
     }
     __pyx_L4:;
 
-    /* "bz_pricing/core/curves.pyx":205
+    /* "bz_pricing/core/curves.pyx":217
  *         cdef double rate = ((1.0 + pre_rate) / (1.0 + dap_rate)) - 1.0
  * 
  *         if self._round_decimals >= 0:             # <<<<<<<<<<<<<<
@@ -27736,7 +28057,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_14InflationCurve_get_rate(struc
 */
   }
 
-  /* "bz_pricing/core/curves.pyx":211
+  /* "bz_pricing/core/curves.pyx":223
  *                 rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
  * 
  *         return rate             # <<<<<<<<<<<<<<
@@ -27749,7 +28070,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_14InflationCurve_get_rate(struc
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/curves.pyx":199
+  /* "bz_pricing/core/curves.pyx":211
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -27816,48 +28137,48 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_t,&__pyx_mstate_global->__pyx_n_u_t_sec,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 199, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 211, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 199, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 211, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 199, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 211, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "get_rate", 0) < (0)) __PYX_ERR(0, 199, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "get_rate", 0) < (0)) __PYX_ERR(0, 211, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, i); __PYX_ERR(0, 199, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, i); __PYX_ERR(0, 211, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 199, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 211, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 199, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 211, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_t = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_t == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 199, __pyx_L3_error)
+    __pyx_v_t = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_t == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 211, __pyx_L3_error)
     if (values[1]) {
-      __pyx_v_t_sec = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_t_sec == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 199, __pyx_L3_error)
+      __pyx_v_t_sec = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_t_sec == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 211, __pyx_L3_error)
     } else {
       __pyx_v_t_sec = ((double)0.0);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 199, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 211, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -27892,8 +28213,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_14InflationCurve_2get_rate(
   __Pyx_RefNannySetupContext("get_rate", 0);
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.t_sec = __pyx_v_t_sec;
-  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_6curves_InflationCurve->__pyx_base.get_rate(((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_v_self), __pyx_v_t, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 199, __pyx_L1_error)
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 199, __pyx_L1_error)
+  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_6curves_InflationCurve->__pyx_base.get_rate(((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_v_self), __pyx_v_t, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 211, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 211, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
   {
@@ -28410,7 +28731,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_14InflationCurve_6__setstat
   return __pyx_r;
 }
 
-/* "bz_pricing/core/curves.pyx":223
+/* "bz_pricing/core/curves.pyx":235
  *     As taxas so retornadas em formato decimal (% / 100).
  *     """
  *     def __init__(self, double spot_price, Curve futures_curve, Curve pre_curve, int round_decimals=-1, str round_mode='round'):             # <<<<<<<<<<<<<<
@@ -28460,65 +28781,65 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_spot_price,&__pyx_mstate_global->__pyx_n_u_futures_curve,&__pyx_mstate_global->__pyx_n_u_pre_curve,&__pyx_mstate_global->__pyx_n_u_round_decimals,&__pyx_mstate_global->__pyx_n_u_round_mode,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL_TPNEW(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 223, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 235, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 223, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 235, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 223, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 235, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 223, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 235, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 223, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 235, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 223, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 235, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 223, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 235, __pyx_L3_error)
       if (!values[4]) values[4] = __Pyx_NewRef(((PyObject*)__pyx_mstate_global->__pyx_n_u_round));
       for (Py_ssize_t i = __pyx_nargs; i < 3; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 5, i); __PYX_ERR(0, 223, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 5, i); __PYX_ERR(0, 235, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 223, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 235, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 223, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 235, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 223, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 235, __pyx_L3_error)
         values[1] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 223, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 235, __pyx_L3_error)
         values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 223, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 235, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
       if (!values[4]) values[4] = __Pyx_NewRef(((PyObject*)__pyx_mstate_global->__pyx_n_u_round));
     }
-    __pyx_v_spot_price = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_spot_price == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 223, __pyx_L3_error)
+    __pyx_v_spot_price = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_spot_price == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 235, __pyx_L3_error)
     __pyx_v_futures_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[1]);
     __pyx_v_pre_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[2]);
     if (values[3]) {
-      __pyx_v_round_decimals = __Pyx_PyLong_As_int(values[3]); if (unlikely((__pyx_v_round_decimals == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 223, __pyx_L3_error)
+      __pyx_v_round_decimals = __Pyx_PyLong_As_int(values[3]); if (unlikely((__pyx_v_round_decimals == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 235, __pyx_L3_error)
     } else {
       __pyx_v_round_decimals = ((int)-1);
     }
@@ -28526,7 +28847,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 5, __pyx_nargs); __PYX_ERR(0, 223, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 5, __pyx_nargs); __PYX_ERR(0, 235, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -28537,9 +28858,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_futures_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "futures_curve", 0))) __PYX_ERR(0, 223, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_pre_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "pre_curve", 0))) __PYX_ERR(0, 223, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_round_mode), (&PyUnicode_Type), 1, "round_mode", 1))) __PYX_ERR(0, 223, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_futures_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "futures_curve", 0))) __PYX_ERR(0, 235, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_pre_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "pre_curve", 0))) __PYX_ERR(0, 235, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_round_mode), (&PyUnicode_Type), 1, "round_mode", 1))) __PYX_ERR(0, 235, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(((struct __pyx_obj_10bz_pricing_4core_6curves_ConvenienceYieldCurve *)__pyx_v_self), __pyx_v_spot_price, __pyx_v_futures_curve, __pyx_v_pre_curve, __pyx_v_round_decimals, __pyx_v_round_mode);
 
   /* function exit code */
@@ -28598,7 +28919,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "bz_pricing/core/curves.pyx":224
+  /* "bz_pricing/core/curves.pyx":236
  *     """
  *     def __init__(self, double spot_price, Curve futures_curve, Curve pre_curve, int round_decimals=-1, str round_mode='round'):
  *         from bz_pricing.core.interpolators import FlatForward252Interpolator             # <<<<<<<<<<<<<<
@@ -28607,14 +28928,14 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
 */
   {
     PyObject* const __pyx_imported_names[] = {__pyx_mstate_global->__pyx_n_u_FlatForward252Interpolator};
-    __pyx_t_2 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_bz_pricing_core_interpolators, __pyx_imported_names, 1, NULL, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 224, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_bz_pricing_core_interpolators, __pyx_imported_names, 1, NULL, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 236, __pyx_L1_error)
   }
   __pyx_t_1 = __pyx_t_2;
   __Pyx_GOTREF(__pyx_t_1);
   {
     PyObject* const __pyx_imported_names[] = {__pyx_mstate_global->__pyx_n_u_FlatForward252Interpolator};
     __pyx_t_3 = 0; {
-      __pyx_t_4 = __Pyx_ImportFrom(__pyx_t_1, __pyx_imported_names[__pyx_t_3]); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 224, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_ImportFrom(__pyx_t_1, __pyx_imported_names[__pyx_t_3]); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 236, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       switch (__pyx_t_3) {
         case 0:
@@ -28628,7 +28949,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/curves.pyx":225
+  /* "bz_pricing/core/curves.pyx":237
  *     def __init__(self, double spot_price, Curve futures_curve, Curve pre_curve, int round_decimals=-1, str round_mode='round'):
  *         from bz_pricing.core.interpolators import FlatForward252Interpolator
  *         self._spot_price = spot_price             # <<<<<<<<<<<<<<
@@ -28637,7 +28958,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
 */
   __pyx_v_self->_spot_price = __pyx_v_spot_price;
 
-  /* "bz_pricing/core/curves.pyx":226
+  /* "bz_pricing/core/curves.pyx":238
  *         from bz_pricing.core.interpolators import FlatForward252Interpolator
  *         self._spot_price = spot_price
  *         self._futures_curve = futures_curve             # <<<<<<<<<<<<<<
@@ -28650,7 +28971,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
   __Pyx_DECREF((PyObject *)__pyx_v_self->_futures_curve);
   __pyx_v_self->_futures_curve = __pyx_v_futures_curve;
 
-  /* "bz_pricing/core/curves.pyx":227
+  /* "bz_pricing/core/curves.pyx":239
  *         self._spot_price = spot_price
  *         self._futures_curve = futures_curve
  *         self._pre_curve = pre_curve             # <<<<<<<<<<<<<<
@@ -28663,7 +28984,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
   __Pyx_DECREF((PyObject *)__pyx_v_self->_pre_curve);
   __pyx_v_self->_pre_curve = __pyx_v_pre_curve;
 
-  /* "bz_pricing/core/curves.pyx":228
+  /* "bz_pricing/core/curves.pyx":240
  *         self._futures_curve = futures_curve
  *         self._pre_curve = pre_curve
  *         self._round_decimals = round_decimals             # <<<<<<<<<<<<<<
@@ -28672,19 +28993,19 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
 */
   __pyx_v_self->__pyx_base._round_decimals = __pyx_v_round_decimals;
 
-  /* "bz_pricing/core/curves.pyx":229
+  /* "bz_pricing/core/curves.pyx":241
  *         self._pre_curve = pre_curve
  *         self._round_decimals = round_decimals
  *         self._is_trunc = (round_mode == 'trunc')             # <<<<<<<<<<<<<<
  *         self._interp_curve = None
  * 
 */
-  __pyx_t_1 = __Pyx_PyObject_CompareEq_str_str(__pyx_v_round_mode, __pyx_mstate_global->__pyx_n_u_trunc, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 229, __pyx_L1_error)
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 229, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CompareEq_str_str(__pyx_v_round_mode, __pyx_mstate_global->__pyx_n_u_trunc, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 241, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 241, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->__pyx_base._is_trunc = __pyx_t_5;
 
-  /* "bz_pricing/core/curves.pyx":230
+  /* "bz_pricing/core/curves.pyx":242
  *         self._round_decimals = round_decimals
  *         self._is_trunc = (round_mode == 'trunc')
  *         self._interp_curve = None             # <<<<<<<<<<<<<<
@@ -28697,31 +29018,31 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
   __Pyx_DECREF((PyObject *)__pyx_v_self->_interp_curve);
   __pyx_v_self->_interp_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_SimpleCurve *)Py_None);
 
-  /* "bz_pricing/core/curves.pyx":235
+  /* "bz_pricing/core/curves.pyx":247
  *         cdef int i
  *         cdef double du_n, fut_n, pre_n, cy_n
  *         cdef list v_t = []             # <<<<<<<<<<<<<<
  *         cdef list v_y = []
  * 
 */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 235, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 247, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_v_t = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/curves.pyx":236
+  /* "bz_pricing/core/curves.pyx":248
  *         cdef double du_n, fut_n, pre_n, cy_n
  *         cdef list v_t = []
  *         cdef list v_y = []             # <<<<<<<<<<<<<<
  * 
  *         if isinstance(futures_curve, SimpleCurve) and spot_price > 0.0:
 */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 236, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 248, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_v_y = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/curves.pyx":238
+  /* "bz_pricing/core/curves.pyx":250
  *         cdef list v_y = []
  * 
  *         if isinstance(futures_curve, SimpleCurve) and spot_price > 0.0:             # <<<<<<<<<<<<<<
@@ -28746,7 +29067,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
   if (__pyx_t_5) {
 
 
-    /* "bz_pricing/core/curves.pyx":239
+    /* "bz_pricing/core/curves.pyx":251
  * 
  *         if isinstance(futures_curve, SimpleCurve) and spot_price > 0.0:
  *             sc = <SimpleCurve>futures_curve             # <<<<<<<<<<<<<<
@@ -28758,7 +29079,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
     __pyx_v_sc = ((struct __pyx_obj_10bz_pricing_4core_6curves_SimpleCurve *)__pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "bz_pricing/core/curves.pyx":240
+    /* "bz_pricing/core/curves.pyx":252
  *         if isinstance(futures_curve, SimpleCurve) and spot_price > 0.0:
  *             sc = <SimpleCurve>futures_curve
  *             for i in range(sc._n_nodes):             # <<<<<<<<<<<<<<
@@ -28772,18 +29093,18 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
     for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_8; __pyx_t_9+=1) {
       __pyx_v_i = __pyx_t_9;
 
-      /* "bz_pricing/core/curves.pyx":241
+      /* "bz_pricing/core/curves.pyx":253
  *             sc = <SimpleCurve>futures_curve
  *             for i in range(sc._n_nodes):
  *                 du_n = sc._t_nodes[i]             # <<<<<<<<<<<<<<
  *                 # Filtra o Spot (DU=1) e a ncora auxiliar de preo (DU=2 quando h vencimentos > 2)
  *                 if du_n <= 1.0:
 */
-      if (unlikely(!__pyx_v_sc->_t_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 241, __pyx_L1_error)}
+      if (unlikely(!__pyx_v_sc->_t_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 253, __pyx_L1_error)}
       __pyx_t_10 = __pyx_v_i;
       __pyx_v_du_n = (*((double *) ( /* dim=0 */ (__pyx_v_sc->_t_nodes.data + __pyx_t_10 * __pyx_v_sc->_t_nodes.strides[0]) )));
 
-      /* "bz_pricing/core/curves.pyx":243
+      /* "bz_pricing/core/curves.pyx":255
  *                 du_n = sc._t_nodes[i]
  *                 # Filtra o Spot (DU=1) e a ncora auxiliar de preo (DU=2 quando h vencimentos > 2)
  *                 if du_n <= 1.0:             # <<<<<<<<<<<<<<
@@ -28795,7 +29116,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
       if (__pyx_t_5) {
 
 
-        /* "bz_pricing/core/curves.pyx":244
+        /* "bz_pricing/core/curves.pyx":256
  *                 # Filtra o Spot (DU=1) e a ncora auxiliar de preo (DU=2 quando h vencimentos > 2)
  *                 if du_n <= 1.0:
  *                     continue             # <<<<<<<<<<<<<<
@@ -28804,7 +29125,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
 */
         goto __pyx_L6_continue;
 
-        /* "bz_pricing/core/curves.pyx":243
+        /* "bz_pricing/core/curves.pyx":255
  *                 du_n = sc._t_nodes[i]
  *                 # Filtra o Spot (DU=1) e a ncora auxiliar de preo (DU=2 quando h vencimentos > 2)
  *                 if du_n <= 1.0:             # <<<<<<<<<<<<<<
@@ -28813,7 +29134,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
 */
       }
 
-      /* "bz_pricing/core/curves.pyx":245
+      /* "bz_pricing/core/curves.pyx":257
  *                 if du_n <= 1.0:
  *                     continue
  *                 if du_n == 2.0 and sc._n_nodes > 2 and sc._t_nodes[sc._n_nodes - 1] > 2.0:             # <<<<<<<<<<<<<<
@@ -28840,7 +29161,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
 
         goto __pyx_L10_bool_binop_done;
       }
-      if (unlikely(!__pyx_v_sc->_t_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 245, __pyx_L1_error)}
+      if (unlikely(!__pyx_v_sc->_t_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 257, __pyx_L1_error)}
       __pyx_t_10 = (__pyx_v_sc->_n_nodes - 1);
       __pyx_t_6 = ((*((double *) ( /* dim=0 */ (__pyx_v_sc->_t_nodes.data + __pyx_t_10 * __pyx_v_sc->_t_nodes.strides[0]) ))) > 2.0);
 
@@ -28851,7 +29172,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
       if (__pyx_t_5) {
 
 
-        /* "bz_pricing/core/curves.pyx":246
+        /* "bz_pricing/core/curves.pyx":258
  *                     continue
  *                 if du_n == 2.0 and sc._n_nodes > 2 and sc._t_nodes[sc._n_nodes - 1] > 2.0:
  *                     continue             # <<<<<<<<<<<<<<
@@ -28860,7 +29181,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
 */
         goto __pyx_L6_continue;
 
-        /* "bz_pricing/core/curves.pyx":245
+        /* "bz_pricing/core/curves.pyx":257
  *                 if du_n <= 1.0:
  *                     continue
  *                 if du_n == 2.0 and sc._n_nodes > 2 and sc._t_nodes[sc._n_nodes - 1] > 2.0:             # <<<<<<<<<<<<<<
@@ -28869,18 +29190,18 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
 */
       }
 
-      /* "bz_pricing/core/curves.pyx":247
+      /* "bz_pricing/core/curves.pyx":259
  *                 if du_n == 2.0 and sc._n_nodes > 2 and sc._t_nodes[sc._n_nodes - 1] > 2.0:
  *                     continue
  *                 fut_n = sc._y_nodes[i]             # <<<<<<<<<<<<<<
  *                 if fut_n <= 0.0:
  *                     continue
 */
-      if (unlikely(!__pyx_v_sc->_y_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 247, __pyx_L1_error)}
+      if (unlikely(!__pyx_v_sc->_y_nodes.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 259, __pyx_L1_error)}
       __pyx_t_10 = __pyx_v_i;
       __pyx_v_fut_n = (*((double *) ( /* dim=0 */ (__pyx_v_sc->_y_nodes.data + __pyx_t_10 * __pyx_v_sc->_y_nodes.strides[0]) )));
 
-      /* "bz_pricing/core/curves.pyx":248
+      /* "bz_pricing/core/curves.pyx":260
  *                     continue
  *                 fut_n = sc._y_nodes[i]
  *                 if fut_n <= 0.0:             # <<<<<<<<<<<<<<
@@ -28892,7 +29213,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
       if (__pyx_t_5) {
 
 
-        /* "bz_pricing/core/curves.pyx":249
+        /* "bz_pricing/core/curves.pyx":261
  *                 fut_n = sc._y_nodes[i]
  *                 if fut_n <= 0.0:
  *                     continue             # <<<<<<<<<<<<<<
@@ -28901,7 +29222,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
 */
         goto __pyx_L6_continue;
 
-        /* "bz_pricing/core/curves.pyx":248
+        /* "bz_pricing/core/curves.pyx":260
  *                     continue
  *                 fut_n = sc._y_nodes[i]
  *                 if fut_n <= 0.0:             # <<<<<<<<<<<<<<
@@ -28910,17 +29231,17 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
 */
       }
 
-      /* "bz_pricing/core/curves.pyx":250
+      /* "bz_pricing/core/curves.pyx":262
  *                 if fut_n <= 0.0:
  *                     continue
  *                 pre_n = pre_curve.get_rate(du_n)             # <<<<<<<<<<<<<<
  *                 cy_n = pow((spot_price * pow(1.0 + pre_n, du_n / 252.0)) / fut_n, 252.0 / du_n) - 1.0
  *                 if self._round_decimals >= 0:
 */
-      __pyx_t_11 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_pre_curve->__pyx_vtab)->get_rate(__pyx_v_pre_curve, __pyx_v_du_n, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 250, __pyx_L1_error)
+      __pyx_t_11 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_pre_curve->__pyx_vtab)->get_rate(__pyx_v_pre_curve, __pyx_v_du_n, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 262, __pyx_L1_error)
       __pyx_v_pre_n = __pyx_t_11;
 
-      /* "bz_pricing/core/curves.pyx":251
+      /* "bz_pricing/core/curves.pyx":263
  *                     continue
  *                 pre_n = pre_curve.get_rate(du_n)
  *                 cy_n = pow((spot_price * pow(1.0 + pre_n, du_n / 252.0)) / fut_n, 252.0 / du_n) - 1.0             # <<<<<<<<<<<<<<
@@ -28931,16 +29252,16 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
 
       if (unlikely(__pyx_v_fut_n == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        __PYX_ERR(0, 251, __pyx_L1_error)
+        __PYX_ERR(0, 263, __pyx_L1_error)
       }
       if (unlikely(__pyx_v_du_n == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        __PYX_ERR(0, 251, __pyx_L1_error)
+        __PYX_ERR(0, 263, __pyx_L1_error)
       }
       __pyx_v_cy_n = (pow((__pyx_t_11 / __pyx_v_fut_n), (252.0 / __pyx_v_du_n)) - 1.0);
 
 
-      /* "bz_pricing/core/curves.pyx":252
+      /* "bz_pricing/core/curves.pyx":264
  *                 pre_n = pre_curve.get_rate(du_n)
  *                 cy_n = pow((spot_price * pow(1.0 + pre_n, du_n / 252.0)) / fut_n, 252.0 / du_n) - 1.0
  *                 if self._round_decimals >= 0:             # <<<<<<<<<<<<<<
@@ -28952,7 +29273,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
       if (__pyx_t_5) {
 
 
-        /* "bz_pricing/core/curves.pyx":253
+        /* "bz_pricing/core/curves.pyx":265
  *                 cy_n = pow((spot_price * pow(1.0 + pre_n, du_n / 252.0)) / fut_n, 252.0 / du_n) - 1.0
  *                 if self._round_decimals >= 0:
  *                     if self._is_trunc:             # <<<<<<<<<<<<<<
@@ -28961,7 +29282,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
 */
         if (__pyx_v_self->__pyx_base._is_trunc) {
 
-          /* "bz_pricing/core/curves.pyx":254
+          /* "bz_pricing/core/curves.pyx":266
  *                 if self._round_decimals >= 0:
  *                     if self._is_trunc:
  *                         cy_n = trunc(cy_n * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)             # <<<<<<<<<<<<<<
@@ -28974,13 +29295,13 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
 
           if (unlikely(__pyx_t_12 == 0)) {
             PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-            __PYX_ERR(0, 254, __pyx_L1_error)
+            __PYX_ERR(0, 266, __pyx_L1_error)
           }
           __pyx_v_cy_n = (__pyx_t_11 / __pyx_t_12);
 
 
 
-          /* "bz_pricing/core/curves.pyx":253
+          /* "bz_pricing/core/curves.pyx":265
  *                 cy_n = pow((spot_price * pow(1.0 + pre_n, du_n / 252.0)) / fut_n, 252.0 / du_n) - 1.0
  *                 if self._round_decimals >= 0:
  *                     if self._is_trunc:             # <<<<<<<<<<<<<<
@@ -28990,7 +29311,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
           goto __pyx_L15;
         }
 
-        /* "bz_pricing/core/curves.pyx":256
+        /* "bz_pricing/core/curves.pyx":268
  *                         cy_n = trunc(cy_n * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
  *                     else:
  *                         cy_n = round(cy_n * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)             # <<<<<<<<<<<<<<
@@ -29004,7 +29325,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
 
           if (unlikely(__pyx_t_11 == 0)) {
             PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-            __PYX_ERR(0, 256, __pyx_L1_error)
+            __PYX_ERR(0, 268, __pyx_L1_error)
           }
           __pyx_v_cy_n = (__pyx_t_12 / __pyx_t_11);
 
@@ -29012,7 +29333,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
         }
         __pyx_L15:;
 
-        /* "bz_pricing/core/curves.pyx":252
+        /* "bz_pricing/core/curves.pyx":264
  *                 pre_n = pre_curve.get_rate(du_n)
  *                 cy_n = pow((spot_price * pow(1.0 + pre_n, du_n / 252.0)) / fut_n, 252.0 / du_n) - 1.0
  *                 if self._round_decimals >= 0:             # <<<<<<<<<<<<<<
@@ -29021,50 +29342,50 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
 */
       }
 
-      /* "bz_pricing/core/curves.pyx":257
+      /* "bz_pricing/core/curves.pyx":269
  *                     else:
  *                         cy_n = round(cy_n * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
  *                 v_t.append(du_n)             # <<<<<<<<<<<<<<
  *                 v_y.append(cy_n)
  * 
 */
-      __pyx_t_1 = PyFloat_FromDouble(__pyx_v_du_n); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 257, __pyx_L1_error)
+      __pyx_t_1 = PyFloat_FromDouble(__pyx_v_du_n); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 269, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_13 = __Pyx_PyList_Append(__pyx_v_v_t, __pyx_t_1); if (unlikely(__pyx_t_13 == ((int)-1))) __PYX_ERR(0, 257, __pyx_L1_error)
+      __pyx_t_13 = __Pyx_PyList_Append(__pyx_v_v_t, __pyx_t_1); if (unlikely(__pyx_t_13 == ((int)-1))) __PYX_ERR(0, 269, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
 
-      /* "bz_pricing/core/curves.pyx":258
+      /* "bz_pricing/core/curves.pyx":270
  *                         cy_n = round(cy_n * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
  *                 v_t.append(du_n)
  *                 v_y.append(cy_n)             # <<<<<<<<<<<<<<
  * 
  *             if len(v_t) > 0:
 */
-      __pyx_t_1 = PyFloat_FromDouble(__pyx_v_cy_n); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 258, __pyx_L1_error)
+      __pyx_t_1 = PyFloat_FromDouble(__pyx_v_cy_n); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 270, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_13 = __Pyx_PyList_Append(__pyx_v_v_y, __pyx_t_1); if (unlikely(__pyx_t_13 == ((int)-1))) __PYX_ERR(0, 258, __pyx_L1_error)
+      __pyx_t_13 = __Pyx_PyList_Append(__pyx_v_v_y, __pyx_t_1); if (unlikely(__pyx_t_13 == ((int)-1))) __PYX_ERR(0, 270, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
       __pyx_L6_continue:;
     }
 
 
-    /* "bz_pricing/core/curves.pyx":260
+    /* "bz_pricing/core/curves.pyx":272
  *                 v_y.append(cy_n)
  * 
  *             if len(v_t) > 0:             # <<<<<<<<<<<<<<
  *                 self._interp_curve = SimpleCurve(
  *                     np.array(v_t, dtype=np.float64),
 */
-    __pyx_t_3 = __Pyx_PyList_GET_SIZE(__pyx_v_v_t); if (unlikely(__pyx_t_3 == ((Py_ssize_t)-1))) __PYX_ERR(0, 260, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyList_GET_SIZE(__pyx_v_v_t); if (unlikely(__pyx_t_3 == ((Py_ssize_t)-1))) __PYX_ERR(0, 272, __pyx_L1_error)
     __pyx_t_5 = (__pyx_t_3 > 0);
 
 
     if (__pyx_t_5) {
 
 
-      /* "bz_pricing/core/curves.pyx":261
+      /* "bz_pricing/core/curves.pyx":273
  * 
  *             if len(v_t) > 0:
  *                 self._interp_curve = SimpleCurve(             # <<<<<<<<<<<<<<
@@ -29073,7 +29394,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
 */
       __pyx_t_4 = NULL;
 
-      /* "bz_pricing/core/curves.pyx":262
+      /* "bz_pricing/core/curves.pyx":274
  *             if len(v_t) > 0:
  *                 self._interp_curve = SimpleCurve(
  *                     np.array(v_t, dtype=np.float64),             # <<<<<<<<<<<<<<
@@ -29081,14 +29402,14 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
  *                     FlatForward252Interpolator(extrap_left=0, extrap_right=0),
 */
       __pyx_t_15 = NULL;
-      __Pyx_GetModuleGlobalName(__pyx_t_16, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 262, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_16, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 274, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_16);
-      __pyx_t_17 = __Pyx_PyObject_GetAttrStr(__pyx_t_16, __pyx_mstate_global->__pyx_n_u_array); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 262, __pyx_L1_error)
+      __pyx_t_17 = __Pyx_PyObject_GetAttrStr(__pyx_t_16, __pyx_mstate_global->__pyx_n_u_array); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 274, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_17);
       __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
-      __Pyx_GetModuleGlobalName(__pyx_t_16, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 262, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_16, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 274, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_16);
-      __pyx_t_18 = __Pyx_PyObject_GetAttrStr(__pyx_t_16, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 262, __pyx_L1_error)
+      __pyx_t_18 = __Pyx_PyObject_GetAttrStr(__pyx_t_16, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 274, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_18);
       __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
       __pyx_t_19 = 1;
@@ -29107,13 +29428,13 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
         PyObject *__pyx_callargs[3] = {__pyx_t_15, __pyx_v_v_t, __pyx_t_18};
         #if CYTHON_VECTORCALL
         __pyx_t_16 = __pyx_mstate_global->__pyx_tuple[2];
-        if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 262, __pyx_L1_error)
+        if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 274, __pyx_L1_error)
         __Pyx_INCREF(__pyx_t_16);
         #else
         {
           PyObject *__pyx_temp[1] = {__pyx_mstate_global->__pyx_n_u_dtype};
           __pyx_t_16 = __Pyx_MakeKwargDict(__pyx_temp, __pyx_callargs+2, 1);
-          if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 262, __pyx_L1_error)
+          if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 274, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_16);
         }
         #endif
@@ -29122,11 +29443,11 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
         __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
         __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
         __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-        if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 262, __pyx_L1_error)
+        if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 274, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_14);
       }
 
-      /* "bz_pricing/core/curves.pyx":263
+      /* "bz_pricing/core/curves.pyx":275
  *                 self._interp_curve = SimpleCurve(
  *                     np.array(v_t, dtype=np.float64),
  *                     np.array(v_y, dtype=np.float64),             # <<<<<<<<<<<<<<
@@ -29134,14 +29455,14 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
  *                     round_decimals=round_decimals,
 */
       __pyx_t_16 = NULL;
-      __Pyx_GetModuleGlobalName(__pyx_t_18, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 263, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_18, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 275, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_18);
-      __pyx_t_15 = __Pyx_PyObject_GetAttrStr(__pyx_t_18, __pyx_mstate_global->__pyx_n_u_array); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 263, __pyx_L1_error)
+      __pyx_t_15 = __Pyx_PyObject_GetAttrStr(__pyx_t_18, __pyx_mstate_global->__pyx_n_u_array); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 275, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_15);
       __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
-      __Pyx_GetModuleGlobalName(__pyx_t_18, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 263, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_18, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 275, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_18);
-      __pyx_t_20 = __Pyx_PyObject_GetAttrStr(__pyx_t_18, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 263, __pyx_L1_error)
+      __pyx_t_20 = __Pyx_PyObject_GetAttrStr(__pyx_t_18, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 275, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_20);
       __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
       __pyx_t_19 = 1;
@@ -29160,13 +29481,13 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
         PyObject *__pyx_callargs[3] = {__pyx_t_16, __pyx_v_v_y, __pyx_t_20};
         #if CYTHON_VECTORCALL
         __pyx_t_18 = __pyx_mstate_global->__pyx_tuple[2];
-        if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 263, __pyx_L1_error)
+        if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 275, __pyx_L1_error)
         __Pyx_INCREF(__pyx_t_18);
         #else
         {
           PyObject *__pyx_temp[1] = {__pyx_mstate_global->__pyx_n_u_dtype};
           __pyx_t_18 = __Pyx_MakeKwargDict(__pyx_temp, __pyx_callargs+2, 1);
-          if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 263, __pyx_L1_error)
+          if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 275, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_18);
         }
         #endif
@@ -29175,11 +29496,11 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
         __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
         __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
         __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
-        if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 263, __pyx_L1_error)
+        if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 275, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_17);
       }
 
-      /* "bz_pricing/core/curves.pyx":264
+      /* "bz_pricing/core/curves.pyx":276
  *                     np.array(v_t, dtype=np.float64),
  *                     np.array(v_y, dtype=np.float64),
  *                     FlatForward252Interpolator(extrap_left=0, extrap_right=0),             # <<<<<<<<<<<<<<
@@ -29205,13 +29526,13 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
         PyObject *__pyx_callargs[3] = {__pyx_t_18, __pyx_mstate_global->__pyx_int_0, __pyx_mstate_global->__pyx_int_0};
         #if CYTHON_VECTORCALL
         __pyx_t_16 = __pyx_mstate_global->__pyx_tuple[3];
-        if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 264, __pyx_L1_error)
+        if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 276, __pyx_L1_error)
         __Pyx_INCREF(__pyx_t_16);
         #else
         {
           PyObject *__pyx_temp[2] = {__pyx_mstate_global->__pyx_n_u_extrap_left, __pyx_mstate_global->__pyx_n_u_extrap_right};
           __pyx_t_16 = __Pyx_MakeKwargDict(__pyx_temp, __pyx_callargs+1, 2);
-          if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 264, __pyx_L1_error)
+          if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 276, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_16);
         }
         #endif
@@ -29219,21 +29540,21 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
         __Pyx_XDECREF(__pyx_t_18); __pyx_t_18 = 0;
         __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
         __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
-        if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 264, __pyx_L1_error)
+        if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 276, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_15);
       }
 
-      /* "bz_pricing/core/curves.pyx":265
+      /* "bz_pricing/core/curves.pyx":277
  *                     np.array(v_y, dtype=np.float64),
  *                     FlatForward252Interpolator(extrap_left=0, extrap_right=0),
  *                     round_decimals=round_decimals,             # <<<<<<<<<<<<<<
  *                     round_mode=round_mode
  *                 )
 */
-      __pyx_t_20 = __Pyx_PyLong_From_int(__pyx_v_round_decimals); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 265, __pyx_L1_error)
+      __pyx_t_20 = __Pyx_PyLong_From_int(__pyx_v_round_decimals); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 277, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_20);
 
-      /* "bz_pricing/core/curves.pyx":266
+      /* "bz_pricing/core/curves.pyx":278
  *                     FlatForward252Interpolator(extrap_left=0, extrap_right=0),
  *                     round_decimals=round_decimals,
  *                     round_mode=round_mode             # <<<<<<<<<<<<<<
@@ -29245,13 +29566,13 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
         PyObject *__pyx_callargs[6] = {__pyx_t_4, __pyx_t_14, __pyx_t_17, __pyx_t_15, __pyx_t_20, __pyx_v_round_mode};
         #if CYTHON_VECTORCALL
         __pyx_t_16 = __pyx_mstate_global->__pyx_tuple[4];
-        if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 261, __pyx_L1_error)
+        if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 273, __pyx_L1_error)
         __Pyx_INCREF(__pyx_t_16);
         #else
         {
           PyObject *__pyx_temp[2] = {__pyx_mstate_global->__pyx_n_u_round_decimals, __pyx_mstate_global->__pyx_n_u_round_mode};
           __pyx_t_16 = __Pyx_MakeKwargDict(__pyx_temp, __pyx_callargs+4, 2);
-          if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 261, __pyx_L1_error)
+          if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 273, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_16);
         }
         #endif
@@ -29262,11 +29583,11 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
         __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
         __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
         __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
-        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 261, __pyx_L1_error)
+        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 273, __pyx_L1_error)
         __Pyx_GOTREF((PyObject *)__pyx_t_1);
       }
 
-      /* "bz_pricing/core/curves.pyx":261
+      /* "bz_pricing/core/curves.pyx":273
  * 
  *             if len(v_t) > 0:
  *                 self._interp_curve = SimpleCurve(             # <<<<<<<<<<<<<<
@@ -29279,7 +29600,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
       __pyx_v_self->_interp_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_SimpleCurve *)__pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "bz_pricing/core/curves.pyx":260
+      /* "bz_pricing/core/curves.pyx":272
  *                 v_y.append(cy_n)
  * 
  *             if len(v_t) > 0:             # <<<<<<<<<<<<<<
@@ -29288,7 +29609,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
 */
     }
 
-    /* "bz_pricing/core/curves.pyx":238
+    /* "bz_pricing/core/curves.pyx":250
  *         cdef list v_y = []
  * 
  *         if isinstance(futures_curve, SimpleCurve) and spot_price > 0.0:             # <<<<<<<<<<<<<<
@@ -29297,7 +29618,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
 */
   }
 
-  /* "bz_pricing/core/curves.pyx":223
+  /* "bz_pricing/core/curves.pyx":235
  *     As taxas so retornadas em formato decimal (% / 100).
  *     """
  *     def __init__(self, double spot_price, Curve futures_curve, Curve pre_curve, int round_decimals=-1, str round_mode='round'):             # <<<<<<<<<<<<<<
@@ -29334,7 +29655,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve___init__(
   return __pyx_r;
 }
 
-/* "bz_pricing/core/curves.pyx":269
+/* "bz_pricing/core/curves.pyx":281
  *                 )
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -29393,15 +29714,15 @@ static double __pyx_f_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_get_rat
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_get_rate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 269, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_get_rate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 281, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_3get_rate)) {
         __pyx_t_3 = NULL;
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; 
-        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_t); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 269, __pyx_L1_error)
+        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_t); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 281, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_t_sec); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 269, __pyx_L1_error)
+        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_t_sec); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 281, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_t_7 = 1;
         #if CYTHON_UNPACK_METHODS
@@ -29422,10 +29743,10 @@ static double __pyx_f_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_get_rat
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 269, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 281, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_8 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 269, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 281, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_8;
@@ -29446,7 +29767,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_get_rat
     #endif
   }
 
-  /* "bz_pricing/core/curves.pyx":274
+  /* "bz_pricing/core/curves.pyx":286
  *         cdef double pre_rate
  * 
  *         if t <= 1.0 or self._spot_price <= 0.0:             # <<<<<<<<<<<<<<
@@ -29472,7 +29793,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_get_rat
   if (__pyx_t_9) {
 
 
-    /* "bz_pricing/core/curves.pyx":275
+    /* "bz_pricing/core/curves.pyx":287
  * 
  *         if t <= 1.0 or self._spot_price <= 0.0:
  *             rate = self._pre_curve.get_rate(1.0, t_sec)             # <<<<<<<<<<<<<<
@@ -29481,10 +29802,10 @@ static double __pyx_f_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_get_rat
 */
     __pyx_t_11.__pyx_n = 1;
     __pyx_t_11.t_sec = __pyx_v_t_sec;
-    __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_self->_pre_curve->__pyx_vtab)->get_rate(__pyx_v_self->_pre_curve, 1.0, 0, &__pyx_t_11); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 275, __pyx_L1_error)
+    __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_self->_pre_curve->__pyx_vtab)->get_rate(__pyx_v_self->_pre_curve, 1.0, 0, &__pyx_t_11); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 287, __pyx_L1_error)
     __pyx_v_rate = __pyx_t_8;
 
-    /* "bz_pricing/core/curves.pyx":274
+    /* "bz_pricing/core/curves.pyx":286
  *         cdef double pre_rate
  * 
  *         if t <= 1.0 or self._spot_price <= 0.0:             # <<<<<<<<<<<<<<
@@ -29494,7 +29815,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_get_rat
     goto __pyx_L3;
   }
 
-  /* "bz_pricing/core/curves.pyx":276
+  /* "bz_pricing/core/curves.pyx":288
  *         if t <= 1.0 or self._spot_price <= 0.0:
  *             rate = self._pre_curve.get_rate(1.0, t_sec)
  *         elif self._interp_curve is not None:             # <<<<<<<<<<<<<<
@@ -29505,7 +29826,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_get_rat
   if (__pyx_t_9) {
 
 
-    /* "bz_pricing/core/curves.pyx":277
+    /* "bz_pricing/core/curves.pyx":289
  *             rate = self._pre_curve.get_rate(1.0, t_sec)
  *         elif self._interp_curve is not None:
  *             return self._interp_curve.get_rate(t, t_sec)             # <<<<<<<<<<<<<<
@@ -29514,13 +29835,13 @@ static double __pyx_f_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_get_rat
 */
     __pyx_t_11.__pyx_n = 1;
     __pyx_t_11.t_sec = __pyx_v_t_sec;
-    __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_SimpleCurve *)__pyx_v_self->_interp_curve->__pyx_base.__pyx_vtab)->__pyx_base.get_rate(((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_v_self->_interp_curve), __pyx_v_t, 0, &__pyx_t_11); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 277, __pyx_L1_error)
+    __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_SimpleCurve *)__pyx_v_self->_interp_curve->__pyx_base.__pyx_vtab)->__pyx_base.get_rate(((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_v_self->_interp_curve), __pyx_v_t, 0, &__pyx_t_11); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 289, __pyx_L1_error)
     {
       __pyx_r = __pyx_t_8;
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/curves.pyx":276
+    /* "bz_pricing/core/curves.pyx":288
  *         if t <= 1.0 or self._spot_price <= 0.0:
  *             rate = self._pre_curve.get_rate(1.0, t_sec)
  *         elif self._interp_curve is not None:             # <<<<<<<<<<<<<<
@@ -29529,7 +29850,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_get_rat
 */
   }
 
-  /* "bz_pricing/core/curves.pyx":279
+  /* "bz_pricing/core/curves.pyx":291
  *             return self._interp_curve.get_rate(t, t_sec)
  *         else:
  *             fut_price = self._futures_curve.get_rate(t, t_sec)             # <<<<<<<<<<<<<<
@@ -29539,10 +29860,10 @@ static double __pyx_f_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_get_rat
   /*else*/ {
     __pyx_t_11.__pyx_n = 1;
     __pyx_t_11.t_sec = __pyx_v_t_sec;
-    __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_self->_futures_curve->__pyx_vtab)->get_rate(__pyx_v_self->_futures_curve, __pyx_v_t, 0, &__pyx_t_11); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 279, __pyx_L1_error)
+    __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_self->_futures_curve->__pyx_vtab)->get_rate(__pyx_v_self->_futures_curve, __pyx_v_t, 0, &__pyx_t_11); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 291, __pyx_L1_error)
     __pyx_v_fut_price = __pyx_t_8;
 
-    /* "bz_pricing/core/curves.pyx":280
+    /* "bz_pricing/core/curves.pyx":292
  *         else:
  *             fut_price = self._futures_curve.get_rate(t, t_sec)
  *             pre_rate = self._pre_curve.get_rate(t, t_sec)             # <<<<<<<<<<<<<<
@@ -29551,10 +29872,10 @@ static double __pyx_f_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_get_rat
 */
     __pyx_t_11.__pyx_n = 1;
     __pyx_t_11.t_sec = __pyx_v_t_sec;
-    __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_self->_pre_curve->__pyx_vtab)->get_rate(__pyx_v_self->_pre_curve, __pyx_v_t, 0, &__pyx_t_11); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 280, __pyx_L1_error)
+    __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_self->_pre_curve->__pyx_vtab)->get_rate(__pyx_v_self->_pre_curve, __pyx_v_t, 0, &__pyx_t_11); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 292, __pyx_L1_error)
     __pyx_v_pre_rate = __pyx_t_8;
 
-    /* "bz_pricing/core/curves.pyx":281
+    /* "bz_pricing/core/curves.pyx":293
  *             fut_price = self._futures_curve.get_rate(t, t_sec)
  *             pre_rate = self._pre_curve.get_rate(t, t_sec)
  *             if fut_price <= 0.0:             # <<<<<<<<<<<<<<
@@ -29566,7 +29887,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_get_rat
     if (__pyx_t_9) {
 
 
-      /* "bz_pricing/core/curves.pyx":282
+      /* "bz_pricing/core/curves.pyx":294
  *             pre_rate = self._pre_curve.get_rate(t, t_sec)
  *             if fut_price <= 0.0:
  *                 rate = pre_rate             # <<<<<<<<<<<<<<
@@ -29575,7 +29896,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_get_rat
 */
       __pyx_v_rate = __pyx_v_pre_rate;
 
-      /* "bz_pricing/core/curves.pyx":281
+      /* "bz_pricing/core/curves.pyx":293
  *             fut_price = self._futures_curve.get_rate(t, t_sec)
  *             pre_rate = self._pre_curve.get_rate(t, t_sec)
  *             if fut_price <= 0.0:             # <<<<<<<<<<<<<<
@@ -29585,7 +29906,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_get_rat
       goto __pyx_L6;
     }
 
-    /* "bz_pricing/core/curves.pyx":284
+    /* "bz_pricing/core/curves.pyx":296
  *                 rate = pre_rate
  *             else:
  *                 rate = pow((self._spot_price * pow(1.0 + pre_rate, t / 252.0)) / fut_price, 252.0 / t) - 1.0             # <<<<<<<<<<<<<<
@@ -29597,11 +29918,11 @@ static double __pyx_f_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_get_rat
 
       if (unlikely(__pyx_v_fut_price == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        __PYX_ERR(0, 284, __pyx_L1_error)
+        __PYX_ERR(0, 296, __pyx_L1_error)
       }
       if (unlikely(__pyx_v_t == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        __PYX_ERR(0, 284, __pyx_L1_error)
+        __PYX_ERR(0, 296, __pyx_L1_error)
       }
       __pyx_v_rate = (pow((__pyx_t_8 / __pyx_v_fut_price), (252.0 / __pyx_v_t)) - 1.0);
 
@@ -29610,7 +29931,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_get_rat
   }
   __pyx_L3:;
 
-  /* "bz_pricing/core/curves.pyx":286
+  /* "bz_pricing/core/curves.pyx":298
  *                 rate = pow((self._spot_price * pow(1.0 + pre_rate, t / 252.0)) / fut_price, 252.0 / t) - 1.0
  * 
  *         if self._round_decimals >= 0:             # <<<<<<<<<<<<<<
@@ -29622,7 +29943,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_get_rat
   if (__pyx_t_9) {
 
 
-    /* "bz_pricing/core/curves.pyx":287
+    /* "bz_pricing/core/curves.pyx":299
  * 
  *         if self._round_decimals >= 0:
  *             if self._is_trunc:             # <<<<<<<<<<<<<<
@@ -29631,7 +29952,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_get_rat
 */
     if (__pyx_v_self->__pyx_base._is_trunc) {
 
-      /* "bz_pricing/core/curves.pyx":288
+      /* "bz_pricing/core/curves.pyx":300
  *         if self._round_decimals >= 0:
  *             if self._is_trunc:
  *                 rate = trunc(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)             # <<<<<<<<<<<<<<
@@ -29644,13 +29965,13 @@ static double __pyx_f_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_get_rat
 
       if (unlikely(__pyx_t_12 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        __PYX_ERR(0, 288, __pyx_L1_error)
+        __PYX_ERR(0, 300, __pyx_L1_error)
       }
       __pyx_v_rate = (__pyx_t_8 / __pyx_t_12);
 
 
 
-      /* "bz_pricing/core/curves.pyx":287
+      /* "bz_pricing/core/curves.pyx":299
  * 
  *         if self._round_decimals >= 0:
  *             if self._is_trunc:             # <<<<<<<<<<<<<<
@@ -29660,7 +29981,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_get_rat
       goto __pyx_L8;
     }
 
-    /* "bz_pricing/core/curves.pyx":290
+    /* "bz_pricing/core/curves.pyx":302
  *                 rate = trunc(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
  *             else:
  *                 rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)             # <<<<<<<<<<<<<<
@@ -29674,7 +29995,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_get_rat
 
       if (unlikely(__pyx_t_8 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        __PYX_ERR(0, 290, __pyx_L1_error)
+        __PYX_ERR(0, 302, __pyx_L1_error)
       }
       __pyx_v_rate = (__pyx_t_12 / __pyx_t_8);
 
@@ -29682,7 +30003,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_get_rat
     }
     __pyx_L8:;
 
-    /* "bz_pricing/core/curves.pyx":286
+    /* "bz_pricing/core/curves.pyx":298
  *                 rate = pow((self._spot_price * pow(1.0 + pre_rate, t / 252.0)) / fut_price, 252.0 / t) - 1.0
  * 
  *         if self._round_decimals >= 0:             # <<<<<<<<<<<<<<
@@ -29691,7 +30012,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_get_rat
 */
   }
 
-  /* "bz_pricing/core/curves.pyx":292
+  /* "bz_pricing/core/curves.pyx":304
  *                 rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
  * 
  *         return rate             # <<<<<<<<<<<<<<
@@ -29704,7 +30025,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_get_rat
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/curves.pyx":269
+  /* "bz_pricing/core/curves.pyx":281
  *                 )
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -29771,48 +30092,48 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_t,&__pyx_mstate_global->__pyx_n_u_t_sec,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 269, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 281, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 269, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 281, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 269, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 281, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "get_rate", 0) < (0)) __PYX_ERR(0, 269, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "get_rate", 0) < (0)) __PYX_ERR(0, 281, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, i); __PYX_ERR(0, 269, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, i); __PYX_ERR(0, 281, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 269, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 281, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 269, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 281, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_t = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_t == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 269, __pyx_L3_error)
+    __pyx_v_t = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_t == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 281, __pyx_L3_error)
     if (values[1]) {
-      __pyx_v_t_sec = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_t_sec == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 269, __pyx_L3_error)
+      __pyx_v_t_sec = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_t_sec == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 281, __pyx_L3_error)
     } else {
       __pyx_v_t_sec = ((double)0.0);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 269, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 281, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -29847,8 +30168,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_2ge
   __Pyx_RefNannySetupContext("get_rate", 0);
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.t_sec = __pyx_v_t_sec;
-  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_6curves_ConvenienceYieldCurve->__pyx_base.get_rate(((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_v_self), __pyx_v_t, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 269, __pyx_L1_error)
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 269, __pyx_L1_error)
+  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_6curves_ConvenienceYieldCurve->__pyx_base.get_rate(((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_v_self), __pyx_v_t, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 281, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 281, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
   {
@@ -29873,7 +30194,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_2ge
   return __pyx_r;
 }
 
-/* "bz_pricing/core/curves.pyx":294
+/* "bz_pricing/core/curves.pyx":306
  *         return rate
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -29912,7 +30233,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_7t_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "bz_pricing/core/curves.pyx":296
+  /* "bz_pricing/core/curves.pyx":308
  *     @property
  *     def t_nodes(self):
  *         if self._interp_curve is not None:             # <<<<<<<<<<<<<<
@@ -29923,14 +30244,14 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_7t_
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/curves.pyx":297
+    /* "bz_pricing/core/curves.pyx":309
  *     def t_nodes(self):
  *         if self._interp_curve is not None:
  *             return self._interp_curve.t_nodes             # <<<<<<<<<<<<<<
  *         return np.array([], dtype=np.float64)
  * 
 */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->_interp_curve), __pyx_mstate_global->__pyx_n_u_t_nodes); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 297, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->_interp_curve), __pyx_mstate_global->__pyx_n_u_t_nodes); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 309, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     {
       PyObject *__pyx_temp;
@@ -29943,7 +30264,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_7t_
     __pyx_t_2 = 0;
     goto __pyx_L0;
 
-    /* "bz_pricing/core/curves.pyx":296
+    /* "bz_pricing/core/curves.pyx":308
  *     @property
  *     def t_nodes(self):
  *         if self._interp_curve is not None:             # <<<<<<<<<<<<<<
@@ -29952,7 +30273,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_7t_
 */
   }
 
-  /* "bz_pricing/core/curves.pyx":298
+  /* "bz_pricing/core/curves.pyx":310
  *         if self._interp_curve is not None:
  *             return self._interp_curve.t_nodes
  *         return np.array([], dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -29960,16 +30281,16 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_7t_
  *     @property
 */
   __pyx_t_3 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 298, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 310, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_array); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 298, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_array); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 310, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 298, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 310, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 298, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 310, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 298, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 310, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_t_8 = 1;
@@ -29988,13 +30309,13 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_7t_
     PyObject *__pyx_callargs[3] = {__pyx_t_3, __pyx_t_4, __pyx_t_7};
     #if CYTHON_VECTORCALL
     __pyx_t_6 = __pyx_mstate_global->__pyx_tuple[2];
-    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 298, __pyx_L1_error)
+    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 310, __pyx_L1_error)
     __Pyx_INCREF(__pyx_t_6);
     #else
     {
       PyObject *__pyx_temp[1] = {__pyx_mstate_global->__pyx_n_u_dtype};
       __pyx_t_6 = __Pyx_MakeKwargDict(__pyx_temp, __pyx_callargs+2, 1);
-      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 298, __pyx_L1_error)
+      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 310, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
     }
     #endif
@@ -30004,7 +30325,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_7t_
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 298, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 310, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
   }
   {
@@ -30018,7 +30339,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_7t_
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "bz_pricing/core/curves.pyx":294
+  /* "bz_pricing/core/curves.pyx":306
  *         return rate
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -30042,7 +30363,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_7t_
   return __pyx_r;
 }
 
-/* "bz_pricing/core/curves.pyx":300
+/* "bz_pricing/core/curves.pyx":312
  *         return np.array([], dtype=np.float64)
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -30081,7 +30402,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_7y_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "bz_pricing/core/curves.pyx":302
+  /* "bz_pricing/core/curves.pyx":314
  *     @property
  *     def y_nodes(self):
  *         if self._interp_curve is not None:             # <<<<<<<<<<<<<<
@@ -30092,14 +30413,14 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_7y_
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/curves.pyx":303
+    /* "bz_pricing/core/curves.pyx":315
  *     def y_nodes(self):
  *         if self._interp_curve is not None:
  *             return self._interp_curve.y_nodes             # <<<<<<<<<<<<<<
  *         return np.array([], dtype=np.float64)
  * 
 */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->_interp_curve), __pyx_mstate_global->__pyx_n_u_y_nodes); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 303, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->_interp_curve), __pyx_mstate_global->__pyx_n_u_y_nodes); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 315, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     {
       PyObject *__pyx_temp;
@@ -30112,7 +30433,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_7y_
     __pyx_t_2 = 0;
     goto __pyx_L0;
 
-    /* "bz_pricing/core/curves.pyx":302
+    /* "bz_pricing/core/curves.pyx":314
  *     @property
  *     def y_nodes(self):
  *         if self._interp_curve is not None:             # <<<<<<<<<<<<<<
@@ -30121,7 +30442,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_7y_
 */
   }
 
-  /* "bz_pricing/core/curves.pyx":304
+  /* "bz_pricing/core/curves.pyx":316
  *         if self._interp_curve is not None:
  *             return self._interp_curve.y_nodes
  *         return np.array([], dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -30129,16 +30450,16 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_7y_
  * cdef class SpreadCurve(Curve):
 */
   __pyx_t_3 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 304, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 316, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_array); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 304, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_array); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 316, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 304, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 316, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 304, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 316, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 304, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 316, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_t_8 = 1;
@@ -30157,13 +30478,13 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_7y_
     PyObject *__pyx_callargs[3] = {__pyx_t_3, __pyx_t_4, __pyx_t_7};
     #if CYTHON_VECTORCALL
     __pyx_t_6 = __pyx_mstate_global->__pyx_tuple[2];
-    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 304, __pyx_L1_error)
+    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 316, __pyx_L1_error)
     __Pyx_INCREF(__pyx_t_6);
     #else
     {
       PyObject *__pyx_temp[1] = {__pyx_mstate_global->__pyx_n_u_dtype};
       __pyx_t_6 = __Pyx_MakeKwargDict(__pyx_temp, __pyx_callargs+2, 1);
-      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 304, __pyx_L1_error)
+      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 316, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
     }
     #endif
@@ -30173,7 +30494,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_7y_
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 304, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 316, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
   }
   {
@@ -30187,7 +30508,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_7y_
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "bz_pricing/core/curves.pyx":300
+  /* "bz_pricing/core/curves.pyx":312
  *         return np.array([], dtype=np.float64)
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -30722,7 +31043,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_6__
   return __pyx_r;
 }
 
-/* "bz_pricing/core/curves.pyx":311
+/* "bz_pricing/core/curves.pyx":323
  *     Spread = Rate_A - Rate_B
  *     """
  *     def __init__(self, Curve curve_a, Curve curve_b, int round_decimals=-1, str round_mode='round'):             # <<<<<<<<<<<<<<
@@ -30771,49 +31092,49 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_curve_a,&__pyx_mstate_global->__pyx_n_u_curve_b,&__pyx_mstate_global->__pyx_n_u_round_decimals,&__pyx_mstate_global->__pyx_n_u_round_mode,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL_TPNEW(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 311, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 323, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 311, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 323, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 311, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 323, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 311, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 323, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 311, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 323, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 311, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 323, __pyx_L3_error)
       if (!values[3]) values[3] = __Pyx_NewRef(((PyObject*)__pyx_mstate_global->__pyx_n_u_round));
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 0, 2, 4, i); __PYX_ERR(0, 311, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 0, 2, 4, i); __PYX_ERR(0, 323, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 311, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 323, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 311, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 323, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 311, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 323, __pyx_L3_error)
         values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 311, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 323, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
@@ -30822,7 +31143,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
     __pyx_v_curve_a = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
     __pyx_v_curve_b = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[1]);
     if (values[2]) {
-      __pyx_v_round_decimals = __Pyx_PyLong_As_int(values[2]); if (unlikely((__pyx_v_round_decimals == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 311, __pyx_L3_error)
+      __pyx_v_round_decimals = __Pyx_PyLong_As_int(values[2]); if (unlikely((__pyx_v_round_decimals == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 323, __pyx_L3_error)
     } else {
       __pyx_v_round_decimals = ((int)-1);
     }
@@ -30830,7 +31151,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 0, 2, 4, __pyx_nargs); __PYX_ERR(0, 311, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 0, 2, 4, __pyx_nargs); __PYX_ERR(0, 323, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -30841,9 +31162,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_curve_a), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "curve_a", 0))) __PYX_ERR(0, 311, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_curve_b), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "curve_b", 0))) __PYX_ERR(0, 311, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_round_mode), (&PyUnicode_Type), 1, "round_mode", 1))) __PYX_ERR(0, 311, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_curve_a), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "curve_a", 0))) __PYX_ERR(0, 323, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_curve_b), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "curve_b", 0))) __PYX_ERR(0, 323, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_round_mode), (&PyUnicode_Type), 1, "round_mode", 1))) __PYX_ERR(0, 323, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_6curves_11SpreadCurve___init__(((struct __pyx_obj_10bz_pricing_4core_6curves_SpreadCurve *)__pyx_v_self), __pyx_v_curve_a, __pyx_v_curve_b, __pyx_v_round_decimals, __pyx_v_round_mode);
 
   /* function exit code */
@@ -30874,7 +31195,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_11SpreadCurve___init__(struct __p
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "bz_pricing/core/curves.pyx":312
+  /* "bz_pricing/core/curves.pyx":324
  *     """
  *     def __init__(self, Curve curve_a, Curve curve_b, int round_decimals=-1, str round_mode='round'):
  *         self._curve_a = curve_a             # <<<<<<<<<<<<<<
@@ -30887,7 +31208,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_11SpreadCurve___init__(struct __p
   __Pyx_DECREF((PyObject *)__pyx_v_self->_curve_a);
   __pyx_v_self->_curve_a = __pyx_v_curve_a;
 
-  /* "bz_pricing/core/curves.pyx":313
+  /* "bz_pricing/core/curves.pyx":325
  *     def __init__(self, Curve curve_a, Curve curve_b, int round_decimals=-1, str round_mode='round'):
  *         self._curve_a = curve_a
  *         self._curve_b = curve_b             # <<<<<<<<<<<<<<
@@ -30900,7 +31221,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_11SpreadCurve___init__(struct __p
   __Pyx_DECREF((PyObject *)__pyx_v_self->_curve_b);
   __pyx_v_self->_curve_b = __pyx_v_curve_b;
 
-  /* "bz_pricing/core/curves.pyx":314
+  /* "bz_pricing/core/curves.pyx":326
  *         self._curve_a = curve_a
  *         self._curve_b = curve_b
  *         self._round_decimals = round_decimals             # <<<<<<<<<<<<<<
@@ -30909,19 +31230,19 @@ static int __pyx_pf_10bz_pricing_4core_6curves_11SpreadCurve___init__(struct __p
 */
   __pyx_v_self->__pyx_base._round_decimals = __pyx_v_round_decimals;
 
-  /* "bz_pricing/core/curves.pyx":315
+  /* "bz_pricing/core/curves.pyx":327
  *         self._curve_b = curve_b
  *         self._round_decimals = round_decimals
  *         self._is_trunc = (round_mode == 'trunc')             # <<<<<<<<<<<<<<
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
 */
-  __pyx_t_1 = __Pyx_PyObject_CompareEq_str_str(__pyx_v_round_mode, __pyx_mstate_global->__pyx_n_u_trunc, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 315, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 315, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CompareEq_str_str(__pyx_v_round_mode, __pyx_mstate_global->__pyx_n_u_trunc, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 327, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 327, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->__pyx_base._is_trunc = __pyx_t_2;
 
-  /* "bz_pricing/core/curves.pyx":311
+  /* "bz_pricing/core/curves.pyx":323
  *     Spread = Rate_A - Rate_B
  *     """
  *     def __init__(self, Curve curve_a, Curve curve_b, int round_decimals=-1, str round_mode='round'):             # <<<<<<<<<<<<<<
@@ -30942,7 +31263,7 @@ static int __pyx_pf_10bz_pricing_4core_6curves_11SpreadCurve___init__(struct __p
   return __pyx_r;
 }
 
-/* "bz_pricing/core/curves.pyx":317
+/* "bz_pricing/core/curves.pyx":329
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -31000,15 +31321,15 @@ static double __pyx_f_10bz_pricing_4core_6curves_11SpreadCurve_get_rate(struct _
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_get_rate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 317, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_get_rate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 329, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_6curves_11SpreadCurve_3get_rate)) {
         __pyx_t_3 = NULL;
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; 
-        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_t); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 317, __pyx_L1_error)
+        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_t); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 329, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_t_sec); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 317, __pyx_L1_error)
+        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_t_sec); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 329, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_t_7 = 1;
         #if CYTHON_UNPACK_METHODS
@@ -31029,10 +31350,10 @@ static double __pyx_f_10bz_pricing_4core_6curves_11SpreadCurve_get_rate(struct _
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 317, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 329, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_8 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 317, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 329, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_8;
@@ -31053,7 +31374,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_11SpreadCurve_get_rate(struct _
     #endif
   }
 
-  /* "bz_pricing/core/curves.pyx":318
+  /* "bz_pricing/core/curves.pyx":330
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
  *         cdef double r_a = self._curve_a.get_rate(t, t_sec)             # <<<<<<<<<<<<<<
@@ -31062,10 +31383,10 @@ static double __pyx_f_10bz_pricing_4core_6curves_11SpreadCurve_get_rate(struct _
 */
   __pyx_t_9.__pyx_n = 1;
   __pyx_t_9.t_sec = __pyx_v_t_sec;
-  __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_self->_curve_a->__pyx_vtab)->get_rate(__pyx_v_self->_curve_a, __pyx_v_t, 0, &__pyx_t_9); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 318, __pyx_L1_error)
+  __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_self->_curve_a->__pyx_vtab)->get_rate(__pyx_v_self->_curve_a, __pyx_v_t, 0, &__pyx_t_9); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 330, __pyx_L1_error)
   __pyx_v_r_a = __pyx_t_8;
 
-  /* "bz_pricing/core/curves.pyx":319
+  /* "bz_pricing/core/curves.pyx":331
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
  *         cdef double r_a = self._curve_a.get_rate(t, t_sec)
  *         cdef double r_b = self._curve_b.get_rate(t, t_sec)             # <<<<<<<<<<<<<<
@@ -31074,10 +31395,10 @@ static double __pyx_f_10bz_pricing_4core_6curves_11SpreadCurve_get_rate(struct _
 */
   __pyx_t_9.__pyx_n = 1;
   __pyx_t_9.t_sec = __pyx_v_t_sec;
-  __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_self->_curve_b->__pyx_vtab)->get_rate(__pyx_v_self->_curve_b, __pyx_v_t, 0, &__pyx_t_9); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 319, __pyx_L1_error)
+  __pyx_t_8 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_self->_curve_b->__pyx_vtab)->get_rate(__pyx_v_self->_curve_b, __pyx_v_t, 0, &__pyx_t_9); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 331, __pyx_L1_error)
   __pyx_v_r_b = __pyx_t_8;
 
-  /* "bz_pricing/core/curves.pyx":320
+  /* "bz_pricing/core/curves.pyx":332
  *         cdef double r_a = self._curve_a.get_rate(t, t_sec)
  *         cdef double r_b = self._curve_b.get_rate(t, t_sec)
  *         cdef double rate = r_a - r_b             # <<<<<<<<<<<<<<
@@ -31086,7 +31407,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_11SpreadCurve_get_rate(struct _
 */
   __pyx_v_rate = (__pyx_v_r_a - __pyx_v_r_b);
 
-  /* "bz_pricing/core/curves.pyx":322
+  /* "bz_pricing/core/curves.pyx":334
  *         cdef double rate = r_a - r_b
  * 
  *         if self._round_decimals >= 0:             # <<<<<<<<<<<<<<
@@ -31098,7 +31419,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_11SpreadCurve_get_rate(struct _
   if (__pyx_t_10) {
 
 
-    /* "bz_pricing/core/curves.pyx":323
+    /* "bz_pricing/core/curves.pyx":335
  * 
  *         if self._round_decimals >= 0:
  *             if self._is_trunc:             # <<<<<<<<<<<<<<
@@ -31107,7 +31428,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_11SpreadCurve_get_rate(struct _
 */
     if (__pyx_v_self->__pyx_base._is_trunc) {
 
-      /* "bz_pricing/core/curves.pyx":324
+      /* "bz_pricing/core/curves.pyx":336
  *         if self._round_decimals >= 0:
  *             if self._is_trunc:
  *                 rate = trunc(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)             # <<<<<<<<<<<<<<
@@ -31120,13 +31441,13 @@ static double __pyx_f_10bz_pricing_4core_6curves_11SpreadCurve_get_rate(struct _
 
       if (unlikely(__pyx_t_11 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        __PYX_ERR(0, 324, __pyx_L1_error)
+        __PYX_ERR(0, 336, __pyx_L1_error)
       }
       __pyx_v_rate = (__pyx_t_8 / __pyx_t_11);
 
 
 
-      /* "bz_pricing/core/curves.pyx":323
+      /* "bz_pricing/core/curves.pyx":335
  * 
  *         if self._round_decimals >= 0:
  *             if self._is_trunc:             # <<<<<<<<<<<<<<
@@ -31136,7 +31457,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_11SpreadCurve_get_rate(struct _
       goto __pyx_L4;
     }
 
-    /* "bz_pricing/core/curves.pyx":326
+    /* "bz_pricing/core/curves.pyx":338
  *                 rate = trunc(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
  *             else:
  *                 rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)             # <<<<<<<<<<<<<<
@@ -31150,7 +31471,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_11SpreadCurve_get_rate(struct _
 
       if (unlikely(__pyx_t_8 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        __PYX_ERR(0, 326, __pyx_L1_error)
+        __PYX_ERR(0, 338, __pyx_L1_error)
       }
       __pyx_v_rate = (__pyx_t_11 / __pyx_t_8);
 
@@ -31158,7 +31479,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_11SpreadCurve_get_rate(struct _
     }
     __pyx_L4:;
 
-    /* "bz_pricing/core/curves.pyx":322
+    /* "bz_pricing/core/curves.pyx":334
  *         cdef double rate = r_a - r_b
  * 
  *         if self._round_decimals >= 0:             # <<<<<<<<<<<<<<
@@ -31167,7 +31488,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_11SpreadCurve_get_rate(struct _
 */
   }
 
-  /* "bz_pricing/core/curves.pyx":328
+  /* "bz_pricing/core/curves.pyx":340
  *                 rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
  * 
  *         return rate             # <<<<<<<<<<<<<<
@@ -31180,7 +31501,7 @@ static double __pyx_f_10bz_pricing_4core_6curves_11SpreadCurve_get_rate(struct _
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/curves.pyx":317
+  /* "bz_pricing/core/curves.pyx":329
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -31247,48 +31568,48 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_t,&__pyx_mstate_global->__pyx_n_u_t_sec,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 317, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 329, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 317, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 329, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 317, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 329, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "get_rate", 0) < (0)) __PYX_ERR(0, 317, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "get_rate", 0) < (0)) __PYX_ERR(0, 329, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, i); __PYX_ERR(0, 317, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, i); __PYX_ERR(0, 329, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 317, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 329, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 317, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 329, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_t = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_t == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 317, __pyx_L3_error)
+    __pyx_v_t = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_t == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 329, __pyx_L3_error)
     if (values[1]) {
-      __pyx_v_t_sec = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_t_sec == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 317, __pyx_L3_error)
+      __pyx_v_t_sec = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_t_sec == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 329, __pyx_L3_error)
     } else {
       __pyx_v_t_sec = ((double)0.0);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 317, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_rate", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 329, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -31323,8 +31644,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_11SpreadCurve_2get_rate(str
   __Pyx_RefNannySetupContext("get_rate", 0);
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.t_sec = __pyx_v_t_sec;
-  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_6curves_SpreadCurve->__pyx_base.get_rate(((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_v_self), __pyx_v_t, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 317, __pyx_L1_error)
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 317, __pyx_L1_error)
+  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_6curves_SpreadCurve->__pyx_base.get_rate(((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)__pyx_v_self), __pyx_v_t, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 329, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 329, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
   {
@@ -31841,7 +32162,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_11SpreadCurve_6__setstate_c
   return __pyx_r;
 }
 
-/* "bz_pricing/core/curves.pyx":331
+/* "bz_pricing/core/curves.pyx":343
  * 
  * 
  * cpdef list extract_linear360_knot_indices(double[:] dcs, double[:] rates, double tolerance=0.001):             # <<<<<<<<<<<<<<
@@ -31901,7 +32222,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
     }
   }
 
-  /* "bz_pricing/core/curves.pyx":336
+  /* "bz_pricing/core/curves.pyx":348
  *     detectando mudanas de inclinao na taxa linear acumulada.
  *     """
  *     cdef int n = dcs.shape[0]             # <<<<<<<<<<<<<<
@@ -31910,7 +32231,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
 */
   __pyx_v_n = (__pyx_v_dcs.shape[0]);
 
-  /* "bz_pricing/core/curves.pyx":337
+  /* "bz_pricing/core/curves.pyx":349
  *     """
  *     cdef int n = dcs.shape[0]
  *     if n <= 2:             # <<<<<<<<<<<<<<
@@ -31922,7 +32243,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/curves.pyx":338
+    /* "bz_pricing/core/curves.pyx":350
  *     cdef int n = dcs.shape[0]
  *     if n <= 2:
  *         return list(range(n))             # <<<<<<<<<<<<<<
@@ -31930,7 +32251,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
  *     cdef list knots = [0]
 */
     __pyx_t_3 = NULL;
-    __pyx_t_4 = __Pyx_PyLong_From_int(__pyx_v_n); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 338, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyLong_From_int(__pyx_v_n); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 350, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = 1;
     {
@@ -31938,10 +32259,10 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
       __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)(&PyRange_Type), __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 338, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 350, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
     }
-    __pyx_t_4 = PySequence_List(__pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 338, __pyx_L1_error)
+    __pyx_t_4 = PySequence_List(__pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 350, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     {
@@ -31955,7 +32276,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
     __pyx_t_4 = 0;
     goto __pyx_L0;
 
-    /* "bz_pricing/core/curves.pyx":337
+    /* "bz_pricing/core/curves.pyx":349
  *     """
  *     cdef int n = dcs.shape[0]
  *     if n <= 2:             # <<<<<<<<<<<<<<
@@ -31964,22 +32285,22 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
 */
   }
 
-  /* "bz_pricing/core/curves.pyx":340
+  /* "bz_pricing/core/curves.pyx":352
  *         return list(range(n))
  * 
  *     cdef list knots = [0]             # <<<<<<<<<<<<<<
  *     cdef int curr = 0
  *     cdef int best_next, cand, m
 */
-  __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 340, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 352, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(__pyx_mstate_global->__pyx_int_0);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_int_0);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_4, 0, __pyx_mstate_global->__pyx_int_0) != (0)) __PYX_ERR(0, 340, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_4, 0, __pyx_mstate_global->__pyx_int_0) != (0)) __PYX_ERR(0, 352, __pyx_L1_error);
   __pyx_v_knots = ((PyObject*)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/curves.pyx":341
+  /* "bz_pricing/core/curves.pyx":353
  * 
  *     cdef list knots = [0]
  *     cdef int curr = 0             # <<<<<<<<<<<<<<
@@ -31988,7 +32309,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
 */
   __pyx_v_curr = 0;
 
-  /* "bz_pricing/core/curves.pyx":346
+  /* "bz_pricing/core/curves.pyx":358
  *     cdef bint ok
  * 
  *     while curr < n - 1:             # <<<<<<<<<<<<<<
@@ -32001,7 +32322,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
 
     if (!__pyx_t_1) break;
 
-    /* "bz_pricing/core/curves.pyx":347
+    /* "bz_pricing/core/curves.pyx":359
  * 
  *     while curr < n - 1:
  *         best_next = curr + 1             # <<<<<<<<<<<<<<
@@ -32010,7 +32331,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
 */
     __pyx_v_best_next = (__pyx_v_curr + 1);
 
-    /* "bz_pricing/core/curves.pyx":348
+    /* "bz_pricing/core/curves.pyx":360
  *     while curr < n - 1:
  *         best_next = curr + 1
  *         for cand in range(curr + 1, n):             # <<<<<<<<<<<<<<
@@ -32024,7 +32345,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
     for (__pyx_t_8 = (__pyx_v_curr + 1); __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
       __pyx_v_cand = __pyx_t_8;
 
-      /* "bz_pricing/core/curves.pyx":349
+      /* "bz_pricing/core/curves.pyx":361
  *         best_next = curr + 1
  *         for cand in range(curr + 1, n):
  *             d1 = dcs[curr]             # <<<<<<<<<<<<<<
@@ -32034,7 +32355,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
       __pyx_t_9 = __pyx_v_curr;
       __pyx_v_d1 = (*((double *) ( /* dim=0 */ (__pyx_v_dcs.data + __pyx_t_9 * __pyx_v_dcs.strides[0]) )));
 
-      /* "bz_pricing/core/curves.pyx":350
+      /* "bz_pricing/core/curves.pyx":362
  *         for cand in range(curr + 1, n):
  *             d1 = dcs[curr]
  *             r1 = rates[curr]             # <<<<<<<<<<<<<<
@@ -32044,7 +32365,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
       __pyx_t_9 = __pyx_v_curr;
       __pyx_v_r1 = (*((double *) ( /* dim=0 */ (__pyx_v_rates.data + __pyx_t_9 * __pyx_v_rates.strides[0]) )));
 
-      /* "bz_pricing/core/curves.pyx":351
+      /* "bz_pricing/core/curves.pyx":363
  *             d1 = dcs[curr]
  *             r1 = rates[curr]
  *             d2 = dcs[cand]             # <<<<<<<<<<<<<<
@@ -32054,7 +32375,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
       __pyx_t_9 = __pyx_v_cand;
       __pyx_v_d2 = (*((double *) ( /* dim=0 */ (__pyx_v_dcs.data + __pyx_t_9 * __pyx_v_dcs.strides[0]) )));
 
-      /* "bz_pricing/core/curves.pyx":352
+      /* "bz_pricing/core/curves.pyx":364
  *             r1 = rates[curr]
  *             d2 = dcs[cand]
  *             r2 = rates[cand]             # <<<<<<<<<<<<<<
@@ -32064,7 +32385,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
       __pyx_t_9 = __pyx_v_cand;
       __pyx_v_r2 = (*((double *) ( /* dim=0 */ (__pyx_v_rates.data + __pyx_t_9 * __pyx_v_rates.strides[0]) )));
 
-      /* "bz_pricing/core/curves.pyx":353
+      /* "bz_pricing/core/curves.pyx":365
  *             d2 = dcs[cand]
  *             r2 = rates[cand]
  *             f1 = (r1 * d1) / 360.0             # <<<<<<<<<<<<<<
@@ -32073,7 +32394,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
 */
       __pyx_v_f1 = ((__pyx_v_r1 * __pyx_v_d1) / 360.0);
 
-      /* "bz_pricing/core/curves.pyx":354
+      /* "bz_pricing/core/curves.pyx":366
  *             r2 = rates[cand]
  *             f1 = (r1 * d1) / 360.0
  *             f2 = (r2 * d2) / 360.0             # <<<<<<<<<<<<<<
@@ -32082,7 +32403,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
 */
       __pyx_v_f2 = ((__pyx_v_r2 * __pyx_v_d2) / 360.0);
 
-      /* "bz_pricing/core/curves.pyx":355
+      /* "bz_pricing/core/curves.pyx":367
  *             f1 = (r1 * d1) / 360.0
  *             f2 = (r2 * d2) / 360.0
  *             ok = True             # <<<<<<<<<<<<<<
@@ -32091,7 +32412,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
 */
       __pyx_v_ok = 1;
 
-      /* "bz_pricing/core/curves.pyx":356
+      /* "bz_pricing/core/curves.pyx":368
  *             f2 = (r2 * d2) / 360.0
  *             ok = True
  *             for m in range(curr + 1, cand):             # <<<<<<<<<<<<<<
@@ -32105,7 +32426,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
       for (__pyx_t_12 = (__pyx_v_curr + 1); __pyx_t_12 < __pyx_t_11; __pyx_t_12+=1) {
         __pyx_v_m = __pyx_t_12;
 
-        /* "bz_pricing/core/curves.pyx":357
+        /* "bz_pricing/core/curves.pyx":369
  *             ok = True
  *             for m in range(curr + 1, cand):
  *                 dm = dcs[m]             # <<<<<<<<<<<<<<
@@ -32115,7 +32436,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
         __pyx_t_9 = __pyx_v_m;
         __pyx_v_dm = (*((double *) ( /* dim=0 */ (__pyx_v_dcs.data + __pyx_t_9 * __pyx_v_dcs.strides[0]) )));
 
-        /* "bz_pricing/core/curves.pyx":358
+        /* "bz_pricing/core/curves.pyx":370
  *             for m in range(curr + 1, cand):
  *                 dm = dcs[m]
  *                 f = f1 + (f2 - f1) * ((dm - d1) / (d2 - d1))             # <<<<<<<<<<<<<<
@@ -32128,13 +32449,13 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
 
         if (unlikely(__pyx_t_14 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-          __PYX_ERR(0, 358, __pyx_L1_error)
+          __PYX_ERR(0, 370, __pyx_L1_error)
         }
         __pyx_v_f = (__pyx_v_f1 + ((__pyx_v_f2 - __pyx_v_f1) * (__pyx_t_13 / __pyx_t_14)));
 
 
 
-        /* "bz_pricing/core/curves.pyx":359
+        /* "bz_pricing/core/curves.pyx":371
  *                 dm = dcs[m]
  *                 f = f1 + (f2 - f1) * ((dm - d1) / (d2 - d1))
  *                 val = round((f * 360.0) / dm * 100.0) / 100.0             # <<<<<<<<<<<<<<
@@ -32145,12 +32466,12 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
 
         if (unlikely(__pyx_v_dm == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-          __PYX_ERR(0, 359, __pyx_L1_error)
+          __PYX_ERR(0, 371, __pyx_L1_error)
         }
         __pyx_v_val = (round(((__pyx_t_14 / __pyx_v_dm) * 100.0)) / 100.0);
 
 
-        /* "bz_pricing/core/curves.pyx":360
+        /* "bz_pricing/core/curves.pyx":372
  *                 f = f1 + (f2 - f1) * ((dm - d1) / (d2 - d1))
  *                 val = round((f * 360.0) / dm * 100.0) / 100.0
  *                 if abs(val - rates[m]) > tolerance:             # <<<<<<<<<<<<<<
@@ -32165,7 +32486,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
         if (__pyx_t_1) {
 
 
-          /* "bz_pricing/core/curves.pyx":361
+          /* "bz_pricing/core/curves.pyx":373
  *                 val = round((f * 360.0) / dm * 100.0) / 100.0
  *                 if abs(val - rates[m]) > tolerance:
  *                     ok = False             # <<<<<<<<<<<<<<
@@ -32174,7 +32495,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
 */
           __pyx_v_ok = 0;
 
-          /* "bz_pricing/core/curves.pyx":362
+          /* "bz_pricing/core/curves.pyx":374
  *                 if abs(val - rates[m]) > tolerance:
  *                     ok = False
  *                     break             # <<<<<<<<<<<<<<
@@ -32183,7 +32504,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
 */
           goto __pyx_L9_break;
 
-          /* "bz_pricing/core/curves.pyx":360
+          /* "bz_pricing/core/curves.pyx":372
  *                 f = f1 + (f2 - f1) * ((dm - d1) / (d2 - d1))
  *                 val = round((f * 360.0) / dm * 100.0) / 100.0
  *                 if abs(val - rates[m]) > tolerance:             # <<<<<<<<<<<<<<
@@ -32195,7 +32516,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
       __pyx_L9_break:;
 
 
-      /* "bz_pricing/core/curves.pyx":363
+      /* "bz_pricing/core/curves.pyx":375
  *                     ok = False
  *                     break
  *             if ok:             # <<<<<<<<<<<<<<
@@ -32204,7 +32525,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
 */
       if (__pyx_v_ok) {
 
-        /* "bz_pricing/core/curves.pyx":364
+        /* "bz_pricing/core/curves.pyx":376
  *                     break
  *             if ok:
  *                 best_next = cand             # <<<<<<<<<<<<<<
@@ -32213,7 +32534,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
 */
         __pyx_v_best_next = __pyx_v_cand;
 
-        /* "bz_pricing/core/curves.pyx":363
+        /* "bz_pricing/core/curves.pyx":375
  *                     ok = False
  *                     break
  *             if ok:             # <<<<<<<<<<<<<<
@@ -32223,7 +32544,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
         goto __pyx_L11;
       }
 
-      /* "bz_pricing/core/curves.pyx":366
+      /* "bz_pricing/core/curves.pyx":378
  *                 best_next = cand
  *             else:
  *                 break             # <<<<<<<<<<<<<<
@@ -32238,20 +32559,20 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
     __pyx_L7_break:;
 
 
-    /* "bz_pricing/core/curves.pyx":367
+    /* "bz_pricing/core/curves.pyx":379
  *             else:
  *                 break
  *         knots.append(best_next)             # <<<<<<<<<<<<<<
  *         curr = best_next
  *         if curr >= n - 1:
 */
-    __pyx_t_4 = __Pyx_PyLong_From_int(__pyx_v_best_next); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 367, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyLong_From_int(__pyx_v_best_next); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 379, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_15 = __Pyx_PyList_Append(__pyx_v_knots, __pyx_t_4); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 367, __pyx_L1_error)
+    __pyx_t_15 = __Pyx_PyList_Append(__pyx_v_knots, __pyx_t_4); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 379, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
 
-    /* "bz_pricing/core/curves.pyx":368
+    /* "bz_pricing/core/curves.pyx":380
  *                 break
  *         knots.append(best_next)
  *         curr = best_next             # <<<<<<<<<<<<<<
@@ -32260,7 +32581,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
 */
     __pyx_v_curr = __pyx_v_best_next;
 
-    /* "bz_pricing/core/curves.pyx":369
+    /* "bz_pricing/core/curves.pyx":381
  *         knots.append(best_next)
  *         curr = best_next
  *         if curr >= n - 1:             # <<<<<<<<<<<<<<
@@ -32272,7 +32593,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
     if (__pyx_t_1) {
 
 
-      /* "bz_pricing/core/curves.pyx":370
+      /* "bz_pricing/core/curves.pyx":382
  *         curr = best_next
  *         if curr >= n - 1:
  *             break             # <<<<<<<<<<<<<<
@@ -32281,7 +32602,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
 */
       goto __pyx_L5_break;
 
-      /* "bz_pricing/core/curves.pyx":369
+      /* "bz_pricing/core/curves.pyx":381
  *         knots.append(best_next)
  *         curr = best_next
  *         if curr >= n - 1:             # <<<<<<<<<<<<<<
@@ -32292,7 +32613,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
   }
   __pyx_L5_break:;
 
-  /* "bz_pricing/core/curves.pyx":371
+  /* "bz_pricing/core/curves.pyx":383
  *         if curr >= n - 1:
  *             break
  *     return knots             # <<<<<<<<<<<<<<
@@ -32310,7 +32631,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indic
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/curves.pyx":331
+  /* "bz_pricing/core/curves.pyx":343
  * 
  * 
  * cpdef list extract_linear360_knot_indices(double[:] dcs, double[:] rates, double tolerance=0.001):             # <<<<<<<<<<<<<<
@@ -32389,55 +32710,55 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_dcs,&__pyx_mstate_global->__pyx_n_u_rates,&__pyx_mstate_global->__pyx_n_u_tolerance,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 331, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 343, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 331, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 343, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 331, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 343, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 331, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 343, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "extract_linear360_knot_indices", 0) < (0)) __PYX_ERR(0, 331, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "extract_linear360_knot_indices", 0) < (0)) __PYX_ERR(0, 343, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("extract_linear360_knot_indices", 0, 2, 3, i); __PYX_ERR(0, 331, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("extract_linear360_knot_indices", 0, 2, 3, i); __PYX_ERR(0, 343, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 331, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 343, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 331, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 343, __pyx_L3_error)
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 331, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 343, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_dcs = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_dcs.memview)) __PYX_ERR(0, 331, __pyx_L3_error)
-    __pyx_v_rates = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_rates.memview)) __PYX_ERR(0, 331, __pyx_L3_error)
+    __pyx_v_dcs = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_dcs.memview)) __PYX_ERR(0, 343, __pyx_L3_error)
+    __pyx_v_rates = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_rates.memview)) __PYX_ERR(0, 343, __pyx_L3_error)
     if (values[2]) {
-      __pyx_v_tolerance = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_tolerance == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 331, __pyx_L3_error)
+      __pyx_v_tolerance = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_tolerance == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 343, __pyx_L3_error)
     } else {
       __pyx_v_tolerance = ((double)0.001);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("extract_linear360_knot_indices", 0, 2, 3, __pyx_nargs); __PYX_ERR(0, 331, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("extract_linear360_knot_indices", 0, 2, 3, __pyx_nargs); __PYX_ERR(0, 343, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -32472,11 +32793,11 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_extract_linear360_knot_indi
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("extract_linear360_knot_indices", 0);
-  if (unlikely(!__pyx_v_dcs.memview)) { __Pyx_RaiseUnboundLocalError("dcs"); __PYX_ERR(0, 331, __pyx_L1_error) }
-  if (unlikely(!__pyx_v_rates.memview)) { __Pyx_RaiseUnboundLocalError("rates"); __PYX_ERR(0, 331, __pyx_L1_error) }
+  if (unlikely(!__pyx_v_dcs.memview)) { __Pyx_RaiseUnboundLocalError("dcs"); __PYX_ERR(0, 343, __pyx_L1_error) }
+  if (unlikely(!__pyx_v_rates.memview)) { __Pyx_RaiseUnboundLocalError("rates"); __PYX_ERR(0, 343, __pyx_L1_error) }
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.tolerance = __pyx_v_tolerance;
-  __pyx_t_1 = __pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indices(__pyx_v_dcs, __pyx_v_rates, 1, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 331, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_10bz_pricing_4core_6curves_extract_linear360_knot_indices(__pyx_v_dcs, __pyx_v_rates, 1, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 343, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   {
     PyObject *__pyx_temp;
@@ -32500,7 +32821,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_extract_linear360_knot_indi
   return __pyx_r;
 }
 
-/* "bz_pricing/core/curves.pyx":375
+/* "bz_pricing/core/curves.pyx":387
  * 
  * 
  * cpdef tuple apply_cython_smoothing(double[:] t_nodes, double[:] y_nodes, double smoothing):             # <<<<<<<<<<<<<<
@@ -32560,7 +32881,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_apply_cython_smoothing(__Pyx
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("apply_cython_smoothing", 0);
 
-  /* "bz_pricing/core/curves.pyx":381
+  /* "bz_pricing/core/curves.pyx":393
  *     utilizando o UnivariateSpline do SciPy por baixo.
  *     """
  *     cdef int n = t_nodes.shape[0]             # <<<<<<<<<<<<<<
@@ -32569,7 +32890,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_apply_cython_smoothing(__Pyx
 */
   __pyx_v_n = (__pyx_v_t_nodes.shape[0]);
 
-  /* "bz_pricing/core/curves.pyx":387
+  /* "bz_pricing/core/curves.pyx":399
  * 
  *     # Pr-aloca os arrays nicos com o tamanho mximo n
  *     cdef double[:] unique_t = np.empty(n, dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -32577,16 +32898,16 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_apply_cython_smoothing(__Pyx
  *     cdef int u_count = 0
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 387, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 399, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 387, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 399, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyLong_From_int(__pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 387, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyLong_From_int(__pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 399, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 387, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 399, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 387, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 399, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_7 = 1;
@@ -32605,13 +32926,13 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_apply_cython_smoothing(__Pyx
     PyObject *__pyx_callargs[3] = {__pyx_t_2, __pyx_t_3, __pyx_t_6};
     #if CYTHON_VECTORCALL
     __pyx_t_5 = __pyx_mstate_global->__pyx_tuple[2];
-    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 387, __pyx_L1_error)
+    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 399, __pyx_L1_error)
     __Pyx_INCREF(__pyx_t_5);
     #else
     {
       PyObject *__pyx_temp[1] = {__pyx_mstate_global->__pyx_n_u_dtype};
       __pyx_t_5 = __Pyx_MakeKwargDict(__pyx_temp, __pyx_callargs+2, 1);
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 387, __pyx_L1_error)
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 399, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
     }
     #endif
@@ -32621,16 +32942,16 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_apply_cython_smoothing(__Pyx
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 387, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 399, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 387, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 399, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_unique_t = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "bz_pricing/core/curves.pyx":388
+  /* "bz_pricing/core/curves.pyx":400
  *     # Pr-aloca os arrays nicos com o tamanho mximo n
  *     cdef double[:] unique_t = np.empty(n, dtype=np.float64)
  *     cdef double[:] unique_y = np.empty(n, dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -32638,16 +32959,16 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_apply_cython_smoothing(__Pyx
  * 
 */
   __pyx_t_4 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 388, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 400, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 388, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 400, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyLong_From_int(__pyx_v_n); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 388, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyLong_From_int(__pyx_v_n); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 400, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 388, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 400, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 388, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 400, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_7 = 1;
@@ -32666,13 +32987,13 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_apply_cython_smoothing(__Pyx
     PyObject *__pyx_callargs[3] = {__pyx_t_4, __pyx_t_5, __pyx_t_2};
     #if CYTHON_VECTORCALL
     __pyx_t_3 = __pyx_mstate_global->__pyx_tuple[2];
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 388, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 400, __pyx_L1_error)
     __Pyx_INCREF(__pyx_t_3);
     #else
     {
       PyObject *__pyx_temp[1] = {__pyx_mstate_global->__pyx_n_u_dtype};
       __pyx_t_3 = __Pyx_MakeKwargDict(__pyx_temp, __pyx_callargs+2, 1);
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 388, __pyx_L1_error)
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 400, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
     }
     #endif
@@ -32682,16 +33003,16 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_apply_cython_smoothing(__Pyx
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 388, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 400, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 388, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 400, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_unique_y = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "bz_pricing/core/curves.pyx":389
+  /* "bz_pricing/core/curves.pyx":401
  *     cdef double[:] unique_t = np.empty(n, dtype=np.float64)
  *     cdef double[:] unique_y = np.empty(n, dtype=np.float64)
  *     cdef int u_count = 0             # <<<<<<<<<<<<<<
@@ -32700,7 +33021,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_apply_cython_smoothing(__Pyx
 */
   __pyx_v_u_count = 0;
 
-  /* "bz_pricing/core/curves.pyx":391
+  /* "bz_pricing/core/curves.pyx":403
  *     cdef int u_count = 0
  * 
  *     for i in range(n):             # <<<<<<<<<<<<<<
@@ -32714,7 +33035,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_apply_cython_smoothing(__Pyx
   for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
     __pyx_v_i = __pyx_t_11;
 
-    /* "bz_pricing/core/curves.pyx":392
+    /* "bz_pricing/core/curves.pyx":404
  * 
  *     for i in range(n):
  *         current_t = t_nodes[i]             # <<<<<<<<<<<<<<
@@ -32724,7 +33045,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_apply_cython_smoothing(__Pyx
     __pyx_t_12 = __pyx_v_i;
     __pyx_v_current_t = (*((double *) ( /* dim=0 */ (__pyx_v_t_nodes.data + __pyx_t_12 * __pyx_v_t_nodes.strides[0]) )));
 
-    /* "bz_pricing/core/curves.pyx":393
+    /* "bz_pricing/core/curves.pyx":405
  *     for i in range(n):
  *         current_t = t_nodes[i]
  *         current_y = y_nodes[i]             # <<<<<<<<<<<<<<
@@ -32734,7 +33055,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_apply_cython_smoothing(__Pyx
     __pyx_t_12 = __pyx_v_i;
     __pyx_v_current_y = (*((double *) ( /* dim=0 */ (__pyx_v_y_nodes.data + __pyx_t_12 * __pyx_v_y_nodes.strides[0]) )));
 
-    /* "bz_pricing/core/curves.pyx":395
+    /* "bz_pricing/core/curves.pyx":407
  *         current_y = y_nodes[i]
  * 
  *         found = False             # <<<<<<<<<<<<<<
@@ -32743,7 +33064,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_apply_cython_smoothing(__Pyx
 */
     __pyx_v_found = 0;
 
-    /* "bz_pricing/core/curves.pyx":396
+    /* "bz_pricing/core/curves.pyx":408
  * 
  *         found = False
  *         for j in range(u_count):             # <<<<<<<<<<<<<<
@@ -32757,7 +33078,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_apply_cython_smoothing(__Pyx
     for (__pyx_t_15 = 0; __pyx_t_15 < __pyx_t_14; __pyx_t_15+=1) {
       __pyx_v_j = __pyx_t_15;
 
-      /* "bz_pricing/core/curves.pyx":397
+      /* "bz_pricing/core/curves.pyx":409
  *         found = False
  *         for j in range(u_count):
  *             if unique_t[j] == current_t:             # <<<<<<<<<<<<<<
@@ -32770,7 +33091,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_apply_cython_smoothing(__Pyx
       if (__pyx_t_16) {
 
 
-        /* "bz_pricing/core/curves.pyx":398
+        /* "bz_pricing/core/curves.pyx":410
  *         for j in range(u_count):
  *             if unique_t[j] == current_t:
  *                 found = True             # <<<<<<<<<<<<<<
@@ -32779,7 +33100,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_apply_cython_smoothing(__Pyx
 */
         __pyx_v_found = 1;
 
-        /* "bz_pricing/core/curves.pyx":399
+        /* "bz_pricing/core/curves.pyx":411
  *             if unique_t[j] == current_t:
  *                 found = True
  *                 break             # <<<<<<<<<<<<<<
@@ -32788,7 +33109,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_apply_cython_smoothing(__Pyx
 */
         goto __pyx_L6_break;
 
-        /* "bz_pricing/core/curves.pyx":397
+        /* "bz_pricing/core/curves.pyx":409
  *         found = False
  *         for j in range(u_count):
  *             if unique_t[j] == current_t:             # <<<<<<<<<<<<<<
@@ -32800,7 +33121,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_apply_cython_smoothing(__Pyx
     __pyx_L6_break:;
 
 
-    /* "bz_pricing/core/curves.pyx":401
+    /* "bz_pricing/core/curves.pyx":413
  *                 break
  * 
  *         if not found:             # <<<<<<<<<<<<<<
@@ -32812,7 +33133,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_apply_cython_smoothing(__Pyx
     if (__pyx_t_16) {
 
 
-      /* "bz_pricing/core/curves.pyx":402
+      /* "bz_pricing/core/curves.pyx":414
  * 
  *         if not found:
  *             unique_t[u_count] = current_t             # <<<<<<<<<<<<<<
@@ -32822,7 +33143,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_apply_cython_smoothing(__Pyx
       __pyx_t_12 = __pyx_v_u_count;
       *((double *) ( /* dim=0 */ (__pyx_v_unique_t.data + __pyx_t_12 * __pyx_v_unique_t.strides[0]) )) = __pyx_v_current_t;
 
-      /* "bz_pricing/core/curves.pyx":403
+      /* "bz_pricing/core/curves.pyx":415
  *         if not found:
  *             unique_t[u_count] = current_t
  *             unique_y[u_count] = current_y             # <<<<<<<<<<<<<<
@@ -32832,7 +33153,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_apply_cython_smoothing(__Pyx
       __pyx_t_12 = __pyx_v_u_count;
       *((double *) ( /* dim=0 */ (__pyx_v_unique_y.data + __pyx_t_12 * __pyx_v_unique_y.strides[0]) )) = __pyx_v_current_y;
 
-      /* "bz_pricing/core/curves.pyx":404
+      /* "bz_pricing/core/curves.pyx":416
  *             unique_t[u_count] = current_t
  *             unique_y[u_count] = current_y
  *             u_count += 1             # <<<<<<<<<<<<<<
@@ -32841,7 +33162,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_apply_cython_smoothing(__Pyx
 */
       __pyx_v_u_count = (__pyx_v_u_count + 1);
 
-      /* "bz_pricing/core/curves.pyx":401
+      /* "bz_pricing/core/curves.pyx":413
  *                 break
  * 
  *         if not found:             # <<<<<<<<<<<<<<
@@ -32852,7 +33173,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_apply_cython_smoothing(__Pyx
   }
 
 
-  /* "bz_pricing/core/curves.pyx":407
+  /* "bz_pricing/core/curves.pyx":419
  * 
  *     # Cria views contguas apenas do tamanho real preenchido
  *     cdef object t_np = np.asarray(unique_t[:u_count])             # <<<<<<<<<<<<<<
@@ -32860,9 +33181,9 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_apply_cython_smoothing(__Pyx
  * 
 */
   __pyx_t_6 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 407, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 419, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_asarray); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 407, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_asarray); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 419, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_17.data = __pyx_v_unique_t.data;
@@ -32882,10 +33203,10 @@ static PyObject *__pyx_f_10bz_pricing_4core_6curves_apply_cython_smoothing(__Pyx
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 407, __pyx_L1_error)
+    __PYX_ERR(0, 419, __pyx_L1_error)
 }
 
-__pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 407, __pyx_L1_error)
+__pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 419, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_7 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -32905,13 +33226,13 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 407, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 419, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_t_np = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/curves.pyx":408
+  /* "bz_pricing/core/curves.pyx":420
  *     # Cria views contguas apenas do tamanho real preenchido
  *     cdef object t_np = np.asarray(unique_t[:u_count])
  *     cdef object y_np = np.asarray(unique_y[:u_count])             # <<<<<<<<<<<<<<
@@ -32919,9 +33240,9 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __
  *     from scipy.interpolate import UnivariateSpline
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 408, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 420, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_asarray); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 408, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_asarray); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 420, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_17.data = __pyx_v_unique_y.data;
@@ -32941,10 +33262,10 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 408, __pyx_L1_error)
+    __PYX_ERR(0, 420, __pyx_L1_error)
 }
 
-__pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 408, __pyx_L1_error)
+__pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 420, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_7 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -32964,13 +33285,13 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 408, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 420, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_y_np = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/curves.pyx":410
+  /* "bz_pricing/core/curves.pyx":422
  *     cdef object y_np = np.asarray(unique_y[:u_count])
  * 
  *     from scipy.interpolate import UnivariateSpline             # <<<<<<<<<<<<<<
@@ -32979,14 +33300,14 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __
 */
   {
     PyObject* const __pyx_imported_names[] = {__pyx_mstate_global->__pyx_n_u_UnivariateSpline};
-    __pyx_t_18 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_scipy_interpolate, __pyx_imported_names, 1, NULL, 0); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 410, __pyx_L1_error)
+    __pyx_t_18 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_scipy_interpolate, __pyx_imported_names, 1, NULL, 0); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 422, __pyx_L1_error)
   }
   __pyx_t_1 = __pyx_t_18;
   __Pyx_GOTREF(__pyx_t_1);
   {
     PyObject* const __pyx_imported_names[] = {__pyx_mstate_global->__pyx_n_u_UnivariateSpline};
     __pyx_t_19 = 0; {
-      __pyx_t_6 = __Pyx_ImportFrom(__pyx_t_1, __pyx_imported_names[__pyx_t_19]); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 410, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_ImportFrom(__pyx_t_1, __pyx_imported_names[__pyx_t_19]); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 422, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       switch (__pyx_t_19) {
         case 0:
@@ -33000,7 +33321,7 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/curves.pyx":411
+  /* "bz_pricing/core/curves.pyx":423
  * 
  *     from scipy.interpolate import UnivariateSpline
  *     cdef object spline = UnivariateSpline(t_np, y_np, s=smoothing)             # <<<<<<<<<<<<<<
@@ -33010,7 +33331,7 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __
   __pyx_t_6 = NULL;
   __Pyx_INCREF(__pyx_v_UnivariateSpline);
   __pyx_t_3 = __pyx_v_UnivariateSpline; 
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_smoothing); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 411, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_smoothing); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 423, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_7 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -33028,13 +33349,13 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __
     PyObject *__pyx_callargs[4] = {__pyx_t_6, __pyx_v_t_np, __pyx_v_y_np, __pyx_t_2};
     #if CYTHON_VECTORCALL
     __pyx_t_5 = __pyx_mstate_global->__pyx_tuple[5];
-    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 411, __pyx_L1_error)
+    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 423, __pyx_L1_error)
     __Pyx_INCREF(__pyx_t_5);
     #else
     {
       PyObject *__pyx_temp[1] = {__pyx_mstate_global->__pyx_n_u_s};
       __pyx_t_5 = __Pyx_MakeKwargDict(__pyx_temp, __pyx_callargs+3, 1);
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 411, __pyx_L1_error)
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 423, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
     }
     #endif
@@ -33043,13 +33364,13 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 411, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 423, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_v_spline = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/curves.pyx":414
+  /* "bz_pricing/core/curves.pyx":426
  * 
  *     # Determina o prazo mximo
  *     cdef int max_du = 0             # <<<<<<<<<<<<<<
@@ -33058,7 +33379,7 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __
 */
   __pyx_v_max_du = 0;
 
-  /* "bz_pricing/core/curves.pyx":415
+  /* "bz_pricing/core/curves.pyx":427
  *     # Determina o prazo mximo
  *     cdef int max_du = 0
  *     for j in range(u_count):             # <<<<<<<<<<<<<<
@@ -33072,7 +33393,7 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __
   for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
     __pyx_v_j = __pyx_t_11;
 
-    /* "bz_pricing/core/curves.pyx":416
+    /* "bz_pricing/core/curves.pyx":428
  *     cdef int max_du = 0
  *     for j in range(u_count):
  *         if unique_t[j] > max_du:             # <<<<<<<<<<<<<<
@@ -33085,7 +33406,7 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __
     if (__pyx_t_16) {
 
 
-      /* "bz_pricing/core/curves.pyx":417
+      /* "bz_pricing/core/curves.pyx":429
  *     for j in range(u_count):
  *         if unique_t[j] > max_du:
  *             max_du = <int>unique_t[j]             # <<<<<<<<<<<<<<
@@ -33095,7 +33416,7 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __
       __pyx_t_12 = __pyx_v_j;
       __pyx_v_max_du = ((int)(*((double *) ( /* dim=0 */ (__pyx_v_unique_t.data + __pyx_t_12 * __pyx_v_unique_t.strides[0]) ))));
 
-      /* "bz_pricing/core/curves.pyx":416
+      /* "bz_pricing/core/curves.pyx":428
  *     cdef int max_du = 0
  *     for j in range(u_count):
  *         if unique_t[j] > max_du:             # <<<<<<<<<<<<<<
@@ -33106,7 +33427,7 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __
   }
 
 
-  /* "bz_pricing/core/curves.pyx":420
+  /* "bz_pricing/core/curves.pyx":432
  * 
  *     # Cria o grid dirio e evalua o spline
  *     cdef double[:] new_t = np.arange(1, max_du + 1, dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -33114,16 +33435,16 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __
  *     cdef double[:] new_dc = np.ones(max_du, dtype=np.float64)
 */
   __pyx_t_3 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 420, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 432, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_arange); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 420, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_arange); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 432, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyLong_From_long((__pyx_v_max_du + 1)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 420, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyLong_From_long((__pyx_v_max_du + 1)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 432, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 420, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 432, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 420, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 432, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_t_7 = 1;
@@ -33142,13 +33463,13 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __
     PyObject *__pyx_callargs[4] = {__pyx_t_3, __pyx_mstate_global->__pyx_int_1, __pyx_t_5, __pyx_t_4};
     #if CYTHON_VECTORCALL
     __pyx_t_6 = __pyx_mstate_global->__pyx_tuple[2];
-    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 420, __pyx_L1_error)
+    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 432, __pyx_L1_error)
     __Pyx_INCREF(__pyx_t_6);
     #else
     {
       PyObject *__pyx_temp[1] = {__pyx_mstate_global->__pyx_n_u_dtype};
       __pyx_t_6 = __Pyx_MakeKwargDict(__pyx_temp, __pyx_callargs+3, 1);
-      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 420, __pyx_L1_error)
+      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 432, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
     }
     #endif
@@ -33158,16 +33479,16 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 420, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 432, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 420, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 432, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_new_t = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "bz_pricing/core/curves.pyx":421
+  /* "bz_pricing/core/curves.pyx":433
  *     # Cria o grid dirio e evalua o spline
  *     cdef double[:] new_t = np.arange(1, max_du + 1, dtype=np.float64)
  *     cdef double[:] new_y = spline(np.asarray(new_t))             # <<<<<<<<<<<<<<
@@ -33178,12 +33499,12 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __
   __Pyx_INCREF(__pyx_v_spline);
   __pyx_t_6 = __pyx_v_spline; 
   __pyx_t_5 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 421, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 433, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_20 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_asarray); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 421, __pyx_L1_error)
+  __pyx_t_20 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_asarray); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 433, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_20);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_v_new_t, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 421, __pyx_L1_error)
+  __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_v_new_t, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 433, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_7 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -33203,7 +33524,7 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 421, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 433, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
   }
   __pyx_t_7 = 1;
@@ -33224,16 +33545,16 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 421, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 433, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 421, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 433, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_new_y = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "bz_pricing/core/curves.pyx":422
+  /* "bz_pricing/core/curves.pyx":434
  *     cdef double[:] new_t = np.arange(1, max_du + 1, dtype=np.float64)
  *     cdef double[:] new_y = spline(np.asarray(new_t))
  *     cdef double[:] new_dc = np.ones(max_du, dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -33241,16 +33562,16 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __
  *     return (np.asarray(new_t), np.asarray(new_y), np.asarray(new_dc))
 */
   __pyx_t_6 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 422, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 434, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_ones); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 422, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_mstate_global->__pyx_n_u_ones); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 434, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyLong_From_int(__pyx_v_max_du); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 422, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyLong_From_int(__pyx_v_max_du); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 434, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_GetModuleGlobalName(__pyx_t_20, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 422, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_20, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 434, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_20);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_20, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 422, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_20, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 434, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
   __pyx_t_7 = 1;
@@ -33269,13 +33590,13 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __
     PyObject *__pyx_callargs[3] = {__pyx_t_6, __pyx_t_4, __pyx_t_3};
     #if CYTHON_VECTORCALL
     __pyx_t_20 = __pyx_mstate_global->__pyx_tuple[2];
-    if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 422, __pyx_L1_error)
+    if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 434, __pyx_L1_error)
     __Pyx_INCREF(__pyx_t_20);
     #else
     {
       PyObject *__pyx_temp[1] = {__pyx_mstate_global->__pyx_n_u_dtype};
       __pyx_t_20 = __Pyx_MakeKwargDict(__pyx_temp, __pyx_callargs+2, 1);
-      if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 422, __pyx_L1_error)
+      if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 434, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_20);
     }
     #endif
@@ -33285,27 +33606,27 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 422, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 434, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 422, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 434, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_new_dc = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "bz_pricing/core/curves.pyx":424
+  /* "bz_pricing/core/curves.pyx":436
  *     cdef double[:] new_dc = np.ones(max_du, dtype=np.float64)
  * 
  *     return (np.asarray(new_t), np.asarray(new_y), np.asarray(new_dc))             # <<<<<<<<<<<<<<
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_20, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 424, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_20, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 436, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_20);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_20, __pyx_mstate_global->__pyx_n_u_asarray); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 424, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_20, __pyx_mstate_global->__pyx_n_u_asarray); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 436, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
-  __pyx_t_20 = __pyx_memoryview_fromslice(__pyx_v_new_t, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 424, __pyx_L1_error)
+  __pyx_t_20 = __pyx_memoryview_fromslice(__pyx_v_new_t, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 436, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_20);
   __pyx_t_7 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -33325,16 +33646,16 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 424, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 436, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __pyx_t_20 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 424, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 436, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_asarray); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 424, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_mstate_global->__pyx_n_u_asarray); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 436, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_memoryview_fromslice(__pyx_v_new_y, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 424, __pyx_L1_error)
+  __pyx_t_2 = __pyx_memoryview_fromslice(__pyx_v_new_y, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 436, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_7 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -33354,16 +33675,16 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __
     __Pyx_XDECREF(__pyx_t_20); __pyx_t_20 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 424, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 436, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
   }
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_20, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 424, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_20, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 436, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_20);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_20, __pyx_mstate_global->__pyx_n_u_asarray); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 424, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_20, __pyx_mstate_global->__pyx_n_u_asarray); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 436, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
-  __pyx_t_20 = __pyx_memoryview_fromslice(__pyx_v_new_dc, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 424, __pyx_L1_error)
+  __pyx_t_20 = __pyx_memoryview_fromslice(__pyx_v_new_dc, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 436, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_20);
   __pyx_t_7 = 1;
   #if CYTHON_UNPACK_METHODS
@@ -33383,17 +33704,17 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 424, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 436, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
   }
-  __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 424, __pyx_L1_error)
+  __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 436, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_GIVEREF(__pyx_t_1);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_1) != (0)) __PYX_ERR(0, 424, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_1) != (0)) __PYX_ERR(0, 436, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_3);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_t_3) != (0)) __PYX_ERR(0, 424, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_t_3) != (0)) __PYX_ERR(0, 436, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_4);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_6, 2, __pyx_t_4) != (0)) __PYX_ERR(0, 424, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_6, 2, __pyx_t_4) != (0)) __PYX_ERR(0, 436, __pyx_L1_error);
   __pyx_t_1 = 0;
   __pyx_t_3 = 0;
   __pyx_t_4 = 0;
@@ -33408,7 +33729,7 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_17, 1, (PyObject *(*)(char *)) __
   __pyx_t_6 = 0;
   goto __pyx_L0;
 
-  /* "bz_pricing/core/curves.pyx":375
+  /* "bz_pricing/core/curves.pyx":387
  * 
  * 
  * cpdef tuple apply_cython_smoothing(double[:] t_nodes, double[:] y_nodes, double smoothing):             # <<<<<<<<<<<<<<
@@ -33493,46 +33814,46 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_t_nodes,&__pyx_mstate_global->__pyx_n_u_y_nodes,&__pyx_mstate_global->__pyx_n_u_smoothing,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 375, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 387, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 375, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 387, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 375, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 387, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 375, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 387, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "apply_cython_smoothing", 0) < (0)) __PYX_ERR(0, 375, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "apply_cython_smoothing", 0) < (0)) __PYX_ERR(0, 387, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 3; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("apply_cython_smoothing", 1, 3, 3, i); __PYX_ERR(0, 375, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("apply_cython_smoothing", 1, 3, 3, i); __PYX_ERR(0, 387, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 3)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 375, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 387, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 375, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 387, __pyx_L3_error)
       values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 375, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 387, __pyx_L3_error)
     }
-    __pyx_v_t_nodes = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_t_nodes.memview)) __PYX_ERR(0, 375, __pyx_L3_error)
-    __pyx_v_y_nodes = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_y_nodes.memview)) __PYX_ERR(0, 375, __pyx_L3_error)
-    __pyx_v_smoothing = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_smoothing == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 375, __pyx_L3_error)
+    __pyx_v_t_nodes = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_t_nodes.memview)) __PYX_ERR(0, 387, __pyx_L3_error)
+    __pyx_v_y_nodes = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_y_nodes.memview)) __PYX_ERR(0, 387, __pyx_L3_error)
+    __pyx_v_smoothing = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_smoothing == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 387, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("apply_cython_smoothing", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 375, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("apply_cython_smoothing", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 387, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -33566,9 +33887,9 @@ static PyObject *__pyx_pf_10bz_pricing_4core_6curves_2apply_cython_smoothing(CYT
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("apply_cython_smoothing", 0);
-  if (unlikely(!__pyx_v_t_nodes.memview)) { __Pyx_RaiseUnboundLocalError("t_nodes"); __PYX_ERR(0, 375, __pyx_L1_error) }
-  if (unlikely(!__pyx_v_y_nodes.memview)) { __Pyx_RaiseUnboundLocalError("y_nodes"); __PYX_ERR(0, 375, __pyx_L1_error) }
-  __pyx_t_1 = __pyx_f_10bz_pricing_4core_6curves_apply_cython_smoothing(__pyx_v_t_nodes, __pyx_v_y_nodes, __pyx_v_smoothing, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 375, __pyx_L1_error)
+  if (unlikely(!__pyx_v_t_nodes.memview)) { __Pyx_RaiseUnboundLocalError("t_nodes"); __PYX_ERR(0, 387, __pyx_L1_error) }
+  if (unlikely(!__pyx_v_y_nodes.memview)) { __Pyx_RaiseUnboundLocalError("y_nodes"); __PYX_ERR(0, 387, __pyx_L1_error) }
+  __pyx_t_1 = __pyx_f_10bz_pricing_4core_6curves_apply_cython_smoothing(__pyx_v_t_nodes, __pyx_v_y_nodes, __pyx_v_smoothing, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 387, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   {
     PyObject *__pyx_temp;
@@ -36442,7 +36763,19 @@ static PyObject *__pyx_tp_vectorcall_10bz_pricing_4core_6curves_Curve(PyObject *
   }
   Py_ssize_t nargs = PyVectorcall_NARGS(nargsf);
   PyObject *o = __pyx_tp_new_vectorcall_10bz_pricing_4core_6curves_Curve((PyTypeObject*)t, args, nargs, kwnames);
+  if (likely(o)) {
+    assert(Py_TYPE(o) == (PyTypeObject*)t);
+    if (unlikely(__pyx_pw_10bz_pricing_4core_6curves_5Curve_1__init__(o, args, nargs, kwnames) < 0)) {
+      Py_CLEAR(o);
+    }
+  }
   return o;
+}
+#endif
+
+#if CYTHON_VECTORCALL_TPNEW
+static int __pyx_tp_init_10bz_pricing_4core_6curves_Curve(PyObject *o, PyObject *args, PyObject *kwds) {
+  return __Pyx_CallTpinitAsVectorcall(__pyx_pw_10bz_pricing_4core_6curves_5Curve_1__init__, o, args, kwds);
 }
 #endif
 
@@ -36468,16 +36801,32 @@ static void __pyx_tp_dealloc_10bz_pricing_4core_6curves_Curve(PyObject *o) {
   #endif
 }
 
+static PyObject *__pyx_getprop_10bz_pricing_4core_6curves_5Curve_round_decimals(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_10bz_pricing_4core_6curves_5Curve_14round_decimals_1__get__(o);
+}
+
+static PyObject *__pyx_getprop_10bz_pricing_4core_6curves_5Curve_round_mode(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_10bz_pricing_4core_6curves_5Curve_10round_mode_1__get__(o);
+}
+
 static PyMethodDef __pyx_methods_10bz_pricing_4core_6curves_Curve[] = {
-  {"__reduce_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_6curves_5Curve_3__reduce_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0},
-  {"__setstate_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_6curves_5Curve_5__setstate_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0},
+  {"__reduce_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_6curves_5Curve_5__reduce_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0},
+  {"__setstate_cython__", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_6curves_5Curve_7__setstate_cython__, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0},
   {0, 0, 0, 0}
+};
+
+static struct PyGetSetDef __pyx_getsets_10bz_pricing_4core_6curves_Curve[] = {
+  {"round_decimals", __pyx_getprop_10bz_pricing_4core_6curves_5Curve_round_decimals, 0, 0, 0},
+  {"round_mode", __pyx_getprop_10bz_pricing_4core_6curves_5Curve_round_mode, 0, 0, 0},
+  {0, 0, 0, 0, 0}
 };
 #if CYTHON_USE_TYPE_SPECS
 static PyType_Slot __pyx_type_10bz_pricing_4core_6curves_Curve_slots[] = {
   {Py_tp_dealloc, (void *)__pyx_tp_dealloc_10bz_pricing_4core_6curves_Curve},
   {Py_tp_doc, (void *)PyDoc_STR("\n    Interface base para todas as curvas do b3quant.\n    O m\303\251todo get_rate resolve a taxa no tempo t (geralmente DU).\n    t_sec (geralmente DC) pode ser providenciado caso o modelo matem\303\241tico exija ambos.\n    ")},
   {Py_tp_methods, (void *)__pyx_methods_10bz_pricing_4core_6curves_Curve},
+  {Py_tp_getset, (void *)__pyx_getsets_10bz_pricing_4core_6curves_Curve},
+  {Py_tp_init, (void *)__pyx_tp_init_10bz_pricing_4core_6curves_Curve},
   {Py_tp_new, (void *)__pyx_tp_new_10bz_pricing_4core_6curves_Curve},
   #if (!CYTHON_COMPILING_IN_PYPY || PYPY_VERSION_NUM >= 0x07030800) && (!CYTHON_COMPILING_IN_LIMITED_API || __PYX_LIMITED_VERSION_HEX >= 0x030E0000)
   #if CYTHON_VECTORCALL_TPNEW
@@ -36525,7 +36874,7 @@ static PyTypeObject __pyx_type_10bz_pricing_4core_6curves_Curve = {
   0, /*tp_iternext*/
   __pyx_methods_10bz_pricing_4core_6curves_Curve, /*tp_methods*/
   0, /*tp_members*/
-  0, /*tp_getset*/
+  __pyx_getsets_10bz_pricing_4core_6curves_Curve, /*tp_getset*/
   0, /*tp_base*/
   0, /*tp_dict*/
   0, /*tp_descr_get*/
@@ -36533,7 +36882,7 @@ static PyTypeObject __pyx_type_10bz_pricing_4core_6curves_Curve = {
   #if !CYTHON_USE_TYPE_SPECS
   0, /*tp_dictoffset*/
   #endif
-  0, /*tp_init*/
+  __pyx_tp_init_10bz_pricing_4core_6curves_Curve, /*tp_init*/
   0, /*tp_alloc*/
   __pyx_tp_new_10bz_pricing_4core_6curves_Curve, /*tp_new*/
   0, /*tp_free*/
@@ -39659,11 +40008,11 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_6curves_FlatCurve(
   __pyx_vtable_10bz_pricing_4core_6curves_FlatCurve.__pyx_base = *__pyx_vtabptr_10bz_pricing_4core_6curves_Curve;
   __pyx_vtable_10bz_pricing_4core_6curves_FlatCurve.__pyx_base.get_rate = (double (*)(struct __pyx_obj_10bz_pricing_4core_6curves_Curve *, double, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_6curves_5Curve_get_rate *__pyx_optional_args))__pyx_f_10bz_pricing_4core_6curves_9FlatCurve_get_rate;
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 21, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 33, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_FlatCurve = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10bz_pricing_4core_6curves_FlatCurve_spec, __pyx_t_1);
   __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_FlatCurve)) __PYX_ERR(0, 21, __pyx_L1_error)
+  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_FlatCurve)) __PYX_ERR(0, 33, __pyx_L1_error)
   #else
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_FlatCurve = &__pyx_type_10bz_pricing_4core_6curves_FlatCurve;
   #endif
@@ -39671,7 +40020,7 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_6curves_FlatCurve(
   __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_FlatCurve->tp_base = __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve;
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_FlatCurve) < (0)) __PYX_ERR(0, 21, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_FlatCurve) < (0)) __PYX_ERR(0, 33, __pyx_L1_error)
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount((PyObject*)__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_FlatCurve);
@@ -39681,9 +40030,9 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_6curves_FlatCurve(
     __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_FlatCurve->tp_getattro = PyObject_GenericGetAttr;
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_FlatCurve, __pyx_vtabptr_10bz_pricing_4core_6curves_FlatCurve) < (0)) __PYX_ERR(0, 21, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_FlatCurve, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_FlatCurve) < (0)) __PYX_ERR(0, 21, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_FlatCurve) < (0)) __PYX_ERR(0, 21, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_FlatCurve, __pyx_vtabptr_10bz_pricing_4core_6curves_FlatCurve) < (0)) __PYX_ERR(0, 33, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_FlatCurve, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_FlatCurve) < (0)) __PYX_ERR(0, 33, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_FlatCurve) < (0)) __PYX_ERR(0, 33, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -39705,11 +40054,11 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_6curves_AdditiveCu
   __pyx_vtable_10bz_pricing_4core_6curves_AdditiveCurve.__pyx_base = *__pyx_vtabptr_10bz_pricing_4core_6curves_Curve;
   __pyx_vtable_10bz_pricing_4core_6curves_AdditiveCurve.__pyx_base.get_rate = (double (*)(struct __pyx_obj_10bz_pricing_4core_6curves_Curve *, double, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_6curves_5Curve_get_rate *__pyx_optional_args))__pyx_f_10bz_pricing_4core_6curves_13AdditiveCurve_get_rate;
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_AdditiveCurve = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10bz_pricing_4core_6curves_AdditiveCurve_spec, __pyx_t_1);
   __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_AdditiveCurve)) __PYX_ERR(0, 40, __pyx_L1_error)
+  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_AdditiveCurve)) __PYX_ERR(0, 52, __pyx_L1_error)
   #else
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_AdditiveCurve = &__pyx_type_10bz_pricing_4core_6curves_AdditiveCurve;
   #endif
@@ -39717,7 +40066,7 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_6curves_AdditiveCu
   __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_AdditiveCurve->tp_base = __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve;
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_AdditiveCurve) < (0)) __PYX_ERR(0, 40, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_AdditiveCurve) < (0)) __PYX_ERR(0, 52, __pyx_L1_error)
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount((PyObject*)__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_AdditiveCurve);
@@ -39727,9 +40076,9 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_6curves_AdditiveCu
     __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_AdditiveCurve->tp_getattro = PyObject_GenericGetAttr;
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_AdditiveCurve, __pyx_vtabptr_10bz_pricing_4core_6curves_AdditiveCurve) < (0)) __PYX_ERR(0, 40, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_AdditiveCurve, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_AdditiveCurve) < (0)) __PYX_ERR(0, 40, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_AdditiveCurve) < (0)) __PYX_ERR(0, 40, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_AdditiveCurve, __pyx_vtabptr_10bz_pricing_4core_6curves_AdditiveCurve) < (0)) __PYX_ERR(0, 52, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_AdditiveCurve, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_AdditiveCurve) < (0)) __PYX_ERR(0, 52, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_AdditiveCurve) < (0)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -39751,11 +40100,11 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_6curves_Multiplica
   __pyx_vtable_10bz_pricing_4core_6curves_MultiplicativeCurve.__pyx_base = *__pyx_vtabptr_10bz_pricing_4core_6curves_Curve;
   __pyx_vtable_10bz_pricing_4core_6curves_MultiplicativeCurve.__pyx_base.get_rate = (double (*)(struct __pyx_obj_10bz_pricing_4core_6curves_Curve *, double, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_6curves_5Curve_get_rate *__pyx_optional_args))__pyx_f_10bz_pricing_4core_6curves_19MultiplicativeCurve_get_rate;
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 64, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_MultiplicativeCurve = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10bz_pricing_4core_6curves_MultiplicativeCurve_spec, __pyx_t_1);
   __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_MultiplicativeCurve)) __PYX_ERR(0, 64, __pyx_L1_error)
+  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_MultiplicativeCurve)) __PYX_ERR(0, 76, __pyx_L1_error)
   #else
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_MultiplicativeCurve = &__pyx_type_10bz_pricing_4core_6curves_MultiplicativeCurve;
   #endif
@@ -39763,7 +40112,7 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_6curves_Multiplica
   __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_MultiplicativeCurve->tp_base = __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve;
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_MultiplicativeCurve) < (0)) __PYX_ERR(0, 64, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_MultiplicativeCurve) < (0)) __PYX_ERR(0, 76, __pyx_L1_error)
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount((PyObject*)__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_MultiplicativeCurve);
@@ -39773,9 +40122,9 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_6curves_Multiplica
     __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_MultiplicativeCurve->tp_getattro = PyObject_GenericGetAttr;
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_MultiplicativeCurve, __pyx_vtabptr_10bz_pricing_4core_6curves_MultiplicativeCurve) < (0)) __PYX_ERR(0, 64, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_MultiplicativeCurve, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_MultiplicativeCurve) < (0)) __PYX_ERR(0, 64, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_MultiplicativeCurve) < (0)) __PYX_ERR(0, 64, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_MultiplicativeCurve, __pyx_vtabptr_10bz_pricing_4core_6curves_MultiplicativeCurve) < (0)) __PYX_ERR(0, 76, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_MultiplicativeCurve, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_MultiplicativeCurve) < (0)) __PYX_ERR(0, 76, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_MultiplicativeCurve) < (0)) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -39797,11 +40146,11 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_6curves_SimpleCurv
   __pyx_vtable_10bz_pricing_4core_6curves_SimpleCurve.__pyx_base = *__pyx_vtabptr_10bz_pricing_4core_6curves_Curve;
   __pyx_vtable_10bz_pricing_4core_6curves_SimpleCurve.__pyx_base.get_rate = (double (*)(struct __pyx_obj_10bz_pricing_4core_6curves_Curve *, double, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_6curves_5Curve_get_rate *__pyx_optional_args))__pyx_f_10bz_pricing_4core_6curves_11SimpleCurve_get_rate;
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 86, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 98, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10bz_pricing_4core_6curves_SimpleCurve_spec, __pyx_t_1);
   __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve)) __PYX_ERR(0, 86, __pyx_L1_error)
+  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve)) __PYX_ERR(0, 98, __pyx_L1_error)
   #else
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve = &__pyx_type_10bz_pricing_4core_6curves_SimpleCurve;
   #endif
@@ -39809,7 +40158,7 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_6curves_SimpleCurv
   __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve->tp_base = __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve;
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve) < (0)) __PYX_ERR(0, 86, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve) < (0)) __PYX_ERR(0, 98, __pyx_L1_error)
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount((PyObject*)__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve);
@@ -39819,9 +40168,9 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_6curves_SimpleCurv
     __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve->tp_getattro = PyObject_GenericGetAttr;
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve, __pyx_vtabptr_10bz_pricing_4core_6curves_SimpleCurve) < (0)) __PYX_ERR(0, 86, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_SimpleCurve, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve) < (0)) __PYX_ERR(0, 86, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve) < (0)) __PYX_ERR(0, 86, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve, __pyx_vtabptr_10bz_pricing_4core_6curves_SimpleCurve) < (0)) __PYX_ERR(0, 98, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_SimpleCurve, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve) < (0)) __PYX_ERR(0, 98, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve) < (0)) __PYX_ERR(0, 98, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -39843,11 +40192,11 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_6curves_ComplexCur
   __pyx_vtable_10bz_pricing_4core_6curves_ComplexCurve.__pyx_base = *__pyx_vtabptr_10bz_pricing_4core_6curves_Curve;
   __pyx_vtable_10bz_pricing_4core_6curves_ComplexCurve.__pyx_base.get_rate = (double (*)(struct __pyx_obj_10bz_pricing_4core_6curves_Curve *, double, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_6curves_5Curve_get_rate *__pyx_optional_args))__pyx_f_10bz_pricing_4core_6curves_12ComplexCurve_get_rate;
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 139, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 151, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10bz_pricing_4core_6curves_ComplexCurve_spec, __pyx_t_1);
   __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve)) __PYX_ERR(0, 139, __pyx_L1_error)
+  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve)) __PYX_ERR(0, 151, __pyx_L1_error)
   #else
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve = &__pyx_type_10bz_pricing_4core_6curves_ComplexCurve;
   #endif
@@ -39855,7 +40204,7 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_6curves_ComplexCur
   __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve->tp_base = __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve;
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve) < (0)) __PYX_ERR(0, 139, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve) < (0)) __PYX_ERR(0, 151, __pyx_L1_error)
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount((PyObject*)__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve);
@@ -39865,9 +40214,9 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_6curves_ComplexCur
     __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve->tp_getattro = PyObject_GenericGetAttr;
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve, __pyx_vtabptr_10bz_pricing_4core_6curves_ComplexCurve) < (0)) __PYX_ERR(0, 139, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_ComplexCurve, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve) < (0)) __PYX_ERR(0, 139, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve) < (0)) __PYX_ERR(0, 139, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve, __pyx_vtabptr_10bz_pricing_4core_6curves_ComplexCurve) < (0)) __PYX_ERR(0, 151, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_ComplexCurve, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve) < (0)) __PYX_ERR(0, 151, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve) < (0)) __PYX_ERR(0, 151, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -39889,11 +40238,11 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_6curves_InflationC
   __pyx_vtable_10bz_pricing_4core_6curves_InflationCurve.__pyx_base = *__pyx_vtabptr_10bz_pricing_4core_6curves_Curve;
   __pyx_vtable_10bz_pricing_4core_6curves_InflationCurve.__pyx_base.get_rate = (double (*)(struct __pyx_obj_10bz_pricing_4core_6curves_Curve *, double, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_6curves_5Curve_get_rate *__pyx_optional_args))__pyx_f_10bz_pricing_4core_6curves_14InflationCurve_get_rate;
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 187, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 199, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10bz_pricing_4core_6curves_InflationCurve_spec, __pyx_t_1);
   __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve)) __PYX_ERR(0, 187, __pyx_L1_error)
+  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve)) __PYX_ERR(0, 199, __pyx_L1_error)
   #else
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve = &__pyx_type_10bz_pricing_4core_6curves_InflationCurve;
   #endif
@@ -39901,7 +40250,7 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_6curves_InflationC
   __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve->tp_base = __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve;
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve) < (0)) __PYX_ERR(0, 187, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve) < (0)) __PYX_ERR(0, 199, __pyx_L1_error)
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount((PyObject*)__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve);
@@ -39911,9 +40260,9 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_6curves_InflationC
     __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve->tp_getattro = PyObject_GenericGetAttr;
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve, __pyx_vtabptr_10bz_pricing_4core_6curves_InflationCurve) < (0)) __PYX_ERR(0, 187, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_InflationCurve, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve) < (0)) __PYX_ERR(0, 187, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve) < (0)) __PYX_ERR(0, 187, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve, __pyx_vtabptr_10bz_pricing_4core_6curves_InflationCurve) < (0)) __PYX_ERR(0, 199, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_InflationCurve, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve) < (0)) __PYX_ERR(0, 199, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve) < (0)) __PYX_ERR(0, 199, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -39935,11 +40284,11 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_6curves_Convenienc
   __pyx_vtable_10bz_pricing_4core_6curves_ConvenienceYieldCurve.__pyx_base = *__pyx_vtabptr_10bz_pricing_4core_6curves_Curve;
   __pyx_vtable_10bz_pricing_4core_6curves_ConvenienceYieldCurve.__pyx_base.get_rate = (double (*)(struct __pyx_obj_10bz_pricing_4core_6curves_Curve *, double, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_6curves_5Curve_get_rate *__pyx_optional_args))__pyx_f_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_get_rate;
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 213, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 225, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ConvenienceYieldCurve = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10bz_pricing_4core_6curves_ConvenienceYieldCurve_spec, __pyx_t_1);
   __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ConvenienceYieldCurve)) __PYX_ERR(0, 213, __pyx_L1_error)
+  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ConvenienceYieldCurve)) __PYX_ERR(0, 225, __pyx_L1_error)
   #else
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ConvenienceYieldCurve = &__pyx_type_10bz_pricing_4core_6curves_ConvenienceYieldCurve;
   #endif
@@ -39947,7 +40296,7 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_6curves_Convenienc
   __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_ConvenienceYieldCurve->tp_base = __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve;
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ConvenienceYieldCurve) < (0)) __PYX_ERR(0, 213, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ConvenienceYieldCurve) < (0)) __PYX_ERR(0, 225, __pyx_L1_error)
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount((PyObject*)__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ConvenienceYieldCurve);
@@ -39957,9 +40306,9 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_6curves_Convenienc
     __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ConvenienceYieldCurve->tp_getattro = PyObject_GenericGetAttr;
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ConvenienceYieldCurve, __pyx_vtabptr_10bz_pricing_4core_6curves_ConvenienceYieldCurve) < (0)) __PYX_ERR(0, 213, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_ConvenienceYieldCurve, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ConvenienceYieldCurve) < (0)) __PYX_ERR(0, 213, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ConvenienceYieldCurve) < (0)) __PYX_ERR(0, 213, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ConvenienceYieldCurve, __pyx_vtabptr_10bz_pricing_4core_6curves_ConvenienceYieldCurve) < (0)) __PYX_ERR(0, 225, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_ConvenienceYieldCurve, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ConvenienceYieldCurve) < (0)) __PYX_ERR(0, 225, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ConvenienceYieldCurve) < (0)) __PYX_ERR(0, 225, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -39981,11 +40330,11 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_6curves_SpreadCurv
   __pyx_vtable_10bz_pricing_4core_6curves_SpreadCurve.__pyx_base = *__pyx_vtabptr_10bz_pricing_4core_6curves_Curve;
   __pyx_vtable_10bz_pricing_4core_6curves_SpreadCurve.__pyx_base.get_rate = (double (*)(struct __pyx_obj_10bz_pricing_4core_6curves_Curve *, double, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_6curves_5Curve_get_rate *__pyx_optional_args))__pyx_f_10bz_pricing_4core_6curves_11SpreadCurve_get_rate;
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 306, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 318, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10bz_pricing_4core_6curves_SpreadCurve_spec, __pyx_t_1);
   __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve)) __PYX_ERR(0, 306, __pyx_L1_error)
+  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve)) __PYX_ERR(0, 318, __pyx_L1_error)
   #else
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve = &__pyx_type_10bz_pricing_4core_6curves_SpreadCurve;
   #endif
@@ -39993,7 +40342,7 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_6curves_SpreadCurv
   __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve->tp_base = __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve;
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve) < (0)) __PYX_ERR(0, 306, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve) < (0)) __PYX_ERR(0, 318, __pyx_L1_error)
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount((PyObject*)__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve);
@@ -40003,9 +40352,9 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_6curves_SpreadCurv
     __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve->tp_getattro = PyObject_GenericGetAttr;
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve, __pyx_vtabptr_10bz_pricing_4core_6curves_SpreadCurve) < (0)) __PYX_ERR(0, 306, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_SpreadCurve, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve) < (0)) __PYX_ERR(0, 306, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve) < (0)) __PYX_ERR(0, 306, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve, __pyx_vtabptr_10bz_pricing_4core_6curves_SpreadCurve) < (0)) __PYX_ERR(0, 318, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_SpreadCurve, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve) < (0)) __PYX_ERR(0, 318, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve) < (0)) __PYX_ERR(0, 318, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -41117,20 +41466,20 @@ __Pyx_RefNannySetupContext("PyInit_curves", 0);
   if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_np, __pyx_t_4) < (0)) __PYX_ERR(0, 9, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/curves.pyx":18
- *     t_sec (geralmente DC) pode ser providenciado caso o modelo matemtico exija ambos.
- *     """
+  /* "bz_pricing/core/curves.pyx":22
+ *         self._is_trunc = (round_mode == 'trunc')
+ * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
  *         raise NotImplementedError("Mtodo base get_rate")
  * 
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_6curves_5Curve_1get_rate, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_Curve_get_rate, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_curves, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[0])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 18, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_6curves_5Curve_3get_rate, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_Curve_get_rate, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_curves, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[0])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 22, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[6]);
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, __pyx_mstate_global->__pyx_n_u_get_rate, __pyx_t_4) < (0)) __PYX_ERR(0, 18, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, __pyx_mstate_global->__pyx_n_u_get_rate, __pyx_t_4) < (0)) __PYX_ERR(0, 22, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "(tree fragment)":1
@@ -41138,7 +41487,7 @@ __Pyx_RefNannySetupContext("PyInit_curves", 0);
  *     cdef tuple state
  *     cdef object _dict
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_6curves_5Curve_3__reduce_cython__, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_Curve___reduce_cython, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_curves, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[1])); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 1, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_6curves_5Curve_5__reduce_cython__, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_Curve___reduce_cython, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_curves, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[1])); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
@@ -41152,7 +41501,7 @@ __Pyx_RefNannySetupContext("PyInit_curves", 0);
  * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
  *     __pyx_unpickle_Curve__set_state(self, __pyx_state)
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_6curves_5Curve_5__setstate_cython__, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_Curve___setstate_cython, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_curves, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[2])); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 17, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_6curves_5Curve_7__setstate_cython__, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_Curve___setstate_cython, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_curves, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[2])); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
@@ -41160,20 +41509,20 @@ __Pyx_RefNannySetupContext("PyInit_curves", 0);
   if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, __pyx_mstate_global->__pyx_n_u_setstate_cython, __pyx_t_4) < (0)) __PYX_ERR(1, 17, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/curves.pyx":31
+  /* "bz_pricing/core/curves.pyx":43
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
  *         cdef double rate = self._rate
  *         if self._round_decimals >= 0:
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_6curves_9FlatCurve_3get_rate, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_FlatCurve_get_rate, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_curves, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[3])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_6curves_9FlatCurve_3get_rate, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_FlatCurve_get_rate, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_curves, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[3])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[7]);
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_FlatCurve, __pyx_mstate_global->__pyx_n_u_get_rate, __pyx_t_4) < (0)) __PYX_ERR(0, 31, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_FlatCurve, __pyx_mstate_global->__pyx_n_u_get_rate, __pyx_t_4) < (0)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "(tree fragment)":1
@@ -41203,20 +41552,20 @@ __Pyx_RefNannySetupContext("PyInit_curves", 0);
   if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_FlatCurve, __pyx_mstate_global->__pyx_n_u_setstate_cython, __pyx_t_4) < (0)) __PYX_ERR(1, 17, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/curves.pyx":50
+  /* "bz_pricing/core/curves.pyx":62
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
  *         cdef double total = 0.0
  *         cdef Curve c
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_6curves_13AdditiveCurve_3get_rate, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_AdditiveCurve_get_rate, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_curves, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[6])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 50, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_6curves_13AdditiveCurve_3get_rate, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_AdditiveCurve_get_rate, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_curves, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[6])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 62, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[8]);
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_AdditiveCurve, __pyx_mstate_global->__pyx_n_u_get_rate, __pyx_t_4) < (0)) __PYX_ERR(0, 50, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_AdditiveCurve, __pyx_mstate_global->__pyx_n_u_get_rate, __pyx_t_4) < (0)) __PYX_ERR(0, 62, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "(tree fragment)":1
@@ -41246,20 +41595,20 @@ __Pyx_RefNannySetupContext("PyInit_curves", 0);
   if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_AdditiveCurve, __pyx_mstate_global->__pyx_n_u_setstate_cython, __pyx_t_4) < (0)) __PYX_ERR(1, 17, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/curves.pyx":75
+  /* "bz_pricing/core/curves.pyx":87
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
  *         cdef double rate = self._scalar * self._curve.get_rate(t, t_sec)
  * 
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_6curves_19MultiplicativeCurve_3get_rate, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_MultiplicativeCurve_get_rate, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_curves, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[9])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_6curves_19MultiplicativeCurve_3get_rate, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_MultiplicativeCurve_get_rate, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_curves, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[9])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[9]);
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_MultiplicativeCurve, __pyx_mstate_global->__pyx_n_u_get_rate, __pyx_t_4) < (0)) __PYX_ERR(0, 75, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_MultiplicativeCurve, __pyx_mstate_global->__pyx_n_u_get_rate, __pyx_t_4) < (0)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "(tree fragment)":1
@@ -41289,33 +41638,33 @@ __Pyx_RefNannySetupContext("PyInit_curves", 0);
   if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_MultiplicativeCurve, __pyx_mstate_global->__pyx_n_u_setstate_cython, __pyx_t_4) < (0)) __PYX_ERR(1, 17, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/curves.pyx":92
+  /* "bz_pricing/core/curves.pyx":104
  *     utilizando a grade de ns fornecida.
  *     """
  *     def __init__(self, double[:] t_nodes, double[:] y_nodes, Interpolator interpolator, double[:] t_sec_nodes=None, int round_decimals=-1, str round_mode='round'):             # <<<<<<<<<<<<<<
  *         if t_nodes.shape[0] != y_nodes.shape[0]:
  *             raise ValueError("t_nodes e y_nodes devem ter o mesmo tamanho")
 */
-  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(Py_None, PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(Py_None, PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 104, __pyx_L1_error)
   __pyx_mstate_global->__pyx_k__5 = __pyx_t_9;
 
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "bz_pricing/core/curves.pyx":106
+  /* "bz_pricing/core/curves.pyx":118
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
  *         cdef double * t_sec_ptr = NULL
  *         if self._t_sec_nodes is not None:
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_6curves_11SimpleCurve_3get_rate, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_SimpleCurve_get_rate, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_curves, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[12])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_6curves_11SimpleCurve_3get_rate, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_SimpleCurve_get_rate, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_curves, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[12])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[10]);
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve, __pyx_mstate_global->__pyx_n_u_get_rate, __pyx_t_4) < (0)) __PYX_ERR(0, 106, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve, __pyx_mstate_global->__pyx_n_u_get_rate, __pyx_t_4) < (0)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "(tree fragment)":1
@@ -41345,33 +41694,33 @@ __Pyx_RefNannySetupContext("PyInit_curves", 0);
   if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve, __pyx_mstate_global->__pyx_n_u_setstate_cython, __pyx_t_4) < (0)) __PYX_ERR(1, 17, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/curves.pyx":144
+  /* "bz_pricing/core/curves.pyx":156
  *     Aplica um Interpolator DIFERENTE para cada tranche/seo de vrtices da curva.
  *     """
  *     def __init__(self, double[:] t_nodes, double[:] y_nodes, list interpolators, double[:] t_sec_nodes=None, int round_decimals=-1, str round_mode='round'):             # <<<<<<<<<<<<<<
  *         if t_nodes.shape[0] != y_nodes.shape[0]:
  *             raise ValueError("t_nodes e y_nodes devem ter o mesmo tamanho")
 */
-  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(Py_None, PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 144, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(Py_None, PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __pyx_mstate_global->__pyx_k__6 = __pyx_t_9;
 
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "bz_pricing/core/curves.pyx":156
+  /* "bz_pricing/core/curves.pyx":168
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
  *         cdef int i
  *         cdef Interpolator interp
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_6curves_12ComplexCurve_3get_rate, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_ComplexCurve_get_rate, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_curves, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[15])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 156, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_6curves_12ComplexCurve_3get_rate, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_ComplexCurve_get_rate, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_curves, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[15])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 168, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[11]);
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve, __pyx_mstate_global->__pyx_n_u_get_rate, __pyx_t_4) < (0)) __PYX_ERR(0, 156, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve, __pyx_mstate_global->__pyx_n_u_get_rate, __pyx_t_4) < (0)) __PYX_ERR(0, 168, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "(tree fragment)":1
@@ -41401,20 +41750,20 @@ __Pyx_RefNannySetupContext("PyInit_curves", 0);
   if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve, __pyx_mstate_global->__pyx_n_u_setstate_cython, __pyx_t_4) < (0)) __PYX_ERR(1, 17, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/curves.pyx":199
+  /* "bz_pricing/core/curves.pyx":211
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
  *         cdef double pre_rate = self._nominal_curve.get_rate(t, t_sec)
  *         cdef double dap_rate = self._real_curve.get_rate(t, t_sec)
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_6curves_14InflationCurve_3get_rate, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_InflationCurve_get_rate, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_curves, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[18])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 199, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_6curves_14InflationCurve_3get_rate, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_InflationCurve_get_rate, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_curves, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[18])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 211, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[12]);
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve, __pyx_mstate_global->__pyx_n_u_get_rate, __pyx_t_4) < (0)) __PYX_ERR(0, 199, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve, __pyx_mstate_global->__pyx_n_u_get_rate, __pyx_t_4) < (0)) __PYX_ERR(0, 211, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "(tree fragment)":1
@@ -41444,20 +41793,20 @@ __Pyx_RefNannySetupContext("PyInit_curves", 0);
   if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve, __pyx_mstate_global->__pyx_n_u_setstate_cython, __pyx_t_4) < (0)) __PYX_ERR(1, 17, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/curves.pyx":269
+  /* "bz_pricing/core/curves.pyx":281
  *                 )
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
  *         cdef double rate
  *         cdef double fut_price
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_3get_rate, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_ConvenienceYieldCurve_get_rate, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_curves, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[21])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 269, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_6curves_21ConvenienceYieldCurve_3get_rate, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_ConvenienceYieldCurve_get_rate, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_curves, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[21])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 281, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[13]);
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_ConvenienceYieldCurve, __pyx_mstate_global->__pyx_n_u_get_rate, __pyx_t_4) < (0)) __PYX_ERR(0, 269, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_ConvenienceYieldCurve, __pyx_mstate_global->__pyx_n_u_get_rate, __pyx_t_4) < (0)) __PYX_ERR(0, 281, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "(tree fragment)":1
@@ -41487,20 +41836,20 @@ __Pyx_RefNannySetupContext("PyInit_curves", 0);
   if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_ConvenienceYieldCurve, __pyx_mstate_global->__pyx_n_u_setstate_cython, __pyx_t_4) < (0)) __PYX_ERR(1, 17, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/curves.pyx":317
+  /* "bz_pricing/core/curves.pyx":329
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
  *         cdef double r_a = self._curve_a.get_rate(t, t_sec)
  *         cdef double r_b = self._curve_b.get_rate(t, t_sec)
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_6curves_11SpreadCurve_3get_rate, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_SpreadCurve_get_rate, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_curves, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[24])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 317, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_6curves_11SpreadCurve_3get_rate, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_SpreadCurve_get_rate, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_curves, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[24])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 329, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[14]);
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve, __pyx_mstate_global->__pyx_n_u_get_rate, __pyx_t_4) < (0)) __PYX_ERR(0, 317, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve, __pyx_mstate_global->__pyx_n_u_get_rate, __pyx_t_4) < (0)) __PYX_ERR(0, 329, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "(tree fragment)":1
@@ -41530,35 +41879,35 @@ __Pyx_RefNannySetupContext("PyInit_curves", 0);
   if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve, __pyx_mstate_global->__pyx_n_u_setstate_cython, __pyx_t_4) < (0)) __PYX_ERR(1, 17, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/curves.pyx":331
+  /* "bz_pricing/core/curves.pyx":343
  * 
  * 
  * cpdef list extract_linear360_knot_indices(double[:] dcs, double[:] rates, double tolerance=0.001):             # <<<<<<<<<<<<<<
  *     """
  *     Identifica os ndices dos ns base de interpolao Linear 360,
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_6curves_1extract_linear360_knot_indices, 0, __pyx_mstate_global->__pyx_n_u_extract_linear360_knot_indices, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_curves, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[27])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 331, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_6curves_1extract_linear360_knot_indices, 0, __pyx_mstate_global->__pyx_n_u_extract_linear360_knot_indices, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_curves, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[27])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 343, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[15]);
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_extract_linear360_knot_indices, __pyx_t_4) < (0)) __PYX_ERR(0, 331, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_extract_linear360_knot_indices, __pyx_t_4) < (0)) __PYX_ERR(0, 343, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/curves.pyx":375
+  /* "bz_pricing/core/curves.pyx":387
  * 
  * 
  * cpdef tuple apply_cython_smoothing(double[:] t_nodes, double[:] y_nodes, double smoothing):             # <<<<<<<<<<<<<<
  *     """
  *     Realiza o tratamento otimizado de suavizao de curvas.
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_6curves_3apply_cython_smoothing, 0, __pyx_mstate_global->__pyx_n_u_apply_cython_smoothing, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_curves, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[28])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 375, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_6curves_3apply_cython_smoothing, 0, __pyx_mstate_global->__pyx_n_u_apply_cython_smoothing, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_curves, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[28])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 387, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_apply_cython_smoothing, __pyx_t_4) < (0)) __PYX_ERR(0, 375, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_apply_cython_smoothing, __pyx_t_4) < (0)) __PYX_ERR(0, 387, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "(tree fragment)":4
@@ -41804,7 +42153,7 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
   if (__Pyx_PyTuple_SET_ITEM(__pyx_mstate_global->__pyx_tuple[1], 0, __pyx_mstate_global->__pyx_slice[0]) != (0)) __PYX_ERR(1, 763, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[1]);
 
-  /* "bz_pricing/core/curves.pyx":262
+  /* "bz_pricing/core/curves.pyx":274
  *             if len(v_t) > 0:
  *                 self._interp_curve = SimpleCurve(
  *                     np.array(v_t, dtype=np.float64),             # <<<<<<<<<<<<<<
@@ -41813,12 +42162,12 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[1] = {__pyx_mstate_global->__pyx_n_u_dtype};
-    __pyx_mstate_global->__pyx_tuple[2] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[2])) __PYX_ERR(0, 262, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[2] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[2])) __PYX_ERR(0, 274, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[2]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[2]);
 
-  /* "bz_pricing/core/curves.pyx":264
+  /* "bz_pricing/core/curves.pyx":276
  *                     np.array(v_t, dtype=np.float64),
  *                     np.array(v_y, dtype=np.float64),
  *                     FlatForward252Interpolator(extrap_left=0, extrap_right=0),             # <<<<<<<<<<<<<<
@@ -41827,12 +42176,12 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[2] = {__pyx_mstate_global->__pyx_n_u_extrap_left, __pyx_mstate_global->__pyx_n_u_extrap_right};
-    __pyx_mstate_global->__pyx_tuple[3] = __Pyx_PyTuple_FromArray(__pyx_temp, 2); if (unlikely(!__pyx_mstate_global->__pyx_tuple[3])) __PYX_ERR(0, 264, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[3] = __Pyx_PyTuple_FromArray(__pyx_temp, 2); if (unlikely(!__pyx_mstate_global->__pyx_tuple[3])) __PYX_ERR(0, 276, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[3]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[3]);
 
-  /* "bz_pricing/core/curves.pyx":261
+  /* "bz_pricing/core/curves.pyx":273
  * 
  *             if len(v_t) > 0:
  *                 self._interp_curve = SimpleCurve(             # <<<<<<<<<<<<<<
@@ -41841,12 +42190,12 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[2] = {__pyx_mstate_global->__pyx_n_u_round_decimals, __pyx_mstate_global->__pyx_n_u_round_mode};
-    __pyx_mstate_global->__pyx_tuple[4] = __Pyx_PyTuple_FromArray(__pyx_temp, 2); if (unlikely(!__pyx_mstate_global->__pyx_tuple[4])) __PYX_ERR(0, 261, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[4] = __Pyx_PyTuple_FromArray(__pyx_temp, 2); if (unlikely(!__pyx_mstate_global->__pyx_tuple[4])) __PYX_ERR(0, 273, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[4]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[4]);
 
-  /* "bz_pricing/core/curves.pyx":411
+  /* "bz_pricing/core/curves.pyx":423
  * 
  *     from scipy.interpolate import UnivariateSpline
  *     cdef object spline = UnivariateSpline(t_np, y_np, s=smoothing)             # <<<<<<<<<<<<<<
@@ -41855,26 +42204,26 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[1] = {__pyx_mstate_global->__pyx_n_u_s};
-    __pyx_mstate_global->__pyx_tuple[5] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[5])) __PYX_ERR(0, 411, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[5] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[5])) __PYX_ERR(0, 423, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[5]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[5]);
 
-  /* "bz_pricing/core/curves.pyx":18
- *     t_sec (geralmente DC) pode ser providenciado caso o modelo matemtico exija ambos.
- *     """
+  /* "bz_pricing/core/curves.pyx":22
+ *         self._is_trunc = (round_mode == 'trunc')
+ * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
  *         raise NotImplementedError("Mtodo base get_rate")
  * 
 */
   {
     PyObject* __pyx_temp[1] = {__pyx_mstate_global->__pyx_float_0_0};
-    __pyx_mstate_global->__pyx_tuple[6] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[6])) __PYX_ERR(0, 18, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[6] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[6])) __PYX_ERR(0, 22, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[6]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[6]);
 
-  /* "bz_pricing/core/curves.pyx":31
+  /* "bz_pricing/core/curves.pyx":43
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -41883,12 +42232,12 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[1] = {__pyx_mstate_global->__pyx_float_0_0};
-    __pyx_mstate_global->__pyx_tuple[7] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[7])) __PYX_ERR(0, 31, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[7] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[7])) __PYX_ERR(0, 43, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[7]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[7]);
 
-  /* "bz_pricing/core/curves.pyx":50
+  /* "bz_pricing/core/curves.pyx":62
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -41897,12 +42246,12 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[1] = {__pyx_mstate_global->__pyx_float_0_0};
-    __pyx_mstate_global->__pyx_tuple[8] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[8])) __PYX_ERR(0, 50, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[8] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[8])) __PYX_ERR(0, 62, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[8]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[8]);
 
-  /* "bz_pricing/core/curves.pyx":75
+  /* "bz_pricing/core/curves.pyx":87
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -41911,12 +42260,12 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[1] = {__pyx_mstate_global->__pyx_float_0_0};
-    __pyx_mstate_global->__pyx_tuple[9] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[9])) __PYX_ERR(0, 75, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[9] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[9])) __PYX_ERR(0, 87, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[9]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[9]);
 
-  /* "bz_pricing/core/curves.pyx":106
+  /* "bz_pricing/core/curves.pyx":118
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -41925,12 +42274,12 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[1] = {__pyx_mstate_global->__pyx_float_0_0};
-    __pyx_mstate_global->__pyx_tuple[10] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[10])) __PYX_ERR(0, 106, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[10] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[10])) __PYX_ERR(0, 118, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[10]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[10]);
 
-  /* "bz_pricing/core/curves.pyx":156
+  /* "bz_pricing/core/curves.pyx":168
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -41939,12 +42288,12 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[1] = {__pyx_mstate_global->__pyx_float_0_0};
-    __pyx_mstate_global->__pyx_tuple[11] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[11])) __PYX_ERR(0, 156, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[11] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[11])) __PYX_ERR(0, 168, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[11]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[11]);
 
-  /* "bz_pricing/core/curves.pyx":199
+  /* "bz_pricing/core/curves.pyx":211
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -41953,12 +42302,12 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[1] = {__pyx_mstate_global->__pyx_float_0_0};
-    __pyx_mstate_global->__pyx_tuple[12] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[12])) __PYX_ERR(0, 199, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[12] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[12])) __PYX_ERR(0, 211, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[12]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[12]);
 
-  /* "bz_pricing/core/curves.pyx":269
+  /* "bz_pricing/core/curves.pyx":281
  *                 )
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -41967,12 +42316,12 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[1] = {__pyx_mstate_global->__pyx_float_0_0};
-    __pyx_mstate_global->__pyx_tuple[13] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[13])) __PYX_ERR(0, 269, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[13] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[13])) __PYX_ERR(0, 281, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[13]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[13]);
 
-  /* "bz_pricing/core/curves.pyx":317
+  /* "bz_pricing/core/curves.pyx":329
  *         self._is_trunc = (round_mode == 'trunc')
  * 
  *     cpdef double get_rate(self, double t, double t_sec=0.0) except *:             # <<<<<<<<<<<<<<
@@ -41981,12 +42330,12 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[1] = {__pyx_mstate_global->__pyx_float_0_0};
-    __pyx_mstate_global->__pyx_tuple[14] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[14])) __PYX_ERR(0, 317, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[14] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[14])) __PYX_ERR(0, 329, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[14]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[14]);
 
-  /* "bz_pricing/core/curves.pyx":331
+  /* "bz_pricing/core/curves.pyx":343
  * 
  * 
  * cpdef list extract_linear360_knot_indices(double[:] dcs, double[:] rates, double tolerance=0.001):             # <<<<<<<<<<<<<<
@@ -41995,7 +42344,7 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[1] = {__pyx_mstate_global->__pyx_float_0_001};
-    __pyx_mstate_global->__pyx_tuple[15] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[15])) __PYX_ERR(0, 331, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[15] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[15])) __PYX_ERR(0, 343, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[15]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[15]);
@@ -42215,7 +42564,7 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
   PyObject* tuple_dedup_map = PyDict_New();
   if (unlikely(!tuple_dedup_map)) return -1;
   {
-    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 18};
+    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 22};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_t, __pyx_mstate->__pyx_n_u_t_sec};
     __pyx_mstate_global->__pyx_codeobj_tab[0] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_curves_pyx, __pyx_mstate->__pyx_n_u_get_rate, __pyx_mstate->__pyx_kp_b_iso88591_7q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[0])) goto bad;
   }
@@ -42230,7 +42579,7 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
     __pyx_mstate_global->__pyx_codeobj_tab[2] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_tree_fragment, __pyx_mstate->__pyx_n_u_setstate_cython, __pyx_mstate->__pyx_kp_b_iso88591_1F, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[2])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 31};
+    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 43};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_t, __pyx_mstate->__pyx_n_u_t_sec};
     __pyx_mstate_global->__pyx_codeobj_tab[3] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_curves_pyx, __pyx_mstate->__pyx_n_u_get_rate, __pyx_mstate->__pyx_kp_b_iso88591_7q_4q_4_1_t1_uAU_Cq_d2ERs_6QUUV, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[3])) goto bad;
   }
@@ -42245,7 +42594,7 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
     __pyx_mstate_global->__pyx_codeobj_tab[5] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_tree_fragment, __pyx_mstate->__pyx_n_u_setstate_cython, __pyx_mstate->__pyx_kp_b_iso88591_q_a, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[5])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 50};
+    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 62};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_t, __pyx_mstate->__pyx_n_u_t_sec};
     __pyx_mstate_global->__pyx_codeobj_tab[6] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_curves_pyx, __pyx_mstate->__pyx_n_u_get_rate, __pyx_mstate->__pyx_kp_b_iso88591_7q_A_E_Q_Qiq_1_4_1_t1_QfBc_4Gr, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[6])) goto bad;
   }
@@ -42260,7 +42609,7 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
     __pyx_mstate_global->__pyx_codeobj_tab[8] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_tree_fragment, __pyx_mstate->__pyx_n_u_setstate_cython, __pyx_mstate->__pyx_kp_b_iso88591_1F_2, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[8])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 75};
+    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 87};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_t, __pyx_mstate->__pyx_n_u_t_sec};
     __pyx_mstate_global->__pyx_codeobj_tab[9] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_curves_pyx, __pyx_mstate->__pyx_n_u_get_rate, __pyx_mstate->__pyx_kp_b_iso88591_7q_4y_gYas_4_1_t1_uAU_Cq_d2ERs, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[9])) goto bad;
   }
@@ -42275,7 +42624,7 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
     __pyx_mstate_global->__pyx_codeobj_tab[11] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_tree_fragment, __pyx_mstate->__pyx_n_u_setstate_cython, __pyx_mstate->__pyx_kp_b_iso88591_1, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[11])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 106};
+    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 118};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_t, __pyx_mstate->__pyx_n_u_t_sec};
     __pyx_mstate_global->__pyx_codeobj_tab[12] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_curves_pyx, __pyx_mstate->__pyx_n_u_get_rate, __pyx_mstate->__pyx_kp_b_iso88591_7q_4_WA_1_4_Qd_1DPQQUU___ccggrr, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[12])) goto bad;
   }
@@ -42290,7 +42639,7 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
     __pyx_mstate_global->__pyx_codeobj_tab[14] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_tree_fragment, __pyx_mstate->__pyx_n_u_setstate_cython, __pyx_mstate->__pyx_kp_b_iso88591__7, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[14])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 156};
+    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 168};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_t, __pyx_mstate->__pyx_n_u_t_sec};
     __pyx_mstate_global->__pyx_codeobj_tab[15] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_curves_pyx, __pyx_mstate->__pyx_n_u_get_rate, __pyx_mstate->__pyx_kp_b_iso88591_7q_4_WA_1_2S_IQa_4_aq_6_Qc_iq_A, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[15])) goto bad;
   }
@@ -42305,7 +42654,7 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
     __pyx_mstate_global->__pyx_codeobj_tab[17] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_tree_fragment, __pyx_mstate->__pyx_n_u_setstate_cython, __pyx_mstate->__pyx_kp_b_iso88591_6, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[17])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 199};
+    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 211};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_t, __pyx_mstate->__pyx_n_u_t_sec};
     __pyx_mstate_global->__pyx_codeobj_tab[18] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_curves_pyx, __pyx_mstate->__pyx_n_u_get_rate, __pyx_mstate->__pyx_kp_b_iso88591_7q_t_1Cq_t_y_A_T_S_Bk_1_4_1_t1, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[18])) goto bad;
   }
@@ -42320,7 +42669,7 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
     __pyx_mstate_global->__pyx_codeobj_tab[20] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_tree_fragment, __pyx_mstate->__pyx_n_u_setstate_cython, __pyx_mstate->__pyx_kp_b_iso88591_AV1, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[20])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 269};
+    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 281};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_t, __pyx_mstate->__pyx_n_u_t_sec};
     __pyx_mstate_global->__pyx_codeobj_tab[21] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_curves_pyx, __pyx_mstate->__pyx_n_u_get_rate, __pyx_mstate->__pyx_kp_b_iso88591_7q_2S_Ct_1_4_1E_q_4_Yas_O9AS_t, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[21])) goto bad;
   }
@@ -42335,7 +42684,7 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
     __pyx_mstate_global->__pyx_codeobj_tab[23] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_tree_fragment, __pyx_mstate->__pyx_n_u_setstate_cython, __pyx_mstate->__pyx_kp_b_iso88591_31F, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[23])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 317};
+    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 329};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_t, __pyx_mstate->__pyx_n_u_t_sec};
     __pyx_mstate_global->__pyx_codeobj_tab[24] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_curves_pyx, __pyx_mstate->__pyx_n_u_get_rate, __pyx_mstate->__pyx_kp_b_iso88591_7q_iy_A_iy_A_4r_4_1_t1_uAU_Cq_d, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[24])) goto bad;
   }
@@ -42350,12 +42699,12 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
     __pyx_mstate_global->__pyx_codeobj_tab[26] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_tree_fragment, __pyx_mstate->__pyx_n_u_setstate_cython, __pyx_mstate->__pyx_kp_b_iso88591__7, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[26])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 331};
+    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 343};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_dcs, __pyx_mstate->__pyx_n_u_rates, __pyx_mstate->__pyx_n_u_tolerance};
     __pyx_mstate_global->__pyx_codeobj_tab[27] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_curves_pyx, __pyx_mstate->__pyx_n_u_extract_linear360_knot_indices, __pyx_mstate->__pyx_kp_b_iso88591_F_1_r_A_t1E_aq_A_r_2Q_E_1_HE_r, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[27])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 375};
+    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 387};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_t_nodes, __pyx_mstate->__pyx_n_u_y_nodes, __pyx_mstate->__pyx_n_u_smoothing};
     __pyx_mstate_global->__pyx_codeobj_tab[28] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_curves_pyx, __pyx_mstate->__pyx_n_u_apply_cython_smoothing, __pyx_mstate->__pyx_kp_b_iso88591_aq_b_as_b_as_q_U_1_G1A_G1A_E_aq, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[28])) goto bad;
   }
