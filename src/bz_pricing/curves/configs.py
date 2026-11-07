@@ -4,7 +4,8 @@ from bz_pricing.core.interpolators import (
     FlatForward252LinearInterpolator,
     FlatForward252LogInterpolator,
     Linear360Interpolator,
-    Interpolation360Interpolator
+    Interpolation360Interpolator,
+    PriceInterpolator
 )
 
 # Mapeamento oficial de configurações de construção de Curvas
@@ -24,7 +25,7 @@ CURVE_CONFIGS = {
         "interpolator_class": FlatForward252Interpolator,
         "extrap_left": 0,  # EXTRAP_FLAT
         "extrap_right": 1, # EXTRAP_FLAT_FORWARD (Conforme manual da B3)
-        "round_decimals": 5, # Arredonda em 3 casas decimais a taxa percentual
+        "round_decimals": 6, # 4 casas decimais na taxa percentual (Seção 2.1 Manual B3)
         "liquidity_filter": True, # Exclui contratos DI1 sem liquidez
         "rate_column": "AdjstdQtTax",
         "exp_date": "XprtnDt",
@@ -36,7 +37,7 @@ CURVE_CONFIGS = {
         "interpolator_class": FlatForward252Interpolator,
         "extrap_left": 0,  # EXTRAP_FLAT
         "extrap_right": 1, # EXTRAP_FLAT_FORWARD
-        "round_decimals": 5,
+        "round_decimals": 6,
         "liquidity_filter": False,
         "rate_column": "AdjstdQtTax",
         "exp_date": "XprtnDt",
@@ -98,8 +99,12 @@ CURVE_CONFIGS = {
         "type": "derived",
         "nominal_curve": "PRE",
         "real_curve": "DAP",
-        "round_decimals": 4,
-        "round_mode": "round"
+        "source_type": "taxas_referenciais",
+        "produto": "DPL",
+        "interpolator_class": FlatForward252Interpolator,
+        "round_decimals": 6,
+        "round_mode": "round",
+        "use_dc": False
     },
     "CUPOM_LIMPO": {
         "description": "Curva de Cupom Cambial Limpo (FlatForward 252 Linear)",
@@ -120,6 +125,7 @@ CURVE_CONFIGS = {
         "rate_column": "AdjstdQtTax",
         "exp_date": "XprtnDt",
         "use_dc": True,
+        "index_by_dc": True,
         "asset": "TIE",
         "v1_source": "BANXICO"
     },
@@ -133,6 +139,7 @@ CURVE_CONFIGS = {
         "rate_column": "AdjstdQtTax",
         "exp_date": "XprtnDt",
         "use_dc": True,
+        "index_by_dc": True,
         "asset": "SFR",
         "v1_source": "FED"
     },
@@ -146,17 +153,21 @@ CURVE_CONFIGS = {
         "rate_column": "AdjstdQtTax",
         "exp_date": "XprtnDt",
         "use_dc": True,
+        "index_by_dc": True,
         "asset": "EST",
         "v1_source": "ECB"
     },
     "ZMX": {
         "description": "Curva Zero Coupon F-TIIE (Linear 360 - Seção 2.10 Manual B3)",
+        "type": "derived_zero_coupon",
+        "forward_curve": "TIE",
         "interpolator_class": Linear360Interpolator,
         "extrap_left": 0,
         "extrap_right": 0,
         "round_decimals": 5,
         "round_mode": "round",
-        "use_dc": True
+        "use_dc": True,
+        "index_by_dc": True
     },
     "ZUS": {
         "description": "Curva Zero Coupon SOFR (Linear 360 - Seção 2.11 Manual B3)",
@@ -165,34 +176,62 @@ CURVE_CONFIGS = {
         "extrap_right": 0,
         "round_decimals": 5,
         "round_mode": "round",
-        "use_dc": True
+        "use_dc": True,
+        "index_by_dc": True,
+        "source_type": "taxas_referenciais",
+        "produto": "LIB"
     },
-    "ZEU": {
-        "description": "Curva Zero Coupon ESTR (Linear 360 - Seção 2.12 Manual B3)",
+    "LIB": {
+        "description": "Curva Zero Coupon SOFR / Libor legada (Linear 360 - Seção 2.11 Manual B3)",
         "interpolator_class": Linear360Interpolator,
         "extrap_left": 0,
         "extrap_right": 0,
         "round_decimals": 5,
         "round_mode": "round",
-        "use_dc": True
+        "use_dc": True,
+        "index_by_dc": True,
+        "source_type": "taxas_referenciais",
+        "produto": "LIB"
+    },
+    "ZEU": {
+        "description": "Curva Zero Coupon ESTR (Linear 360 - Seção 2.12 Manual B3)",
+        "type": "derived_zero_coupon",
+        "forward_curve": "EST",
+        "interpolator_class": Linear360Interpolator,
+        "extrap_left": 0,
+        "extrap_right": 0,
+        "round_decimals": 5,
+        "round_mode": "round",
+        "use_dc": True,
+        "index_by_dc": True
     },
     "DIC": {
         "description": "Curva DI x IPCA Cupom Sujo (Seção 3.1 Manual B3)",
         "type": "derived",
         "nominal_curve": "PRE",
-        "real_curve": "DAP",
         "indicator": "IPCA",
-        "round_decimals": 4,
-        "round_mode": "round"
+        "source_type": "taxas_referenciais",
+        "produto": "DIC",
+        "interpolator_class": FlatForward252Interpolator,
+        "extrap_left": 0,
+        "extrap_right": 1,
+        "round_decimals": 6,
+        "round_mode": "round",
+        "use_dc": False
     },
     "DIM": {
         "description": "Curva DI x IGP-M Cupom Sujo (Seção 3.3 Manual B3)",
         "type": "derived",
         "nominal_curve": "PRE",
-        "real_curve": "DGI",
         "indicator": "IGP-M",
-        "round_decimals": 4,
-        "round_mode": "round"
+        "source_type": "taxas_referenciais",
+        "produto": "DIM",
+        "interpolator_class": FlatForward252Interpolator,
+        "extrap_left": 0,
+        "extrap_right": 1,
+        "round_decimals": 6,
+        "round_mode": "round",
+        "use_dc": False
     },
     "DGI": {
         "description": "Curva de Juro Real (DI x IGP-M) - Base para DIM",
@@ -204,66 +243,270 @@ CURVE_CONFIGS = {
         "asset": "DGI"
     },
     "PTX": {
-        "description": "Curva Forward Reais x Dolar (Construção Simples / Flat Forward)",
-        "interpolator_class": FlatForward252Interpolator,
+        "description": "Forward de Reais x Dólar (Seção 4.1 Manual B3)",
+        "type": "currency_forward",
+        "currency": "USD",
+        "pre_curve": "PRE",
+        "foreign_curve": "DOL",
+        "source_type": "taxas_referenciais",
+        "produto": "PTX",
+        "interpolator_class": PriceInterpolator,
         "extrap_left": 0,
         "extrap_right": 1,
         "round_decimals": 7,
         "round_mode": "trunc",
-        "use_dc": False
+        "use_dc": True,
+        "divide_by_100": False
     },
     "EUR": {
-        "description": "Curva Forward Reais x Euro (Construção Simples / Flat Forward)",
-        "interpolator_class": FlatForward252Interpolator,
+        "description": "Forward de Reais x Euro (Seção 4.2 Manual B3)",
+        "type": "currency_forward",
+        "currency": "EUR",
+        "pre_curve": "PRE",
+        "foreign_curve": "EUC",
+        "source_type": "taxas_referenciais",
+        "produto": "EUR",
+        "interpolator_class": PriceInterpolator,
         "extrap_left": 0,
         "extrap_right": 1,
         "round_decimals": 7,
         "round_mode": "trunc",
-        "use_dc": False
+        "use_dc": True,
+        "divide_by_100": False
     },
     "JPY": {
-        "description": "Curva Forward Reais x Iene (Construção Simples / Flat Forward)",
-        "interpolator_class": FlatForward252Interpolator,
+        "description": "Forward de Reais x JPY (Seção 4.3 Manual B3)",
+        "type": "currency_forward",
+        "source_type": "taxas_referenciais",
+        "produto": "JPY",
+        "currency": "JPY",
+        "pre_curve": "PRE",
+        "foreign_curve": "YCL",
+        "interpolator_class": PriceInterpolator,
         "extrap_left": 0,
         "extrap_right": 1,
         "round_decimals": 7,
         "round_mode": "trunc",
-        "use_dc": False
+        "use_dc": True,
+        "divide_by_100": False
     },
     "DOL": {
-        "description": "Curva Cupom Sujo de Dólares",
+        "description": "Curva de Cupom de Dólar Sujo (Seção 4.4 Manual B3)",
         "interpolator_class": FlatForward252LinearInterpolator,
         "extrap_left": 0,
         "extrap_right": 1,
-        "round_decimals": 5,
-        "round_mode": "trunc",
-        "use_dc": True
+        "round_decimals": 7,
+        "round_mode": "round",
+        "use_dc": True,
+        "asset": "DDI",
+        "rate_column": "AdjstdQtTax"
     },
     "DOC": {
-        "description": "Curva Cupom Sujo de Dólares (Alternativa)",
+        "description": "Curva de Cupom de Dólar Limpo (Seção 4.5 Manual B3)",
+        "source_type": "taxas_referenciais",
+        "produto": "DOC",
+        "asset": "DDI",
         "interpolator_class": FlatForward252LinearInterpolator,
         "extrap_left": 0,
         "extrap_right": 1,
-        "round_decimals": 5,
-        "round_mode": "trunc",
+        "round_decimals": 6,
+        "round_mode": "round",
         "use_dc": True
     },
     "DCL": {
-        "description": "Curva Cupom Limpo de Dólares (Alternativa)",
+        "description": "Curva de Cupom de Dólar Limpo (Seção 4.6 Manual B3)",
+        "source_type": "taxas_referenciais",
+        "produto": "DOC",
+        "asset": "DDI",
         "interpolator_class": FlatForward252LinearInterpolator,
         "extrap_left": 0,
         "extrap_right": 1,
-        "round_decimals": 5,
-        "round_mode": "trunc",
+        "round_decimals": 6,
+        "round_mode": "round",
         "use_dc": True
     },
     "EUC": {
-        "description": "Curva Cupom Sujo de Euros",
-        "interpolator_class": FlatForward252LinearInterpolator,
+        "description": "Curva de Cupom de Euro (Seção 4.7 Manual B3)",
+        "type": "derived",
+        "doc_curve": "DOC",
+        "spread_curve": "SDE",
+        "round_decimals": 6,
+        "round_mode": "round"
+    },
+    "YCL": {
+        "description": "Curva de Cupom de JPY (Seção 4.8 Manual B3)",
+        "type": "derived",
+        "doc_curve": "DOC",
+        "spread_curve": "SYD",
+        "round_decimals": 9,
+        "round_mode": "round"
+    },
+    "SDE": {
+        "description": "Curva de Spread de Euro (Seção 4.9 Manual B3: TEU - TUS)",
+        "source_type": "taxas_referenciais",
+        "produto": "SDE",
+        "interpolator_class": Linear360Interpolator,
+        "extrap_left": 0,
+        "extrap_right": 0,
+        "round_decimals": 6,
+        "round_mode": "round",
+        "use_dc": True
+    },
+    "SGP": {
+        "description": "Curva de Spread de GBP (Seção 4.10 Manual B3: TGP - TUS)",
+        "type": "spread",
+        "curve_a": "ZEU",
+        "curve_b": "ZUS",
+        "interpolator_class": Linear360Interpolator,
+        "extrap_left": 0,
+        "extrap_right": 0,
+        "use_dc": True,
+        "index_by_dc": True,
+        "round_decimals": 4,
+        "round_mode": "round"
+    },
+    "SMX": {
+        "description": "Curva de Spread de MXN (Seção 4.11 Manual B3: TMX - TUS)",
+        "type": "spread",
+        "curve_a": "ZMX",
+        "curve_b": "ZUS",
+        "interpolator_class": Linear360Interpolator,
+        "extrap_left": 0,
+        "extrap_right": 0,
+        "use_dc": True,
+        "index_by_dc": True,
+        "round_decimals": 4,
+        "round_mode": "round"
+    },
+    "SYD": {
+        "description": "Curva de Spread de JPY (Seção 4.12 Manual B3: TJP - TUS)",
+        "type": "spread",
+        "curve_a": "ZEU",
+        "curve_b": "ZUS",
+        "interpolator_class": Linear360Interpolator,
+        "extrap_left": 0,
+        "extrap_right": 0,
+        "use_dc": True,
+        "index_by_dc": True,
+        "round_decimals": 4,
+        "round_mode": "round"
+    },
+    "BRP": {
+        "description": "Curva IBrX50 x PRE (Seção 5.1 Manual B3)",
+        "type": "equity_index",
+        "asset": "BRI",
+        "source_type": "taxas_referenciais",
+        "produto": "BRP",
+        "interpolator_class": PriceInterpolator,
+        "extrap_left": 0,
+        "extrap_right": 0,
+        "round_decimals": 2,
+        "round_mode": "round",
+        "use_dc": False,
+        "divide_by_100": False
+    },
+    "INP": {
+        "description": "Curva Índice Bovespa (Seção 5.2 Manual B3)",
+        "type": "equity_index",
+        "asset": "IND",
+        "source_type": "taxas_referenciais",
+        "produto": "INP",
+        "interpolator_class": PriceInterpolator,
+        "extrap_left": 0,
+        "extrap_right": 0,
+        "round_decimals": 2,
+        "round_mode": "round",
+        "use_dc": False,
+        "divide_by_100": False
+    },
+    "SML": {
+        "description": "Curva Índice Small Caps (Seção 5.3 Manual B3)",
+        "type": "equity_index",
+        "asset": "SML",
+        "interpolator_class": PriceInterpolator,
+        "extrap_left": 0,
+        "extrap_right": 0,
+        "round_decimals": 2,
+        "round_mode": "round"
+    },
+    "CYI": {
+        "description": "Curva de Custo de Carrego dos Futuros de Ibovespa (Seção 5.4 Manual B3)",
+        "type": "convenience_yield",
+        "index_curve": "INP",
+        "pre_curve": "PRE",
+        "round_decimals": 6,
+        "round_mode": "round"
+    },
+    "MBR": {
+        "description": "Curva Índice Bovespa B3 BR+ (Seção 5.5 Manual B3)",
+        "type": "equity_index",
+        "asset": "MBR",
+        "interpolator_class": PriceInterpolator,
+        "extrap_left": 0,
+        "extrap_right": 0,
+        "round_decimals": 2,
+        "round_mode": "round"
+    },
+    "CYM": {
+        "description": "Curva de Custo de Carrego dos Futuros Bovespa B3 BR+ (Seção 5.6 Manual B3)",
+        "type": "convenience_yield",
+        "index_curve": "MBR",
+        "pre_curve": "PRE",
+        "round_decimals": 6,
+        "round_mode": "round"
+    },
+    "VIX": {
+        "description": "Curva Índice S&P/B3 Bovespa VIX (Seção 5.7 Manual B3)",
+        "type": "equity_index",
+        "asset": "VIX",
+        "interpolator_class": PriceInterpolator,
+        "extrap_left": 0,
+        "extrap_right": 0,
+        "round_decimals": 2,
+        "round_mode": "round"
+    },
+    "CYX": {
+        "description": "Curva de Custo de Carrego dos Futuros de VIX (Seção 5.8 Manual B3)",
+        "type": "convenience_yield",
+        "index_curve": "VIX",
+        "pre_curve": "PRE",
+        "round_decimals": 6,
+        "round_mode": "round"
+    },
+    # Aliases oficiais dos produtos da B3
+    "SLP": {
+        "description": "Curva Selic x Pré (Contratos OC1 - Seção 2.2 Manual B3)",
+        "interpolator_class": FlatForward252Interpolator,
         "extrap_left": 0,
         "extrap_right": 1,
         "round_decimals": 5,
-        "round_mode": "trunc",
-        "use_dc": True
+        "liquidity_filter": False,
+        "rate_column": "AdjstdQtTax",
+        "exp_date": "XprtnDt",
+        "use_dc": False,
+        "asset": "OC1",
+        "v1_source": "SELIC"
+    },
+    "TFP": {
+        "description": "Curva TBF x Pré (Seção 2.4 Manual B3)",
+        "type": "derived",
+        "base_curve": "PRE",
+        "tbf_source": "BCB",
+        "tbf_series_id": 253,
+        "round_decimals": 4
+    },
+    "TP": {
+        "description": "Curva TR x Pré (Seção 2.5 Manual B3)",
+        "type": "derived",
+        "base_curve": "TFP",
+        "round_decimals": 4
+    },
+    "TR": {
+        "description": "Curva DI x TR (Seção 2.6 Manual B3)",
+        "type": "derived",
+        "pre_curve": "PRE",
+        "tp_curve": "TP",
+        "round_decimals": 5,
+        "round_mode": "round"
     }
 }

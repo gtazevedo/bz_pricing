@@ -436,21 +436,27 @@ class B3Scraper:
                 except (KeyError, IndexError):
                     pass
         
-        print("Aviso: BANXICO_TOKEN não fornecido ou erro na API. Utilizando scraping de fallback para TIIE.")
-        # Scraping rudimentar da página de indicadores do Banxico ou mock
-        # Devido a limitações, um fallback em tela pode quebrar. Se houver erro, usar 11.25% (mock representativo)
-        return 11.25
+        raise RuntimeError("BANXICO_TOKEN não fornecido ou erro ao consultar a API do Banxico para taxa TIIE.")
 
     # =========================================================================
     # SCRAPERS INFLAÇÃO E MACROECONOMIA
     # =========================================================================
 
-    def download_focus_expectations(self, indicator: str = "IPCA", limit: int = 200, base_date: datetime.date = None) -> pd.DataFrame:
+    def download_focus_expectations(self, indicator: str = "IPCA", limit: int = 200, base_date: datetime.date = None, force: bool = False) -> pd.DataFrame:
         """
         Baixa as expectativas do Relatório Focus via API Olinda do BCB.
+        Salva localmente em CSV para evitar downloads repetidos (cache local).
         indicator: "IPCA" ou "IGP-M"
         base_date: se informada, filtra expectativas divulgadas até base_date (Data le 'YYYY-MM-DD').
+        force: se True, força novo download mesmo se o arquivo local existir.
         """
+        date_str = base_date.strftime("%Y%m%d") if base_date is not None else "latest"
+        csv_filename = f"focus_{indicator}_{date_str}.csv"
+        csv_path = os.path.join(self.output_dir, csv_filename)
+
+        if not force and os.path.exists(csv_path):
+            return pd.read_csv(csv_path)
+
         # Formato OData, garantindo não usar aspas nos nomes das tabelas
         filter_str = f"Indicador%20eq%20'{indicator}'"
         if base_date is not None:
@@ -465,6 +471,8 @@ class B3Scraper:
             
         data_json = res.json()
         df = pd.DataFrame(data_json.get("value", []))
+        if not df.empty:
+            df.to_csv(csv_path, index=False)
         return df
 
     def download_bcb_ptax(self, data: datetime.date) -> pd.DataFrame:

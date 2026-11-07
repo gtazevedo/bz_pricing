@@ -8269,7 +8269,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_21Linear360Interpolator
  *         if t_sec == 0.0:
  *             t_sec = 1.0 # Previne diviso por zero extrema             # <<<<<<<<<<<<<<
  * 
- *         # Item 1.4.11 Manual de Curvas B3: ponderao linear pelos dias corridos (DC / t_sec)
+ *         # Ponderao linear pelos dias corridos (ACT/360)
 */
     __pyx_v_t_sec = 1.0;
 
@@ -8284,7 +8284,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_21Linear360Interpolator
 
   /* "bz_pricing/core/interpolators.pyx":241
  * 
- *         # Item 1.4.11 Manual de Curvas B3: ponderao linear pelos dias corridos (DC / t_sec)
+ *         # Ponderao linear pelos dias corridos (ACT/360)
  *         cdef double forward = f1 + (f2 - f1) * ((t_sec - dc1) / (dc2 - dc1))             # <<<<<<<<<<<<<<
  * 
  *         return (forward * 360.0) / t_sec

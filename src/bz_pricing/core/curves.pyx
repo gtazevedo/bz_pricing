@@ -128,6 +128,13 @@ cdef class SimpleCurve(Curve):
         import numpy as np
         return np.asarray(self._y_nodes)
 
+    @property
+    def t_sec_nodes(self):
+        import numpy as np
+        if self._t_sec_nodes is None:
+            return None
+        return np.asarray(self._t_sec_nodes)
+
 
 cdef class ComplexCurve(Curve):
     """
@@ -202,6 +209,118 @@ cdef class InflationCurve(Curve):
                 rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
             
         return rate
+
+cdef class ConvenienceYieldCurve(Curve):
+    """
+    Estrutura da Curva de Custo de Carrego / Convenience Yield:
+    TxCY_n = (((Spot * (1 + PRE_n)^(DU/252)) / Futures_n)^(252 / DU) - 1)
+    Para o Vértice 1 (DU = 1), retorna CDI (ou PRE_1).
+    Para vértices posteriores ao último vencimento do contrato futuro (t > max_t),
+    aplica Extrapolação Flat (Fim) conforme Seções 5.4, 5.6 e 5.8 do Manual de Curvas da B3.
+    As taxas retornam em valor decimal (% / 100).
+    """
+    def __init__(self, double spot_price, Curve futures_curve, Curve pre_curve, int round_decimals=-1, str round_mode='round'):
+        self._spot_price = spot_price
+        self._futures_curve = futures_curve
+        self._pre_curve = pre_curve
+        self._round_decimals = round_decimals
+        self._is_trunc = (round_mode == 'trunc')
+
+    cpdef double get_rate(self, double t, double t_sec=0.0) except *:
+        cdef double eval_t = t
+        cdef SimpleCurve sc
+        if isinstance(self._futures_curve, SimpleCurve):
+            sc = <SimpleCurve>self._futures_curve
+            if sc._n_nodes > 0 and eval_t > sc._t_nodes[sc._n_nodes - 1]:
+                eval_t = sc._t_nodes[sc._n_nodes - 1]
+
+        cdef double fut_price = self._futures_curve.get_rate(eval_t, t_sec)
+        cdef double pre_rate = self._pre_curve.get_rate(eval_t, t_sec)
+        cdef double rate
+
+        if eval_t <= 0.0 or fut_price <= 0.0 or self._spot_price <= 0.0:
+            rate = pre_rate
+        elif eval_t == 1.0:
+            rate = pre_rate
+        else:
+            rate = pow((self._spot_price * pow(1.0 + pre_rate, eval_t / 252.0)) / fut_price, 252.0 / eval_t) - 1.0
+
+        if self._round_decimals >= 0:
+            if self._is_trunc:
+                rate = trunc(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
+            else:
+                rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
+
+        return rate
+
+cdef class SpreadCurve(Curve):
+    """
+    Estrutura de Curvas de Spread de Taxas:
+    Spread = Rate_A - Rate_B
+    """
+    def __init__(self, Curve curve_a, Curve curve_b, int round_decimals=-1, str round_mode='round'):
+        self._curve_a = curve_a
+        self._curve_b = curve_b
+        self._round_decimals = round_decimals
+        self._is_trunc = (round_mode == 'trunc')
+
+    cpdef double get_rate(self, double t, double t_sec=0.0) except *:
+        cdef double r_a = self._curve_a.get_rate(t, t_sec)
+        cdef double r_b = self._curve_b.get_rate(t, t_sec)
+        cdef double rate = r_a - r_b
+
+        if self._round_decimals >= 0:
+            if self._is_trunc:
+                rate = trunc(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
+            else:
+                rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
+
+        return rate
+
+
+cpdef list extract_linear360_knot_indices(double[:] dcs, double[:] rates, double tolerance=0.001):
+    """
+    Identifica os índices dos nós base de interpolação Linear 360,
+    detectando mudanças de inclinação na taxa linear acumulada.
+    """
+    cdef int n = dcs.shape[0]
+    if n <= 2:
+        return list(range(n))
+
+    cdef list knots = [0]
+    cdef int curr = 0
+    cdef int best_next, cand, m
+    cdef double d1, r1, d2, r2, f1, f2, dm, f, val
+    cdef bint ok
+
+    while curr < n - 1:
+        best_next = curr + 1
+        for cand in range(curr + 1, n):
+            d1 = dcs[curr]
+            r1 = rates[curr]
+            d2 = dcs[cand]
+            r2 = rates[cand]
+            f1 = (r1 * d1) / 360.0
+            f2 = (r2 * d2) / 360.0
+            ok = True
+            for m in range(curr + 1, cand):
+                dm = dcs[m]
+                f = f1 + (f2 - f1) * ((dm - d1) / (d2 - d1))
+                val = round((f * 360.0) / dm * 100.0) / 100.0
+                if abs(val - rates[m]) > tolerance:
+                    ok = False
+                    break
+            if ok:
+                best_next = cand
+            else:
+                break
+        knots.append(best_next)
+        curr = best_next
+        if curr >= n - 1:
+            break
+    return knots
+
+
 
 cpdef tuple apply_cython_smoothing(double[:] t_nodes, double[:] y_nodes, double smoothing):
     """

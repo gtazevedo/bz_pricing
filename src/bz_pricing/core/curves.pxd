@@ -34,3 +34,15 @@ cdef class ComplexCurve(Curve):
 cdef class InflationCurve(Curve):
     cdef Curve _nominal_curve
     cdef Curve _real_curve
+
+cdef class ConvenienceYieldCurve(Curve):
+    cdef double _spot_price
+    cdef Curve _futures_curve
+    cdef Curve _pre_curve
+
+cdef class SpreadCurve(Curve):
+    cdef Curve _curve_a
+    cdef Curve _curve_b
+
+cpdef list extract_linear360_knot_indices(double[:] dcs, double[:] rates, double tolerance=*)
+

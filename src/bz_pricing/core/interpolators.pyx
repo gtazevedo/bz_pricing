@@ -237,7 +237,7 @@ cdef class Linear360Interpolator(Interpolator):
         if t_sec == 0.0:
             t_sec = 1.0 # Previne divisão por zero extrema
                 
-        # Item 1.4.11 Manual de Curvas B3: ponderação linear pelos dias corridos (DC / t_sec)
+        # Ponderação linear pelos dias corridos (ACT/360)
         cdef double forward = f1 + (f2 - f1) * ((t_sec - dc1) / (dc2 - dc1))
             
         return (forward * 360.0) / t_sec

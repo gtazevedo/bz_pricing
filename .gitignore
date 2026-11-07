@@ -221,3 +221,5 @@ __marimo__/
 
 dados/
 .agents/
+scratch/
+*.bak

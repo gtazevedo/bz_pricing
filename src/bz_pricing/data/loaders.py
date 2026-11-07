@@ -9,17 +9,30 @@ class B3DataLoader:
     def __init__(self, data_dir: str = "dados/b3"):
         self.data_dir = data_dir
         
-    def load_derivatives(self, data: datetime.date) -> pd.DataFrame:
+    def load_derivatives(self, data: datetime.date, auto_download: bool = True) -> pd.DataFrame:
         """
         Lê os arquivos BVBG_SPRD e BVBG_IN de uma data específica,
         e faz um merge para trazer informações como Vencimento (XprtnDt)
-        para a tabela de preços.
+        para a tabela de preços. Se os arquivos não existirem e auto_download=True,
+        tenta baixá-los automaticamente da B3 via scraper.
         """
         date_str = data.strftime("%Y%m%d")
         
         path_sprd = os.path.join(self.data_dir, f"BVBG_SPRD_{date_str}.csv")
         path_in = os.path.join(self.data_dir, f"BVBG_IN_{date_str}.csv")
         
+        if not os.path.exists(path_sprd) or not os.path.exists(path_in):
+            if auto_download:
+                try:
+                    from bz_pricing.data.scrapers import B3Scraper
+                    scraper = B3Scraper(output_dir=self.data_dir)
+                    if not os.path.exists(path_sprd):
+                        scraper.download_bvbg_187_01(data)
+                    if not os.path.exists(path_in):
+                        scraper.download_instruments(data)
+                except Exception:
+                    pass
+
         if not os.path.exists(path_sprd):
             raise FileNotFoundError(f"Arquivo de negociação não encontrado: {path_sprd}")
         if not os.path.exists(path_in):
@@ -58,8 +71,8 @@ class B3DataLoader:
         
     def get_curve_instruments(self, data: datetime.date, asst: str = "DI1") -> pd.DataFrame:
         """
-        Retorna apenas os instrumentos de um determinado ativo-objeto (ex: DI1, DAP, BGI)
-        já preparados para a construção de curvas de juros.
+        Retorna apenas os instrumentos de um determinado ativo-objeto (ex: DI1, DAP, BGI, IND, PETRP)
+        já preparados para a construção de curvas de juros ou preços.
         """
         df = self.load_derivatives(data)
         
@@ -69,35 +82,47 @@ class B3DataLoader:
         else:
             df_filtered = df[df['Asst'] == asst].copy()
             
-        # Filtra apenas os que possuem Taxa de Ajuste, PU de ajuste ou Último Preço
+        # Filtra apenas os que possuem Taxa de Ajuste, Preço de Ajuste ou Último Preço
         # E que possuam data de vencimento válida
         if 'XprtnDt' in df_filtered.columns:
             df_filtered = df_filtered.dropna(subset=['XprtnDt'])
             
-            # Se a taxa existir, usamos. Caso contrário, usamos o preço de ajuste ou last price
-            if 'AdjstdQtTax' in df_filtered.columns:
+            # Se for contrato com taxa (DI1, DDI, DAP, SFR, EST, TIE), prioriza AdjstdQtTax
+            # Se for contrato com preço/pontos (IND, WIN, BRI, SML, VIX, Ações), usa AdjstdQt
+            if 'AdjstdQtTax' in df_filtered.columns and df_filtered['AdjstdQtTax'].notna().any():
                 df_filtered = df_filtered.dropna(subset=['AdjstdQtTax'])
-            elif 'AdjstdQt' in df_filtered.columns:
+            elif 'AdjstdQt' in df_filtered.columns and df_filtered['AdjstdQt'].notna().any():
                 df_filtered = df_filtered.dropna(subset=['AdjstdQt'])
+            elif 'LastPric' in df_filtered.columns and df_filtered['LastPric'].notna().any():
+                df_filtered = df_filtered.dropna(subset=['LastPric'])
                 
             # Ordena por vencimento
             df_filtered = df_filtered.sort_values(by='XprtnDt')
             
         return df_filtered
 
-    def load_anbima_ms(self, data: datetime.date) -> pd.DataFrame:
+    def load_anbima_ms(self, data: datetime.date, auto_download: bool = True) -> pd.DataFrame:
         """
         Lê o arquivo do Mercado Secundário (MS) da ANBIMA e formata as colunas essenciais.
+        Se não existir e auto_download=True, tenta baixá-lo automaticamente via scraper.
         """
         date_str = data.strftime("%Y%m%d")
         path_csv = os.path.join(self.data_dir, f"ANBIMA_MS_{date_str}.csv")
         
+        if not os.path.exists(path_csv) and auto_download:
+            try:
+                from bz_pricing.data.scrapers import B3Scraper
+                scraper = B3Scraper(output_dir=self.data_dir)
+                scraper.download_anbima_ms(data)
+            except Exception:
+                pass
+
         if not os.path.exists(path_csv):
             raise FileNotFoundError(f"Arquivo MS ANBIMA não encontrado: {path_csv}. Execute scraper.download_anbima_ms(data) primeiro.")
             
         df = pd.read_csv(path_csv, sep='@', decimal=',', parse_dates=['Data Referencia', 'Data Base/Emissao', 'Data Vencimento'])
-        
-        # Limpeza de nomes das colunas
+
+        # Limpeza e padronização dos nomes das colunas
         df.rename(columns={
             'Titulo': 'Titulo',
             'Codigo SELIC': 'CodigoSelic',
@@ -106,8 +131,27 @@ class B3DataLoader:
             'Tx. Indicativas': 'TaxaIndicativa',
             'PU': 'PU'
         }, inplace=True)
-        
         return df
+
+    def load_taxas_referenciais(self, produto: str, data: datetime.date, auto_download: bool = True) -> pd.DataFrame:
+        """
+        Carrega o arquivo CSV de taxas referenciais da B3 (ex: LIB, PRE, DIC, DIM)
+        já baixado no diretório de dados. Se não existir e auto_download=True, tenta
+        baixá-lo via scraper.
+        """
+        date_str = data.strftime("%Y%m%d")
+        path_csv = os.path.join(self.data_dir, f"taxas_{produto}_{date_str}.csv")
+        if not os.path.exists(path_csv) and auto_download:
+            try:
+                from bz_pricing.data.scrapers import B3Scraper
+                scraper = B3Scraper(output_dir=self.data_dir)
+                scraper.download_taxas_referenciais(produto, data)
+            except Exception:
+                pass
+
+        if not os.path.exists(path_csv):
+            raise FileNotFoundError(f"Arquivo de taxas referenciais não encontrado: {path_csv}")
+        return pd.read_csv(path_csv, sep=';')
 
     def get_anbima_bonds(self, data: datetime.date, bond_type: str = 'LTN') -> pd.DataFrame:
         """

@@ -4,7 +4,7 @@
 # cython: cdivision=True
 
 from bz_pricing.core.curves cimport Curve
-from libc.math cimport pow, trunc
+from libc.math cimport pow, trunc, round
 
 cdef class Bond:
     cpdef double present_value(self, Curve curve) except *:
@@ -80,10 +80,10 @@ cdef class NTNF(Bond):
         cdef double rate
         cdef double discount_factor
         
-        # O cupom da NTN-F é de 10% a.a. => O semestral é (1.10)^0.5 - 1
-        # Pelas regras da B3/ANBIMA, o valor nominal do cupom é truncado em 5 casas decimais
+        # O cupom da NTN-F é de 10% a.a. => O semestral é (1.10)^0.5 - 1 = 4.880885% (R$ 48.80885 para VN=1000)
+        # Pelas regras da ANBIMA/STN, o fator do cupom semestral é arredondado em 5 casas decimais (p/ VN=1000)
         cdef double coupon_amount = self._face_value * (pow(1.0 + self._coupon_rate, 0.5) - 1.0)
-        cdef double rounded_coupon = trunc(coupon_amount * 100000.0) / 100000.0
+        cdef double rounded_coupon = round(coupon_amount * 100000.0) / 100000.0
         
         cdef double pv_fluxo = 0.0
         

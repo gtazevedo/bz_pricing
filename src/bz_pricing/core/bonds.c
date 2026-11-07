@@ -1766,6 +1766,8 @@ struct __pyx_obj_10bz_pricing_4core_6curves_MultiplicativeCurve;
 struct __pyx_obj_10bz_pricing_4core_6curves_SimpleCurve;
 struct __pyx_obj_10bz_pricing_4core_6curves_ComplexCurve;
 struct __pyx_obj_10bz_pricing_4core_6curves_InflationCurve;
+struct __pyx_obj_10bz_pricing_4core_6curves_ConvenienceYieldCurve;
+struct __pyx_obj_10bz_pricing_4core_6curves_SpreadCurve;
 struct __pyx_obj_10bz_pricing_4core_5bonds_Bond;
 struct __pyx_obj_10bz_pricing_4core_5bonds_GenericCashflowBond;
 struct __pyx_obj_10bz_pricing_4core_5bonds_LTN;
@@ -1831,6 +1833,7 @@ struct __pyx_opt_args_10bz_pricing_4core_13interpolators_12Interpolator_interpol
   double *t_sec_nodes;
 };
 struct __pyx_opt_args_10bz_pricing_4core_6curves_5Curve_get_rate;
+struct __pyx_opt_args_10bz_pricing_4core_6curves_extract_linear360_knot_indices;
 
 /* "bz_pricing/core/curves.pxd":8
  *     cdef int _round_decimals
@@ -1842,6 +1845,17 @@ struct __pyx_opt_args_10bz_pricing_4core_6curves_5Curve_get_rate;
 struct __pyx_opt_args_10bz_pricing_4core_6curves_5Curve_get_rate {
   int __pyx_n;
   double t_sec;
+};
+
+/* "bz_pricing/core/curves.pxd":47
+ *     cdef Curve _curve_b
+ * 
+ * cpdef list extract_linear360_knot_indices(double[:] dcs, double[:] rates, double tolerance=*)             # <<<<<<<<<<<<<<
+ * 
+*/
+struct __pyx_opt_args_10bz_pricing_4core_6curves_extract_linear360_knot_indices {
+  int __pyx_n;
+  double tolerance;
 };
 
 /* "bz_pricing/core/interpolators.pxd":9
@@ -1959,6 +1973,35 @@ struct __pyx_obj_10bz_pricing_4core_6curves_InflationCurve {
   struct __pyx_obj_10bz_pricing_4core_6curves_Curve __pyx_base;
   struct __pyx_obj_10bz_pricing_4core_6curves_Curve *_nominal_curve;
   struct __pyx_obj_10bz_pricing_4core_6curves_Curve *_real_curve;
+};
+
+
+/* "bz_pricing/core/curves.pxd":38
+ *     cdef Curve _real_curve
+ * 
+ * cdef class ConvenienceYieldCurve(Curve):             # <<<<<<<<<<<<<<
+ *     cdef double _spot_price
+ *     cdef Curve _futures_curve
+*/
+struct __pyx_obj_10bz_pricing_4core_6curves_ConvenienceYieldCurve {
+  struct __pyx_obj_10bz_pricing_4core_6curves_Curve __pyx_base;
+  double _spot_price;
+  struct __pyx_obj_10bz_pricing_4core_6curves_Curve *_futures_curve;
+  struct __pyx_obj_10bz_pricing_4core_6curves_Curve *_pre_curve;
+};
+
+
+/* "bz_pricing/core/curves.pxd":43
+ *     cdef Curve _pre_curve
+ * 
+ * cdef class SpreadCurve(Curve):             # <<<<<<<<<<<<<<
+ *     cdef Curve _curve_a
+ *     cdef Curve _curve_b
+*/
+struct __pyx_obj_10bz_pricing_4core_6curves_SpreadCurve {
+  struct __pyx_obj_10bz_pricing_4core_6curves_Curve __pyx_base;
+  struct __pyx_obj_10bz_pricing_4core_6curves_Curve *_curve_a;
+  struct __pyx_obj_10bz_pricing_4core_6curves_Curve *_curve_b;
 };
 
 
@@ -2209,8 +2252,36 @@ struct __pyx_vtabstruct_10bz_pricing_4core_6curves_InflationCurve {
 static struct __pyx_vtabstruct_10bz_pricing_4core_6curves_InflationCurve *__pyx_vtabptr_10bz_pricing_4core_6curves_InflationCurve;
 
 
+/* "bz_pricing/core/curves.pxd":38
+ *     cdef Curve _real_curve
+ * 
+ * cdef class ConvenienceYieldCurve(Curve):             # <<<<<<<<<<<<<<
+ *     cdef double _spot_price
+ *     cdef Curve _futures_curve
+*/
+
+struct __pyx_vtabstruct_10bz_pricing_4core_6curves_ConvenienceYieldCurve {
+  struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve __pyx_base;
+};
+static struct __pyx_vtabstruct_10bz_pricing_4core_6curves_ConvenienceYieldCurve *__pyx_vtabptr_10bz_pricing_4core_6curves_ConvenienceYieldCurve;
+
+
+/* "bz_pricing/core/curves.pxd":43
+ *     cdef Curve _pre_curve
+ * 
+ * cdef class SpreadCurve(Curve):             # <<<<<<<<<<<<<<
+ *     cdef Curve _curve_a
+ *     cdef Curve _curve_b
+*/
+
+struct __pyx_vtabstruct_10bz_pricing_4core_6curves_SpreadCurve {
+  struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve __pyx_base;
+};
+static struct __pyx_vtabstruct_10bz_pricing_4core_6curves_SpreadCurve *__pyx_vtabptr_10bz_pricing_4core_6curves_SpreadCurve;
+
+
 /* "bz_pricing/core/bonds.pyx":9
- * from libc.math cimport pow, trunc
+ * from libc.math cimport pow, trunc, round
  * 
  * cdef class Bond:             # <<<<<<<<<<<<<<
  *     cpdef double present_value(self, Curve curve) except *:
@@ -4066,6 +4137,8 @@ namespace {
     PyTypeObject *__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve;
     PyTypeObject *__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve;
     PyTypeObject *__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve;
+    PyTypeObject *__pyx_ptype_10bz_pricing_4core_6curves_ConvenienceYieldCurve;
+    PyTypeObject *__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve;
     PyObject *__pyx_type_10bz_pricing_4core_5bonds_Bond;
     PyObject *__pyx_type_10bz_pricing_4core_5bonds_GenericCashflowBond;
     PyObject *__pyx_type_10bz_pricing_4core_5bonds_LTN;
@@ -4312,6 +4385,8 @@ static CYTHON_SMALL_CODE int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve);
   Py_CLEAR(clear_module_state->__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve);
   Py_CLEAR(clear_module_state->__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve);
+  Py_CLEAR(clear_module_state->__pyx_ptype_10bz_pricing_4core_6curves_ConvenienceYieldCurve);
+  Py_CLEAR(clear_module_state->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve);
   Py_CLEAR(clear_module_state->__pyx_ptype_10bz_pricing_4core_5bonds_Bond);
   Py_CLEAR(clear_module_state->__pyx_type_10bz_pricing_4core_5bonds_Bond);
   Py_CLEAR(clear_module_state->__pyx_ptype_10bz_pricing_4core_5bonds_GenericCashflowBond);
@@ -4366,6 +4441,8 @@ static CYTHON_SMALL_CODE int __pyx_m_traverse(PyObject *m, visitproc visit, void
   Py_VISIT(traverse_module_state->__pyx_ptype_10bz_pricing_4core_6curves_SimpleCurve);
   Py_VISIT(traverse_module_state->__pyx_ptype_10bz_pricing_4core_6curves_ComplexCurve);
   Py_VISIT(traverse_module_state->__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve);
+  Py_VISIT(traverse_module_state->__pyx_ptype_10bz_pricing_4core_6curves_ConvenienceYieldCurve);
+  Py_VISIT(traverse_module_state->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve);
   Py_VISIT(traverse_module_state->__pyx_ptype_10bz_pricing_4core_5bonds_Bond);
   Py_VISIT(traverse_module_state->__pyx_type_10bz_pricing_4core_5bonds_Bond);
   Py_VISIT(traverse_module_state->__pyx_ptype_10bz_pricing_4core_5bonds_GenericCashflowBond);
@@ -21607,25 +21684,25 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNF_present_value(struct __pyx
   __pyx_v_total_pv = 0.0;
 
   /* "bz_pricing/core/bonds.pyx":85
- *         # O cupom da NTN-F  de 10% a.a. => O semestral  (1.10)^0.5 - 1
- *         # Pelas regras da B3/ANBIMA, o valor nominal do cupom  truncado em 5 casas decimais
+ *         # O cupom da NTN-F  de 10% a.a. => O semestral  (1.10)^0.5 - 1 = 4.880885% (R$ 48.80885 para VN=1000)
+ *         # Pelas regras da ANBIMA/STN, o fator do cupom semestral  arredondado em 5 casas decimais (p/ VN=1000)
  *         cdef double coupon_amount = self._face_value * (pow(1.0 + self._coupon_rate, 0.5) - 1.0)             # <<<<<<<<<<<<<<
- *         cdef double rounded_coupon = trunc(coupon_amount * 100000.0) / 100000.0
+ *         cdef double rounded_coupon = round(coupon_amount * 100000.0) / 100000.0
  * 
 */
   __pyx_v_coupon_amount = (__pyx_v_self->_face_value * (pow((1.0 + __pyx_v_self->_coupon_rate), 0.5) - 1.0));
 
   /* "bz_pricing/core/bonds.pyx":86
- *         # Pelas regras da B3/ANBIMA, o valor nominal do cupom  truncado em 5 casas decimais
+ *         # Pelas regras da ANBIMA/STN, o fator do cupom semestral  arredondado em 5 casas decimais (p/ VN=1000)
  *         cdef double coupon_amount = self._face_value * (pow(1.0 + self._coupon_rate, 0.5) - 1.0)
- *         cdef double rounded_coupon = trunc(coupon_amount * 100000.0) / 100000.0             # <<<<<<<<<<<<<<
+ *         cdef double rounded_coupon = round(coupon_amount * 100000.0) / 100000.0             # <<<<<<<<<<<<<<
  * 
  *         cdef double pv_fluxo = 0.0
 */
-  __pyx_v_rounded_coupon = (trunc((__pyx_v_coupon_amount * 100000.0)) / 100000.0);
+  __pyx_v_rounded_coupon = (round((__pyx_v_coupon_amount * 100000.0)) / 100000.0);
 
   /* "bz_pricing/core/bonds.pyx":88
- *         cdef double rounded_coupon = trunc(coupon_amount * 100000.0) / 100000.0
+ *         cdef double rounded_coupon = round(coupon_amount * 100000.0) / 100000.0
  * 
  *         cdef double pv_fluxo = 0.0             # <<<<<<<<<<<<<<
  * 
@@ -25950,6 +26027,26 @@ static int __Pyx_modinit_Type_import_code(__pyx_mstatetype *__pyx_mstate) {
   #endif
   __Pyx_ImportType_CheckSize_Warn_3_3_0); if (!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve) __PYX_ERR(3, 34, __pyx_L1_error)
   if (unlikely(__Pyx_GetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_InflationCurve, (void**)&__pyx_vtabptr_10bz_pricing_4core_6curves_InflationCurve) != 1)) __PYX_ERR(3, 34, __pyx_L1_error)
+  __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ConvenienceYieldCurve = __Pyx_ImportType_3_3_0(__pyx_t_1, "bz_pricing.core.curves", "ConvenienceYieldCurve",
+  #if defined(PYPY_VERSION_NUM) && PYPY_VERSION_NUM < 0x050B0000
+  sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_ConvenienceYieldCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_ConvenienceYieldCurve),
+  #elif CYTHON_COMPILING_IN_LIMITED_API
+  sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_ConvenienceYieldCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_ConvenienceYieldCurve),
+  #else
+  sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_ConvenienceYieldCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_ConvenienceYieldCurve),
+  #endif
+  __Pyx_ImportType_CheckSize_Warn_3_3_0); if (!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ConvenienceYieldCurve) __PYX_ERR(3, 38, __pyx_L1_error)
+  if (unlikely(__Pyx_GetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_ConvenienceYieldCurve, (void**)&__pyx_vtabptr_10bz_pricing_4core_6curves_ConvenienceYieldCurve) != 1)) __PYX_ERR(3, 38, __pyx_L1_error)
+  __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve = __Pyx_ImportType_3_3_0(__pyx_t_1, "bz_pricing.core.curves", "SpreadCurve",
+  #if defined(PYPY_VERSION_NUM) && PYPY_VERSION_NUM < 0x050B0000
+  sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_SpreadCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_SpreadCurve),
+  #elif CYTHON_COMPILING_IN_LIMITED_API
+  sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_SpreadCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_SpreadCurve),
+  #else
+  sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_SpreadCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_SpreadCurve),
+  #endif
+  __Pyx_ImportType_CheckSize_Warn_3_3_0); if (!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve) __PYX_ERR(3, 43, __pyx_L1_error)
+  if (unlikely(__Pyx_GetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve, (void**)&__pyx_vtabptr_10bz_pricing_4core_6curves_SpreadCurve) != 1)) __PYX_ERR(3, 43, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;
