@@ -245,7 +245,7 @@ cdef class Linear360Interpolator(Interpolator):
 
 cdef class PriceInterpolator(Interpolator):
     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
-        # 1.4.5 Interpolação de Preços
+        # Interpolação exponencial de preços entre vértices de vencimento
         cdef int i
         if t <= t_nodes[0]:
             if self._extrap_left == EXTRAP_FLAT:

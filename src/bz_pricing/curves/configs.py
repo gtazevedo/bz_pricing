@@ -24,8 +24,8 @@ CURVE_CONFIGS = {
         "description": "Curva de Juros Pré-Fixada (FlatForward 252)",
         "interpolator_class": FlatForward252Interpolator,
         "extrap_left": 0,  # EXTRAP_FLAT
-        "extrap_right": 1, # EXTRAP_FLAT_FORWARD (Conforme manual da B3)
-        "round_decimals": 6, # 4 casas decimais na taxa percentual (Seção 2.1 Manual B3)
+        "extrap_right": 1, # EXTRAP_FLAT_FORWARD
+        "round_decimals": 6, # 4 casas decimais na taxa percentual
         "liquidity_filter": True, # Exclui contratos DI1 sem liquidez
         "rate_column": "AdjstdQtTax",
         "exp_date": "XprtnDt",
@@ -95,7 +95,7 @@ CURVE_CONFIGS = {
         "asset": "DAP"
     },
     "DPL": {
-        "description": "Curva DI x IPCA Cupom Limpo (Seção 3.2 Manual B3)",
+        "description": "Curva DI x IPCA Cupom Limpo",
         "type": "derived",
         "nominal_curve": "PRE",
         "real_curve": "DAP",
@@ -158,7 +158,7 @@ CURVE_CONFIGS = {
         "v1_source": "ECB"
     },
     "ZMX": {
-        "description": "Curva Zero Coupon F-TIIE (Linear 360 - Seção 2.10 Manual B3)",
+        "description": "Curva Zero Coupon F-TIIE (Linear 360)",
         "type": "derived_zero_coupon",
         "forward_curve": "TIE",
         "interpolator_class": Linear360Interpolator,
@@ -170,7 +170,7 @@ CURVE_CONFIGS = {
         "index_by_dc": True
     },
     "ZUS": {
-        "description": "Curva Zero Coupon SOFR (Linear 360 - Seção 2.11 Manual B3)",
+        "description": "Curva Zero Coupon SOFR (Linear 360)",
         "interpolator_class": Linear360Interpolator,
         "extrap_left": 0,
         "extrap_right": 0,
@@ -182,7 +182,7 @@ CURVE_CONFIGS = {
         "produto": "LIB"
     },
     "LIB": {
-        "description": "Curva Zero Coupon SOFR / Libor legada (Linear 360 - Seção 2.11 Manual B3)",
+        "description": "Curva Zero Coupon SOFR / Libor legada (Linear 360)",
         "interpolator_class": Linear360Interpolator,
         "extrap_left": 0,
         "extrap_right": 0,
@@ -194,7 +194,7 @@ CURVE_CONFIGS = {
         "produto": "LIB"
     },
     "ZEU": {
-        "description": "Curva Zero Coupon ESTR (Linear 360 - Seção 2.12 Manual B3)",
+        "description": "Curva Zero Coupon ESTR (Linear 360)",
         "type": "derived_zero_coupon",
         "forward_curve": "EST",
         "interpolator_class": Linear360Interpolator,
@@ -206,7 +206,7 @@ CURVE_CONFIGS = {
         "index_by_dc": True
     },
     "DIC": {
-        "description": "Curva DI x IPCA Cupom Sujo (Seção 3.1 Manual B3)",
+        "description": "Curva DI x IPCA Cupom Sujo",
         "type": "derived",
         "nominal_curve": "PRE",
         "indicator": "IPCA",
@@ -220,7 +220,7 @@ CURVE_CONFIGS = {
         "use_dc": False
     },
     "DIM": {
-        "description": "Curva DI x IGP-M Cupom Sujo (Seção 3.3 Manual B3)",
+        "description": "Curva DI x IGP-M Cupom Sujo",
         "type": "derived",
         "nominal_curve": "PRE",
         "indicator": "IGP-M",
@@ -243,7 +243,7 @@ CURVE_CONFIGS = {
         "asset": "DGI"
     },
     "PTX": {
-        "description": "Forward de Reais x Dólar (Seção 4.1 Manual B3)",
+        "description": "Forward de Reais x Dólar",
         "type": "currency_forward",
         "currency": "USD",
         "pre_curve": "PRE",
@@ -259,7 +259,7 @@ CURVE_CONFIGS = {
         "divide_by_100": False
     },
     "EUR": {
-        "description": "Forward de Reais x Euro (Seção 4.2 Manual B3)",
+        "description": "Forward de Reais x Euro",
         "type": "currency_forward",
         "currency": "EUR",
         "pre_curve": "PRE",
@@ -275,7 +275,7 @@ CURVE_CONFIGS = {
         "divide_by_100": False
     },
     "JPY": {
-        "description": "Forward de Reais x JPY (Seção 4.3 Manual B3)",
+        "description": "Forward de Reais x JPY",
         "type": "currency_forward",
         "source_type": "taxas_referenciais",
         "produto": "JPY",
@@ -291,7 +291,7 @@ CURVE_CONFIGS = {
         "divide_by_100": False
     },
     "DOL": {
-        "description": "Curva de Cupom de Dólar Sujo (Seção 4.4 Manual B3)",
+        "description": "Curva de Cupom de Dólar Sujo",
         "interpolator_class": FlatForward252LinearInterpolator,
         "extrap_left": 0,
         "extrap_right": 1,
@@ -302,7 +302,7 @@ CURVE_CONFIGS = {
         "rate_column": "AdjstdQtTax"
     },
     "DOC": {
-        "description": "Curva de Cupom de Dólar Limpo (Seção 4.5 Manual B3)",
+        "description": "Curva de Cupom de Dólar Limpo",
         "source_type": "taxas_referenciais",
         "produto": "DOC",
         "asset": "DDI",
@@ -314,7 +314,7 @@ CURVE_CONFIGS = {
         "use_dc": True
     },
     "DCL": {
-        "description": "Curva de Cupom de Dólar Limpo (Seção 4.6 Manual B3)",
+        "description": "Curva de Cupom de Dólar Limpo",
         "source_type": "taxas_referenciais",
         "produto": "DOC",
         "asset": "DDI",
@@ -326,7 +326,7 @@ CURVE_CONFIGS = {
         "use_dc": True
     },
     "EUC": {
-        "description": "Curva de Cupom de Euro (Seção 4.7 Manual B3)",
+        "description": "Curva de Cupom de Euro",
         "type": "derived",
         "doc_curve": "DOC",
         "spread_curve": "SDE",
@@ -334,7 +334,7 @@ CURVE_CONFIGS = {
         "round_mode": "round"
     },
     "YCL": {
-        "description": "Curva de Cupom de JPY (Seção 4.8 Manual B3)",
+        "description": "Curva de Cupom de JPY",
         "type": "derived",
         "doc_curve": "DOC",
         "spread_curve": "SYD",
@@ -342,7 +342,7 @@ CURVE_CONFIGS = {
         "round_mode": "round"
     },
     "SDE": {
-        "description": "Curva de Spread de Euro (Seção 4.9 Manual B3: TEU - TUS)",
+        "description": "Curva de Spread de Euro (TEU - TUS)",
         "source_type": "taxas_referenciais",
         "produto": "SDE",
         "interpolator_class": Linear360Interpolator,
@@ -353,7 +353,7 @@ CURVE_CONFIGS = {
         "use_dc": True
     },
     "SGP": {
-        "description": "Curva de Spread de GBP (Seção 4.10 Manual B3: TGP - TUS)",
+        "description": "Curva de Spread de GBP (TGP - TUS)",
         "type": "spread",
         "curve_a": "ZEU",
         "curve_b": "ZUS",
@@ -366,7 +366,7 @@ CURVE_CONFIGS = {
         "round_mode": "round"
     },
     "SMX": {
-        "description": "Curva de Spread de MXN (Seção 4.11 Manual B3: TMX - TUS)",
+        "description": "Curva de Spread de MXN (TMX - TUS)",
         "type": "spread",
         "curve_a": "ZMX",
         "curve_b": "ZUS",
@@ -379,7 +379,7 @@ CURVE_CONFIGS = {
         "round_mode": "round"
     },
     "SYD": {
-        "description": "Curva de Spread de JPY (Seção 4.12 Manual B3: TJP - TUS)",
+        "description": "Curva de Spread de JPY (TJP - TUS)",
         "type": "spread",
         "curve_a": "ZEU",
         "curve_b": "ZUS",
@@ -392,7 +392,7 @@ CURVE_CONFIGS = {
         "round_mode": "round"
     },
     "BRP": {
-        "description": "Curva IBrX50 x PRE (Seção 5.1 Manual B3)",
+        "description": "Curva IBrX50 x PRE",
         "type": "equity_index",
         "asset": "BRI",
         "source_type": "taxas_referenciais",
@@ -406,7 +406,7 @@ CURVE_CONFIGS = {
         "divide_by_100": False
     },
     "INP": {
-        "description": "Curva Índice Bovespa (Seção 5.2 Manual B3)",
+        "description": "Curva Índice Bovespa",
         "type": "equity_index",
         "asset": "IND",
         "source_type": "taxas_referenciais",
@@ -420,7 +420,7 @@ CURVE_CONFIGS = {
         "divide_by_100": False
     },
     "SML": {
-        "description": "Curva Índice Small Caps (Seção 5.3 Manual B3)",
+        "description": "Curva Índice Small Caps",
         "type": "equity_index",
         "asset": "SML",
         "interpolator_class": PriceInterpolator,
@@ -430,7 +430,7 @@ CURVE_CONFIGS = {
         "round_mode": "round"
     },
     "CYI": {
-        "description": "Curva de Custo de Carrego dos Futuros de Ibovespa (Seção 5.4 Manual B3)",
+        "description": "Curva de Custo de Carrego dos Futuros de Ibovespa",
         "type": "convenience_yield",
         "index_curve": "INP",
         "pre_curve": "PRE",
@@ -438,7 +438,7 @@ CURVE_CONFIGS = {
         "round_mode": "round"
     },
     "MBR": {
-        "description": "Curva Índice Bovespa B3 BR+ (Seção 5.5 Manual B3)",
+        "description": "Curva Índice Bovespa B3 BR+",
         "type": "equity_index",
         "asset": "MBR",
         "interpolator_class": PriceInterpolator,
@@ -448,7 +448,7 @@ CURVE_CONFIGS = {
         "round_mode": "round"
     },
     "CYM": {
-        "description": "Curva de Custo de Carrego dos Futuros Bovespa B3 BR+ (Seção 5.6 Manual B3)",
+        "description": "Curva de Custo de Carrego dos Futuros Bovespa B3 BR+",
         "type": "convenience_yield",
         "index_curve": "MBR",
         "pre_curve": "PRE",
@@ -456,7 +456,7 @@ CURVE_CONFIGS = {
         "round_mode": "round"
     },
     "VIX": {
-        "description": "Curva Índice S&P/B3 Bovespa VIX (Seção 5.7 Manual B3)",
+        "description": "Curva Índice S&P/B3 Bovespa VIX",
         "type": "equity_index",
         "asset": "VIX",
         "interpolator_class": PriceInterpolator,
@@ -466,16 +466,16 @@ CURVE_CONFIGS = {
         "round_mode": "round"
     },
     "CYX": {
-        "description": "Curva de Custo de Carrego dos Futuros de VIX (Seção 5.8 Manual B3)",
+        "description": "Curva de Custo de Carrego dos Futuros de VIX",
         "type": "convenience_yield",
         "index_curve": "VIX",
         "pre_curve": "PRE",
         "round_decimals": 6,
         "round_mode": "round"
     },
-    # Aliases oficiais dos produtos da B3
+    # Aliases de produtos de taxas referenciais
     "SLP": {
-        "description": "Curva Selic x Pré (Contratos OC1 - Seção 2.2 Manual B3)",
+        "description": "Curva Selic x Pré (Contratos OC1)",
         "interpolator_class": FlatForward252Interpolator,
         "extrap_left": 0,
         "extrap_right": 1,
@@ -488,7 +488,7 @@ CURVE_CONFIGS = {
         "v1_source": "SELIC"
     },
     "TFP": {
-        "description": "Curva TBF x Pré (Seção 2.4 Manual B3)",
+        "description": "Curva TBF x Pré",
         "type": "derived",
         "base_curve": "PRE",
         "tbf_source": "BCB",
@@ -496,13 +496,13 @@ CURVE_CONFIGS = {
         "round_decimals": 4
     },
     "TP": {
-        "description": "Curva TR x Pré (Seção 2.5 Manual B3)",
+        "description": "Curva TR x Pré",
         "type": "derived",
         "base_curve": "TFP",
         "round_decimals": 4
     },
     "TR": {
-        "description": "Curva DI x TR (Seção 2.6 Manual B3)",
+        "description": "Curva DI x TR",
         "type": "derived",
         "pre_curve": "PRE",
         "tp_curve": "TP",

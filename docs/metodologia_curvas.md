@@ -1,308 +1,336 @@
-# Metodologia de Construção de Curvas e Fundamentação Normativa
+# Metodologia de Construção de Estruturas a Termo e Formulações Matemáticas
 
-Esta documentação detalha as regras de negócio, a formulação matemática e o respaldo regulatório das curvas de juros construídas pelo `bz-pricing`, com base no **Manual de Curvas da B3 (V21)** e nas resoluções do **Banco Central do Brasil (BCB)**.
-
----
-
-## 1. Curva de DI x Pré-Fixado (`PRE`)
-
-- **Referência:** *Manual de Curvas B3, Seção 2.1 (págs. 7–9)*
-- **Ativo-Objeto:** Contrato Futuro de DI de 1 Dia (`DI1`).
-- **Base de Cálculo:** $DU / 252$ (Dias Úteis / Feriados B3).
-
-### 1.1 Formulação do Vértice 1 (Overnight)
-O primeiro vértice da curva corresponde ao CDI de 1 dia útil ($DU = 1$), apurado e divulgado pela B3:
-$$PRE_{1,t} = CDI_t$$
-
-### 1.2 Interpolação: Taxa a Termo Constante (Flat Forward 252)
-Para qualquer prazo útil $DU$ situado entre dois nós conhecidos $t_1$ e $t_2$, a taxa a termo composta contínua é constante:
-
-$$\left(1 + \frac{PRE(DU)}{100}\right)^{\frac{DU}{252}} = \left(1 + \frac{y_1}{100}\right)^{\frac{t_1}{252}} \times \left(1 + \frac{f_{1,2}}{100}\right)^{\frac{DU - t_1}{252}}$$
-
-onde a taxa forward $f_{1,2}$ é dada por:
-
-$$1 + \frac{f_{1,2}}{100} = \left[ \frac{\left(1 + \frac{y_2}{100}\right)^{\frac{t_2}{252}}}{\left(1 + \frac{y_1}{100}\right)^{\frac{t_1}{252}}} \right]^{\frac{252}{t_2 - t_1}}$$
+Este documento apresenta a especificação matemática, as regras de contagem de prazos e os algoritmos de interpolação implementados no pacote `bz-pricing` para a construção de estruturas a termo de taxas de juros, inflação implícita, cupons cambiais, moedas a termo e índices de renda variável nos mercados doméstico (*onshore*) e internacional (*offshore*).
 
 ---
 
-## 2. Curva de Selic x Pré-Fixado (`SELIC_PRE`)
+## 1. Operadores de Interpolação e Extrapolação em Cython
 
-- **Referência:** *Manual de Curvas B3, Seção 2.2 (págs. 9–11)*
-- **Ativo-Objeto:** Contrato Futuro de Taxa Selic (`OC1`).
+As classes de interpolação compiladas em Cython no módulo [`bz_pricing.core.interpolators`](../src/bz_pricing/core/interpolators.pyx) operam sobre vetores contíguos de prazos `t_nodes` (em dias úteis $\text{DU}$ ou dias corridos $\text{DC}$), taxas ou preços `y_nodes` e, quando aplicável, prazos secundários `t_sec_nodes`.
 
-### 2.1 Vértice 1 — Selic Diária (BCB SGS Série 11)
-A taxa Selic diária apurada pelo Banco Central em operações compromissadas com títulos públicos federais é divulgada em termos percentuais ao dia ($i_{\text{dia}}$) pela série temporal **SGS 11**.
+### 1.1 Interpolação Exponencial por Taxa a Termo Constante (`FlatForward252Interpolator`)
 
-A anualização exponencial em base 252 dias úteis é dada por:
+Para qualquer prazo em dias úteis $\text{DU}$ situado entre dois vértices adjacentes $(\text{DU}_k, y_k)$ e $(\text{DU}_{k+1}, y_{k+1})$, assume-se taxa a termo composta constante na convenção $\text{BUS}/252$. O fator de capitalização acumulado em $\text{DU}$ é definido por:
 
-$$SELIC_{\text{anual}} = (1 + i_{\text{dia}})^{252} - 1$$
+$$\left(1 + y(\text{DU})\right)^{\frac{\text{DU}}{252}} = \left(1 + y_k\right)^{\frac{\text{DU}_k}{252}} \times \left(1 + f_{k,k+1}\right)^{\frac{\text{DU} - \text{DU}_k}{252}}$$
 
-> **Nota Técnica:** Não se utiliza a série SGS 4389 (que é uma taxa anualizada nominal indicativa com convenção de corte), mas sim a série primária SGS 11 capitalizada dia a dia.
+na qual a taxa a termo anualizada $f_{k,k+1}$ vigente no intervalo $[\text{DU}_k, \text{DU}_{k+1}]$ corresponde a:
 
----
+$$1 + f_{k,k+1} = \left[ \frac{\left(1 + y_{k+1}\right)^{\frac{\text{DU}_{k+1}}{252}}}{\left(1 + y_k\right)^{\frac{\text{DU}_k}{252}}} \right]^{\frac{252}{\text{DU}_{k+1} - \text{DU}_k}}$$
 
-## 3. Curva de TBF x Pré (`TBF_PRE`) e TR x Pré (`TR_PRE`)
+A expressão analítica equivalente implementada em Cython para a taxa spot interpolada $y(\text{DU})$ assume a forma:
 
-- **Referência:** *Manual de Curvas B3, Seções 2.4 e 2.5 (págs. 14–18)*
-- **Normativo:** *Resolução CMN nº 5.124 / Comunicado BCB nº 31.751*
+$$y(\text{DU}) = \left[ \left(1 + y_k\right)^{\frac{\text{DU}_k}{252}} \times \left( \frac{\left(1 + y_{k+1}\right)^{\frac{\text{DU}_{k+1}}{252}}}{\left(1 + y_k\right)^{\frac{\text{DU}_k}{252}}} \right)^{\frac{\text{DU} - \text{DU}_k}{\text{DU}_{k+1} - \text{DU}_k}} \right]^{\frac{252}{\text{DU}}} - 1$$
 
-### 3.1 Curva TBF x Pré
-A Taxa Básica Financeira (TBF) é obtida a partir do fator médio dos últimos 5 dias úteis de apuração ($MediaTBF_{fator,t}$):
+### 1.2 Interpolação Exponencial Base 252 sobre Taxas Lineares (`FlatForward252LinearInterpolator`)
 
-$$TFP_{i,t} = \left( \left[ \left( \left( 1 + \frac{PRE_{i+21,t}}{100} \right)^{\frac{21}{252}} - 1 \right) \times MediaTBF_{fator,t} + 1 \right]^{\frac{252}{21}} \right) - 1$$
+Aplicada às estruturas de cupom cambial (`DOL`, `DOC` e `DCL`), nas quais a cotação da taxa nominal $y_k$ obedece ao regime de capitalização linear em dias corridos ($\text{ACT}/360$), enquanto a interpolação entre vencimentos ocorre em dias úteis ($\text{DU}$):
 
-### 3.2 Redutor da Taxa Referencial (TR)
-A TR mensal é calculada a partir da TBF mensal ($TFP_{am}$) aplicando o Redutor $R$:
+$$F_k = 1 + y_k \times \frac{\text{DC}_k}{360}, \quad F_{k+1} = 1 + y_{k+1} \times \frac{\text{DC}_{k+1}}{360}$$
 
-$$TR_{am} = \frac{1 + TFP_{am}}{R} - 1$$
+O fator interpolado $F(\text{DU})$ para $\text{DU} \in [\text{DU}_k, \text{DU}_{k+1}]$ e prazo corrido associado $\text{DC}$ é obtido via ponderação exponencial em dias úteis e posterior reconversão para taxa linear em base 360:
 
-Onde o redutor é escalonado em função da TBF mensal conforme a **Resolução CMN nº 5.124**:
+$$F(\text{DU}) = F_k \times \left( \frac{F_{k+1}}{F_k} \right)^{\frac{\text{DU} - \text{DU}_k}{\text{DU}_{k+1} - \text{DU}_k}}, \quad y(\text{DU}, \text{DC}) = \left( F(\text{DU}) - 1 \right) \times \frac{360}{\text{DC}}$$
 
-| Faixa da TBF Mensal ($TFP_{am}$) | Parâmetro $a$ | Parâmetro $b$ | Redutor $R = a + b \cdot TFP_{am}$ |
-|:---|:---:|:---:|:---|
-| $TFP_{am} \ge 1.3134\%$ | $1.00500000$ | $0.48000000$ | $1.005 + 0.48 \cdot TFP_{am}$ |
-| $0.9856\% \le TFP_{am} < 1.3134\%$ | $0.99869130$ | $0.96034591$ | $0.99869130 + 0.96034591 \cdot TFP_{am}$ |
-| $0.8462\% \le TFP_{am} < 0.9856\%$ | $1.00500000$ | $0.32000000$ | $1.005 + 0.32 \cdot TFP_{am}$ |
-| $0.7323\% \le TFP_{am} < 0.8462\%$ | $1.00010877$ | $0.89838243$ | $1.00010877 + 0.89838243 \cdot TFP_{am}$ |
-| $TFP_{am} < 0.7323\%$ | $1.00500000$ | $0.23000000$ | $1.005 + 0.23 \cdot TFP_{am}$ |
+### 1.3 Interpolação Linear em Base 360 (`Linear360Interpolator`)
 
----
+Utilizada para curvas de futuros e *swaps* de taxas de juros internacionais (`SFR`, `EST`, `TIE`, `ZUS`, `ZEU`, `ZMX` e `SDE`). Dados dois nós adjacentes $(\text{DC}_k, y_k)$ e $(\text{DC}_{k+1}, y_{k+1})$, interpola-se linearmente a taxa acumulada no período:
 
-## 4. Curvas de SOFR: Futuros (`SFR`) vs. Swaps Zero Cupom (`ZUS` / `LIB`)
+$$A(\text{DC}) = \frac{y_k \cdot \text{DC}_k}{360} + \left( \frac{y_{k+1} \cdot \text{DC}_{k+1}}{360} - \frac{y_k \cdot \text{DC}_k}{360} \right) \times \frac{\text{DC} - \text{DC}_k}{\text{DC}_{k+1} - \text{DC}_k}$$
 
-A B3 publica duas estruturas a termo de SOFR com mercados e metodologias completamente distintas:
+A taxa anualizada em convenção $\text{ACT}/360$ para o prazo $\text{DC}$ resulta de:
 
-### 4.1 Curva Forward de Futuros SOFR (`SFR` — Seção 2.8, pág. 21)
-- **Fonte Primária:** Contratos Futuros de SOFR negociados na B3 (`SFRU26`, `SFRZ26`, etc.).
-- **Vértice 1:** Taxa SOFR *Overnight* apurada e divulgada pelo Federal Reserve Bank of New York (NY Fed).
-- **Interpolação:** Linear na base $DC / 360$ (Dias Corridos):
-  $$Fator(DC) = 1 + \left( \frac{Taxa}{100} \times \frac{DC}{360} \right)$$
+$$y(\text{DC}) = A(\text{DC}) \times \frac{360}{\text{DC}}$$
 
-### 4.2 Curva Zero Cupom de Swaps SOFR (`ZUS` / `LIB` — Seção 2.11, pág. 26)
-- **Fonte Primária:** Cotações de Swaps OIS de SOFR offshore capturadas via Refinitiv/LSEG (RICs `USDSROISONZ=R` a `USDSROIS15YZ=R`).
-- **Arquivo Oficial B3:** `taxas_LIB_AAAAMMDD.csv`.
-- **Horizonte de Avaliação:** Até 30 anos ($DC = 12.400$), com taxa flat após o último vértice disponível.
+### 1.4 Interpolação Exponencial de Preços (`PriceInterpolator`)
+
+Empregada na construção de curvas de preços futuros de índices de ações (`INP`, `BRP`, `SML`, `MBR`, `VIX`), contratos futuros de ações individuais e cotações de moedas a termo interpoladas por vértices. Para dois preços adjacentes $P_k$ e $P_{k+1}$ nos prazos $\text{DU}_k$ e $\text{DU}_{k+1}$:
+
+$$P(\text{DU}) = P_k \times \left( \frac{P_{k+1}}{P_k} \right)^{\frac{\text{DU} - \text{DU}_k}{\text{DU}_{k+1} - \text{DU}_k}}$$
 
 ---
 
-## 5. Curvas de Inflação: IPCA (`DIC` e `DPL`) e IGP-M (`DIM`)
+## 2. Curvas de Juros Prefixadas Domésticas (`PRE`, `SELIC_PRE` e `LTN`)
 
-- **Referência:** *Manual de Curvas B3, Seções 3.1, 3.2 e 3.3 (págs. 29–47)*
+### 2.1 Curva de DI x Pré (`PRE`)
 
-### 5.1 Cupom Sujo de IPCA (`DIC` — Seção 3.1) e Cupom Sujo de IGP-M (`DIM` — Seção 3.3)
-As curvas de cupom sujo de inflação (`DIC` e `DIM`) são construídas a partir da curva `DI x Pré` (`PRE`) e da **Amostra de Expectativas de Inflação do Pool de Informantes da B3** (~18 a 23 vértices base $k_i$ nas datas de divulgação do índice pelo IBGE/FGV):
+Construída sobre as taxas de ajuste dos contratos futuros de DI de 1 dia (`DI1`) submetidos a filtro de liquidez (existência de negócios regulares `RglrTxsQty > 0` ou contratos em aberto `OpnIntrst > 0`).
 
-1. **Vértice 1 ($DU = 1$):** Igual à taxa de 1 dia útil da curva `DI x Pré` ($DIC_{1,t} = DIM_{1,t} = PRE_{1,t}$).
-2. **Vértices dos Informantes ($k_i$):** A partir do cupom informado em cada data de divulgação $k_i$, obtém-se o fator acumulado de inflação esperada (Eq. 3.1.2 e Eq. 3.3.2):
-   $$E(\text{Índice})_{k_i,t} = \frac{\left(1 + \frac{PRE_{k_i,t}}{100}\right)^{\frac{du_{k_i}}{252}}}{\left(1 + \frac{Cp_{k_i,t}}{100}\right)^{\frac{du_{k_i}}{252}}} - 1$$
-3. **Vértices Intermediários em Degraus de Divulgação ($du_{k_i} \le du_i < du_{k_{i+1}}$):** Como o fator acumulado de inflação esperada $E(\text{Índice})_{k_i,t}$ permanece constante até a próxima data de divulgação $k_{i+1}$, o cupom sujo em cada dia útil $du_i$ dentro da janela é dado diretamente pelas Eq. 3.1.3 e Eq. 3.3.3:
-   $$Cp_{i,t} = \left( \left[ \frac{\left(1 + \frac{PRE_{i,t}}{100}\right)^{\frac{du_i}{252}}}{1 + E(\text{Índice})_{k_i,t}} \right]^{\frac{252}{du_i}} - 1 \right) \times 100$$
-4. **Interpolação e Extrapolação de Longo Prazo (Itens 3.1.3, 3.1.4, 3.3.3 e 3.3.4):** Entre os vértices longos dos informantes e após o último vértice disponível, aplica-se a **Interpolação e Extrapolação Exponencial Base 252 (Taxa a Termo Constante — `FlatForward252Interpolator(0, 1)`, item 1.4.2)**.
+- **Vértice de 1 Dia Útil ($\text{DU} = 1$):** Corresponde à taxa DI *overnight* ($\text{CDI}_t$) divulgada na data-base $t$:
 
-### 5.2 Cupom Limpo de IPCA (`DAP` / `DPL` — Seção 3.2)
-- **Vértice 1 ($DU = 1$):** Calculado pela relação entre o primeiro vértice da curva `DI x Pré` (`PRE_1`) e a prévia diária de inflação do IPCA ($E(\text{IPCA})_{0,t}$ — ANBIMA `IPCA_prévia`), conforme Eq. 3.2.1 (pág. 36):
-  $$DPL_{1,t} = \left( \left[ \frac{\left(1 + \frac{PRE_{1,t}}{100}\right)^{\frac{1}{252}}}{1 + E(\text{IPCA})_{0,t}} \right]^{252} - 1 \right) \times 100$$
-- **Demais Vértices:** Preços de ajuste dos contratos futuros de Cupom de IPCA (`DAP`), com vencimento no dia 15 do mês (ou primeiro dia útil subsequente).
-- **Interpolação e Extrapolação:** Taxa a Termo Exponencial Base 252 (`FlatForward252Interpolator(0, 1)` — item 1.4.2).
+$$\text{PRE}_{1,t} = \text{CDI}_t$$
 
----
+- **Vértices de Vencimento Futuro ($\text{DU}_n > 1$):** Taxas de ajuste `AdjstdQtTax` dos contratos `DI1` ativos.
+- **Interpolação e Extrapolação:** `FlatForward252Interpolator(extrap_left=0, extrap_right=1)`, com arredondamento na quarta casa decimal da taxa percentual (`round_decimals = 6` em representação decimal).
 
-## 6. Curvas Internacionais: ESTR (EST / ZEU), F-TIIE (TIE / ZMX) e SOFR (SFR / ZUS)
+### 2.2 Curva de Selic x Pré (`SELIC_PRE` / `SLP`)
 
-- **Referência:** *Manual de Curvas B3, Seções 2.7 a 2.12 (págs. 19–28)*
-- **Convenção de Prazo:** $DC / 360$ (Dias Corridos / Base ACT/360, com `index_by_dc = True`).
-- **Arredondamento:** Taxa anualizada % com 5 casas decimais (`round_decimals = 7` em taxa decimal).
+Construída a partir dos contratos futuros de Taxa Média de Operações Compromissadas de 1 Dia (`OC1`). O vértice inicial ($\text{DU} = 1$) utiliza a taxa Selic diária apurada pelo Banco Central do Brasil (série temporal SGS 11, $i_{\text{dia}}$), anualizada sob regime exponencial de 252 dias úteis:
 
-### 6.1 Curvas Forward Marginais de Futuros (EST, TIE e SFR)
-- **Definição:** Refletem a taxa de juros a termo acordada entre os vencimentos dos contratos futuros negociados na B3.
-- **Insumos:**
-  - **Vértice 1:** Taxa overnight oficial mais recente do banco central emissor (ECB para ESTR, Banxico para TIIE, Fed NY para SOFR).
-  - **Vértices Futuros:** Taxas de ajuste dos contratos futuros negociados na B3 (`EST`, `TIE`, `SFR`).
-- **Interpolação:** Linear 360 (`Linear360Interpolator(0, 0)`) com Extrapolação Flat Fim no último vencimento.
-
-### 6.2 Curvas Zero Cupom Offshore (ZEU, ZMX e ZUS)
-- **Definição:** Representam a estrutura a termo da taxa spot acumulada desde $t=0$ até a data futura $DC$.
-- **Cálculo da Taxa Linear 360 (Seções 2.10, 2.11 e 2.12):**
-  A partir dos fatores de desconto acumulados $FD(DC)$:
-  $$FD(DC_n) = \prod_{k=1}^n \frac{1}{1 + F_k \times \frac{\Delta DC_k}{36000}}$$
-  $$TxLinJUR(DC_n) = \left( \frac{1}{FD(DC_n)} - 1 \right) \times \frac{36000}{DC_n}$$
-- **Extração de Vértices do Provedor (`ZUS` / `LIB`):** Quando carregada a partir de `taxas_LIB_*.csv`, o `CurveManager` extrai apenas os ~73 vértices originais de swap fornecidos pela LSEG/Refinitiv (Tabela 1 do Manual B3) onde a taxa linear a termo muda de inclinação, interpolando todos os demais prazos via `Linear360Interpolator(0, 0)`.
+$$\text{SELIC}_{1,t} = \left(1 + i_{\text{dia}}\right)^{252} - 1$$
 
 ---
 
-## 7. Curvas de Moedas, Cupons Cambiais e Spreads (Capítulo 4 B3)
+## 3. Curvas de Taxa Básica Financeira (`TFP` / `TBF_PRE`) e Taxa Referencial (`TP` / `TR_PRE` e `TR`)
 
-- **Referência:** *Manual de Curvas B3, Seções 4.1 a 4.12 (págs. 48–66)*
+### 3.1 Estrutura a Termo de TBF x Pré (`TFP` / `TBF_PRE`)
 
-### 7.1 Forwards Cambiais: PTX (Dólar), EUR (Euro) e JPY (Iene)
-Projetam a taxa de câmbio a termo pela paridade da taxa pré interna (`PRE`) contra o cupom cambial da moeda estrangeira (implementadas na classe analítica `CurrencyForwardCurve` sobre as curvas base interpoladas por vértices):
+A Taxa Básica Financeira proyectada combina a estrutura a termo prefixada (`PRE`) avaliada em $\text{DU}_i + 21$ com a média aritmética dos fatores históricos de proporcionalidade apurados nos 5 dias úteis imediatamente anteriores à data-base ($\bar{F}_{\text{TBF},t}$):
 
-- **PTX (`PTX` — Seção 4.1, págs. 48–49):**
-  - **Vértice 1 ($DU = 1$):** Igual à cotação $\text{Ptax}_{t0}$ de fechamento divulgada pelo BCB no dia $t_0$.
-  - **Demais Vértices ($n \ge 2$, $DU_n > 1$):** Utilizam a cotação $\text{Ptax}_{t-1}$ (fechamento do dia útil anterior) combinada com as curvas `PRE` (interpolada sobre os futuros de `DI1`) e `DOL` (interpolada sobre os futuros de `DDI`):
-    $$PTX_n = \frac{\left(1 + \frac{PRE_n}{100}\right)^{\frac{du_n}{252}}}{1 + \frac{DOL_n}{100} \times \frac{dc_n}{360}} \times \text{Ptax}_{t-1}$$
-  - **Truncamento:** 7ª casa decimal (`round_decimals = 7`, `round_mode = "trunc"`).
-- **EUR (`EUR` — Seção 4.2, págs. 50–51):** Forward Reais x Euro. Em todos os vértices utiliza a cotação de fechamento $\text{Tx}_{\text{Reais x Euro}}$ apurada pela B3 no dia $t_0$ combinada com as curvas `PRE` e `EUC`:
-  $$EUR_n = \frac{\left(1 + \frac{PRE_n}{100}\right)^{\frac{du_n}{252}}}{1 + \frac{EUC_n}{100} \times \frac{dc_n}{360}} \times \text{Tx}_{\text{Reais x Euro}}$$
-- **JPY (`JPY` — Seção 4.3, pág. 52):** Forward Reais x Iene. Utiliza a cotação $\text{Tx}_{\text{Reais x Iene}}$ e o Cupom de Iene (`YCL`), ou interpolação sobre os vértices de preços via `PriceInterpolator(0, 1)` (item 1.4.5).
+$$\text{TFP}_{i,t} = \left[ \left( \left(1 + \text{PRE}_{\text{DU}_i + 21, t}\right)^{\frac{21}{252}} - 1 \right) \times \bar{F}_{\text{TBF},t} + 1 \right]^{\frac{252}{21}} - 1$$
 
-### 7.2 Cupons Cambiais de Dólar: Sujo (`DOL`) e Limpo (`DOC` e `DCL`)
-- **DOL (`DOL` — Seção 4.4):** Cupom Cambial Sujo construído a partir dos vencimentos dos contratos futuros de `DDI` via `FlatForward252LinearInterpolator(0, 1)` (item 1.4.3), com `t_nodes = DU` e `t_sec_nodes = DC`.
-- **DOC e DCL (`DOC` e `DCL` — Seções 4.5 e 4.6, págs. 57–59):** Cupons Cambiais Limpos construídos a partir do Vértice 1 ($DU = 1$, apurado com base em informantes / casado) e dos vencimentos do Contrato Futuro de `DDI` ajustados pela razão $\text{DolCL}_{t0} / \text{Ptax}_{t-1}$ (Eq. 4.5.3 e 4.6.3):
-  $$DOC_n = \left( \left[ \left(1 + \frac{DDI_n}{100} \times \frac{dc_n}{360}\right) \times \frac{\text{DolCL}_{t0}}{\text{Ptax}_{t-1}} \right] - 1 \right) \times \frac{36000}{dc_n}$$
-  Os vértices intermediários e posteriores ao último vencimento de `DDI` são interpolados e extrapolados via `FlatForward252LinearInterpolator(0, 1)` (item 1.4.3), indexados em `t_nodes = DU` e `t_sec_nodes = DC`.
+Em cada um dos 5 dias úteis anteriores $d$, o fator diário $F_{\text{TBF},d}$ é obtido pela razão entre a TBF mensal divulgada pelo Banco Central (série SGS 253) ajustada para 30 dias corridos e a taxa `PRE` de 30 dias corridos na respectiva data $d$. Os vértices calculados são interpolados por `FlatForward252Interpolator(0, 1)`.
 
-### 7.3 Curva de Cupom de Euro (`EUC` — Seção 4.7):
-Implementada na classe `CrossCouponCurve`, avalia analiticamente a paridade entre as curvas `DOC` (interpolada a partir dos 45 vértices de V1 + `DDI`) e `SDE` (interpolada a partir dos 65 nós de swaps `TEU - TUS`):
-$$EUC_n = \left[ \left(1 + DOC_n \times \frac{DC_n}{36000}\right) \times \left(1 + SDE_n \times \frac{DC_n}{36000}\right) - 1 \right] \times \frac{36000}{DC_n}$$
-Arredondada na 4ª casa decimal da taxa percentual (`round_decimals = 6` em decimal).
+### 3.2 Redutor da Taxa Referencial (`TP` / `TR_PRE`) e Curva DI x TR (`TR`)
 
-### 7.4 Curva de Spread Libor/OIS Euro x Dólar (`SDE` — Seção 4.9):
-Reflete o diferencial de taxas de juros offshore de Euro vs USD:
-$$TC_n = TEU_n - TUS_n$$
-Construída extraindo os ~65 vértices base de swaps da LSEG/Refinitiv (Tabela 1 do Manual B3) e interpolando/extrapolando os demais prazos via `Linear360Interpolator(0, 0)` (item 1.4.4), mantendo `t_nodes = DU` e `t_sec_nodes = DC`.
+A partir da taxa mensal equivalente da curva de TBF nos vértices base, definida por:
 
----
+$$\text{TFP}_{\text{am},i} = \left(1 + \text{TFP}_{i,t}\right)^{\frac{21}{252}} - 1$$
 
-## 8. Curvas de Índices de Ações, Carrego e Futuros de Ações (Capítulo 5 B3)
+aplica-se o redutor paramétrico $R = a + b \cdot \text{TFP}_{\text{am},i}$ para a determinação da TR mensal $\text{TR}_{\text{am},i}$ e sua respectiva taxa anualizada $\text{TP}_{i,t}$:
 
-- **Referência:** *Manual de Curvas B3, Seções 5.1 a 5.8 (págs. 67–77)*
+$$\text{TR}_{\text{am},i} = \max\left(0, \; \frac{1 + \text{TFP}_{\text{am},i}}{a + b \cdot \text{TFP}_{\text{am},i}} - 1\right), \quad \text{TP}_{i,t} = \left(1 + \text{TR}_{\text{am},i}\right)^{\frac{252}{21}} - 1$$
 
-### 8.1 Estrutura de Preços e Vértices Anteriores ao 1º Vencimento (`BRP` e `INP`)
-- **Vértice 1 ($DU = 1$):** Cotação spot de fechamento do índice no dia $t$ ($\text{IBrX-50}_t$ para `BRP`, $\text{Ibovespa}_t$ para `INP`).
-- **Vértices Anteriores ao 1º Vencimento ($1 < DU_v < DU_1$):** Conforme as Seções 5.1 (pág. 67) e 5.2 (pág. 69), para todos os vértices anteriores ao primeiro vencimento futuro:
-  $$\text{Índice}_v = \text{Spot}_t \times \left( \frac{\text{Fut}_1}{\text{Spot}_t} \right)^{\frac{DU_v}{DU_1}}$$
-  O `B3CurveBuilder` insere uma única âncora em $DU = 2$ com valor $\text{Spot}_t \cdot (\text{Fut}_1 / \text{Spot}_t)^{2 / DU_1}$, permitindo que o `PriceInterpolator` reproduza exatamente a potência $DU_v / DU_1$ em todos os dias úteis $1 < DU_v < DU_1$ mantendo apenas os vértices esparsos dos contratos futuros (`BRI` e `IND`).
-- **Interpolação e Extrapolação:** Ambas as curvas (`BRP` — Seção 5.1 e `INP` — Seção 5.2) utilizam a **Interpolação de Preços (item 1.4.5 — `PriceInterpolator(0, 0)`)** entre os vencimentos futuros e extrapolação flat após o último vencimento.
+Os parâmetros regulatórios $a$ e $b$ obedecem ao escalonamento por faixas de nível da TBF mensal:
 
-### 8.2 Curvas de Custo de Carrego / Convenience Yield (`CYI`, `CYM`, `CYX`)
-Calculam a taxa de carrego anualizada implícita no preço do futuro contra a curva nominal pré:
-$$TxCY_n = \left[ \frac{Spot \times \left(1 + \frac{PRE_n}{100}\right)^{\frac{DU_n}{252}}}{Futures_n} \right]^{\frac{252}{DU_n}} - 1$$
+| Faixa da TBF Mensal ($\text{TFP}_{\text{am}}$) | Parâmetro $a$ | Parâmetro $b$ | Expressão do Redutor $R$ |
+| :--- | :---: | :---: | :--- |
+| $\text{TFP}_{\text{am}} \ge 1,3134\%$ | $1,00500000$ | $0,48000000$ | $1,00500000 + 0,48000000 \cdot \text{TFP}_{\text{am}}$ |
+| $0,9856\% \le \text{TFP}_{\text{am}} < 1,3134\%$ | $0,99869130$ | $0,96034591$ | $0,99869130 + 0,96034591 \cdot \text{TFP}_{\text{am}}$ |
+| $0,8462\% \le \text{TFP}_{\text{am}} < 0,9856\%$ | $1,00500000$ | $0,32000000$ | $1,00500000 + 0,32000000 \cdot \text{TFP}_{\text{am}}$ |
+| $0,7323\% \le \text{TFP}_{\text{am}} < 0,8462\%$ | $1,00010877$ | $0,89838243$ | $1,00010877 + 0,89838243 \cdot \text{TFP}_{\text{am}}$ |
+| $\text{TFP}_{\text{am}} < 0,7323\%$ | $1,00500000$ | $0,23000000$ | $1,00500000 + 0,23000000 \cdot \text{TFP}_{\text{am}}$ |
 
-- Implementada em Cython de alta performance através da classe `ConvenienceYieldCurve`.
-- Aplicável tanto aos índices oficiais (`CYI`, `CYM`, `CYX`) quanto aos contratos futuros de ações individuais (ex: `PETRP`, `VALEO`, `BBASO`).
+A estrutura a termo de **DI x TR (`TR`)** é obtida nos vértices da curva prefixada pelo quociente de fatores e interpolada via `FlatForward252Interpolator(0, 1)`:
+
+$$\text{TR}_{i,t} = \frac{1 + \text{PRE}_{i,t}}{1 + \text{TP}_{i,t}} - 1$$
 
 ---
 
-## 9. Construção de Curvas a partir de Vértices e Componentes Fornecidos pelo Usuário
+## 4. Curvas Internacionais de Taxas de Juros (`SFR`, `EST`, `TIE`, `ZUS`, `ZEU` e `ZMX`)
 
-O `bz-pricing` foi projetado como um motor quantitativo genérico: **o usuário pode fornecer seus próprios vértices ou os insumos de cada componente** (totalmente *offline*, com `allow_download=False`), ou combinar insumos próprios com dados baixados da B3/BCB (`allow_download=True`). A comparação com os arquivos `taxas_*.csv` da B3 tem finalidade estritamente de validação metodológica.
+As estruturas a termo internacionais operam sob contagem de dias corridos na convenção $\text{ACT}/360$ (`index_by_dc = True`), com precisão de cinco casas decimais na taxa percentual (`round_decimals = 7` em representação decimal).
 
-Abaixo estão detalhados os formatos e parâmetros aceitos por `manager.get_curve(...)` para cada família de curvas quando o usuário passa os pontos dos componentes:
+### 4.1 Curvas a Termo de Contratos Futuros (`SFR`, `EST` e `TIE`)
 
-### 9.1 Curvas de Inflação (`DIC`, `DIM` e `DPL` — Seções 3.1, 3.2 e 3.3)
+Construídas a partir dos contratos futuros de taxas *overnight* negociados em bolsa (`SFR` para SOFR dos Estados Unidos, `EST` para €STR da Zona do Euro e `TIE` para F-TIIE do México):
 
-#### A. `DIC` (Cupom Sujo IPCA — Seção 3.1) e `DIM` (Cupom Sujo IGP-M — Seção 3.3)
-O usuário pode construir `DIC` ou `DIM` passando a curva nominal `PRE` (`pre_curve` já instanciada ou `pre_data` como DataFrame/Series/dict de vértices `(DU, rate)` ou contratos `DI1`) combinada com **uma das duas formas de expectativas de inflação**:
+- **Vértice Inicial ($\text{DC} = 1$):** Taxa *overnight* divulgada pelo respectivo banco central emissor (Federal Reserve Bank of New York, European Central Bank ou Banco de México).
+- **Vértices de Vencimento:** Taxas de ajuste dos contratos futuros.
+- **Interpolação e Extrapolação:** `Linear360Interpolator(extrap_left=0, extrap_right=0)`.
 
-1. **Via Amostra de Informantes (`informants_df` ou `informants_data`):**
-   - Aceita `pd.DataFrame`, `pd.Series`, `dict` ou `list` contendo os vértices de divulgação $k_i$:
-     - Colunas/chaves de prazo: `DU` (ou `day252`) ou datas `XprtnDt` / `vencimento`.
-     - Coluna de valor: `rate` (taxa de cupom sujo informada $Cp_{k_i}$ em `%` ou decimal) **ou** `e_inf` (inflação acumulada esperada $E(\text{Índice})_{k_i}$ em `%`).
-     - Opcionalmente, a coluna `du_start` delimita o início do degrau de divulgação $[du_{\text{start}} \dots DU]$ onde $E(\text{Índice})_{k_i}$ permanece constante (aplicando as Eq. 3.1.2/3.1.3 e 3.3.2/3.3.3).
-   ```python
-   # Exemplo 1: Passando vértices de PRE e vértices de informantes (DU e cupom %)
-   df_pre = pd.DataFrame({'DU': [1, 21, 63, 126, 252, 504], 'rate': [13.65, 13.70, 13.80, 13.90, 14.00, 14.10]})
-   df_inf = pd.DataFrame({
-       'du_start': [1, 11, 32, 252, 504],
-       'DU':       [1, 31, 52, 252, 504],
-       'rate':     [13.65, 8.96, 8.70, 7.85, 7.60]
-   })
-   curve_dic = manager.get_curve('DIC', base_date, pre_data=df_pre, informants_df=df_inf)
-   ```
+### 4.2 Curvas Zero Cupom de Swaps Offshore (`ZUS` / `LIB`, `ZEU` e `ZMX`)
 
-2. **Via Projeções Mensais de Inflação (`focus_monthly` ou `focus_data`):**
-   - Aceita um dicionário `{(ano, mes): taxa_mensal_decimal}` (ou DataFrame no padrão Bacen Focus com `DataReferencia` `'MM/AAAA'` e `Mediana`).
-   - Opcionalmente, recebe `dpl_curve` (ou `dpl_data`) para ancorar a inflação implícita nos prazos longos acima de 18 meses.
-   ```python
-   # Exemplo 2: Passando vértices de PRE e projeções mensais de inflação
-   focus_ipca = {(2026, 10): 0.0045, (2026, 11): 0.0038, (2026, 12): 0.0050}
-   curve_dic = manager.get_curve('DIC', base_date, pre_data=df_pre, focus_monthly=focus_ipca)
-   ```
+Representam a taxa linear spot acumulada desde a data-base até o prazo corrido $\text{DC}_v$. Dado o fator de desconto $\text{FD}_v$ de um *Overnight Indexed Swap* (OIS) de prazo $\text{DC}_v$, a taxa zero cupom linear na base 360 é determinada por:
 
-#### B. `DPL` (Cupom Limpo IPCA — Seção 3.2)
-Recebe a curva `PRE` (`pre_curve` ou `pre_data`), os contratos/vértices de `DAP` (`dap_df` ou `dap_data`) e o insumo do Vértice 1:
-- **`pre_curve` ou `pre_data`:** Objeto `Curve` ou DataFrame/Series/dict de `PRE`.
-- **`dap_df` ou `dap_data`:** DataFrame com `XprtnDt` e `AdjstdQtTax` (contratos futuros de `DAP`) **ou** DataFrame/Series/dict com `(DU, rate)`.
-- **`eipca_0` ou `v1_rate`:**
-  - Se `eipca_0` for informado (prévia diária de IPCA $E(\text{IPCA})_{0,t}$ em decimal, ex: `0.0022`), o Vértice 1 ($DU = 1$) é calculado pela Eq. 3.2.1 descontando `eipca_0` proporcional aos dias úteis entre os dias 15 (`du_15a_15p`) da taxa `PRE(1)`.
-  - Alternativamente, `v1_rate` permite informar diretamente a taxa do Vértice 1 ($DU = 1$).
+$$y_{\text{zero}}(\text{DC}_v) = \left( \frac{1}{\text{FD}_v} - 1 \right) \times \frac{360}{\text{DC}_v}$$
+
+Quando derivadas de uma grade de taxas a termo $f_k$ com intervalos $\Delta \text{DC}_k$, o fator de desconto acumulado resulta do produtório:
+
+$$\text{FD}_n = \prod_{k=1}^{n} \left( 1 + f_k \times \frac{\Delta \text{DC}_k}{360} \right)^{-1}$$
+
+Na construção a partir de tabelas referenciais de *swaps*, o método `_extract_linear360_knots` identifica os nós primários onde ocorre mudança de inclinação da taxa linear acumulada e interpola os prazos intermediários via `Linear360Interpolator(0, 0)`.
+
+---
+
+## 5. Estruturas a Termo de Inflação: Cupom Sujo (`DIC` e `DIM`) e Cupom Limpo (`DPL`)
+
+### 5.1 Cupom Sujo de IPCA (`DIC`) e Cupom Sujo de IGP-M (`DIM`)
+
+As curvas de cupom sujo de inflação combinam a curva nominal prefixada (`PRE`) com a amostra de expectativas de inflação nos vértices discretos de divulgação do índice ($k_i$):
+
+1. **Vértice de 1 Dia Útil ($\text{DU} = 1$):** Assume o valor do primeiro vértice da curva prefixada ($\text{DIC}_{1,t} = \text{DIM}_{1,t} = \text{PRE}_{1,t}$), uma vez que não há divulgação de índice no próprio dia ($E_t[\text{I}_0] = 0$).
+2. **Expectativa Acumulada de Inflação nos Vértices de Divulgação ($k_i$):** A partir da taxa de cupom sujo $\text{Cp}_{k_i,t}$ informada para a data de divulgação $k_i$ (prazo $\text{DU}_{k_i}$), extrai-se a inflação acumulada esperada $E_t[\text{I}_{k_i}]$:
+
+$$E_t[\text{I}_{k_i}] = \frac{\left(1 + \text{PRE}_{k_i,t}\right)^{\frac{\text{DU}_{k_i}}{252}}}{\left(1 + \text{Cp}_{k_i,t}\right)^{\frac{\text{DU}_{k_i}}{252}}} - 1$$
+
+3. **Degraus de Divulgação nos Primeiros 12 Meses ($\text{DU}_{\text{início}, k_i} \le \text{DU}_p \le \text{DU}_{k_i}$):** Como o número acumulado de divulgações do índice permanece constante entre duas datas consecutivas de apuração, o fator $1 + E_t[\text{I}_{k_i}]$ é mantido fixo ao longo de toda a janela $[\text{DU}_{\text{início}, k_i}, \text{DU}_{k_i}]$, o que define o cupom sujo em cada dia útil $\text{DU}_p$ do patamar:
+
+$$\text{Cp}_{p,t} = \left[ \frac{\left(1 + \text{PRE}_{p,t}\right)^{\frac{\text{DU}_p}{252}}}{1 + E_t[\text{I}_{k_i}]} \right]^{\frac{252}{\text{DU}_p}} - 1$$
+
+4. **Vértices de Longo Prazo ($\text{DU} > 265$):** Interpolados e extrapolados a partir dos nós longos de cupom via `FlatForward252Interpolator(0, 1)`.
+
+### 5.2 Cupom Limpo de IPCA (`DPL` / `DAP`)
+
+Construída a partir da curva `PRE`, dos contratos futuros de Cupom de IPCA (`DAP`) e da prévia de inflação corrente $E_t[\text{IPCA}_0]$:
+
+1. **Vértice de 1 Dia Útil ($\text{DU} = 1$):** Desconta da taxa $\text{PRE}_{1,t}$ a variação pro-rata de 1 dia útil da prévia do IPCA entre o dia 15 anterior corrigido para dia útil ($15_a$) e o dia 15 posterior corrigido para dia útil ($15_p$), cujo intervalo soma $\text{DU}_{15a,15p}$ dias úteis:
+
+$$\text{DPL}_{1,t} = \left[ \frac{\left(1 + \text{PRE}_{1,t}\right)^{\frac{1}{252}}}{\left(1 + E_t[\text{IPCA}_0]\right)^{\frac{1}{\text{DU}_{15a,15p}}}} \right]^{252} - 1$$
+
+2. **Extração e Interpolação da Inflação Implícita nos Vencimentos de `DAP`:** Em cada vértice $\text{DU}_n$ (incluindo $\text{DU} = 1$ e os vencimentos de `DAP`), calcula-se a taxa de inflação implícita $\pi_{n,t}$:
+
+$$\pi_{n,t} = \frac{1 + \text{PRE}_{n,t}}{1 + \text{DPL}_{n,t}} - 1$$
+
+3. **Recomposição do Cupom Limpo (`InflationCurve`):** Os vértices $\pi_{n,t}$ são interpolados por `FlatForward252Interpolator(0, 1)`, e a taxa `DPL` para qualquer prazo $\text{DU}$ é recomposta analiticamente por:
+
+$$\text{DPL}(\text{DU}) = \frac{1 + \text{PRE}(\text{DU})}{1 + \pi(\text{DU})} - 1$$
+
+---
+
+## 6. Curvas de Moedas, Cupons Cambiais e Spreads Internacionais
+
+### 6.1 Cupons Cambiais de Dólar: Sujo (`DOL`) e Limpo (`DOC` e `DCL`)
+
+- **Cupom Cambial Sujo (`DOL`):** Construído diretamente a partir dos vencimentos do contrato futuro de Cupom Cambial (`DDI`), indexado simultaneamente em dias úteis ($\text{DU}$) e dias corridos ($\text{DC}$), e interpolado via `FlatForward252LinearInterpolator(0, 1)`.
+- **Cupom Cambial Limpo (`DOC` e `DCL`):**Corrige a defasagem da PTAX de referência do contrato `DDI` ($\text{Ptax}_{t-1}$) em relação à cotação spot do dólar cupom limpo no dia $t_0$ ($\text{DolCL}_{t_0}$):
+  - **Vértice 1 ($\text{DU} = 1$, prazo corrido $\text{DC}_1$):** Quando calculado a partir da cotação do casado de 1 dia útil ($\text{Casado}_{1\text{d}}$, em pontos de milésimo de real) e da taxa $\text{CDI}_t$:
+
+$$\text{DolCL}_{d_1} = \text{DolCL}_{t_0} + \frac{\text{Casado}_{1\text{d}}}{1000}, \quad \text{DOC}_1 = \left[ \frac{\left(1 + \text{CDI}_t\right)^{\frac{1}{252}}}{\text{DolCL}_{d_1} / \text{DolCL}_{t_0}} - 1 \right] \times \frac{360}{\text{DC}_1}$$
+
+  - **Vértices de Vencimento de `DDI` ($\text{DU}_n > 1$):**
+
+$$\text{DOC}_n = \left[ \left( 1 + \text{DDI}_n \times \frac{\text{DC}_n}{360} \right) \times \frac{\text{DolCL}_{t_0}}{\text{Ptax}_{t-1}} - 1 \right] \times \frac{360}{\text{DC}_n}$$
+
+  Os vértices resultantes são interpolados e extrapolados por `FlatForward252LinearInterpolator(0, 1)`.
+
+### 6.2 Spreads de Taxas Offshore (`SDE`, `SGP`, `SMX`, `SYD`) e Cupons Cruzados (`EUC` e `YCL`)
+
+- **Curvas de Spread Offshore:** Representam o diferencial linear entre a taxa externa da moeda de referência e a taxa externa em dólar americano na base 360:
+
+$$\text{Spread}_n = y_{\text{Moeda}, n} - y_{\text{USD}, n}$$
+
+- **Curvas de Cupom Cambial de Euro (`EUC`) e Iene (`YCL`):** Implementadas na classe `CrossCouponCurve`, compõem o fator de cupom limpo de dólar (`DOC`) com o respectivo spread internacional (`SDE` para Euro, `SYD` para Iene) em cada prazo $(\text{DU}_n, \text{DC}_n)$:
+
+$$\text{TC}_n = \left[ \left( 1 + \text{DOC}_n \times \frac{\text{DC}_n}{360} \right) \times \left( 1 + \text{Spread}_n \times \frac{\text{DC}_n}{360} \right) - 1 \right] \times \frac{360}{\text{DC}_n}$$
+
+### 6.3 Estruturas a Termo de Moedas (`PTX`, `EUR` e `JPY`)
+
+Implementadas na classe `CurrencyForwardCurve`, projetam a taxa de câmbio a termo pela relação de arbitragem entre o fator de capitalização prefixado doméstico (`PRE`, em $\text{BUS}/252$) e o fator de cupom cambial da moeda estrangeira (em $\text{ACT}/360$), com truncamento na sétima casa decimal (`round_decimals = 7`, `round_mode = "trunc"`):
+
+- **Dólar a Termo (`PTX`):** No primeiro vértice ($\text{DU} = 1$), assume a cotação $\text{Ptax}_{t_0}$ do próprio dia. Para todos os demais prazos ($\text{DU}_n > 1$), aplica a paridade sobre a cotação $\text{Ptax}_{t-1}$ do dia útil anterior e o cupom sujo `DOL`:
+
+$$\text{PTX}_1 = \text{Ptax}_{t_0}, \quad \text{PTX}_n = \text{Ptax}_{t-1} \times \frac{\left(1 + \text{PRE}_n\right)^{\frac{\text{DU}_n}{252}}}{1 + \text{DOL}_n \times \frac{\text{DC}_n}{360}} \quad (\text{DU}_n > 1)$$
+
+- **Euro a Termo (`EUR`) e Iene a Termo (`JPY`):** Aplicam em todos os vértices a cotação à vista de fechamento $\text{Spot}_{t_0}$ combinada com a curva `PRE` e o respectivo cupom cambial limpo cruzado (`EUC` ou `YCL`):
+
+$$\text{Fwd}_n = \text{Spot}_{t_0} \times \frac{\left(1 + \text{PRE}_n\right)^{\frac{\text{DU}_n}{252}}}{1 + \text{TC}_n \times \frac{\text{DC}_n}{360}}$$
+
+---
+
+## 7. Curvas de Índices de Ações, Futuros de Ações e Convenience Yield
+
+### 7.1 Estruturas a Termo de Preços de Índices e Ações (`INP`, `BRP`, `SML`, `MBR` e `VIX`)
+
+Construídas a partir da cotação à vista de fechamento do índice ($\text{Spot}_t$) e dos preços de ajuste dos contratos futuros (`IND` para Ibovespa, `BRI` para IBrX-50, além dos contratos futuros de ações individuais):
+
+1. **Vértice Inicial ($\text{DU} = 1$):** Igual à cotação à vista $\text{Spot}_t$.
+2. **Prazos Anteriores ao Primeiro Vencimento Futuro ($1 < \text{DU}_v < \text{DU}_1$):** Evoluem exponencialmente desde a data-base ($t = 0$) até o primeiro vencimento futuro ($\text{DU}_1$, com preço $\text{Fut}_1$):
+
+$$P(\text{DU}_v) = \text{Spot}_t \times \left( \frac{\text{Fut}_1}{\text{Spot}_t} \right)^{\frac{\text{DU}_v}{\text{DU}_1}}$$
+
+No método `B3CurveBuilder.build_equity_index_curve`, a inserção de uma âncora exata em $\text{DU} = 2$ com valor $\text{Spot}_t \cdot (\text{Fut}_1 / \text{Spot}_t)^{2 / \text{DU}_1}$ permite que o `PriceInterpolator(0, 0)` reproduza analiticamente a expressão acima em todo o intervalo $[2, \text{DU}_1]$, preservando os nós esparsos dos vencimentos futuros.
+3. **Prazos entre Vencimentos e Após o Último Futuro:** Interpolados exponencialmente por `PriceInterpolator(extrap_left=0, extrap_right=0)`, mantendo o último preço futuro constante após o derradeiro vencimento listado.
+
+### 7.2 Estruturas a Termo de Custo de Carrego / Convenience Yield (`CYI`, `CYM`, `CYX` e Ações)
+
+Implementadas em Cython na classe [`ConvenienceYieldCurve`](../src/bz_pricing/core/curves.pyx):
+
+1. **Vértice de 1 Dia Útil ($\text{DU} = 1$):** Recebe a taxa prefixada de 1 dia útil ($\text{PRE}_{1,t} = \text{CDI}_t$).
+2. **Vértices de Vencimento Futuro ($\text{DU}_n$):** Em cada vencimento de contrato futuro com preço $\text{Fut}_n$, apura-se a taxa anualizada de carrego implícito frente à curva `PRE`:
+
+$$\text{TxCY}_n = \left[ \frac{\text{Spot}_t \times \left(1 + \text{PRE}_n\right)^{\frac{\text{DU}_n}{252}}}{\text{Fut}_n} \right]^{\frac{252}{\text{DU}_n}} - 1$$
+
+3. **Prazos Intermediários e Extrapolação:** Os vértices $(\text{DU}_n, \text{TxCY}_n)$ são interpolados por `FlatForward252Interpolator(extrap_left=0, extrap_right=0)`, mantendo patamar constante antes do primeiro vencimento ($2 \le \text{DU} < \text{DU}_1$) e após o último vencimento ($\text{DU} > \text{DU}_{\text{último}}$).
+
+---
+
+## 8. Construção de Curvas a partir de Vértices e Componentes do Usuário
+
+O `bz-pricing` opera como um motor quantitativo independente de arquivos externos quando os insumos dos componentes são informados diretamente pelo usuário (`allow_download=False`). A seguir especificam-se as assinaturas de `CurveManager.get_curve(...)` para a injeção de componentes por família de curvas.
+
+### 8.1 Curvas de Inflação (`DIC`, `DIM` e `DPL`)
+
+- **Cupom Sujo (`DIC` e `DIM`):** Requerem a curva nominal (`pre_curve` ou `pre_data`) associada a uma amostra de vértices de expectativas (`informants_df` com colunas `DU`, `rate` ou `e_inf`, e opcionalmente `du_start`) ou a um dicionário de projeções mensais (`focus_monthly` no formato `{(ano, mes): taxa_decimal}`):
+
+```python
+import datetime
+import pandas as pd
+from bz_pricing.curves.manager import CurveManager
+
+manager = CurveManager(allow_download=False)
+base_date = datetime.date(2026, 10, 30)
+
+df_pre = pd.DataFrame({
+    "DU": [1, 10, 31, 52, 126, 252, 504],
+    "rate": [13.65, 13.70, 13.75, 13.80, 13.90, 14.00, 14.10]
+})
+df_informantes = pd.DataFrame({
+    "du_start": [1, 11, 32, 252, 504],
+    "DU":       [1, 31, 52, 252, 504],
+    "rate":     [13.65, 8.83, 8.95, 7.80, 7.65]
+})
+
+curve_dic = manager.get_curve("DIC", base_date, pre_data=df_pre, informants_df=df_informantes)
+```
+
+- **Cupom Limpo (`DPL`):** Recebe `pre_curve` (ou `pre_data`), `dap_df` (contratos futuros ou vértices `(DU, rate)`) e a prévia de inflação `eipca_0` (ou diretamente a taxa do primeiro vértice `v1_rate`):
+
 ```python
 df_dap = pd.DataFrame({
-    'XprtnDt': [datetime.date(2026, 12, 15), datetime.date(2027, 5, 17), datetime.date(2028, 5, 15)],
-    'AdjstdQtTax': [7.45, 7.60, 7.35]
+    "DU": [14, 135, 252, 504],
+    "rate": [9.62, 6.80, 7.65, 7.80]
 })
-curve_dpl = manager.get_curve('DPL', base_date, pre_data=df_pre, dap_df=df_dap, eipca_0=0.0022)
+curve_dpl = manager.get_curve("DPL", base_date, pre_data=df_pre, dap_df=df_dap, eipca_0=0.0022)
 ```
 
----
+### 8.2 Cupons Cambiais, Moedas a Termo e Zero Cupom Offshore (`DOC`, `EUC`, `YCL`, `PTX`, `EUR`, `JPY`, `ZUS`)
 
-### 9.2 Curvas de Câmbio, Cupons Cambiais e Spreads (`DOL`, `DOC`, `EUC`, `PTX`, `EUR`)
-
-#### A. `DOC` / `DCL` (Cupom Cambial Limpo — Seções 4.5 e 4.6)
-Pode ser construída passando os contratos/vértices de `DDI` e os parâmetros de ajuste do dólar cupom limpo:
-- **`ddi_df` ou `ddi_data`:** Contratos futuros de `DDI` (`XprtnDt` e `AdjstdQtTax`) ou vértices `(DU, DC, rate)`.
-- **Ajuste dos Vértices de DDI (Eq. 4.5.3):** Informe `dol_cl` ($\text{DolCL}_{t0}$) e `ptax_tm1` ($\text{Ptax}_{t-1}$), **ou** diretamente a razão `ratio_cl_tm1` ($\text{DolCL}_{t0} / \text{Ptax}_{t-1}$).
-- **Vértice 1 ($DU = 1$):** Informe `v1_rate` diretamente **ou** os insumos primários `dol_cl`, `casado_1d` (pontos do casado de 1 dia útil) e `cdi_rate` para cálculo exato pelas Eq. 4.5.1 e 4.5.2.
 ```python
+# 1. Cupom Cambial Limpo (DOC) a partir dos vértices de DDI e cotações de referência
+df_ddi = pd.DataFrame({
+    "DU": [1, 21, 42, 126, 252],
+    "DC": [4, 31, 62, 182, 365],
+    "rate": [-73.16, 1.07, 3.16, 4.85, 5.25]
+})
 curve_doc = manager.get_curve(
-    'DOC', base_date,
+    "DOC", base_date,
     ddi_data=df_ddi,
-    dol_cl=5.4180,
-    ptax_tm1=5.3744,
-    casado_1d=1.25,
+    dol_cl=5.7520,
+    ptax_tm1=5.7610,
+    casado_1d=1.20,
     cdi_rate=13.65
 )
-```
 
-#### B. `EUC` (Cupom de Euro — Seção 4.7) e `YCL` (Cupom de Iene — Seção 4.8)
-Recebem os dois componentes da paridade cruzada:
-- **`doc_curve` ou `doc_data`:** Curva `DOC` (objeto `Curve` ou DataFrame com `DU`, `DC`, `rate`).
-- **`spread_curve` / `sde_curve` ou `spread_data` / `sde_data`:** Curva de spread `SDE` (ou `SYD` para `YCL`).
-```python
-curve_euc = manager.get_curve('EUC', base_date, doc_curve=curve_doc, sde_data=df_sde_knots)
-```
-
-#### C. `PTX`, `EUR` e `JPY` (Forwards de Moedas — Seções 4.1 a 4.3)
-Recebem as curvas de juros doméstico e cupom cambial e as cotações à vista:
-- **`pre_curve` ou `pre_data`:** Curva `PRE`.
-- **`foreign_curve` ou `foreign_data`:** Curva `DOL` (para `PTX`), `EUC` (para `EUR`) ou `YCL` (para `JPY`).
-- **`spot_rate`:** Cotação à vista do dia $t_0$ ($\text{Ptax}_{t0}$ no Vértice 1 do `PTX`; $\text{Tx}_{\text{Reais x Euro}}$ em todos os vértices do `EUR`).
-- **`spot_rate_tm1` (ou `ptax_tm1`):** Cotação $\text{Ptax}_{t-1}$ do dia útil anterior (aplicada aos vértices $n \ge 2$ do `PTX` conforme Seção 4.1).
-```python
+# 2. Cupom de Euro (EUC) e Dólar a Termo (PTX)
+sde_vertices = {30: -1.45, 90: -1.55, 180: -1.65, 360: -1.75}
+curve_euc = manager.get_curve("EUC", base_date, doc_curve=curve_doc, sde_data=sde_vertices)
 curve_ptx = manager.get_curve(
-    'PTX', base_date,
-    pre_curve=curve_pre,
-    foreign_curve=curve_dol,
-    spot_rate=5.4212,
-    spot_rate_tm1=5.3744
+    "PTX", base_date,
+    pre_data=df_pre,
+    foreign_curve=curve_doc,
+    spot_rate=5.7520,
+    spot_rate_tm1=5.7610
 )
-```
 
-#### D. `ZMX`, `ZUS` e `ZEU` (Curvas Zero Cupom Internacionais — Seções 2.10 a 2.12)
-Podem ser construídas a partir dos fatores de desconto OIS $FD_{\text{JUR}^{v,t}}$ por prazo $DC$ (`discount_factors`) conforme a fórmula oficial $\text{TxLin}_{\text{JUR}^{v,t}} = \left(\frac{1}{FD_{\text{JUR}^{v,t}}} - 1\right) \times \frac{36000}{DC_v}$, ou a partir da curva forward (`forward_curve` / `TIE`, `SFR`, `EST`):
-```python
+# 3. Curva Zero Cupom Internacional (ZUS) a partir de fatores de desconto OIS por DC
 fd_sofr = {30: 0.9965, 90: 0.9895, 180: 0.9790, 360: 0.9585}
-curve_zus = manager.get_curve('ZUS', base_date, discount_factors=fd_sofr)
+curve_zus = manager.get_curve("ZUS", base_date, discount_factors=fd_sofr)
+```
+
+### 8.3 Índices de Ações, Convenience Yield e Injeção Direta de Vértices
+
+```python
+# 1. Índice Bovespa Futuro (INP) e Convenience Yield (CYI)
+df_ind = pd.DataFrame({"DU": [31, 72, 111], "AdjstdQt": [170165.0, 173803.0, 177269.0]})
+curve_inp = manager.get_curve("INP", base_date, data=df_ind, spot_price=167938.10)
+curve_cyi = manager.get_curve("CYI", base_date, spot_price=167938.10, futures_curve=curve_inp, pre_data=df_pre)
+
+# 2. Interpolação direta de vértices arbitrários em qualquer estrutura configurada
+curve_pre_custom = manager.get_curve("PRE", data={1: 13.65, 21: 13.72, 63: 13.85, 252: 14.10})
 ```
 
 ---
 
-### 9.3 Curvas de Índices de Ações e Custo de Carrego (`INP`, `BRP`, `CYI` — Capítulo 5)
-- **Para `INP` e `BRP` (Seções 5.1 e 5.2):** Informe `data` (contratos futuros de `IND` ou `BRI` com `XprtnDt` e `AdjstdQt`) e `spot_price` (cotação à vista de fechamento do índice no dia $t_0$).
-- **Para `CYI`, `CYM` e `CYX` (Seções 5.4, 5.6 e 5.8):** Informe `spot_price`, `futures_curve` (ou `futures_data`) e `pre_curve` (ou `pre_data`).
-```python
-curve_inp = manager.get_curve('INP', base_date, data=df_ind_futures, spot_price=144519.69)
-curve_cyi = manager.get_curve('CYI', base_date, spot_price=144519.69, futures_curve=curve_inp, pre_curve=curve_pre)
-```
+## 9. Referências Normativas e Bibliográficas
 
----
+As formulações matemáticas, convenções de contagem de prazos e regras de arredondamento implementadas neste pacote seguem as especificações técnicas das instituições reguladoras e autorreguladoras do mercado financeiro e de capitais:
 
-### 9.4 Passagem Direta dos Vértices Finais de Qualquer Curva
-Além da construção pelos componentes acima, qualquer curva do pacote também pode ser instanciada passando diretamente uma tabela esparsa de vértices `(DU, rate)` ou `(DU, DC, rate)` via argumento `data` (DataFrame, Series, dicionário ou lista de tuplas). O `CurveManager` aplicará automaticamente o interpolador Cython oficial, a regra de contagem de dias (`DU` vs `DC`), o regime de extrapolação e o arredondamento configurados em [`configs.py`](file:///d:/projects/bz_pricing/src/bz_pricing/curves/configs.py).
-```python
-# Interpola vértices customizados usando o interpolador oficial configurado para cada curva
-custom_pre = manager.get_curve('PRE', data={1: 13.65, 21: 13.72, 63: 13.85, 252: 14.10})
-custom_dol = manager.get_curve('DOL', data=pd.DataFrame({'DU': [1, 20, 42], 'DC': [4, 32, 66], 'rate': [-73.16, -12.10, -2.87]}))
-```
-
+- **B3 S.A. – Brasil, Bolsa, Balcão.** *Manual de Curvas da B3: Metodologia de Apuração das Estruturas a Termo de Taxas de Juros, Moedas e Índices*. São Paulo: B3, 2024. Disponível em: <https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/consultas/mercado-de-derivativos/precos-referenciais/manuais-de-curvas/>.
+- **B3 S.A. – Brasil, Bolsa, Balcão.** *Preços Referenciais – Taxas Referenciais BM&FBOVESPA*. São Paulo: B3. Disponível em: <https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/consultas/mercado-de-derivativos/precos-referenciais/taxas-referenciais-bm-fbovespa/>.
+- **ANBIMA – Associação Brasileira das Entidades dos Mercados Financeiro e de Capitais.** *Metodologia de Precificação de Títulos Públicos Federais e Estrutura a Termo das Taxas de Juros (ETTJ)*. Rio de Janeiro: ANBIMA. Disponível em: <https://www.anbima.com.br/pt_br/informar/precos-e-indices/precos/titulos-publicos.htm>.
+- **Banco Central do Brasil (BCB) / Conselho Monetário Nacional (CMN).** *Resolução CMN nº 5.124, de 28 de março de 2024: Metodologia de cálculo da Taxa Básica Financeira (TBF) e da Taxa Referencial (TR)*. Brasília: BCB, 2024. Disponível em: <https://www.bcb.gov.br/estabilidadefinanceira/exibenormativo?tipo=Resolu%C3%A7%C3%A3o%20CMN&numero=5124>.
+- **Banco Central do Brasil (BCB).** *Sistema Gerenciador de Séries Temporais (SGS)*. Brasília: BCB. Disponível em: <https://www3.bcb.gov.br/sgspub/>.
+- **Secretaria do Tesouro Nacional (STN).** *Regras e Fórmulas de Cálculo dos Títulos Públicos Federais no Mercado Secundário*. Brasília: Ministério da Fazenda. Disponível em: <https://www.tesourodireto.com.br/titulos/historico-de-precos-e-taxas.htm>.
+- **Federal Reserve Bank of New York.** *Secured Overnight Financing Rate (SOFR) Data & Calculation Methodology*. New York: FRBNY. Disponível em: <https://www.newyorkfed.org/markets/reference-rates/sofr>.
+- **European Central Bank (ECB).** *Euro Short-Term Rate (€STR) Methodology and Policies*. Frankfurt: ECB. Disponível em: <https://www.ecb.europa.eu/stats/financial_markets_and_interest_rates/euro_short-term_rate/html/index.en.html>.

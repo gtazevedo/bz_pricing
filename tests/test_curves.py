@@ -37,13 +37,13 @@ def test_tbf_and_tr_curves_adherence(curve_manager):
     
     calc_tbf = np.array([curve_tbf.get_rate(float(r['day252']), float(r['day360'])) * 100.0 for _, r in df_tfp.iterrows()])
     err_tbf = np.abs(calc_tbf - df_tfp['rate'].values)
-    # Aderencia extrema ao Manual de Curvas B3 Secao 2.4 (MAE < 0.01%)
+    # Verifica aderência da curva TBF x PRE (MAE < 0.01%)
     assert err_tbf.mean() < 0.01
     assert err_tbf.max() < 0.05
     
     calc_tr = np.array([curve_tr.get_rate(float(r['day252']), float(r['day360'])) * 100.0 for _, r in df_tp.iterrows()])
     err_tr = np.abs(calc_tr - df_tp['rate'].values)
-    # Aderencia extrema a Res. CMN 5.124 e Secao 2.5 (MAE < 0.02%)
+    # Verifica aderência da curva TR x PRE (MAE < 0.02%)
     assert err_tr.mean() < 0.02
     assert err_tr.max() < 0.05
 
@@ -57,7 +57,7 @@ def test_inflation_curves(curve_manager):
     assert curve_dpl is not None
     assert curve_dim is not None
     
-    # Vertice 1 (1 DU) de DIC e DIM e PRE coincidem conforme Secao 3.1 e 3.3
+    # Vértice de 1 dia útil (DU = 1) de DIC e DIM coincide com PRE(1)
     curve_pre = curve_manager.get_curve("PRE", base_date)
     v1_pre = curve_pre.get_rate(1.0)
     assert abs(curve_dic.get_rate(1.0) - v1_pre) < 1e-4
@@ -161,9 +161,9 @@ def test_allow_download_and_partial_inputs():
 
 def test_provider_knots_and_interpolation(curve_manager):
     """
-    Testa se para curvas como ZUS e SDE, onde a fonte é a tabela da B3 (taxas_*.csv),
-    o manager captura apenas os nós fornecidos pelo provedor (Refinitiv conforme Tabela 1),
-    e interpola os demais vértices com alta precisão.
+    Testa se para curvas de swaps offshore como ZUS e SDE,
+    o gerenciador extrai apenas os nós base de mudança de inclinação
+    e interpola os demais vértices por Linear 360.
     """
     base_date = datetime.date(2026, 10, 30)
     curve_zus = curve_manager.get_curve('ZUS', base_date)
@@ -237,7 +237,7 @@ def test_user_component_vertices_offline():
     })
     c_dic_rate = mgr.get_curve('DIC', base_date, pre_curve=c_pre, informants_df=inf_rate)
     assert abs(c_dic_rate.get_rate(1.0) - c_pre.get_rate(1.0)) < 1e-4
-    # No patamar [2..10], a taxa em DU=5 reflete o degrau de inflação acumulada de DU=10 (Eq. 3.1.3)
+    # No patamar [2..10], a taxa em DU=5 reflete o degrau de inflação acumulada de DU=10
     assert c_dic_rate.get_rate(5.0) != c_dic_rate.get_rate(10.0)
     assert abs(c_dic_rate.get_rate(10.0) - 0.1085) < 1e-3
 
@@ -258,7 +258,7 @@ def test_user_component_vertices_offline():
     assert abs(c_dpl.get_rate(14.0) - 0.0962) < 1e-4
     assert abs(c_dpl.get_rate(252.0) - 0.0765) < 1e-4
 
-    # 5. DOC via vértices DDI + dol_cl + ptax_tm1 + casado_1d + cdi_rate (Eq. 4.5.1 a 4.5.3)
+    # 5. DOC via vértices DDI + dol_cl + ptax_tm1 + casado_1d + cdi_rate
     ddi_df = pd.DataFrame({
         'DU': [1, 21, 42, 126, 252],
         'DC': [4, 31, 62, 182, 365],
@@ -275,12 +275,12 @@ def test_user_component_vertices_offline():
     assert c_doc.get_rate(1.0, 4.0) > 0.0
     assert c_doc.get_rate(252.0, 365.0) > 0.05
 
-    # 6. EUC via DOC + SDE (Eq. 4.7.1)
+    # 6. EUC via DOC + SDE
     sde_dict = {30: -1.45, 90: -1.55, 180: -1.65, 360: -1.75}
     c_euc = mgr.get_curve('EUC', base_date, doc_curve=c_doc, sde_data=sde_dict)
     assert c_euc.get_rate(126.0, 182.0) < c_doc.get_rate(126.0, 182.0)
 
-    # 7. PTX via PRE + DOC + spot_rate + spot_rate_tm1 (Eq. 4.1.1 / 4.1.2)
+    # 7. PTX via PRE + DOC + spot_rate + spot_rate_tm1
     c_ptx = mgr.get_curve(
         'PTX', base_date,
         pre_curve=c_pre,
@@ -290,7 +290,7 @@ def test_user_component_vertices_offline():
     )
     assert c_ptx.get_rate(252.0, 365.0) > 5.7520
 
-    # 8. INP via spot_price + futuros IND + dividend yield CYI (Eq. 5.1.1)
+    # 8. INP via spot_price + futuros IND + dividend yield CYI
     ind_df = pd.DataFrame({
         'DU': [31, 71, 114],
         'price': [131200.0, 133500.0, 136100.0]
@@ -305,13 +305,13 @@ def test_user_component_vertices_offline():
     assert abs(c_inp.get_rate(1.0) - 129500.0) < 1e-4
     assert c_inp.get_rate(50.0) > 129500.0
 
-    # 9. JPY via PRE + YCL + spot_rate (Eq. 4.3.1) e YCL via DOC + SYD (Eq. 4.8.1)
+    # 9. JPY via PRE + YCL + spot_rate e YCL via DOC + SYD
     syd_dict = {30: -4.10, 90: -4.20, 180: -4.30, 360: -4.40}
     c_ycl = mgr.get_curve('YCL', base_date, doc_curve=c_doc, syd_data=syd_dict)
     c_jpy = mgr.get_curve('JPY', base_date, pre_curve=c_pre, foreign_curve=c_ycl, spot_rate=0.0385)
     assert c_jpy.get_rate(252.0, 365.0) > 0.0385
 
-    # 10. ZUS / ZMX / ZEU via fatores de desconto FD_JUR (Seções 2.10 a 2.12 Manual B3)
+    # 10. ZUS / ZMX / ZEU via fatores de desconto por prazo DC
     fd_dict = {30: 0.9965, 90: 0.9895, 180: 0.9790, 360: 0.9585}
     c_zus_fd = mgr.get_curve('ZUS', base_date, discount_factors=fd_dict)
     expected_90 = (1.0 / 0.9895 - 1.0) * (360.0 / 90.0)

@@ -1813,7 +1813,7 @@ struct __pyx_opt_args_10bz_pricing_4core_13interpolators_21Linear360Interpolator
  * 
  * cdef class PriceInterpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:             # <<<<<<<<<<<<<<
- *         # 1.4.5 Interpolao de Preos
+ *         # Interpolao exponencial de preos entre vrtices de vencimento
  *         cdef int i
 */
 struct __pyx_opt_args_10bz_pricing_4core_13interpolators_17PriceInterpolator_interpolate {
@@ -1915,7 +1915,7 @@ struct __pyx_obj_10bz_pricing_4core_13interpolators_Linear360Interpolator {
  * 
  * cdef class PriceInterpolator(Interpolator):             # <<<<<<<<<<<<<<
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
- *         # 1.4.5 Interpolao de Preos
+ *         # Interpolao exponencial de preos entre vrtices de vencimento
 */
 struct __pyx_obj_10bz_pricing_4core_13interpolators_PriceInterpolator {
   struct __pyx_obj_10bz_pricing_4core_13interpolators_Interpolator __pyx_base;
@@ -2024,7 +2024,7 @@ static struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_Linear360Inter
  * 
  * cdef class PriceInterpolator(Interpolator):             # <<<<<<<<<<<<<<
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
- *         # 1.4.5 Interpolao de Preos
+ *         # Interpolao exponencial de preos entre vrtices de vencimento
 */
 
 struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_PriceInterpolator {
@@ -8823,7 +8823,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_13interpolators_21Linear360Interpol
  * 
  * cdef class PriceInterpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:             # <<<<<<<<<<<<<<
- *         # 1.4.5 Interpolao de Preos
+ *         # Interpolao exponencial de preos entre vrtices de vencimento
  *         cdef int i
 */
 
@@ -8848,7 +8848,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_17PriceInterpolator_int
   }
 
   /* "bz_pricing/core/interpolators.pyx":250
- *         # 1.4.5 Interpolao de Preos
+ *         # Interpolao exponencial de preos entre vrtices de vencimento
  *         cdef int i
  *         if t <= t_nodes[0]:             # <<<<<<<<<<<<<<
  *             if self._extrap_left == EXTRAP_FLAT:
@@ -8903,7 +8903,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_17PriceInterpolator_int
     __pyx_v_i = 0;
 
     /* "bz_pricing/core/interpolators.pyx":250
- *         # 1.4.5 Interpolao de Preos
+ *         # Interpolao exponencial de preos entre vrtices de vencimento
  *         cdef int i
  *         if t <= t_nodes[0]:             # <<<<<<<<<<<<<<
  *             if self._extrap_left == EXTRAP_FLAT:
@@ -9142,7 +9142,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_17PriceInterpolator_int
  * 
  * cdef class PriceInterpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:             # <<<<<<<<<<<<<<
- *         # 1.4.5 Interpolao de Preos
+ *         # Interpolao exponencial de preos entre vrtices de vencimento
  *         cdef int i
 */
 

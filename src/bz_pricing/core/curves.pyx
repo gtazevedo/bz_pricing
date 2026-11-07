@@ -212,38 +212,76 @@ cdef class InflationCurve(Curve):
 
 cdef class ConvenienceYieldCurve(Curve):
     """
-    Estrutura da Curva de Custo de Carrego / Convenience Yield:
-    TxCY_n = (((Spot * (1 + PRE_n)^(DU/252)) / Futures_n)^(252 / DU) - 1)
-    Para o Vértice 1 (DU = 1), retorna CDI (ou PRE_1).
-    Para vértices posteriores ao último vencimento do contrato futuro (t > max_t),
-    aplica Extrapolação Flat (Fim) conforme Seções 5.4, 5.6 e 5.8 do Manual de Curvas da B3.
-    As taxas retornam em valor decimal (% / 100).
+    Estrutura a termo de custo de carrego (Convenience Yield):
+    - Vértice de 1 dia útil (DU = 1): taxa de 1 dia útil da curva prefixada (PRE).
+    - Vértices de vencimento futuro (DU_n):
+      TxCY_n = (((Spot * (1 + PRE_n)^(DU_n/252)) / Futures_n)^(252 / DU_n) - 1)
+    - Prazos intermediários: interpolação por taxa a termo exponencial em base 252.
+    - Extrapolação: constante (Flat) antes do primeiro vencimento (1 < DU < DU_1) e após o último vencimento (DU > DU_k).
+    As taxas são retornadas em formato decimal (% / 100).
     """
     def __init__(self, double spot_price, Curve futures_curve, Curve pre_curve, int round_decimals=-1, str round_mode='round'):
+        from bz_pricing.core.interpolators import FlatForward252Interpolator
         self._spot_price = spot_price
         self._futures_curve = futures_curve
         self._pre_curve = pre_curve
         self._round_decimals = round_decimals
         self._is_trunc = (round_mode == 'trunc')
+        self._interp_curve = None
+
+        cdef SimpleCurve sc
+        cdef int i
+        cdef double du_n, fut_n, pre_n, cy_n
+        cdef list v_t = []
+        cdef list v_y = []
+
+        if isinstance(futures_curve, SimpleCurve) and spot_price > 0.0:
+            sc = <SimpleCurve>futures_curve
+            for i in range(sc._n_nodes):
+                du_n = sc._t_nodes[i]
+                # Filtra o Spot (DU=1) e a âncora auxiliar de preço (DU=2 quando há vencimentos > 2)
+                if du_n <= 1.0:
+                    continue
+                if du_n == 2.0 and sc._n_nodes > 2 and sc._t_nodes[sc._n_nodes - 1] > 2.0:
+                    continue
+                fut_n = sc._y_nodes[i]
+                if fut_n <= 0.0:
+                    continue
+                pre_n = pre_curve.get_rate(du_n)
+                cy_n = pow((spot_price * pow(1.0 + pre_n, du_n / 252.0)) / fut_n, 252.0 / du_n) - 1.0
+                if self._round_decimals >= 0:
+                    if self._is_trunc:
+                        cy_n = trunc(cy_n * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
+                    else:
+                        cy_n = round(cy_n * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
+                v_t.append(du_n)
+                v_y.append(cy_n)
+
+            if len(v_t) > 0:
+                self._interp_curve = SimpleCurve(
+                    np.array(v_t, dtype=np.float64),
+                    np.array(v_y, dtype=np.float64),
+                    FlatForward252Interpolator(extrap_left=0, extrap_right=0),
+                    round_decimals=round_decimals,
+                    round_mode=round_mode
+                )
 
     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
-        cdef double eval_t = t
-        cdef SimpleCurve sc
-        if isinstance(self._futures_curve, SimpleCurve):
-            sc = <SimpleCurve>self._futures_curve
-            if sc._n_nodes > 0 and eval_t > sc._t_nodes[sc._n_nodes - 1]:
-                eval_t = sc._t_nodes[sc._n_nodes - 1]
-
-        cdef double fut_price = self._futures_curve.get_rate(eval_t, t_sec)
-        cdef double pre_rate = self._pre_curve.get_rate(eval_t, t_sec)
         cdef double rate
+        cdef double fut_price
+        cdef double pre_rate
 
-        if eval_t <= 0.0 or fut_price <= 0.0 or self._spot_price <= 0.0:
-            rate = pre_rate
-        elif eval_t == 1.0:
-            rate = pre_rate
+        if t <= 1.0 or self._spot_price <= 0.0:
+            rate = self._pre_curve.get_rate(1.0, t_sec)
+        elif self._interp_curve is not None:
+            return self._interp_curve.get_rate(t, t_sec)
         else:
-            rate = pow((self._spot_price * pow(1.0 + pre_rate, eval_t / 252.0)) / fut_price, 252.0 / eval_t) - 1.0
+            fut_price = self._futures_curve.get_rate(t, t_sec)
+            pre_rate = self._pre_curve.get_rate(t, t_sec)
+            if fut_price <= 0.0:
+                rate = pre_rate
+            else:
+                rate = pow((self._spot_price * pow(1.0 + pre_rate, t / 252.0)) / fut_price, 252.0 / t) - 1.0
 
         if self._round_decimals >= 0:
             if self._is_trunc:
@@ -252,6 +290,18 @@ cdef class ConvenienceYieldCurve(Curve):
                 rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
 
         return rate
+
+    @property
+    def t_nodes(self):
+        if self._interp_curve is not None:
+            return self._interp_curve.t_nodes
+        return np.array([], dtype=np.float64)
+
+    @property
+    def y_nodes(self):
+        if self._interp_curve is not None:
+            return self._interp_curve.y_nodes
+        return np.array([], dtype=np.float64)
 
 cdef class SpreadCurve(Curve):
     """

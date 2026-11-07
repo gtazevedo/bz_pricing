@@ -35,9 +35,9 @@ def _resolve_dc_from_knots(t: float, t_sec: float, t_nodes: np.ndarray, t_sec_no
 
 class CrossCouponCurve(Curve):
     """
-    Curva de Cupom Cambial Cruzado (EUC - Seção 4.7 e YCL - Seção 4.8 do Manual de Curvas B3):
+    Estrutura a termo de cupom cambial cruzado (EUC e YCL):
     TC_n = ((1 + DOC_n * DC_n / 36000) * (1 + Spread_n * DC_n / 36000) - 1) * 36000 / DC_n
-    Avalia dinamicamente a partir das curvas DOC e Spread interpoladas em seus respectivos vértices base.
+    Avalia dinamicamente a paridade a partir das curvas DOC e Spread interpoladas em seus respectivos vértices base.
     """
     def __init__(self, doc_curve: Curve, spread_curve: Curve, round_decimals: int = 6, round_mode: str = 'round'):
         self.doc_curve = doc_curve
@@ -90,10 +90,10 @@ class CrossCouponCurve(Curve):
 
 class CurrencyForwardCurve(Curve):
     """
-    Curva de Forward de Moedas (PTX - Seção 4.1, EUR - Seção 4.2, JPY - Seção 4.3 do Manual de Curvas B3):
+    Estrutura a termo de câmbio a termo (PTX, EUR e JPY):
     - Vértice 1 (DU = 1) para PTX: Ptax_{t0}
-    - Demais Vértices: TC_n = ((1 + PRE_n)^(DU_n/252) / (1 + Cupom_n * DC_n / 360)) * Spot_ref
-    Avalia dinamicamente a partir das curvas PRE e Cupom Cambial interpoladas em seus respectivos vértices base.
+    - Demais vértices: TC_n = ((1 + PRE_n)^(DU_n/252) / (1 + Cupom_n * DC_n / 360)) * Spot_ref
+    Avalia dinamicamente a paridade entre a curva prefixada (PRE) e o cupom cambial interpolados em seus respectivos vértices base.
     """
     def __init__(self, pre_curve: Curve, foreign_curve: Curve, spot_t0: float, spot_ref: float,
                  is_ptx: bool = False, linear_comp: bool = True,
@@ -426,7 +426,7 @@ class B3CurveBuilder:
         
         t_nodes_list = list(pre_curve.t_nodes)
         if max(t_nodes_list) < 8463.0:
-            # Estende com a grade de vértices padronizados da B3 até 8463 DU (Seção 1.2 / 2.4 B3)
+            # Estende com a grade de vértices longos padronizados até 8463 DU
             long_vertices = [3780, 4032, 4284, 4536, 4788, 5040, 5292, 5544, 5796, 6048, 6300, 7146, 7404, 8463]
             for lv in long_vertices:
                 if float(lv) > max(t_nodes_list):
@@ -538,13 +538,13 @@ class B3CurveBuilder:
                         round_decimals: int = 4,
                         round_mode: str = 'round') -> Curve:
         """
-        Constrói a curva DI x IPCA Cupom Limpo (DPL) conforme Seção 3.2 do Manual de Curvas B3 (págs. 32-42).
-        1. Calcula o Vértice 1 dia útil (DPL_{0,t}) usando CDI e EIPCA_0 / DU_{15a,15p} (pág. 33).
-        2. Nos vértices coincidentes com vencimentos de DAP, extrai a inflação implícita:
-           implicita_{n,t} = (1 + PRE_{n,t}) / (1 + DPL_{n,t}) - 1 (pág. 35, item a).
-        3. Interpola a inflação implícita via FlatForward 252 (pág. 35, item b).
-        4. Transforma novamente no cupom limpo DPL para todos os vértices n:
-           DPL_{n,t} = (1 + PRE_{n,t}) / (1 + implicita_{n,t}) - 1 (pág. 35, item c).
+        Constrói a curva DI x IPCA Cupom Limpo (DPL):
+        1. Calcula o vértice de 1 dia útil (DPL_{0,t}) a partir da taxa DI e da prévia de inflação EIPCA_0 / DU_{15a,15p}.
+        2. Nos vértices de vencimento de DAP, extrai a inflação implícita:
+           implicita_{n,t} = (1 + PRE_{n,t}) / (1 + DPL_{n,t}) - 1.
+        3. Interpola a inflação implícita por taxa a termo exponencial em base 252.
+        4. Recompõe o cupom limpo DPL para qualquer prazo:
+           DPL_{n,t} = (1 + PRE_{n,t}) / (1 + implicita_{n,t}) - 1.
         """
         if isinstance(dap_df, pd.Series):
             df = dap_df.reset_index()
@@ -574,7 +574,7 @@ class B3CurveBuilder:
         raw_dpl = df[actual_rate].astype(float).values
         dpl_list = (raw_dpl / 100.0 if np.nanmax(np.abs(raw_dpl)) > 1.0 else raw_dpl).tolist()
 
-        # Vértice 1 dia útil (Seção 3.2, pág. 33)
+        # Cálculo do vértice de 1 dia útil
         dpl_v1 = None
         if v1_rate is not None:
             dpl_v1 = float(v1_rate) / 100.0 if abs(float(v1_rate)) > 1.0 else float(v1_rate)
@@ -609,14 +609,14 @@ class B3CurveBuilder:
                 idx = t_list.index(1.0)
                 dpl_list[idx] = dpl_v1
 
-        # Passo a (pág. 35): implicita_{n,t} = (1 + PRE_{n,t}) / (1 + DPL_{n,t}) - 1
+        # Extração da inflação implícita nos vértices base: implicita_{n,t} = (1 + PRE_{n,t}) / (1 + DPL_{n,t}) - 1
         imp_list = []
         for du_val, dpl_val in zip(t_list, dpl_list):
             pre_val = pre_curve.get_rate(float(du_val))
             imp_val = ((1.0 + pre_val) / (1.0 + dpl_val)) - 1.0
             imp_list.append(imp_val)
 
-        # Passo b (pág. 35): interpolação Flat Forward 252 sobre a inflação implícita
+        # Interpolação Flat Forward 252 sobre a inflação implícita
         imp_curve = SimpleCurve(
             np.array(t_list, dtype=np.float64),
             np.array(imp_list, dtype=np.float64),
@@ -624,7 +624,7 @@ class B3CurveBuilder:
             round_decimals=-1
         )
 
-        # Passo c (pág. 35): DPL_{n,t} = (1 + PRE_{n,t}) / (1 + implicita_{n,t}) - 1
+        # Recomposição do cupom limpo DPL: DPL_{n,t} = (1 + PRE_{n,t}) / (1 + implicita_{n,t}) - 1
         return InflationCurve(pre_curve, imp_curve, round_decimals=round_decimals, round_mode=round_mode)
 
     def build_dirty_inflation_coupon_curve(self,
@@ -638,15 +638,12 @@ class B3CurveBuilder:
                                            round_decimals: int = 4,
                                            round_mode: str = 'round') -> SimpleCurve:
         """
-        Constrói as curvas de cupom sujo de inflação:
-        - DIC: DI x IPCA Cupom Sujo (Seção 3.1 do Manual de Curvas B3, págs. 29-32)
-        - DIM: DI x IGP-M Cupom Sujo (Seção 3.3 do Manual de Curvas B3, págs. 43-47)
-
+        Constrói as curvas de cupom sujo de inflação (DIC para IPCA e DIM para IGP-M).
         Aplica a contagem discreta de divulgações do índice (k_i) e o fator acumulado
-        1 + E(Indice)_{k_i,t} nos vértices referenciais da curva intermediária (Equações 3.1.2/3.1.3 e 3.3.2/3.3.3),
-        interpolando os demais vértices por Interpolation252Year (FlatForward252Interpolator).
+        1 + E(Indice)_{k_i,t} nos vértices referenciais da janela de divulgação,
+        interpolando os demais prazos via FlatForward252Interpolator.
         """
-        # 1. Metodologia Principal (Seções 3.1 e 3.3): Pool de Informantes (CpInformantes) + Curva PRE
+        # 1. Construção a partir da amostra de informantes (CpInformantes) e curva PRE
         if informants_df is not None:
             if isinstance(informants_df, pd.Series):
                 inf_df = informants_df.reset_index()
@@ -691,13 +688,13 @@ class B3CurveBuilder:
                     e_inf_raw = row.get('e_inf', np.nan)
                     e_inf_pct = (float(e_inf_raw) * e_col_scale) if not pd.isna(e_inf_raw) else np.nan
                     if pd.isna(e_inf_pct) and r_dec is not None and du_e >= du_s and du_e <= 265:
-                        # Equação 3.1.2 / 3.3.2: Expectativa de inflação acumulada arredondada em 2 casas decimais em %
+                        # Expectativa de inflação acumulada arredondada em 2 casas decimais em percentual
                         pre_pct = round(pre_curve.get_rate(float(du_e)) * 100.0, 2)
                         cp_pct = r_dec * 100.0
                         e_inf_pct = round((((1.0 + pre_pct / 100.0) ** (du_e / 252.0)) / ((1.0 + cp_pct / 100.0) ** (du_e / 252.0)) - 1.0) * 100.0, 2)
 
                     if not pd.isna(e_inf_pct) and du_e >= du_s and du_e <= 265:
-                        # Equação 3.1.3 / 3.3.3 nos vértices referenciais do patamar k_i [du_s .. du_e]
+                        # Cálculo nos vértices referenciais do patamar k_i [du_s .. du_e]
                         for du_p in range(max(1, du_s), du_e + 1):
                             pre_pct = round(pre_curve.get_rate(float(du_p)) * 100.0, 2)
                             f_pre = (1.0 + pre_pct / 100.0) ** (float(du_p) / 252.0)
@@ -722,7 +719,7 @@ class B3CurveBuilder:
                     round_mode=round_mode
                 )
 
-        # 2. Fallback (Seção 3.3): Expectativas Mensais Focus BACEN + Curva DPL
+        # 2. Alternativa via projeções mensais de inflação + curva DPL
         focus_monthly = focus_monthly or {}
         focus_annual = focus_annual or {}
         max_du = int(max(pre_curve.t_nodes)) if len(pre_curve.t_nodes) > 0 else 10080
@@ -731,7 +728,7 @@ class B3CurveBuilder:
         y_knots = []
 
         if indicator.upper() == "IPCA":
-            # Seção 3.1 (DIC): Vértice 1 dia útil (k_i = 0), E(IPCA)_{0,t} = 0 => Cp_{1,t} = PRE_{1,t}
+            # Vértice de 1 dia útil (k_i = 0): E(IPCA)_{0,t} = 0 => Cp_{1,t} = PRE_{1,t}
             t_knots.append(1.0)
             y_knots.append(pre_curve.get_rate(1.0))
 
@@ -790,7 +787,7 @@ class B3CurveBuilder:
                     pi_m = (1.0 + ann_rate) ** (1.0 / 12.0) - 1.0
                     F_acc *= (1.0 + pi_m)
 
-                # Equação 3.1.3 nos vértices referenciais do patamar k_i = m_idx [du_15 .. du_01_next]
+                # Cálculo nos vértices referenciais do patamar k_i = m_idx [du_15 .. du_01_next]
                 for du_p in range(du_15, min(du_01_next, max_du) + 1):
                     if du_p > t_knots[-1]:
                         r_pre = pre_curve.get_rate(float(du_p))
@@ -803,7 +800,7 @@ class B3CurveBuilder:
 
                 curr_month = next_month
         else:
-            # Seção 3.3 (DIM - IGP-M): Antes da 1ª divulgação / prévia do IGP-M pela FGV (até 10 DU), k_i = 0 => E(IGPM) = 0 => DIM = PRE
+            # Antes da 1ª divulgação mensal do IGP-M (até 10 DU): k_i = 0 => E(IGPM) = 0 => DIM = PRE
             curr_month = datetime.date(base_date.year, base_date.month, 1)
             dt_15_raw = self.cal.following(datetime.date(curr_month.year, curr_month.month, 15))
             dt_15_date = dt_15_raw.date() if hasattr(dt_15_raw, 'date') else dt_15_raw
@@ -857,7 +854,7 @@ class B3CurveBuilder:
 
                 F_acc *= (1.0 + pi_m)
 
-                # Equação 3.3.3 nos vértices referenciais do patamar k_i = m_idx [du_end .. du_15_next]
+                # Cálculo nos vértices referenciais do patamar k_i = m_idx [du_end .. du_15_next]
                 for du_p in range(du_end, min(du_15_next, max_du) + 1):
                     if not t_knots or du_p > t_knots[-1]:
                         r_pre = pre_curve.get_rate(float(du_p))
@@ -870,7 +867,7 @@ class B3CurveBuilder:
 
                 curr_month = next_month
 
-        # Interpolação Interpolation252Year (FlatForward252Interpolator) para os demais vértices (págs. 32 e 47)
+        # Interpolação por taxa a termo exponencial em base 252 para os demais prazos
         interp = FlatForward252Interpolator(0, 1)
         return SimpleCurve(
             np.array(t_knots, dtype=np.float64),
@@ -895,12 +892,12 @@ class B3CurveBuilder:
                                     round_decimals: int = 4,
                                     round_mode: str = 'round') -> SimpleCurve:
         """
-        Constrói a Curva de Cupom Cambial Limpo (DOC / DCL - Seções 4.5 e 4.6 do Manual de Curvas B3, págs. 57-59)
-        a partir dos vencimentos do Contrato Futuro de DDI e da razão DolCL_{t0} / Ptax_{t-1}:
-        - Vértice 1 (Eq. 4.5.1 / 4.5.2): v1_rate explícito ou calculado via DolCL_{d1} = DolCL_{t0} + Casado_{1d}/1000
+        Constrói a estrutura a termo de cupom cambial limpo (DOC e DCL)
+        a partir dos vencimentos do contrato futuro de DDI e da razão DolCL_{t0} / Ptax_{t-1}:
+        - Vértice 1: v1_rate explícito ou calculado via DolCL_{d1} = DolCL_{t0} + Casado_{1d}/1000
           e TC_1 = (((1 + CDI_1/100)^(1/252) / (DolCL_{d1} / DolCL_{t0})) - 1) * (36000 / DC_1)
-        - Vértices de DDI (Eq. 4.5.3): TC_n = ((1 + DDI_n * DC_n / 36000) * (DolCL_{t0} / Ptax_{t-1}) - 1) * 36000 / DC_n
-        Interpola e extrapola os demais vértices pelo item 1.4.3 (FlatForward252LinearInterpolator).
+        - Vértices de DDI: TC_n = ((1 + DDI_n * DC_n / 36000) * (DolCL_{t0} / Ptax_{t-1}) - 1) * 36000 / DC_n
+        Interpola e extrapola os demais prazos via FlatForward252LinearInterpolator.
         """
         if ratio_cl_tm1 is None:
             if dol_cl is not None and ptax_tm1 is not None and float(ptax_tm1) > 0:
@@ -942,7 +939,7 @@ class B3CurveBuilder:
             v1_dc = max(1, (next_bday - base_date).days)
 
         if v1_rate is None and dol_cl is not None and casado_1d is not None and cdi_rate is not None:
-            # Eq. 4.5.1 e 4.5.2 (pág. 57): Cálculo de TC_1 a partir do Casado de 1 dia útil e CDI
+            # Cálculo de TC_1 a partir do Casado de 1 dia útil e taxa DI
             cdi_dec = float(cdi_rate) / 100.0 if abs(float(cdi_rate)) > 1.0 else float(cdi_rate)
             dol_cl_d1 = float(dol_cl) + float(casado_1d) / 1000.0
             v1_pct = ((((1.0 + cdi_dec) ** (1.0 / 252.0)) / (dol_cl_d1 / float(dol_cl))) - 1.0) * (36000.0 / float(v1_dc))
@@ -993,12 +990,12 @@ class B3CurveBuilder:
                                      config_name: str,
                                      spot_rate_tm1: float = None) -> Curve:
         """
-        Constrói a Curva de Forward de Moedas (Seções 4.1 PTX, 4.2 EUR, 4.3 JPY do Manual de Curvas B3, págs. 48-52):
-        - Para PTX (Seção 4.1):
+        Constrói a estrutura a termo de câmbio a termo (PTX, EUR e JPY):
+        - Para PTX:
           Vértice 1 (DU = 1): Ptax_{t0} (spot_rate)
-          Demais Vértices (DU > 1): TC_n = ((1 + PRE_n/100)^(DU_n/252) / (1 + DOL_n * DC_n / 36000)) * Ptax_{t-1}
-        - Para EUR (Seção 4.2) e JPY (Seção 4.3):
-          Todos os Vértices: TC_n = ((1 + PRE_n/100)^(DU_n/252) / (1 + Cupom_n * DC_n / 36000)) * Tx_{Reais x Moeda}
+          Demais vértices (DU > 1): TC_n = ((1 + PRE_n/100)^(DU_n/252) / (1 + DOL_n * DC_n / 36000)) * Ptax_{t-1}
+        - Para EUR e JPY:
+          Todos os vértices: TC_n = ((1 + PRE_n/100)^(DU_n/252) / (1 + Cupom_n * DC_n / 36000)) * Tx_{Reais x Moeda}
         """
         from .configs import CURVE_CONFIGS
         
@@ -1035,18 +1032,11 @@ class B3CurveBuilder:
                                  exp_date: str = "XprtnDt",
                                  round_decimals: int = None) -> SimpleCurve:
         """
-        Constrói curvas de índices de ações e futuros de ações (Capítulo 5 do Manual de Curvas B3):
-        - BRP: Seção 5.1 (IBrX-50)
-        - INP: Seção 5.2 (Ibovespa)
-        - SML: Seção 5.3 (Small Caps)
-        - MBR: Seção 5.5 (Bovespa B3 BR+)
-        - VIX: Seção 5.7 (S&P/B3 Bovespa VIX)
-        - Futuros de Ações individuais (PETR, VALE, etc.) seguindo a metodologia oficial de preços da B3.
-
-        Vértice 1 (DU = 1): Spot_t
-        Vértices anteriores ao 1º vencimento (1 < DU_v < DU_1º):
-            Spot_t * (Fut_1º / Spot_t)^(DU_v / DU_1º) (Seção 5.2, pág. 69)
-        Demais vértices: Interpolação de Preços 1.4.5 (PriceInterpolator) e Extrapolação Flat no fim.
+        Constrói curvas de índices de ações e futuros de ações (BRP, INP, SML, MBR, VIX e ações individuais):
+        - Vértice 1 (DU = 1): Spot_t
+        - Vértices anteriores ao 1º vencimento (1 < DU_v < DU_1º):
+          Spot_t * (Fut_1º / Spot_t)^(DU_v / DU_1º)
+        - Demais vértices: interpolação exponencial de preços (PriceInterpolator) e extrapolação constante no fim.
         """
         from .configs import CURVE_CONFIGS
         config = CURVE_CONFIGS.get(config_name, {})
@@ -1087,10 +1077,9 @@ class B3CurveBuilder:
         if round_decimals is None:
             round_decimals = config.get("round_decimals", 2)
 
-        # Regra B3 (Seção 5.2, pág. 69) para vértices anteriores ao 1º vencimento (1 < DU_v < DU_1º):
-        # Como PriceInterpolator é exponencial por partes, inserir um único ponto âncora em DU = 2.0
-        # com valor Spot * (F_1 / Spot)^(2 / DU_1) garante que PriceInterpolator reproduza analiticamente
-        # a fórmula exata Spot * (F_1 / Spot)^(DU_v / DU_1) para qualquer DU_v em [2, DU_1]!
+        # Para vértices anteriores ao 1º vencimento (1 < DU_v < DU_1º), insere-se a âncora em DU = 2.0
+        # com valor Spot * (F_1 / Spot)^(2 / DU_1), de modo que PriceInterpolator reproduza analiticamente
+        # Spot * (F_1 / Spot)^(DU_v / DU_1) para qualquer DU_v no intervalo [2, DU_1].
         if len(t_list) >= 2 and spot_index is not None and spot_index > 0:
             first_du = t_list[1]
             first_fut = p_list[1]
@@ -1117,7 +1106,7 @@ class B3CurveBuilder:
                                       pre_curve: Curve,
                                       config_name: str = "CYI") -> ConvenienceYieldCurve:
         """
-        Constrói a curva de Custo de Carrego / Convenience Yield (Seções 5.4, 5.6 e 5.8):
+        Constrói a curva de Custo de Carrego / Convenience Yield:
         TxCY_n = (((Spot * (1 + PRE_n)^(DU/252)) / Futures_n)^(252 / DU) - 1)
         """
         from .configs import CURVE_CONFIGS
@@ -1131,7 +1120,7 @@ class B3CurveBuilder:
                            curve_b: Curve,
                            config_name: str = "SDE") -> SpreadCurve:
         """
-        Constrói a curva de Spread de Taxas (Seções 4.9, 4.10, 4.11, 4.12):
+        Constrói a curva de Spread de Taxas:
         Spread = Curve_A - Curve_B
         """
         from .configs import CURVE_CONFIGS
@@ -1142,7 +1131,7 @@ class B3CurveBuilder:
 
     def build_di_x_tr_curve(self, pre_curve: Curve, tp_curve: Curve, round_decimals: int = 5, round_mode: str = 'round') -> SimpleCurve:
         """
-        Constrói a curva DI x TR (Seção 2.6 Manual B3):
+        Constrói a curva DI x TR:
         TR_t = ((1 + PRE_t) / (1 + TP_t) - 1)
         """
         from bz_pricing.core.interpolators import FlatForward252Interpolator
@@ -1161,7 +1150,7 @@ class B3CurveBuilder:
 
     def build_euc_curve(self, doc_curve: Curve, sde_curve: Curve, round_decimals: int = 6, round_mode: str = 'round') -> Curve:
         """
-        Constrói a Curva de Cupom de Euro / Iene (EUC - Seção 4.7 e YCL - Seção 4.8 do Manual B3):
+        Constrói a Curva de Cupom de Euro / Iene (EUC e YCL):
         TC_n = ((1 + DOC_n * DC_n / 36000) * (1 + Spread_n * DC_n / 36000) - 1) * 36000 / DC_n
         """
         return CrossCouponCurve(
@@ -1177,13 +1166,13 @@ class B3CurveBuilder:
                                 round_mode: str = 'round',
                                 discount_factors: any = None) -> SimpleCurve:
         """
-        Constrói a Curva Zero Cupom Internacional (Seções 2.10 ZMX, 2.11 ZUS e 2.12 ZEU do Manual da B3):
-        - Caso `discount_factors` (FD_JUR^{v,t} por prazo DC) seja fornecido (Seções 2.10–2.12):
+        Constrói a Curva Zero Cupom Internacional (ZMX, ZUS e ZEU):
+        - Caso `discount_factors` (FD_JUR por prazo DC) seja fornecido:
           TxLinJUR(DC_v) = (1 / FD_JUR(DC_v) - 1) * (360 / DC_v)
         - Caso contrário, constrói a partir dos fatores de desconto acumulados da curva forward:
           FD(t) = prod_{i=1}^n 1 / (1 + f_i * delta_DC_i / 360)
           TxLinJUR(t) = (1 / FD(t) - 1) * (360 / DC_t)
-        Interpolação: 1.4.11 Interpolação 360 Linear e 1.4.8 Extrapolação Flat (Fim).
+        Interpolação linear em base 360 com extrapolação constante no fim.
         """
         from bz_pricing.core.interpolators import Linear360Interpolator
         from bz_pricing.core.curves import SimpleCurve

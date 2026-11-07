@@ -267,9 +267,9 @@ class CurveManager:
 
     def _extract_linear360_knots(self, df_ref: pd.DataFrame) -> pd.DataFrame:
         """
-        Extrai os nós base de interpolação Linear360 (itens 2.10, 2.11, 2.12 e 4.9 do Manual B3).
-        Identifica os vértices onde a taxa linear a termo acumulada muda de inclinação,
-        reconstituindo os vértices originais fornecidos pela LSEG/Refinitiv (Tabela 1).
+        Extrai os nós base de interpolação Linear360.
+        Identifica os vértices em que a taxa linear a termo acumulada altera a inclinação,
+        de modo a reconstituir os nós originais de swaps offshore.
         """
         if df_ref is None or len(df_ref) <= 2:
             return df_ref
@@ -306,12 +306,12 @@ class CurveManager:
 
     def _extract_inflation_informants(self, df_ref: pd.DataFrame, pre_curve: Curve) -> pd.DataFrame:
         """
-        Extrai apenas os vértices do Pool de Informantes (CpInformantes - Seções 3.1 DIC e 3.3 DIM do Manual B3)
+        Extrai os vértices da amostra de expectativas de inflação (CpInformantes)
         a partir da curva referencial:
-        1. Nos primeiros 12 meses (DU <= 265), identifica os patamares discretos k_i (1º dia útil de cada mês)
-           onde a inflação acumulada esperada E(Indice)_{k_i,t} (Equações 3.1.2 e 3.3.2) permanece constante.
-        2. Para prazos longos (DU > 265 até 5580 DC / 8463 DU), extrai apenas os nós esparsos da interpolação
-           Interpolation252Year (FlatForward252Interpolator).
+        1. Nos primeiros 12 meses (DU <= 265), identifica os patamares discretos k_i (datas de divulgação)
+           em que a inflação acumulada esperada E(Indice)_{k_i,t} permanece constante.
+        2. Para prazos longos (DU > 265 até 5580 DC / 8463 DU), extrai os nós esparsos da interpolação
+           exponencial em base 252 (FlatForward252Interpolator).
         """
         if df_ref is None or len(df_ref) <= 2:
             return df_ref
@@ -383,11 +383,9 @@ class CurveManager:
 
     def _extract_provider_vertices(self, df_ref: pd.DataFrame, curve_name: str, config: dict, base_date: datetime.date) -> pd.DataFrame:
         """
-        Para curvas de swap e outras onde a única informação disponível é a própria curva
-        da B3 (arquivos taxas_*.csv contendo centenas de pontos diários pré-interpolados):
-        Captura apenas os vértices que a B3 coleta do provedor de informações
-        (Refinitiv/LSEG conforme Tabela 1 do Manual de Curvas) ou contratos futuros subjacentes,
-        garantindo que todos os demais pontos sejam interpolados pelo bz-pricing.
+        Extrai apenas os vértices primários de provedores de swaps ou vencimentos futuros subjacentes
+        a partir de tabelas referenciais diárias, de modo que os prazos intermediários sejam
+        integralmente interpolados pelos algoritmos nativos do pacote.
         """
         if df_ref is None or len(df_ref) <= 20:
             return df_ref
@@ -434,7 +432,7 @@ class CurveManager:
                 df_fut = self.loader.get_curve_instruments(base_date, asst=asst)
                 if df_fut is not None and not df_fut.empty:
                     fut_dus = set([self.builder.cal.bizdays(base_date, pd.to_datetime(d).date()) for d in df_fut['XprtnDt']])
-                    # Inclui o segundo vértice padronizado antes do 1º vencimento para preservar a potência DU_v / DU_1º (Seção 5.2)
+                    # Inclui o segundo vértice padronizado antes do 1º vencimento para preservar a potência DU_v / DU_1º
                     second_du = int(df_ref['day252'].iloc[1]) if len(df_ref) > 1 else 1
                     idx_base = df_ref[df_ref['day252'].isin(fut_dus.union({1, second_du}))].copy()
                     if len(idx_base) >= 2:
@@ -540,7 +538,7 @@ class CurveManager:
         asset = config.get("asset", curve_name)
         source_type = config.get("source_type", None)
 
-        # Suporte à construção de ZUS / LIB por fatores de desconto (FD_JUR^{v,t} - Seção 2.11 Manual B3)
+        # Suporte à construção de ZUS / LIB / ZMX / ZEU por fatores de desconto (FD_JUR por prazo DC)
         discount_factors = _first_not_none(kwargs.get("discount_factors"), kwargs.get("fd_data"), kwargs.get("fd_df"))
         if discount_factors is not None and curve_name.upper() in ["ZUS", "LIB", "ZMX", "ZEU"]:
             return self.builder.build_zero_coupon_curve(
@@ -592,7 +590,7 @@ class CurveManager:
                     ref_path = self.scraper.download_taxas_referenciais(produto, base_date)
                     df_ref = pd.read_csv(ref_path, sep=';')
 
-                # Seção 4.5 / 4.6 (DOC / DCL): Construção oficial a partir dos futuros de DDI + DolCL_t0 / Ptax_t-1
+                # Construção de DOC e DCL a partir dos futuros de DDI e da razão DolCL_t0 / Ptax_t-1
                 if curve_name.upper() in ["DOC", "DCL"]:
                     try:
                         df_ddi = self.loader.get_curve_instruments(base_date, asst="DDI")
@@ -689,12 +687,12 @@ class CurveManager:
         Constrói curvas derivadas (DPL, DIC, DIM, TR, EUC, TFP, TP) utilizando as funções de cálculo centralizadas.
         Trata de forma elegante entradas parciais ou totais fornecidas pelo usuário.
         """
-        # Se for TBF_PRE, TBF_LTN ou TFP, precisa da base_curve e histórico BCB (Seção 2.4 Manual B3)
+        # Curvas TBF_PRE, TBF_LTN e TFP (curva base + fator médio histórico da TBF)
         if curve_name in ["TBF_PRE", "TBF_LTN", "TFP"]:
             base_curve_name = config.get("base_curve", "PRE")
             return self._build_tbf_pipeline(base_date, base_curve_name, allow_download=allow_download, **kwargs)
             
-        # Se for TR_PRE, TR_LTN ou TP, puxa a base TBF (Seção 2.5 Manual B3 / Res. CMN 5.124 BCB)
+        # Curvas TR_PRE, TR_LTN e TP (aplicação do redutor da TR sobre a curva TBF)
         elif curve_name in ["TR_PRE", "TR_LTN", "TP"]:
             base_curve_name = config.get("base_curve", "TFP" if curve_name == "TP" else "TBF_PRE")
             tbf_input = _first_not_none(kwargs.get("tbf_curve"), kwargs.get("base_curve"), data)
@@ -703,7 +701,7 @@ class CurveManager:
             round_decimals = kwargs.get("round_decimals", config.get("round_decimals", -1))
             return self.builder.build_tr_curve(tbf_curve, round_decimals=round_decimals)
 
-        # Seção 2.6 Manual B3: Curva DI x TR (TR)
+        # Curva DI x TR (TR)
         elif curve_name == "TR":
             pre_input = kwargs.get("pre_curve")
             pre_data = kwargs.get("pre_data")
@@ -717,7 +715,7 @@ class CurveManager:
             round_mode = kwargs.get("round_mode", config.get("round_mode", "round"))
             return self.builder.build_di_x_tr_curve(pre_curve, tp_curve, round_decimals=round_decimals, round_mode=round_mode)
 
-        # Seção 4.7 Manual B3: Curva de Cupom de Euro (EUC)
+        # Curvas de Cupom de Euro (EUC) e Iene (YCL)
         elif curve_name in ["EUC", "YCL"]:
             doc_input = kwargs.get("doc_curve")
             doc_data = kwargs.get("doc_data")
@@ -732,7 +730,7 @@ class CurveManager:
             round_mode = kwargs.get("round_mode", config.get("round_mode", "round"))
             return self.builder.build_euc_curve(doc_curve, sde_curve, round_decimals=round_decimals, round_mode=round_mode)
 
-        # Seção 3.2 Manual B3: DI x IPCA Cupom Limpo (DPL)
+        # Curva DI x IPCA Cupom Limpo (DPL)
         elif curve_name == "DPL":
             # 1. Resolve PRE curve
             pre_input = _first_not_none(kwargs.get("pre_curve"), kwargs.get("nominal_curve"))
@@ -743,7 +741,7 @@ class CurveManager:
             dap_input = _first_not_none(kwargs.get("dap_df"), kwargs.get("dap_data"), kwargs.get("real_data"), data)
             df_dap = self._resolve_dataset_input("dap_data", config.get("real_curve", "DAP"), base_date, allow_download, dap_input)
 
-            # 3. Resolve Vértice 1 (v1_rate / eipca_0 conforme Seção 3.2 pág. 33-35)
+            # 3. Resolve Vértice 1 (v1_rate ou eipca_0)
             eipca_0 = kwargs.get("eipca_0")
             v1_rate = kwargs.get("v1_rate")
             if eipca_0 is None and v1_rate is None:
@@ -778,7 +776,7 @@ class CurveManager:
                 round_mode=kwargs.get("round_mode", config.get("round_mode", "round"))
             )
 
-        # Seções 3.1 (DIC) e 3.3 (DIM) Manual B3: Curvas de Cupom Sujo de Inflação
+        # Curvas de Cupom Sujo de Inflação (DIC e DIM)
         elif curve_name in ["DIC", "DIM"]:
             nominal_curve_name = config.get("nominal_curve", "PRE")
             indicator = config.get("indicator", "IPCA" if curve_name == "DIC" else "IGP-M")
@@ -788,7 +786,7 @@ class CurveManager:
             pre_data = _first_not_none(kwargs.get("pre_data"), kwargs.get("nominal_data"))
             pre_curve = self._resolve_curve_input("pre_curve", nominal_curve_name, base_date, allow_download, pre_input, pre_data)
 
-            # 2. Resolve Pool de Informantes (CpInformantes - Seções 3.1 e 3.3)
+            # 2. Resolve amostra de expectativas de inflação (CpInformantes)
             informants_df = _first_not_none(kwargs.get("informants_df"), kwargs.get("informants_data"))
             focus_obj = _first_not_none(kwargs.get("focus_monthly"), kwargs.get("focus_data"))
             if informants_df is None and allow_download and focus_obj is None:
@@ -809,7 +807,7 @@ class CurveManager:
                     round_mode=kwargs.get("round_mode", config.get("round_mode", "round"))
                 )
 
-            # 3. Fallback: Expectativas de Inflação Focus + Curva DPL
+            # 3. Alternativa via projeções mensais de inflação + curva DPL
             focus_monthly = self._resolve_focus_monthly(indicator, base_date, allow_download, focus_obj)
 
             dpl_curve = kwargs.get("dpl_curve")
@@ -836,7 +834,7 @@ class CurveManager:
 
     def _build_tbf_pipeline(self, base_date: datetime.date, base_curve_name: str, allow_download: bool = False, **kwargs) -> Curve:
         """
-        Implementa o cálculo centralizado da curva TBF x PRE (TFP) conforme Seção 2.4 do Manual B3.
+        Implementa o cálculo centralizado da curva TBF x PRE (TFP).
         """
         pre_t0_input = _first_not_none(kwargs.get("pre_curve"), kwargs.get("base_curve"))
         pre_t0_data = _first_not_none(kwargs.get("pre_data"), kwargs.get("base_data"))
@@ -969,8 +967,7 @@ class CurveManager:
     def _build_equity_index_curve(self, curve_name: str, config: dict, base_date: datetime.date,
                                   data: any = None, allow_download: bool = False, **kwargs) -> Curve:
         """
-        Constrói curvas de índices de ações e futuros de ações (BRP, INP, SML, MBR, VIX ou ações).
-        Seções 5.1 (BRP) e 5.2 (INP) do Manual de Curvas da B3.
+        Constrói curvas de índices de ações e futuros de ações (BRP, INP, SML, MBR, VIX ou ações individuais).
         """
         if data is not None and isinstance(data, pd.DataFrame) and "day252" in data.columns and "XprtnDt" not in data.columns:
             return self._build_from_nodes_data(curve_name, config, base_date, data, **kwargs)
@@ -1033,7 +1030,7 @@ class CurveManager:
     def _build_currency_forward_curve(self, curve_name: str, config: dict, base_date: datetime.date,
                                       data: any = None, allow_download: bool = False, **kwargs) -> Curve:
         """
-        Constrói a Curva de Forward de Moedas (PTX, EUR, JPY - Seções 4.1 a 4.3 Manual B3)
+        Constrói a estrutura a termo de câmbio a termo (PTX, EUR e JPY).
         """
         if data is not None:
             return self._build_from_nodes_data(curve_name, config, base_date, data, **kwargs)
@@ -1043,8 +1040,7 @@ class CurveManager:
         explicit_spot_tm1 = _first_not_none(kwargs.get("spot_rate_tm1"), kwargs.get("ptax_tm1"))
 
         if curve_name.upper() == "JPY" and kwargs.get("foreign_curve") is None and kwargs.get("foreign_data") is None:
-            # Para JPY (Seção 4.3), a B3 não publica YCL/SYD separadamente no portal público de taxas referenciais;
-            # quando o usuário não injeta YCL explicitamente, extrai os vértices DDI/Swap da tabela de referência e interpola via PriceInterpolator
+            # Quando YCL não é fornecido explicitamente, extrai os vértices base de DDI/Swap da tabela referencial e interpola via PriceInterpolator
             if allow_download and config.get("source_type") == "taxas_referenciais":
                 return self._build_simple_curve(curve_name, config, base_date, data=data, allow_download=allow_download, **kwargs)
 
@@ -1070,7 +1066,7 @@ class CurveManager:
                     except Exception:
                         spot_rate_tm1 = spot_rate
         elif currency.upper() == "EUR":
-            # Na Seção 4.2, a B3 utiliza a Tx_Reais x Euro de fechamento apurada pela B3
+            # Utiliza a taxa de câmbio de fechamento Reais x Euro quando não informada explicitamente
             if spot_rate is None and allow_download:
                 try:
                     df_ref = self.loader.load_taxas_referenciais(curve_name, base_date)
@@ -1117,8 +1113,8 @@ class CurveManager:
     def _build_zero_coupon_curve(self, curve_name: str, config: dict, base_date: datetime.date,
                                  data: any = None, allow_download: bool = False, **kwargs) -> Curve:
         """
-        Constrói a curva zero cupom internacional (ZMX, ZUS, ZEU - Seções 2.10 a 2.12 Manual B3).
-        Aceita `discount_factors` (FD_JUR^{v,t} por DC), `data` (vértices de taxa) ou `forward_curve`.
+        Constrói a estrutura a termo zero cupom internacional (ZMX, ZUS e ZEU).
+        Aceita `discount_factors` (fatores de desconto por DC), `data` (vértices de taxa) ou `forward_curve`.
         """
         round_decimals = kwargs.get("round_decimals", config.get("round_decimals", 5))
         round_mode = kwargs.get("round_mode", config.get("round_mode", "round"))

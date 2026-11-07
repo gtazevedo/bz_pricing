@@ -1847,7 +1847,7 @@ struct __pyx_opt_args_10bz_pricing_4core_6curves_5Curve_get_rate {
   double t_sec;
 };
 
-/* "bz_pricing/core/curves.pxd":47
+/* "bz_pricing/core/curves.pxd":48
  *     cdef Curve _curve_b
  * 
  * cpdef list extract_linear360_knot_indices(double[:] dcs, double[:] rates, double tolerance=*)             # <<<<<<<<<<<<<<
@@ -1988,11 +1988,12 @@ struct __pyx_obj_10bz_pricing_4core_6curves_ConvenienceYieldCurve {
   double _spot_price;
   struct __pyx_obj_10bz_pricing_4core_6curves_Curve *_futures_curve;
   struct __pyx_obj_10bz_pricing_4core_6curves_Curve *_pre_curve;
+  struct __pyx_obj_10bz_pricing_4core_6curves_SimpleCurve *_interp_curve;
 };
 
 
-/* "bz_pricing/core/curves.pxd":43
- *     cdef Curve _pre_curve
+/* "bz_pricing/core/curves.pxd":44
+ *     cdef SimpleCurve _interp_curve
  * 
  * cdef class SpreadCurve(Curve):             # <<<<<<<<<<<<<<
  *     cdef Curve _curve_a
@@ -2266,8 +2267,8 @@ struct __pyx_vtabstruct_10bz_pricing_4core_6curves_ConvenienceYieldCurve {
 static struct __pyx_vtabstruct_10bz_pricing_4core_6curves_ConvenienceYieldCurve *__pyx_vtabptr_10bz_pricing_4core_6curves_ConvenienceYieldCurve;
 
 
-/* "bz_pricing/core/curves.pxd":43
- *     cdef Curve _pre_curve
+/* "bz_pricing/core/curves.pxd":44
+ *     cdef SimpleCurve _interp_curve
  * 
  * cdef class SpreadCurve(Curve):             # <<<<<<<<<<<<<<
  *     cdef Curve _curve_a
@@ -26045,8 +26046,8 @@ static int __Pyx_modinit_Type_import_code(__pyx_mstatetype *__pyx_mstate) {
   #else
   sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_SpreadCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_SpreadCurve),
   #endif
-  __Pyx_ImportType_CheckSize_Warn_3_3_0); if (!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve) __PYX_ERR(3, 43, __pyx_L1_error)
-  if (unlikely(__Pyx_GetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve, (void**)&__pyx_vtabptr_10bz_pricing_4core_6curves_SpreadCurve) != 1)) __PYX_ERR(3, 43, __pyx_L1_error)
+  __Pyx_ImportType_CheckSize_Warn_3_3_0); if (!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve) __PYX_ERR(3, 44, __pyx_L1_error)
+  if (unlikely(__Pyx_GetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve, (void**)&__pyx_vtabptr_10bz_pricing_4core_6curves_SpreadCurve) != 1)) __PYX_ERR(3, 44, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;
