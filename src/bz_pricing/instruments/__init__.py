@@ -1,4 +1,5 @@
 from .tpf import TituloPublico, LTN, NTNF, LFT, NTNB, NTNBPrincipal, NTNC
+from .credit import Debenture
 
 __all__ = [
     "TituloPublico",
@@ -8,4 +9,5 @@ __all__ = [
     "NTNB",
     "NTNBPrincipal",
     "NTNC",
+    "Debenture",
 ]

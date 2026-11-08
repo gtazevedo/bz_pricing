@@ -307,3 +307,69 @@ pu_ntnb, df_ntnb = ntnb.present_value(
 print(f"\nPU NTN-B: R$ {pu_ntnb:.6f}")
 print(df_ntnb[["data_fluxo", "du", "tipo", "fluxo_cotação", "cotação_descontada", "valor_presente"]])
 ```
+
+---
+
+## 5. Extração e Precificação de Crédito Privado (`DebenturesClient` e `Debenture`)
+
+O módulo de crédito privado fornece ferramentas integradas para coleta de eventos em fontes públicas e avaliação numérica de debêntures com amortizações periódicas e indexadores variados (IPCA, CDI e prefixados).
+
+### 5.1 Cliente de Extração de Dados (`DebenturesClient`)
+
+A classe [`DebenturesClient`](../src/bz_pricing/data/debentures.py) encapsula consultas aos dados estruturados do Sistema Nacional de Debêntures (SND / `debentures.com.br`) e aos arquivos oficiais de fechamento diário do mercado secundário da ANBIMA, dispondo de mecanismo automático de armazenamento em cache local no diretório `dados/debentures/`:
+
+```python
+import datetime
+from bz_pricing.data.debentures import DebenturesClient
+
+client = DebenturesClient(cache_dir="dados/debentures")
+
+# 1. Agenda completa de eventos futuros (juros, amortizações e prêmios)
+df_eventos = client.get_cashflows("VALEA0")
+
+# 2. Cadastro de características da emissão (indexador, cupom emissor, datas base)
+info_cadastrais = client.get_characteristics("VALEA0")
+
+# 3. Histórico de PU Par, VNA e juros acumulados
+df_pu_par = client.get_pu_history("VALEA0", datetime.date(2026, 10, 1), datetime.date(2026, 10, 30))
+
+# 4. Arquivo oficial de mercado secundário de debêntures ANBIMA
+df_mercado = client.get_market_prices(datetime.date(2026, 10, 30))
+print(f"Total de debêntures com preços de mercado apurados: {len(df_mercado)}")
+```
+
+### 5.2 Avaliação Numérica e Decomposição de Fluxos (`Debenture`)
+
+A classe [`Debenture`](../src/bz_pricing/instruments/credit.py) modela o instrumento de crédito privado, integrando o histórico de liquidações para cômputo do saldo devedor e os fluxos contratuais futuros:
+
+```python
+import datetime
+from bz_pricing.data.debentures import DebenturesClient
+from bz_pricing.instruments.credit import Debenture
+
+client = DebenturesClient()
+base_date = datetime.date(2026, 10, 30)
+
+# Instanciação automática a partir do código do ativo
+deb = Debenture.from_ticker("VALEA0", client=client)
+
+# 1. PU Par teórico na data de referência
+vna_data = 1096.791130
+pu_par = deb.pu_par(base_date, vna=vna_data)
+print(f"VALEA0 - PU Par Teórico: R$ {pu_par:.6f}")
+
+# 2. Precificação a mercado e duration por taxa indicativa ANBIMA (ex.: 6,6548% a.a.)
+taxa_mercado = 0.066548
+pu_mercado, df_fluxos = deb.present_value(
+    base_date=base_date,
+    rate=taxa_mercado,
+    vna=vna_data,
+    return_cashflows=True
+)
+dur_mercado = deb.duration(base_date=base_date, rate=taxa_mercado, vna=vna_data)
+
+print(f"VALEA0 - PU Mercado:     R$ {pu_mercado:.6f}")
+print(f"VALEA0 - Duration:       {dur_mercado:.2f} DU")
+print(df_fluxos[["data_evento", "du", "tipo_evento", "valor_evento", "fator_desconto", "pv_evento"]])
+```
+

@@ -46,7 +46,8 @@ O pacote estrutura-se em três camadas desacopladas que separam a ingestão de d
 4. **Cupons Cambiais, Spreads e Moedas a Termo (`BUS/252` e `ACT/360`):** Cupom Cambial Sujo (`DOL` sobre futuros `DDI`), Cupom Cambial Limpo (`DOC` e `DCL`), Cupons Cruzados de Euro (`EUC`) e Iene (`YCL`), Spreads de Taxas Offshore (`SDE`, `SGP`, `SMX`, `SYD`) e Estruturas a Termo de Câmbio (`PTX`, `EUR` e `JPY`);
 5. **Curvas Internacionais Offshore (`ACT/360`):** Curvas a termo de futuros de taxas *overnight* (`SFR` para SOFR, `EST` para €STR, `TIE` para F-TIIE) e curvas zero cupom de *Overnight Indexed Swaps* (`ZUS` / `LIB`, `ZEU` e `ZMX`);
 6. **Renda Variável e Convenience Yield (`BUS/252`):** Estruturas de preços futuros de índices (`INP` para Ibovespa, `BRP` para IBrX-50, `SML`, `MBR`, `VIX`), futuros de ações individuais e curvas de custo de carrego (`CYI`, `CYM`, `CYX`);
-7. **Títulos Públicos Federais (`TPF`):** Precificação exata (PU, cotação em base 100, VNA projetado e truncado em 6 casas decimais) e métricas de sensibilidade (*Duration* de Macaulay, *Duration* Modificada, DV01 e Convexidade) para **LTN**, **NTN-F**, **NTN-B** e **LFT**.
+7. **Títulos Públicos Federais (`TPF`):** Precificação exata (PU, cotação em base 100, VNA projetado e truncado em 6 casas decimais) e métricas de sensibilidade (*Duration* de Macaulay, *Duration* Modificada, DV01 e Convexidade) para **LTN**, **NTN-F**, **NTN-B** e **LFT**;
+8. **Crédito Privado e Debêntures:** Extração estruturada de cadastros e cronogramas de amortizações via Sistema Nacional de Debêntures (SND / `debentures.com.br`) e arquivos de mercado secundário ANBIMA, com cálculo de PU Par, juros acumulados, PU a mercado, duration e tabela de fluxos futuros.
 
 ---
 
@@ -121,24 +122,28 @@ bz_pricing/
 │   │   ├── manager.py                   # Fachada central de resolução de insumos (CurveManager)
 │   │   └── exceptions.py                # Tratamento estruturado de exceções (DataUnavailableError)
 │   │
-│   ├── instruments/                     # Instrumentos de Renda Fixa Soberana
-│   │   └── tpf.py                       # Precificação de LTN, NTN-F, NTN-B e LFT
+│   ├── instruments/                     # Instrumentos de Renda Fixa Soberana e Privada
+│   │   ├── tpf.py                       # Precificação de LTN, NTN-F, NTN-B, NTN-C e LFT
+│   │   └── credit.py                    # Precificação de Debêntures (IPCA, CDI, Pré) e PU Par
 │   │
 │   ├── bonds/                           # Construtores auxiliares de carteiras de títulos
 │   │   └── builder.py                   # BondBuilder integrado a dados secundários da ANBIMA
 │   │
 │   └── data/                            # Ingestão e Extração de Dados Públicos
 │       ├── loaders.py                   # Leitura e filtragem de arquivos SPRD, ANBIMA e taxas referenciais
+│       ├── debentures.py                # Cliente de dados do SND (debentures.com.br) e mercado ANBIMA
 │       └── scrapers.py                  # Coletores automatizados (B3, ANBIMA, BCB SGS/Olinda, NY Fed, ECB, Banxico)
 │
 ├── notebooks/                           # Cadernos de Validação Empírica
 │   ├── analise_curvas.ipynb             # Auditoria visual e numérica de todas as famílias de curvas
-│   └── validacao_tpfs_anbima.ipynb      # Validação de PU e métricas de risco contra o mercado secundário ANBIMA
+│   ├── validacao_tpfs.ipynb             # Validação fluxo a fluxo dos 50 títulos públicos federais ANBIMA
+│   └── validacao_debentures.ipynb       # Extração de dados SND, cálculo de PU Par e apreçamento de debêntures
 │
 └── tests/                               # Suíte Automatizada de Testes Unitários e de Integração
     ├── test_interpolators.py            # Testes dos operadores de interpolação e extrapolação em Cython
     ├── test_curves.py                   # Testes de aderência por vértices e construção 100% offline por componentes
-    └── test_bonds.py                    # Testes de precificação de títulos públicos federais
+    ├── test_bonds.py                    # Testes de precificação de títulos públicos federais
+    └── test_debentures.py               # Testes de extração SND e cálculo de debêntures (IPCA e CDI)
 ```
 
 ---
@@ -267,6 +272,41 @@ pu_multi = ntnb.present_value(
 print(f"NTN-B 2027 Multi-Curva: PU = R$ {pu_multi:.6f}")
 ```
 
+### 5.4 Precificação de Debêntures e Extração de Fluxos de Crédito Privado
+
+A precificação de debêntures e títulos de crédito privado integra a extração de cronogramas contratuais no Sistema Nacional de Debêntures (SND / `debentures.com.br`) e cotações de mercado secundário da ANBIMA:
+
+```python
+import datetime
+from bz_pricing.data.debentures import DebenturesClient
+from bz_pricing.instruments.credit import Debenture
+
+client = DebenturesClient(cache_dir="dados/debentures")
+base_date = datetime.date(2026, 10, 30)
+
+# 1. Carregamento analítico do ativo via código SND (ex.: VALEA0 - IPCA + 6,40% a.a.)
+deb = Debenture.from_ticker("VALEA0", client=client)
+
+# 2. Cômputo do PU Par teórico com base no VNA oficial e juros acumulados da emissão
+vna_data = 1096.791130
+pu_par = deb.pu_par(base_date, vna=vna_data)
+print(f"VALEA0 - PU Par Teórico: R$ {pu_par:.6f}")
+
+# 3. Precificação a mercado por taxa indicativa e decomposição fluxo a fluxo
+taxa_mercado = 0.066548
+pu_mercado, df_fluxos = deb.present_value(
+    base_date=base_date,
+    rate=taxa_mercado,
+    vna=vna_data,
+    return_cashflows=True
+)
+dur_mercado = deb.duration(base_date=base_date, rate=taxa_mercado, vna=vna_data)
+
+print(f"VALEA0 - PU Mercado:     R$ {pu_mercado:.6f}")
+print(f"VALEA0 - Duration:       {dur_mercado:.2f} DU")
+print(df_fluxos[["data_evento", "du", "tipo_evento", "valor_evento", "pv_evento"]])
+```
+
 ---
 
 ## 6. Validação Empírica por Vértices
@@ -303,6 +343,16 @@ O teste automatizado em lote (`test_all_anbima_bonds_20261030` em `tests/test_bo
 | **NTN-C** | 1 | 2031 | R\$ 0,000000 |
 | **Total Consolidado** | **50** | **100% dos títulos do mercado** | **R\$ 0,000000** |
 
+### 6.2 Validação de Debêntures no Mercado Secundário (SND / ANBIMA)
+
+A consistência dos fluxos e do PU Par é verificada no caderno [`notebooks/validacao_debentures.ipynb`](notebooks/validacao_debentures.ipynb) e nos testes automatizados (`tests/test_debentures.py`). O cômputo do PU Par teórico para a debênture `VALEA0` em 30/10/2026 reproduz o valor divulgado pelo SND até a sexta casa decimal:
+
+| Ativo | Emissor | Indexador | VNA Apurado | Juros Acumulados | PU Par Teórico | PU Par SND | Divergência |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| `VALEA0` | Vale S.A. | IPCA + 6,40% a.a. | R\$ 1.096,791130 | 0,270486% | R\$ 1.099,757794 | R\$ 1.099,757794 | R\$ 0,000000 |
+
+O arquivo oficial de mercado secundário de debêntures da ANBIMA (`db261030.txt`), contendo 1.272 ativos negociados, é utilizado para aprecimento a mercado e cálculo de duration individual e agregada.
+
 ---
 
 ## 7. Referências Normativas e Bibliográficas
@@ -310,6 +360,8 @@ O teste automatizado em lote (`test_all_anbima_bonds_20261030` em `tests/test_bo
 - **B3 S.A. – Brasil, Bolsa, Balcão.** *Manual de Curvas da B3: Metodologia de Apuração das Estruturas a Termo de Taxas de Juros, Moedas e Índices*. São Paulo: B3, 2024. Disponível em: <https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/consultas/mercado-de-derivativos/precos-referenciais/manuais-de-curvas/>.
 - **B3 S.A. – Brasil, Bolsa, Balcão.** *Preços Referenciais – Taxas Referenciais BM&FBOVESPA*. São Paulo: B3. Disponível em: <https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/consultas/mercado-de-derivativos/precos-referenciais/taxas-referenciais-bm-fbovespa/>.
 - **ANBIMA – Associação Brasileira das Entidades dos Mercados Financeiro e de Capitais.** *Metodologia de Precificação de Títulos Públicos Federais e Estrutura a Termo das Taxas de Juros (ETTJ)*. Rio de Janeiro: ANBIMA. Disponível em: <https://www.anbima.com.br/pt_br/informar/precos-e-indices/precos/titulos-publicos.htm>.
+- **ANBIMA – Associação Brasileira das Entidades dos Mercados Financeiro e de Capitais.** *Mercado Secundário de Debêntures e Metodologia de Precificação de Títulos Privados*. Rio de Janeiro: ANBIMA. Disponível em: <https://www.anbima.com.br/informacoes/merc-sec-debentures/>.
+- **SND – Sistema Nacional de Debêntures.** *Consultas e Metodologia de Eventos Financeiros e PU Par*. Rio de Janeiro: B3 / ANBIMA. Disponível em: <https://www.debentures.com.br/>.
 - **Banco Central do Brasil (BCB) / Conselho Monetário Nacional (CMN).** *Resolução CMN nº 5.124, de 28 de março de 2024: Metodologia de cálculo da Taxa Básica Financeira (TBF) e da Taxa Referencial (TR)*. Brasília: BCB, 2024. Disponível em: <https://www.bcb.gov.br/estabilidadefinanceira/exibenormativo?tipo=Resolu%C3%A7%C3%A3o%20CMN&numero=5124>.
 - **Banco Central do Brasil (BCB).** *Sistema Gerenciador de Séries Temporais (SGS) e Sistema Expectativas de Mercado (Focus/Olinda)*. Brasília: BCB. Disponível em: <https://www3.bcb.gov.br/sgspub/>.
 - **Secretaria do Tesouro Nacional (STN).** *Regras e Fórmulas de Cálculo dos Títulos Públicos Federais no Mercado Secundário*. Brasília: Ministério da Fazenda. Disponível em: <https://www.tesourodireto.com.br/titulos/historico-de-precos-e-taxas.htm>.
