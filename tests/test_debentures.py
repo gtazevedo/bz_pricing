@@ -72,3 +72,4 @@ def test_debenture_aalm12_pricing():
 
     dur = deb.duration(base_date, taxa_ind, vna=vna)
     assert 400.0 < dur < 700.0
+
