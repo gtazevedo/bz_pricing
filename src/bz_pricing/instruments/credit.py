@@ -18,6 +18,9 @@ class Debenture:
     com amortizações ordinárias/extraordinárias e fluxos de caixa periódicos.
     """
 
+    _value_scale: float = 1e6
+    _is_cricra: bool = False
+
     def __init__(self,
                  ticker: str,
                  maturity_date: Union[datetime.date, str] = None,
@@ -144,8 +147,11 @@ class Debenture:
 
         fator = 1.0
         for r in rates:
-            fator *= (1.0 + (float(r) / 100.0) * multiplicador)
-        if round_factor_8:
+            f_dia = 1.0 + (float(r) / 100.0) * multiplicador
+            if self._is_cricra and multiplicador != 1.0:
+                f_dia = math.trunc(f_dia * 1e16) / 1e16
+            fator *= f_dia
+        if round_factor_8 or self._is_cricra:
             fator = round(fator, 8)
         return float(fator)
 
@@ -264,7 +270,7 @@ class Debenture:
                     perc = float(r.get("taxa_percentual", 0.0) or 0.0)
                     if perc > 0.0:
                         base_a = float(self.nominal_value) if self.amortizacao_sobre_vne else saldo
-                        saldo = max(0.0, saldo - math.trunc((base_a * (perc / 100.0)) * 1e6) / 1e6)
+                        saldo = max(0.0, saldo - math.trunc((base_a * (perc / 100.0)) * self._value_scale) / self._value_scale)
             return saldo
         engine = vna_engine or self.vna_engine
         if engine is None:
@@ -320,7 +326,7 @@ class Debenture:
                 if fator_di_acumulado is not None
                 else self._fetch_di_factor(last_date, base_date, multiplicador=self.multiplicador_di, round_factor_8=False)
             )
-            return math.trunc((vna * f_di) * 1e6) / 1e6
+            return math.trunc((vna * f_di) * self._value_scale) / self._value_scale
 
         if self._is_di_linked():
             f_di = (
@@ -329,13 +335,13 @@ class Debenture:
                 else self._fetch_di_factor(last_date, base_date, multiplicador=1.0, round_factor_8=True)
             )
             f_spr = round(math.pow(1.0 + self.coupon_rate, du_passado / 252.0), 9)
-            f_juros = math.trunc(f_di * f_spr * 1e9) / 1e9
-            return math.trunc((vna * f_juros) * 1e6) / 1e6
+            f_juros = round(f_di * f_spr, 9) if self._is_cricra else math.trunc(f_di * f_spr * 1e9) / 1e9
+            return math.trunc((vna * f_juros) * self._value_scale) / self._value_scale
 
-        # Juros acruados pró-rata (A-9) para IPCA, IGP-M e Prefixado
+        # Juros acruados pró-rata para IPCA, IGP-M e Prefixado
         yf_passado = self._coupon_year_fraction(last_date, base_date)
         f_juros = math.pow(1.0 + self.coupon_rate, yf_passado) - 1.0
-        juros_val = math.trunc((vna * f_juros) * 1e6) / 1e6
+        juros_val = math.trunc((vna * f_juros) * self._value_scale) / self._value_scale
         return vna + juros_val
 
     def cashflow_table(self, base_date: Union[datetime.date, str],
@@ -446,10 +452,11 @@ class Debenture:
                     # O período contratual de contagem de juros ocorre entre as datas de liquidação (d_pg)
                     yf_period = self._coupon_year_fraction(prev_event_date, d_pg)
                     r_cupom = (perc / 100.0) if perc > 0.0 else self.coupon_rate
-                    f_cupom = math.trunc((math.pow(1.0 + r_cupom, yf_period) - 1.0) * 1e9) / 1e9
+                    f_cupom_raw = math.pow(1.0 + r_cupom, yf_period) - 1.0
+                    f_cupom = round(f_cupom_raw, 9) if self._is_cricra else math.trunc(f_cupom_raw * 1e9) / 1e9
 
-                # Critério padrão SND: valor unitário dos juros truncado em 6 casas decimais (T-6)
-                valor_fluxo = math.trunc((saldo_vna * f_cupom) * 1e6) / 1e6
+                # Critério SND (T-6) para debêntures e ANBIMA (T-8) para CRI/CRA
+                valor_fluxo = math.trunc((saldo_vna * f_cupom) * self._value_scale) / self._value_scale
                 pv_val = valor_fluxo / df_val
 
                 rows.append({
@@ -468,11 +475,11 @@ class Debenture:
 
             elif "amort" in evento_lower or "vencimento" in evento_lower:
                 if "vencimento" in evento_lower or perc <= 0.0 or (not self.amortizacao_sobre_vne and perc >= 100.0):
-                    valor_fluxo = math.trunc(saldo_vna * 1e6) / 1e6
+                    valor_fluxo = math.trunc(saldo_vna * self._value_scale) / self._value_scale
                     saldo_vna = 0.0
                 else:
                     base_amort = vna if self.amortizacao_sobre_vne else saldo_vna
-                    valor_fluxo = min(saldo_vna, math.trunc((base_amort * (perc / 100.0)) * 1e6) / 1e6)
+                    valor_fluxo = min(saldo_vna, math.trunc((base_amort * (perc / 100.0)) * self._value_scale) / self._value_scale)
                     saldo_vna -= valor_fluxo
 
                 pv_val = valor_fluxo / df_val
@@ -517,7 +524,7 @@ class Debenture:
         if df_flows.empty:
             pu = vna_atual
         else:
-            pu = math.trunc(df_flows["valor_presente"].sum() * 1e6) / 1e6
+            pu = math.trunc(df_flows["valor_presente"].sum() * self._value_scale) / self._value_scale
 
         if return_cashflows:
             return pu, df_flows
@@ -739,6 +746,8 @@ class CertificadoRecebiveis(Debenture):
     """
 
     DEFAULT_LASTRO = ""
+    _value_scale: float = 1e8
+    _is_cricra: bool = True
 
     def __init__(self,
                  ticker: str,
