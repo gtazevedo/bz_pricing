@@ -233,6 +233,57 @@ class ANBIMADataClient:
             json.dump(payload, f, ensure_ascii=False, indent=2)
         return payload
 
+    def get_ettj(self, force_download: bool = False) -> pd.DataFrame:
+        """
+        Baixa e interpreta a ETTJ oficial da ANBIMA (`CZ-down.asp`) contendo
+        os vértices em dias úteis, ETTJ IPCA, ETTJ Prefixada e Inflação Implícita
+        (em decimal a.a.).
+        """
+        cache_file = os.path.join(self.data_dir, "anbima_ettj.csv")
+        if not force_download and os.path.exists(cache_file):
+            return pd.read_csv(cache_file)
+
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+        resp = requests.get(
+            "https://www.anbima.com.br/informacoes/est-termo/CZ-down.asp",
+            timeout=30,
+            verify=False,
+        )
+        resp.raise_for_status()
+        text = resp.content.decode("latin-1", errors="replace")
+        lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+
+        rows = []
+        in_table = False
+        for ln in lines:
+            if ln.startswith("Vertices;"):
+                in_table = True
+                continue
+            if not in_table:
+                continue
+            parts = ln.split(";")
+            if len(parts) < 4:
+                continue
+            try:
+                du = int(parts[0].strip())
+                ipca = float(parts[1].replace(",", ".")) / 100.0
+                pref = float(parts[2].replace(",", ".")) / 100.0
+                impl = float(parts[3].replace(",", ".")) / 100.0
+                rows.append({
+                    "du": du,
+                    "ettj_ipca": ipca,
+                    "ettj_pref": pref,
+                    "inflacao_implicita": impl,
+                })
+            except ValueError:
+                continue
+
+        df = pd.DataFrame(rows)
+        if df.empty:
+            raise RuntimeError("Tabela ETTJ não localizada na resposta da ANBIMA (CZ-down.asp).")
+        df.to_csv(cache_file, index=False)
+        return df
+
     def list_debentures(self, force_download: bool = False) -> pd.DataFrame:
         """
         Consulta a listagem aberta inicial de debêntures do ANBIMA Data

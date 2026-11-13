@@ -679,13 +679,140 @@ class Debenture:
         conv = (f_conv * df_flows["valor_presente"]).sum() / total_pv
         return float(conv)
 
+    @staticmethod
+    def _ir_regressive_rate(calendar_days: int) -> float:
+        """Retorna a alíquota da tabela regressiva de IR conforme prazo em dias corridos."""
+        if calendar_days <= 180:
+            return 0.225
+        if calendar_days <= 360:
+            return 0.200
+        if calendar_days <= 720:
+            return 0.175
+        return 0.150
+
+    def gross_up_rate(self, base_date: Union[datetime.date, str],
+                      discount_rate: float,
+                      vna: Optional[float] = None,
+                      last_coupon_date: Union[datetime.date, str] = None,
+                      di_curve: Optional[Union[float, Curve]] = None,
+                      pu_par_val: Optional[float] = None,
+                      fator_di_acumulado: Optional[float] = None) -> float:
+        """
+        Calcula a taxa nominal com gross-up de IR (Lei 12.431 / ativos incentivados)
+        conforme metodologia ANBIMA de Z-Spread: retorna a alíquota regressiva de IR
+        sobre cada parcela futura de juros e encontra a taxa que preserva o PU indicativo.
+        """
+        from scipy.optimize import brentq
+
+        base_dt = self._normalize_date(base_date)
+        vna_atual = self.resolve_vna(base_dt, vna=vna)
+        pu_target, df_flows = self.present_value(
+            base_dt,
+            float(discount_rate),
+            vna=vna_atual,
+            last_coupon_date=last_coupon_date,
+            return_cashflows=True,
+            di_curve=di_curve,
+            pu_par_val=pu_par_val,
+            fator_di_acumulado=fator_di_acumulado,
+        )
+        if df_flows.empty or pu_target <= 0.0:
+            return float(discount_rate)
+
+        adjusted_flows = []
+        du_arr = df_flows["du"].to_numpy(dtype=float)
+        for _, row in df_flows.iterrows():
+            fluxo = float(row["fluxo_nominal"])
+            if "juros" in str(row["evento"]).lower():
+                d_pg = self._normalize_date(row["data_pagamento"])
+                dc = max(1, (d_pg - base_dt).days)
+                aliq = self._ir_regressive_rate(dc)
+                adjusted_flows.append(fluxo / (1.0 - aliq))
+            else:
+                adjusted_flows.append(fluxo)
+
+        flows_arr = np.asarray(adjusted_flows, dtype=float)
+
+        def _pv_diff(rate: float) -> float:
+            disc = np.power(1.0 + rate, du_arr / 252.0)
+            return float(np.sum(flows_arr / disc) - pu_target)
+
+        low = max(-0.90, float(discount_rate) - 0.05)
+        high = float(discount_rate) + 0.50
+        return float(brentq(_pv_diff, low, high, xtol=1e-10))
+
+    def z_spread(self, base_date: Union[datetime.date, str],
+                 discount_rate: float,
+                 risk_free_rate: Optional[float] = None,
+                 ettj_pre_rate_or_curve: Optional[Union[float, Curve]] = None,
+                 incentivada: bool = False,
+                 vna: Optional[float] = None,
+                 last_coupon_date: Union[datetime.date, str] = None,
+                 di_curve: Optional[Union[float, Curve]] = None,
+                 pu_par_val: Optional[float] = None,
+                 fator_di_acumulado: Optional[float] = None) -> float:
+        """
+        Calcula o Z-Spread conforme metodologia oficial ANBIMA (Agosto/2025):
+        - CDI + spread: o Z-spread é a própria taxa indicativa (`discount_rate`).
+        - % do DI: ((J * T) + 1) / (J + 1) - 1, usando a taxa `J` da ETTJ prefixada
+          na duration de Macaulay do ativo.
+        - IPCA / IGP-M / Prefixado: (1 + i_eff) / (1 + P) - 1, onde `P` é a taxa do
+          ativo livre de risco de duration mais próxima (NTN-B ou ETTJ) e `i_eff`
+          considera o gross-up de IR quando `incentivada=True`.
+        """
+        if self._is_pct_di():
+            if ettj_pre_rate_or_curve is None:
+                raise ValueError(
+                    "Para calcular o Z-Spread de ativos '% do DI', informe 'ettj_pre_rate_or_curve' "
+                    "(taxa ou curva ETTJ prefixada)."
+                )
+            dur_du = self.duration(
+                base_date=base_date,
+                discount_rate_or_curve=discount_rate,
+                vna=vna,
+                last_coupon_date=last_coupon_date,
+                di_curve=di_curve,
+                pu_par_val=pu_par_val,
+                fator_di_acumulado=fator_di_acumulado,
+            )
+            j_rate = self._get_rate_for_du(ettj_pre_rate_or_curve, dur_du)
+            t_pct = float(discount_rate)
+            return float(((j_rate * t_pct) + 1.0) / (j_rate + 1.0) - 1.0)
+
+        if self._is_di_linked():
+            return float(discount_rate)
+
+        if risk_free_rate is None:
+            raise ValueError(
+                "Para calcular o Z-Spread de ativos IPCA/IGP-M/Prefixados, informe 'risk_free_rate' "
+                "(taxa da NTN-B ou vértice livre de risco de duration mais próxima)."
+            )
+
+        i_eff = (
+            self.gross_up_rate(
+                base_date=base_date,
+                discount_rate=float(discount_rate),
+                vna=vna,
+                last_coupon_date=last_coupon_date,
+                di_curve=di_curve,
+                pu_par_val=pu_par_val,
+                fator_di_acumulado=fator_di_acumulado,
+            )
+            if incentivada
+            else float(discount_rate)
+        )
+        return float((1.0 + i_eff) / (1.0 + float(risk_free_rate)) - 1.0)
+
     def risk_metrics(self, base_date: Union[datetime.date, str],
                      discount_rate_or_curve: Union[float, Curve],
                      vna: Optional[float] = None,
                      last_coupon_date: Union[datetime.date, str] = None,
                      di_curve: Optional[Union[float, Curve]] = None,
                      pu_par_val: Optional[float] = None,
-                     fator_di_acumulado: Optional[float] = None) -> Dict[str, float]:
+                     fator_di_acumulado: Optional[float] = None,
+                     risk_free_rate: Optional[float] = None,
+                     ettj_pre_rate_or_curve: Optional[Union[float, Curve]] = None,
+                     incentivada: bool = False) -> Dict[str, float]:
         """
         Consolida as métricas de precificação e sensibilidade da debênture na data de referência.
         """
@@ -725,7 +852,7 @@ class Debenture:
         dv01_val = float(pu_val * d_mod * 0.0001)
         conv_val = float(((t_anos * (t_anos + 1.0)) / np.power(1.0 + df_flows["taxa_desconto"], 2.0) * df_flows["valor_presente"]).sum() / total_pv)
 
-        return {
+        out: Dict[str, float] = {
             "pu_par": pu_par_atual,
             "pu": pu_val,
             "cotacao": cot_val,
@@ -733,8 +860,35 @@ class Debenture:
             "duration_anos": dur_anos,
             "modified_duration": d_mod,
             "dv01": dv01_val,
-            "convexity": conv_val
+            "convexity": conv_val,
         }
+
+        if not isinstance(discount_rate_or_curve, Curve):
+            r_scalar = float(discount_rate_or_curve)
+            if self._is_di_linked() and not self._is_pct_di():
+                out["z_spread"] = r_scalar
+            elif self._is_pct_di() and ettj_pre_rate_or_curve is not None:
+                j_rate = self._get_rate_for_du(ettj_pre_rate_or_curve, dur_du)
+                out["z_spread"] = float(((j_rate * r_scalar) + 1.0) / (j_rate + 1.0) - 1.0)
+            elif not self._is_di_linked() and risk_free_rate is not None:
+                i_eff = (
+                    self.gross_up_rate(
+                        base_date=base_date,
+                        discount_rate=r_scalar,
+                        vna=vna_atual,
+                        last_coupon_date=last_coupon_date,
+                        di_curve=di_curve,
+                        pu_par_val=pu_par_atual,
+                        fator_di_acumulado=fator_di_acumulado,
+                    )
+                    if incentivada
+                    else r_scalar
+                )
+                if incentivada:
+                    out["taxa_gross_up"] = i_eff
+                out["z_spread"] = float((1.0 + i_eff) / (1.0 + float(risk_free_rate)) - 1.0)
+
+        return out
 
 
 class CertificadoRecebiveis(Debenture):
