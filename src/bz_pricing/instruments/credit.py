@@ -924,3 +924,258 @@ class CRA(CertificadoRecebiveis):
     """
 
     DEFAULT_LASTRO = "Agronegócio"
+
+
+class CotaFIDC(CertificadoRecebiveis):
+    """
+    Cota de Fundo de Investimento em Direitos Creditórios (FIDC) conforme
+    metodologia ANBIMA (T-8 para cota atualizada, amortizações, fluxos e cota
+    de mercado; T-16/A-8 para DI; A-9 para fator de juros/spread; T-2 para duration).
+    """
+
+    def __init__(self,
+                 ticker: str,
+                 maturity_date: Union[datetime.date, str] = None,
+                 indexador: str = "DI",
+                 coupon_rate: float = 0.0,
+                 issue_date: Union[datetime.date, str] = None,
+                 cashflows_df: Optional[pd.DataFrame] = None,
+                 nominal_value: float = 1000.0,
+                 cota_emissao: Optional[float] = None,
+                 calendar_name: str = "B3",
+                 multiplicador_di: float = 1.0,
+                 amortizacao_sobre_vne: bool = False,
+                 coupon_day_count: str = "BUS/252",
+                 defasagem_di: int = 0,
+                 classe_cota: str = "SÊNIOR",
+                 cnpj_fundo: str = "",
+                 administrador: str = "",
+                 custodiante: str = "",
+                 anniversary_day: Optional[int] = None,
+                 vna_engine: Optional[VNAEngine] = None,
+                 is_pct_di: Optional[bool] = None):
+        vne = float(cota_emissao) if cota_emissao is not None else float(nominal_value)
+        super().__init__(
+            ticker=ticker,
+            maturity_date=maturity_date,
+            indexador=indexador,
+            coupon_rate=coupon_rate,
+            issue_date=issue_date,
+            cashflows_df=cashflows_df,
+            nominal_value=vne,
+            calendar_name=calendar_name,
+            multiplicador_di=multiplicador_di,
+            amortizacao_sobre_vne=amortizacao_sobre_vne,
+            coupon_day_count=coupon_day_count,
+            defasagem_di=defasagem_di,
+            anniversary_day=anniversary_day,
+            vna_engine=vna_engine,
+            is_pct_di=is_pct_di,
+        )
+        self.classe_cota = classe_cota.strip().upper()
+        self.cnpj_fundo = cnpj_fundo.strip()
+        self.administrador = administrador.strip()
+        self.custodiante = custodiante.strip()
+
+    @classmethod
+    def from_schedule(cls,
+                      ticker: str,
+                      issue_date: Union[datetime.date, str],
+                      maturity_date: Union[datetime.date, str],
+                      indexador: str = "DI",
+                      coupon_rate: float = 0.0,
+                      coupon_freq: str = "mensal",
+                      amort_type: str = "bullet",
+                      amort_start_date: Optional[Union[datetime.date, str]] = None,
+                      custom_amort_schedule: Optional[List[Tuple[Union[datetime.date, str], float]]] = None,
+                      nominal_value: float = 1000.0,
+                      cota_emissao: Optional[float] = None,
+                      calendar_name: str = "B3",
+                      multiplicador_di: float = 1.0,
+                      amortizacao_sobre_vne: bool = False,
+                      coupon_day_count: str = "BUS/252",
+                      defasagem_di: int = 0,
+                      classe_cota: str = "SÊNIOR",
+                      cnpj_fundo: str = "",
+                      administrador: str = "",
+                      custodiante: str = "",
+                      anniversary_day: Optional[int] = None,
+                      vna_engine: Optional[VNAEngine] = None):
+        """Constrói uma CotaFIDC gerando automaticamente a agenda de eventos financeiros."""
+        df_cf = CRICRAClient.build_schedule(
+            issue_date=issue_date,
+            maturity_date=maturity_date,
+            coupon_freq=coupon_freq,
+            amort_type=amort_type,
+            amort_start_date=amort_start_date,
+            custom_amort_schedule=custom_amort_schedule,
+            calendar_name=calendar_name,
+        )
+        return cls(
+            ticker=ticker,
+            maturity_date=maturity_date,
+            indexador=indexador,
+            coupon_rate=coupon_rate,
+            issue_date=issue_date,
+            cashflows_df=df_cf,
+            nominal_value=nominal_value,
+            cota_emissao=cota_emissao,
+            calendar_name=calendar_name,
+            multiplicador_di=multiplicador_di,
+            amortizacao_sobre_vne=amortizacao_sobre_vne,
+            coupon_day_count=coupon_day_count,
+            defasagem_di=defasagem_di,
+            classe_cota=classe_cota,
+            cnpj_fundo=cnpj_fundo,
+            administrador=administrador,
+            custodiante=custodiante,
+            anniversary_day=anniversary_day,
+            vna_engine=vna_engine,
+        )
+
+
+FIDC = CotaFIDC
+
+
+class LetraFinanceira(CertificadoRecebiveis):
+    """
+    Letra Financeira (LF Sênior, Subordinada ou Complementar) conforme
+    metodologia ANBIMA.
+
+    Para LF Sênior, considera o vencimento final (yield to maturity).
+    Para LF Subordinada ou Complementar com `call_date` informada, adota
+    a data de possível recompra pelo emissor (yield to call) no fluxo.
+    """
+
+    def __init__(self,
+                 ticker: str,
+                 maturity_date: Union[datetime.date, str] = None,
+                 indexador: str = "DI",
+                 coupon_rate: float = 0.0,
+                 issue_date: Union[datetime.date, str] = None,
+                 cashflows_df: Optional[pd.DataFrame] = None,
+                 nominal_value: float = 1000.0,
+                 calendar_name: str = "B3",
+                 multiplicador_di: float = 1.0,
+                 amortizacao_sobre_vne: bool = False,
+                 coupon_day_count: str = "BUS/252",
+                 defasagem_di: int = 0,
+                 classe: str = "SENIOR",
+                 emissor: str = "",
+                 call_date: Optional[Union[datetime.date, str]] = None,
+                 anniversary_day: Optional[int] = None,
+                 vna_engine: Optional[VNAEngine] = None,
+                 is_pct_di: Optional[bool] = None):
+        self.classe = classe.strip().upper()
+        self.emissor = emissor.strip()
+        self.call_date = self._normalize_date(call_date) if call_date is not None else None
+        effective_maturity = (
+            self.call_date
+            if (self.call_date is not None and self.classe in ("SUBORDINADA", "COMPLEMENTAR"))
+            else maturity_date
+        )
+        super().__init__(
+            ticker=ticker,
+            maturity_date=effective_maturity,
+            indexador=indexador,
+            coupon_rate=coupon_rate,
+            issue_date=issue_date,
+            cashflows_df=cashflows_df,
+            nominal_value=nominal_value,
+            calendar_name=calendar_name,
+            multiplicador_di=multiplicador_di,
+            amortizacao_sobre_vne=amortizacao_sobre_vne,
+            coupon_day_count=coupon_day_count,
+            defasagem_di=defasagem_di,
+            anniversary_day=anniversary_day,
+            vna_engine=vna_engine,
+            is_pct_di=is_pct_di,
+        )
+
+    @classmethod
+    def from_bullet(cls,
+                    ticker: str,
+                    issue_date: Union[datetime.date, str],
+                    maturity_date: Union[datetime.date, str],
+                    indexador: str = "DI",
+                    coupon_rate: float = 0.0,
+                    nominal_value: float = 1000.0,
+                    calendar_name: str = "B3",
+                    multiplicador_di: float = 1.0,
+                    classe: str = "SENIOR",
+                    emissor: str = "",
+                    call_date: Optional[Union[datetime.date, str]] = None,
+                    is_pct_di: Optional[bool] = None) -> "LetraFinanceira":
+        """Constrói uma Letra Financeira bullet (sem cupons intermediários)."""
+        cls_norm = classe.strip().upper()
+        horizon = call_date if (call_date is not None and cls_norm in ("SUBORDINADA", "COMPLEMENTAR")) else maturity_date
+        horizon_dt = horizon if isinstance(horizon, datetime.date) else pd.to_datetime(horizon, dayfirst="/" in str(horizon)).date()
+        cal = get_calendar(calendar_name)
+        pg_dt = cal.adjust_next(horizon_dt)
+        df_cf = pd.DataFrame([
+            {"data_evento": horizon_dt, "data_pagamento": pg_dt, "evento": "Juros", "tipo": "Juros", "taxa_percentual": 0.0},
+            {"data_evento": horizon_dt, "data_pagamento": pg_dt, "evento": "Vencimento", "tipo": "Vencimento", "taxa_percentual": 100.0},
+        ])
+        return cls(
+            ticker=ticker,
+            maturity_date=maturity_date,
+            indexador=indexador,
+            coupon_rate=coupon_rate,
+            issue_date=issue_date,
+            cashflows_df=df_cf,
+            nominal_value=nominal_value,
+            calendar_name=calendar_name,
+            multiplicador_di=multiplicador_di,
+            classe=classe,
+            emissor=emissor,
+            call_date=call_date,
+            is_pct_di=is_pct_di,
+        )
+
+    @staticmethod
+    def indicative_spread_from_anbima(
+        emissor: str,
+        prazo_meses: float,
+        tipo_taxa: str = "Indicativa",
+        client=None,
+    ) -> float:
+        """
+        Consulta a matriz aberta de Letras Financeiras no ANBIMA Data e interpola
+        linearmente o spread indicativo (em decimal a.a.) para o emissor e prazo informados.
+        """
+        from bz_pricing.data.anbima_data import ANBIMADataClient
+
+        cli = client or ANBIMADataClient()
+        payload = cli.get_letras_financeiras()
+        content = payload.get("content", []) if isinstance(payload, dict) else []
+        if not content:
+            raise ValueError("Matriz de Letras Financeiras vazia no ANBIMA Data.")
+
+        emissor_up = emissor.strip().upper()
+        tipo_up = tipo_taxa.strip().upper()
+        vertices: List[Tuple[float, float]] = []
+
+        for block in content:
+            for item in block.get("emissores", []):
+                if str(item.get("emissor", "")).strip().upper() == emissor_up and str(item.get("tipo_taxa", "")).strip().upper() == tipo_up:
+                    for v in item.get("vertices", []):
+                        taxa_val = Debenture._parse_br_float(v.get("taxa"), default=float("nan"))
+                        if not math.isnan(taxa_val):
+                            vertices.append((float(v["mes"]), taxa_val / 100.0))
+
+        if not vertices:
+            raise KeyError(f"Emissor '{emissor}' ({tipo_taxa}) não encontrado na matriz ANBIMA de Letras Financeiras.")
+
+        vertices.sort(key=lambda x: x[0])
+        if prazo_meses <= vertices[0][0]:
+            return vertices[0][1]
+        if prazo_meses >= vertices[-1][0]:
+            return vertices[-1][1]
+
+        for (m0, r0), (m1, r1) in zip(vertices[:-1], vertices[1:]):
+            if m0 <= prazo_meses <= m1:
+                if m1 == m0:
+                    return r0
+                w = (prazo_meses - m0) / (m1 - m0)
+                return r0 + w * (r1 - r0)
+        return vertices[-1][1]

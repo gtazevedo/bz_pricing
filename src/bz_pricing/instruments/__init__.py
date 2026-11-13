@@ -1,5 +1,5 @@
 from .tpf import TituloPublico, LTN, NTNF, LFT, NTNB, NTNBPrincipal, NTNC
-from .credit import Debenture, CertificadoRecebiveis, CRI, CRA
+from .credit import Debenture, CertificadoRecebiveis, CRI, CRA, CotaFIDC, FIDC, LetraFinanceira
 
 __all__ = [
     "TituloPublico",
@@ -13,4 +13,7 @@ __all__ = [
     "CertificadoRecebiveis",
     "CRI",
     "CRA",
+    "CotaFIDC",
+    "FIDC",
+    "LetraFinanceira",
 ]
