@@ -136,3 +136,26 @@ def test_debenture_klbna2_pct_di_pricing():
     assert abs(metrics["duration_du"] - 309.77) < 0.1
     assert metrics["dv01"] > 0.0
 
+
+@pytest.mark.parametrize("ticker", ["ACRC21", "ADPA21", "RADL14", "AEGPA8", "BTEL13"])
+def test_debentures_amostra_diversificada(ticker):
+    client = DebenturesClient(data_dir="dados/debentures")
+    base_date = datetime.date(2026, 10, 30)
+    df_mkt = client.get_market_prices(base_date)
+    row = df_mkt[df_mkt["codigo"] == ticker].iloc[0]
+
+    deb = Debenture.from_ticker(ticker, client=client)
+    hist = client.get_pu_history(ticker)
+    hist_dt = hist[hist["data"] == base_date]
+    vna_val = float(hist_dt["vna"].iloc[0]) if (not hist_dt.empty and pd.notna(hist_dt["vna"].iloc[0])) else None
+
+    curva_pre = CurveManager(allow_download=True).get_curve("PRE", base_date) if deb._is_di_linked() else None
+    metrics = deb.risk_metrics(
+        base_date,
+        float(row["taxa_indicativa"]) / 100.0,
+        vna=vna_val,
+        di_curve=curva_pre,
+    )
+    assert abs(metrics["pu"] - float(row["pu_mercado"])) < 0.02
+    assert abs(metrics["duration_du"] - float(row["duration"])) < 0.1
+

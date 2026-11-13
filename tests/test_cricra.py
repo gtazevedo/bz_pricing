@@ -161,3 +161,23 @@ def test_cra026002bd_real_anbima_data():
     assert abs(metrics["pu"] - pu_oficial) < 0.05
     assert abs(metrics["duration_du"] - dur_oficial) < 1.0
 
+
+@pytest.mark.parametrize("ticker", ["CRA019003JY", "22D1289009", "CRA024004H7"])
+def test_cricra_amostra_diversificada_anbima_data(ticker):
+    client = CRICRAClient(data_dir="dados/cricra")
+    asset = CertificadoRecebiveis.from_ticker(ticker, client=client)
+    prices = client.get_asset_prices(ticker)
+    pu_ind = prices["pu_indicativo"]
+    pu_hist = prices.get("pu_historico") or {}
+
+    ref_dt = datetime.date.fromisoformat(pu_ind["data_referencia"])
+    taxa_ind = float(pu_ind["taxa_indicativa"]) / 100.0
+    pu_oficial = float(pu_ind["pu_indicativo"])
+    dur_oficial = float(pu_ind["duration"])
+    vna_of = float(pu_hist["vna"]) if pu_hist.get("vna") else None
+
+    curva_pre = CurveManager(allow_download=True).get_curve("PRE", ref_dt) if asset._is_di_linked() else None
+    metrics = asset.risk_metrics(ref_dt, taxa_ind, vna=vna_of, di_curve=curva_pre)
+    assert abs(metrics["pu"] - pu_oficial) < 0.10
+    assert abs(metrics["duration_du"] - dur_oficial) < 0.5
+

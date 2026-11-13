@@ -32,7 +32,8 @@ class Debenture:
                  coupon_day_count: str = "BUS/252",
                  defasagem_di: int = 0,
                  anniversary_day: Optional[int] = None,
-                 vna_engine: Optional[VNAEngine] = None):
+                 vna_engine: Optional[VNAEngine] = None,
+                 is_pct_di: Optional[bool] = None):
         self.ticker = ticker.strip().upper()
         self.indexador = indexador.strip().upper()
         self.coupon_rate = 0.0 if (coupon_rate is None or (isinstance(coupon_rate, float) and math.isnan(coupon_rate))) else float(coupon_rate)
@@ -43,6 +44,7 @@ class Debenture:
         self.coupon_day_count = coupon_day_count.strip().upper()
         self.defasagem_di = int(defasagem_di)
         self.vna_engine = vna_engine
+        self._is_pct_di_override = is_pct_di
 
         if maturity_date:
             self.nominal_maturity_date = self._normalize_date(maturity_date)
@@ -93,6 +95,8 @@ class Debenture:
 
     def _is_pct_di(self) -> bool:
         """Indica se a debênture é remunerada exclusivamente por percentual do DI."""
+        if self._is_pct_di_override is not None:
+            return bool(self._is_pct_di_override)
         return self._is_di_linked() and self.coupon_rate <= 0.0 and self.multiplicador_di != 1.0
 
     def _coupon_year_fraction(self, start_date: datetime.date, end_date: datetime.date) -> float:
@@ -248,10 +252,20 @@ class Debenture:
         """
         if vna is not None:
             return float(vna)
-        if "IPCA" not in self.indexador and "IGP" not in self.indexador:
-            return float(self.nominal_value)
-
         base_dt = self._normalize_date(base_date)
+        if "IPCA" not in self.indexador and "IGP" not in self.indexador:
+            saldo = float(self.nominal_value)
+            if self.cashflows_df is not None and not self.cashflows_df.empty:
+                past_amorts = self.cashflows_df[
+                    (self.cashflows_df["data_pagamento"] <= base_dt) &
+                    (self.cashflows_df["evento"].str.contains("amort", case=False, na=False))
+                ]
+                for _, r in past_amorts.iterrows():
+                    perc = float(r.get("taxa_percentual", 0.0) or 0.0)
+                    if perc > 0.0:
+                        base_a = float(self.nominal_value) if self.amortizacao_sobre_vne else saldo
+                        saldo = max(0.0, saldo - math.trunc((base_a * (perc / 100.0)) * 1e6) / 1e6)
+            return saldo
         engine = vna_engine or self.vna_engine
         if engine is None:
             if self.issue_date is None:
@@ -744,7 +758,8 @@ class CertificadoRecebiveis(Debenture):
                  serie: str = "",
                  emissao: str = "",
                  anniversary_day: Optional[int] = None,
-                 vna_engine: Optional[VNAEngine] = None):
+                 vna_engine: Optional[VNAEngine] = None,
+                 is_pct_di: Optional[bool] = None):
         super().__init__(
             ticker=ticker,
             maturity_date=maturity_date,
@@ -759,7 +774,8 @@ class CertificadoRecebiveis(Debenture):
             coupon_day_count=coupon_day_count,
             defasagem_di=defasagem_di,
             anniversary_day=anniversary_day,
-            vna_engine=vna_engine
+            vna_engine=vna_engine,
+            is_pct_di=is_pct_di
         )
         self.securitizadora = securitizadora.strip()
         self.lastro = (lastro or self.DEFAULT_LASTRO).strip()
@@ -839,7 +855,8 @@ class CertificadoRecebiveis(Debenture):
         remun = str(carac.get("remuneracao") or "").upper()
         taxa_emissao = cls._parse_br_float(carac.get("taxa_emissao"), default=0.0)
 
-        if "%" in remun and "DI" in remun:
+        is_pct_di_remun = ("% DI" in remun or "% DO DI" in remun) and "+" not in remun
+        if is_pct_di_remun:
             mult_di = taxa_emissao / 100.0 if taxa_emissao > 0.0 else 1.0
             coupon_rate = 0.0
         else:
@@ -880,6 +897,7 @@ class CertificadoRecebiveis(Debenture):
             coupon_day_count=day_count,
             securitizadora=securitizadora,
             serie=str(carac.get("numero_serie") or ""),
+            is_pct_di=is_pct_di_remun,
         )
 
 
