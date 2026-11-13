@@ -5,6 +5,7 @@ import pytest
 
 from bz_pricing.core.curves import FlatCurve
 from bz_pricing.core.vna_engine import VNAEngine
+from bz_pricing.curves.manager import CurveManager
 from bz_pricing.data.cricra import CRICRAClient
 from bz_pricing.instruments.credit import CRI, CRA, CertificadoRecebiveis
 
@@ -139,4 +140,24 @@ def test_cricra_anbima_public_prices():
     assert not df_pub.empty
     assert {"codigo", "vencimento", "indice_correcao", "pu_mercado", "taxa_indicativa"}.issubset(df_pub.columns)
     assert len(df_pub) > 500
+
+
+def test_cra026002bd_real_anbima_data():
+    client = CRICRAClient(data_dir="dados/cricra")
+    cra = CRA.from_ticker("CRA026002BD", client=client)
+    assert cra.ticker == "CRA026002BD"
+    assert cra.indexador == "DI"
+    assert abs(cra.multiplicador_di - 1.015) < 1e-6
+
+    prices = client.get_asset_prices("CRA026002BD")
+    pu_ind = prices["pu_indicativo"]
+    ref_dt = datetime.date.fromisoformat(pu_ind["data_referencia"])
+    taxa_ind = float(pu_ind["taxa_indicativa"]) / 100.0
+    pu_oficial = float(pu_ind["pu_indicativo"])
+    dur_oficial = float(pu_ind["duration"])
+
+    curva_pre = CurveManager(allow_download=True).get_curve("PRE", ref_dt)
+    metrics = cra.risk_metrics(ref_dt, taxa_ind, di_curve=curva_pre)
+    assert abs(metrics["pu"] - pu_oficial) < 0.05
+    assert abs(metrics["duration_du"] - dur_oficial) < 1.0
 

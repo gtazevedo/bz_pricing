@@ -823,6 +823,65 @@ class CertificadoRecebiveis(Debenture):
             vna_engine=vna_engine
         )
 
+    @classmethod
+    def from_ticker(cls, ticker: str, client: Optional[CRICRAClient] = None,
+                    calendar_name: str = "B3") -> "CertificadoRecebiveis":
+        """
+        Constrói automaticamente um CRI ou CRA a partir do portal ANBIMA Data,
+        carregando características cadastrais e agenda de eventos financeiros.
+        """
+        cli = client or CRICRAClient()
+        carac = cli.get_asset_characteristics(ticker)
+        df_cf = cli.get_asset_cashflows(ticker)
+
+        idx_obj = carac.get("indexador") or {}
+        indice = idx_obj.get("nome", "IPCA") if isinstance(idx_obj, dict) else str(idx_obj)
+        remun = str(carac.get("remuneracao") or "").upper()
+        taxa_emissao = cls._parse_br_float(carac.get("taxa_emissao"), default=0.0)
+
+        if "%" in remun and "DI" in remun:
+            mult_di = taxa_emissao / 100.0 if taxa_emissao > 0.0 else 1.0
+            coupon_rate = 0.0
+        else:
+            mult_di = 1.0
+            coupon_rate = taxa_emissao / 100.0
+
+        vne_num = cls._parse_br_float(carac.get("vne"), default=1000.0)
+        expressao = str(carac.get("expressao_papel") or "252").upper()
+        if "360" in expressao:
+            day_count = "ACT/360"
+        elif "365" in expressao:
+            day_count = "ACT/365"
+        else:
+            day_count = "BUS/252"
+
+        emissao_obj = carac.get("emissao") or {}
+        emissor_obj = emissao_obj.get("emissor") if isinstance(emissao_obj, dict) else {}
+        securitizadora = emissor_obj.get("nome", "") if isinstance(emissor_obj, dict) else ""
+
+        target_cls = cls
+        if cls is CertificadoRecebiveis:
+            tipo_ativo = str(carac.get("tipo") or "").upper()
+            if tipo_ativo == "CRI":
+                target_cls = CRI
+            elif tipo_ativo == "CRA":
+                target_cls = CRA
+
+        return target_cls(
+            ticker=ticker,
+            maturity_date=carac.get("data_vencimento"),
+            indexador=indice,
+            coupon_rate=coupon_rate,
+            issue_date=carac.get("data_inicio_rentabilidade"),
+            cashflows_df=df_cf,
+            nominal_value=vne_num,
+            calendar_name=calendar_name,
+            multiplicador_di=mult_di,
+            coupon_day_count=day_count,
+            securitizadora=securitizadora,
+            serie=str(carac.get("numero_serie") or ""),
+        )
+
 
 class CRI(CertificadoRecebiveis):
     """

@@ -1,6 +1,8 @@
 import datetime
 import io
+import json
 import os
+import threading
 from typing import Dict, List, Optional, Sequence, Tuple, Union
 from dateutil.relativedelta import relativedelta
 import pandas as pd
@@ -101,6 +103,121 @@ class CRICRAClient:
         df = self._standardize_market_df(target_df)
         df.to_csv(cache_file, index=False)
         return df
+
+    def get_anbima_data_asset(self, ticker: str, force_download: bool = False) -> Dict[str, dict]:
+        """
+        Extrai características cadastrais, preços indicativos/PU histórico e agenda completa
+        de eventos de um CRI ou CRA diretamente do portal ANBIMA Data, com cache em JSON.
+        """
+        ticker_clean = ticker.strip().upper()
+        cache_file = os.path.join(self.data_dir, f"anbima_data_{ticker_clean}.json")
+        if not force_download and os.path.exists(cache_file):
+            with open(cache_file, "r", encoding="utf-8") as f:
+                return json.load(f)
+
+        captured: Dict[str, dict] = {}
+        errors: List[str] = []
+
+        def _run():
+            try:
+                from playwright.sync_api import sync_playwright
+                with sync_playwright() as p:
+                    browser = p.chromium.launch(headless=True)
+                    page = browser.new_page()
+
+                    def on_response(resp):
+                        u = resp.url
+                        prefix = f"web-bff/v1/certificado-recebiveis/{ticker_clean}"
+                        if prefix in u and resp.status == 200:
+                            try:
+                                suffix = u.split(prefix, 1)[1] or "resumo"
+                                suffix = suffix.lstrip("/").split("?")[0] or "resumo"
+                                if suffix == "precos/pu-historico":
+                                    captured.setdefault("pu_historico_pages", []).append(resp.json())
+                                else:
+                                    captured[suffix] = resp.json()
+                            except Exception:
+                                pass
+
+                    page.on("response", on_response)
+                    for tab in ("caracteristicas", "precos", "agenda"):
+                        url = f"https://data.anbima.com.br/certificado-de-recebiveis/{ticker_clean}/{tab}"
+                        page.goto(url, wait_until="domcontentloaded", timeout=30000)
+                        page.wait_for_timeout(3000)
+                    browser.close()
+            except Exception as exc:
+                errors.append(str(exc))
+
+        t = threading.Thread(target=_run)
+        t.start()
+        t.join(timeout=120)
+
+        if errors:
+            raise RuntimeError(f"Erro ao extrair {ticker_clean} no ANBIMA Data: {errors[0]}")
+        if not captured:
+            raise FileNotFoundError(f"Nenhum dado encontrado no ANBIMA Data para o ativo {ticker_clean}.")
+
+        with open(cache_file, "w", encoding="utf-8") as f:
+            json.dump(captured, f, ensure_ascii=False, indent=2)
+        return captured
+
+    def get_asset_characteristics(self, ticker: str, force_download: bool = False) -> Dict:
+        """Retorna as características cadastrais do CRI/CRA no ANBIMA Data."""
+        data = self.get_anbima_data_asset(ticker, force_download=force_download)
+        return data.get("caracteristicas", data.get("resumo", {}))
+
+    def get_asset_prices(self, ticker: str, force_download: bool = False) -> Dict:
+        """Retorna PU histórico, PU indicativo e histórico de preços do ativo no ANBIMA Data."""
+        data = self.get_anbima_data_asset(ticker, force_download=force_download)
+        return data.get("precos", {})
+
+    def get_asset_cashflows(self, ticker: str, force_download: bool = False) -> pd.DataFrame:
+        """
+        Retorna a agenda de eventos financeiros (juros, amortizações e vencimento)
+        extraída do ANBIMA Data no formato padrão da calculadora.
+        """
+        data = self.get_anbima_data_asset(ticker, force_download=force_download)
+        agenda = data.get("agenda", {})
+        content = agenda.get("content", []) if isinstance(agenda, dict) else []
+        if not content:
+            return pd.DataFrame(columns=["data_evento", "data_pagamento", "evento", "tipo", "taxa_percentual", "status", "valor"])
+
+        rows = []
+        for item in content:
+            ev_raw = str(item.get("evento_arc") or item.get("evento") or "").strip()
+            ev_desc = str(item.get("evento") or "").upper()
+            if "VENCIMENTO" in ev_desc or "RESGATE" in ev_desc:
+                ev_std = "Vencimento"
+            elif "AMORT" in ev_raw.upper() or "AMORT" in ev_desc:
+                ev_std = "Amortização"
+            elif "JURO" in ev_raw.upper() or "JURO" in ev_desc:
+                ev_std = "Juros"
+            else:
+                ev_std = ev_raw
+
+            taxa_val = item.get("taxa")
+            try:
+                taxa_pct = float(taxa_val) if taxa_val is not None else 0.0
+            except (TypeError, ValueError):
+                taxa_pct = 0.0
+
+            status_obj = item.get("status")
+            status_str = status_obj.get("status", "") if isinstance(status_obj, dict) else str(status_obj or "")
+
+            rows.append({
+                "data_evento": pd.to_datetime(item.get("data_evento")).date(),
+                "data_pagamento": pd.to_datetime(item.get("data_liquidacao") or item.get("data_evento")).date(),
+                "evento": ev_std,
+                "tipo": "Regular",
+                "taxa_percentual": taxa_pct,
+                "status": status_str,
+                "valor": item.get("valor"),
+            })
+
+        df = pd.DataFrame(rows)
+        order_map = {"Juros": 0, "Amortização": 1, "Vencimento": 2}
+        df["_ord"] = df["evento"].map(lambda x: order_map.get(x, 9))
+        return df.sort_values(["data_pagamento", "_ord"]).drop(columns=["_ord"]).reset_index(drop=True)
 
     def get_market_prices(self, date: Optional[Union[datetime.date, str]] = None,
                           force_download: bool = False) -> pd.DataFrame:
