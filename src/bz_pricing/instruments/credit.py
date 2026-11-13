@@ -6,6 +6,7 @@ import pandas as pd
 
 from bz_pricing.core.calendars import get_calendar
 from bz_pricing.core.curves import Curve
+from bz_pricing.core.vna_engine import VNAEngine
 from bz_pricing.data.cricra import CRICRAClient
 from bz_pricing.data.debentures import DebenturesClient
 
@@ -29,7 +30,9 @@ class Debenture:
                  multiplicador_di: float = 1.0,
                  amortizacao_sobre_vne: bool = False,
                  coupon_day_count: str = "BUS/252",
-                 defasagem_di: int = 0):
+                 defasagem_di: int = 0,
+                 anniversary_day: Optional[int] = None,
+                 vna_engine: Optional[VNAEngine] = None):
         self.ticker = ticker.strip().upper()
         self.indexador = indexador.strip().upper()
         self.coupon_rate = 0.0 if (coupon_rate is None or (isinstance(coupon_rate, float) and math.isnan(coupon_rate))) else float(coupon_rate)
@@ -39,6 +42,7 @@ class Debenture:
         self.amortizacao_sobre_vne = bool(amortizacao_sobre_vne)
         self.coupon_day_count = coupon_day_count.strip().upper()
         self.defasagem_di = int(defasagem_di)
+        self.vna_engine = vna_engine
 
         if maturity_date:
             self.nominal_maturity_date = self._normalize_date(maturity_date)
@@ -48,6 +52,14 @@ class Debenture:
             self.maturity_date = None
 
         self.issue_date = self._normalize_date(issue_date) if issue_date else None
+        if anniversary_day is not None:
+            self.anniversary_day = int(anniversary_day)
+        elif self.issue_date is not None:
+            self.anniversary_day = self.issue_date.day
+        elif self.nominal_maturity_date is not None:
+            self.anniversary_day = self.nominal_maturity_date.day
+        else:
+            self.anniversary_day = 15
         if cashflows_df is not None and not cashflows_df.empty:
             df_copy = cashflows_df.copy()
             for c in ["data_evento", "data_pagamento"]:
@@ -226,7 +238,37 @@ class Debenture:
             return discount_rate_or_curve.get_rate(float(du))
         raise TypeError("A taxa de desconto deve ser um float ou um objeto compilado de Curve.")
 
-    def pu_par(self, base_date: Union[datetime.date, str], vna: float,
+    def resolve_vna(self, base_date: Union[datetime.date, str],
+                    vna: Optional[float] = None,
+                    vna_engine: Optional[VNAEngine] = None) -> float:
+        """
+        Retorna o VNA na data de referência. Se não for informado explicitamente,
+        utiliza o valor nominal para papéis não corrigidos por inflação ou calcula
+        via VNAEngine (IPCA/IGP-M) a partir da data de emissão e aniversário.
+        """
+        if vna is not None:
+            return float(vna)
+        if "IPCA" not in self.indexador and "IGP" not in self.indexador:
+            return float(self.nominal_value)
+
+        base_dt = self._normalize_date(base_date)
+        engine = vna_engine or self.vna_engine
+        if engine is None:
+            if self.issue_date is None:
+                raise ValueError(
+                    f"Para calcular o VNA automático de {self.ticker} ({self.indexador}), "
+                    "informe 'issue_date' ou passe 'vna' / 'vna_engine' explicitamente."
+                )
+            engine = VNAEngine.from_bcb(
+                base_vna_date=self.issue_date,
+                base_vna_value=self.nominal_value,
+                indicator=self.indexador,
+                ref_date=base_dt,
+            )
+            self.vna_engine = engine
+        return float(engine.calculate_vna(base_dt, self.calendar, anniversary_day=self.anniversary_day))
+
+    def pu_par(self, base_date: Union[datetime.date, str], vna: Optional[float] = None,
                last_coupon_date: Union[datetime.date, str] = None,
                fator_di_acumulado: Optional[float] = None) -> float:
         """
@@ -234,7 +276,7 @@ class Debenture:
         PU Par = VNA * (1 + Juros_Acruados)
         """
         base_date = self._normalize_date(base_date)
-        vna = float(vna)
+        vna = self.resolve_vna(base_date, vna=vna)
 
         if not self._is_di_linked() and self.coupon_rate <= 0.0:
             return vna
@@ -284,7 +326,7 @@ class Debenture:
 
     def cashflow_table(self, base_date: Union[datetime.date, str],
                        discount_rate_or_curve: Union[float, Curve],
-                       vna: float,
+                       vna: Optional[float] = None,
                        last_coupon_date: Union[datetime.date, str] = None,
                        di_curve: Optional[Union[float, Curve]] = None,
                        pu_par_val: Optional[float] = None,
@@ -295,7 +337,7 @@ class Debenture:
         Para debêntures indexadas ao DI (DI + Spread ou % do DI), exige o parâmetro 'di_curve'.
         """
         base_date = self._normalize_date(base_date)
-        vna = float(vna)
+        vna = self.resolve_vna(base_date, vna=vna)
         is_di = self._is_di_linked()
         is_pct_di = self._is_pct_di()
 
@@ -437,7 +479,7 @@ class Debenture:
 
     def present_value(self, base_date: Union[datetime.date, str],
                       discount_rate_or_curve: Union[float, Curve],
-                      vna: float,
+                      vna: Optional[float] = None,
                       last_coupon_date: Union[datetime.date, str] = None,
                       return_cashflows: bool = False,
                       di_curve: Optional[Union[float, Curve]] = None,
@@ -447,10 +489,11 @@ class Debenture:
         Calcula o Valor Presente (PU da Operação marcado a mercado) da debênture.
         Se return_cashflows=True, retorna a tupla (pu, df_fluxos).
         """
+        vna_atual = self.resolve_vna(base_date, vna=vna)
         df_flows = self.cashflow_table(
             base_date=base_date,
             discount_rate_or_curve=discount_rate_or_curve,
-            vna=vna,
+            vna=vna_atual,
             last_coupon_date=last_coupon_date,
             di_curve=di_curve,
             pu_par_val=pu_par_val,
@@ -458,7 +501,7 @@ class Debenture:
         )
 
         if df_flows.empty:
-            pu = float(vna)
+            pu = vna_atual
         else:
             pu = math.trunc(df_flows["valor_presente"].sum() * 1e6) / 1e6
 
@@ -468,7 +511,7 @@ class Debenture:
 
     def cotacao(self, base_date: Union[datetime.date, str],
                 discount_rate_or_curve: Union[float, Curve],
-                vna: float,
+                vna: Optional[float] = None,
                 last_coupon_date: Union[datetime.date, str] = None,
                 di_curve: Optional[Union[float, Curve]] = None,
                 pu_par_val: Optional[float] = None,
@@ -477,15 +520,16 @@ class Debenture:
         Calcula a cotação percentual sobre o PU Par (% PU Par):
         Cotação = (PU_Operacao / PU_Par) * 100
         """
+        vna_atual = self.resolve_vna(base_date, vna=vna)
         pu_par_atual = (
             float(pu_par_val)
             if pu_par_val is not None
-            else self.pu_par(base_date, vna, last_coupon_date=last_coupon_date, fator_di_acumulado=fator_di_acumulado)
+            else self.pu_par(base_date, vna_atual, last_coupon_date=last_coupon_date, fator_di_acumulado=fator_di_acumulado)
         )
         if pu_par_atual <= 0.0:
             return 100.0
         pu_val = self.present_value(
-            base_date, discount_rate_or_curve, vna,
+            base_date, discount_rate_or_curve, vna_atual,
             last_coupon_date=last_coupon_date,
             di_curve=di_curve,
             pu_par_val=pu_par_atual,
@@ -495,7 +539,7 @@ class Debenture:
 
     def duration(self, base_date: Union[datetime.date, str],
                  discount_rate_or_curve: Union[float, Curve],
-                 vna: float,
+                 vna: Optional[float] = None,
                  last_coupon_date: Union[datetime.date, str] = None,
                  di_curve: Optional[Union[float, Curve]] = None,
                  pu_par_val: Optional[float] = None,
@@ -525,7 +569,7 @@ class Debenture:
 
     def modified_duration(self, base_date: Union[datetime.date, str],
                           discount_rate_or_curve: Union[float, Curve],
-                          vna: float,
+                          vna: Optional[float] = None,
                           last_coupon_date: Union[datetime.date, str] = None,
                           di_curve: Optional[Union[float, Curve]] = None,
                           pu_par_val: Optional[float] = None,
@@ -556,7 +600,7 @@ class Debenture:
 
     def dv01(self, base_date: Union[datetime.date, str],
              discount_rate_or_curve: Union[float, Curve],
-             vna: float,
+             vna: Optional[float] = None,
              last_coupon_date: Union[datetime.date, str] = None,
              di_curve: Optional[Union[float, Curve]] = None,
              pu_par_val: Optional[float] = None,
@@ -584,7 +628,7 @@ class Debenture:
 
     def convexity(self, base_date: Union[datetime.date, str],
                   discount_rate_or_curve: Union[float, Curve],
-                  vna: float,
+                  vna: Optional[float] = None,
                   last_coupon_date: Union[datetime.date, str] = None,
                   di_curve: Optional[Union[float, Curve]] = None,
                   pu_par_val: Optional[float] = None,
@@ -616,7 +660,7 @@ class Debenture:
 
     def risk_metrics(self, base_date: Union[datetime.date, str],
                      discount_rate_or_curve: Union[float, Curve],
-                     vna: float,
+                     vna: Optional[float] = None,
                      last_coupon_date: Union[datetime.date, str] = None,
                      di_curve: Optional[Union[float, Curve]] = None,
                      pu_par_val: Optional[float] = None,
@@ -624,13 +668,14 @@ class Debenture:
         """
         Consolida as métricas de precificação e sensibilidade da debênture na data de referência.
         """
+        vna_atual = self.resolve_vna(base_date, vna=vna)
         pu_par_atual = (
             float(pu_par_val)
             if pu_par_val is not None
-            else self.pu_par(base_date, vna, last_coupon_date=last_coupon_date, fator_di_acumulado=fator_di_acumulado)
+            else self.pu_par(base_date, vna_atual, last_coupon_date=last_coupon_date, fator_di_acumulado=fator_di_acumulado)
         )
         pu_val, df_flows = self.present_value(
-            base_date, discount_rate_or_curve, vna,
+            base_date, discount_rate_or_curve, vna_atual,
             last_coupon_date=last_coupon_date,
             return_cashflows=True,
             di_curve=di_curve,
@@ -697,7 +742,9 @@ class CertificadoRecebiveis(Debenture):
                  securitizadora: str = "",
                  lastro: str = "",
                  serie: str = "",
-                 emissao: str = ""):
+                 emissao: str = "",
+                 anniversary_day: Optional[int] = None,
+                 vna_engine: Optional[VNAEngine] = None):
         super().__init__(
             ticker=ticker,
             maturity_date=maturity_date,
@@ -710,7 +757,9 @@ class CertificadoRecebiveis(Debenture):
             multiplicador_di=multiplicador_di,
             amortizacao_sobre_vne=amortizacao_sobre_vne,
             coupon_day_count=coupon_day_count,
-            defasagem_di=defasagem_di
+            defasagem_di=defasagem_di,
+            anniversary_day=anniversary_day,
+            vna_engine=vna_engine
         )
         self.securitizadora = securitizadora.strip()
         self.lastro = (lastro or self.DEFAULT_LASTRO).strip()
@@ -737,7 +786,9 @@ class CertificadoRecebiveis(Debenture):
                       securitizadora: str = "",
                       lastro: str = "",
                       serie: str = "",
-                      emissao: str = ""):
+                      emissao: str = "",
+                      anniversary_day: Optional[int] = None,
+                      vna_engine: Optional[VNAEngine] = None):
         """
         Constrói um Certificado de Recebíveis (CRI ou CRA) gerando automaticamente
         a agenda de eventos financeiros a partir dos parâmetros do termo de securitização.
@@ -767,7 +818,9 @@ class CertificadoRecebiveis(Debenture):
             securitizadora=securitizadora,
             lastro=lastro,
             serie=serie,
-            emissao=emissao
+            emissao=emissao,
+            anniversary_day=anniversary_day,
+            vna_engine=vna_engine
         )
 
 

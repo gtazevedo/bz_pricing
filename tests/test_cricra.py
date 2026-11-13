@@ -4,6 +4,7 @@ import pandas as pd
 import pytest
 
 from bz_pricing.core.curves import FlatCurve
+from bz_pricing.core.vna_engine import VNAEngine
 from bz_pricing.data.cricra import CRICRAClient
 from bz_pricing.instruments.credit import CRI, CRA, CertificadoRecebiveis
 
@@ -104,3 +105,38 @@ def test_cra_di_spread_and_pct_di_pricing():
     )
     metrics_p = cra_pct.risk_metrics(base_date, 1.05, vna=1000.0, di_curve=di_flat)
     assert metrics_p["pu"] > metrics_p["pu_par"]  # 105% < 108% -> acima do par
+
+
+def test_cri_auto_vna_integration():
+    engine = VNAEngine(base_vna_date=datetime.date(2026, 8, 15), base_vna_value=1000.0)
+    engine.ipca_history = pd.Series(
+        [0.0040, 0.0050, 0.0045],
+        index=pd.to_datetime(["2026-08-01", "2026-09-01", "2026-10-01"])
+    )
+    cri = CRI.from_schedule(
+        ticker="CRI_AUTO_VNA",
+        issue_date="2026-08-15",
+        maturity_date="2028-08-15",
+        indexador="IPCA",
+        coupon_rate=0.07,
+        coupon_freq="mensal",
+        amort_type="bullet",
+        anniversary_day=15,
+        vna_engine=engine,
+    )
+    base_date = datetime.date(2026, 10, 30)
+    # Sem passar vna explicitamente, deve resolver via VNAEngine
+    vna_calc = cri.resolve_vna(base_date)
+    assert vna_calc > 1009.0
+    metrics = cri.risk_metrics(base_date, 0.075)
+    assert metrics["pu_par"] > vna_calc
+    assert metrics["pu"] > 0.0
+
+
+def test_cricra_anbima_public_prices():
+    client = CRICRAClient(data_dir="dados/cricra")
+    df_pub = client.get_anbima_public_prices()
+    assert not df_pub.empty
+    assert {"codigo", "vencimento", "indice_correcao", "pu_mercado", "taxa_indicativa"}.issubset(df_pub.columns)
+    assert len(df_pub) > 500
+

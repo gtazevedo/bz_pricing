@@ -1,4 +1,5 @@
 import datetime
+import io
 import os
 from typing import Dict, List, Optional, Sequence, Tuple, Union
 from dateutil.relativedelta import relativedelta
@@ -16,6 +17,10 @@ class CRICRAClient:
 
     ANBIMA_OAUTH_URL = "https://api.anbima.com.br/oauth/access-token"
     ANBIMA_FEED_URL = "https://api.anbima.com.br/feed/precos-indices/v1/cri-cra/mercado-secundario"
+    ANBIMA_PUBLIC_URL = (
+        "https://www.anbima.com.br/pt_br/informar/precos-e-indices/precos/"
+        "taxas-de-cri-e-cra/taxas-de-cri-e-cra.htm"
+    )
 
     _FREQ_MONTHS = {
         "mensal": 1,
@@ -68,11 +73,45 @@ class CRICRAClient:
             raise RuntimeError("Resposta OAuth2 ANBIMA não retornou 'access_token'.")
         return token
 
-    def get_market_prices(self, date: Union[datetime.date, str], force_download: bool = False) -> pd.DataFrame:
+    def get_anbima_public_prices(self, force_download: bool = False) -> pd.DataFrame:
         """
-        Consulta os preços e taxas indicativas de CRI/CRA divulgados pela ANBIMA
-        via API ANBIMA Developers, mantendo cache local em CSV.
+        Extrai a tabela diária pública de taxas indicativas, PUs e durations de CRI/CRA
+        divulgada no portal da ANBIMA (taxas-de-cri-e-cra.htm), com cache local em CSV.
         """
+        today_str = datetime.date.today().strftime("%y%m%d")
+        cache_file = os.path.join(self.data_dir, f"cricra_public_{today_str}.csv")
+        if not force_download and os.path.exists(cache_file):
+            return self.load_market_file(cache_file)
+
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+        resp = self.session.get(self.ANBIMA_PUBLIC_URL, headers=headers, timeout=max(self.timeout, 25))
+        if resp.status_code != 200:
+            raise RuntimeError(f"Erro ao acessar página pública da ANBIMA (HTTP {resp.status_code}).")
+
+        tables = pd.read_html(io.StringIO(resp.text), decimal=",", thousands=".")
+        target_df = None
+        for tbl in tables:
+            cols_str = " ".join(str(c) for c in tbl.columns)
+            if "Código" in cols_str and "PU" in cols_str:
+                target_df = tbl
+                break
+        if target_df is None or target_df.empty:
+            raise ValueError("Tabela de preços CRI/CRA não localizada na página pública da ANBIMA.")
+
+        df = self._standardize_market_df(target_df)
+        df.to_csv(cache_file, index=False)
+        return df
+
+    def get_market_prices(self, date: Optional[Union[datetime.date, str]] = None,
+                          force_download: bool = False) -> pd.DataFrame:
+        """
+        Consulta os preços e taxas indicativas de CRI/CRA divulgados pela ANBIMA.
+        Utiliza a API ANBIMA Developers quando há credenciais configuradas e 'date'
+        informada; caso contrário, extrai a tabela pública diária da ANBIMA.
+        """
+        if date is None or not (self.client_id and self.client_secret):
+            return self.get_anbima_public_prices(force_download=force_download)
+
         dt = self._normalize_date(date)
         date_iso = dt.strftime("%Y-%m-%d")
         cache_file = os.path.join(self.data_dir, f"cricra_{dt.strftime('%y%m%d')}.csv")
@@ -131,16 +170,23 @@ class CRICRAClient:
             "Ativo": "tipo_ativo",
             "Tipo": "tipo_ativo",
             "Securitizadora": "securitizadora",
+            "Emissor": "securitizadora",
             "emissor": "securitizadora",
+            "Risco de Crédito": "risco_credito",
+            "Data de Referência": "data_referencia",
             "Série": "serie",
             "Emissão": "emissao",
+            "Vencimento": "vencimento",
             "Data de Vencimento": "vencimento",
             "data_vencimento": "vencimento",
             "Índice/ Correção": "indice_correcao",
+            "Índice / Correção": "indice_correcao",
             "Indexador": "indice_correcao",
             "indexador": "indice_correcao",
             "Taxa de Compra": "taxa_compra",
+            "Taxa Compra": "taxa_compra",
             "Taxa de Venda": "taxa_venda",
+            "Taxa Venda": "taxa_venda",
             "Taxa Indicativa": "taxa_indicativa",
             "taxa_indicativa": "taxa_indicativa",
             "PU": "pu_mercado",
@@ -150,6 +196,7 @@ class CRICRAClient:
             "Duration": "duration",
             "duration": "duration",
             "Referência NTN-B": "ntnb_referencia",
+            "Referência NTNB": "ntnb_referencia",
         }
         out = df.rename(columns={k: v for k, v in rename_map.items() if k in df.columns}).copy()
 
@@ -158,7 +205,10 @@ class CRICRAClient:
                 out[col] = out[col].astype(str).str.strip()
 
         if "vencimento" in out.columns:
-            out["vencimento"] = pd.to_datetime(out["vencimento"], dayfirst=True, errors="coerce").dt.date
+            sample_v = str(out["vencimento"].dropna().iloc[0]) if not out["vencimento"].dropna().empty else ""
+            out["vencimento"] = pd.to_datetime(
+                out["vencimento"], dayfirst="/" in sample_v, errors="coerce"
+            ).dt.date
 
         num_cols = ["taxa_compra", "taxa_venda", "taxa_indicativa", "pu_mercado", "perc_pu_par", "duration"]
         for col in num_cols:
@@ -269,3 +319,4 @@ class CRICRAClient:
         df["_ord"] = df["evento"].map(lambda x: order_map.get(x, 9))
         df = df.sort_values(["data_pagamento", "_ord"]).drop(columns=["_ord"]).reset_index(drop=True)
         return df
+
