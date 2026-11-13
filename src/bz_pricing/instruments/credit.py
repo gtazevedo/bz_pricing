@@ -24,12 +24,16 @@ class Debenture:
                  issue_date: Union[datetime.date, str] = None,
                  cashflows_df: Optional[pd.DataFrame] = None,
                  nominal_value: float = 1000.0,
-                 calendar_name: str = "B3"):
+                 calendar_name: str = "B3",
+                 multiplicador_di: float = 1.0,
+                 amortizacao_sobre_vne: bool = False):
         self.ticker = ticker.strip().upper()
         self.indexador = indexador.strip().upper()
-        self.coupon_rate = coupon_rate
-        self.nominal_value = nominal_value
+        self.coupon_rate = 0.0 if (coupon_rate is None or (isinstance(coupon_rate, float) and math.isnan(coupon_rate))) else float(coupon_rate)
+        self.nominal_value = float(nominal_value)
         self.calendar = get_calendar(calendar_name)
+        self.multiplicador_di = float(multiplicador_di)
+        self.amortizacao_sobre_vne = bool(amortizacao_sobre_vne)
 
         if maturity_date:
             self.nominal_maturity_date = self._normalize_date(maturity_date)
@@ -47,6 +51,61 @@ class Debenture:
             self.cashflows_df = df_copy
         else:
             self.cashflows_df = cashflows_df
+
+    @staticmethod
+    def _parse_br_float(value, default: float = 0.0) -> float:
+        """Converte strings numéricas no padrão brasileiro ou floats para float."""
+        if value is None or (isinstance(value, float) and math.isnan(value)):
+            return default
+        if isinstance(value, (int, float)):
+            return float(value)
+        s = str(value).strip()
+        if not s or s.lower() == "nan":
+            return default
+        if "," in s:
+            s = s.replace(".", "").replace(",", ".")
+        try:
+            val = float(s)
+            return default if math.isnan(val) else val
+        except ValueError:
+            return default
+
+    def _is_di_linked(self) -> bool:
+        """Indica se a debênture possui remuneração atrelada ao DI."""
+        return "DI" in self.indexador and "IGP" not in self.indexador and "IPCA" not in self.indexador
+
+    def _is_pct_di(self) -> bool:
+        """Indica se a debênture é remunerada exclusivamente por percentual do DI."""
+        return self._is_di_linked() and self.coupon_rate <= 0.0 and self.multiplicador_di != 1.0
+
+    def _fetch_di_factor(self, start_date: datetime.date, end_date: datetime.date,
+                         multiplicador: float = 1.0, round_factor_8: bool = False) -> float:
+        """
+        Calcula o fator de DI acumulado no intervalo [start_date, end_date)
+        via série SGS 12 do Banco Central (taxa DI diária).
+        """
+        if start_date >= end_date:
+            return 1.0
+        from bcb import sgs
+
+        df_cdi = sgs.get(
+            {"CDI": 12},
+            start=start_date.strftime("%Y-%m-%d"),
+            end=end_date.strftime("%Y-%m-%d")
+        )
+        if df_cdi is None or df_cdi.empty:
+            raise ValueError(f"Série SGS 12 (CDI) indisponível para o período {start_date} a {end_date}.")
+
+        dates = pd.to_datetime(df_cdi.index).date
+        mask = (dates >= start_date) & (dates < end_date)
+        rates = df_cdi.loc[mask, "CDI"].dropna()
+
+        fator = 1.0
+        for r in rates:
+            fator *= (1.0 + (float(r) / 100.0) * multiplicador)
+        if round_factor_8:
+            fator = round(fator, 8)
+        return float(fator)
 
     def _normalize_date(self, d: Union[datetime.date, str]) -> datetime.date:
         if isinstance(d, str):
@@ -111,18 +170,15 @@ class Debenture:
         emissao_str = carac.get("Data de Emissao")
         indice = carac.get("indice", "IPCA")
 
-        # Taxa de juros do cupom cadastrado
-        taxa_str = carac.get("Juros Criterio Novo - Taxa") or "0"
-        try:
-            taxa_num = float(str(taxa_str).replace(".", "").replace(",", ".")) / 100.0
-        except ValueError:
-            taxa_num = 0.0
+        # Taxa de juros do cupom cadastrado, VNE e multiplicador DI
+        taxa_num = cls._parse_br_float(carac.get("Juros Criterio Novo - Taxa"), default=0.0) / 100.0
+        vne_num = cls._parse_br_float(carac.get("Valor Nominal na Emissao"), default=1000.0)
+        mult_num = cls._parse_br_float(carac.get("Percentual Multiplicador/Rentabilidade"), default=100.0) / 100.0
+        if mult_num <= 0.0:
+            mult_num = 1.0
 
-        vne_str = carac.get("Valor Nominal na Emissao") or "1000"
-        try:
-            vne_num = float(str(vne_str).replace(".", "").replace(",", "."))
-        except ValueError:
-            vne_num = 1000.0
+        tipo_amort = str(carac.get("Tipo de Amortizacao") or "").lower()
+        amort_vne = "emiss" in tipo_amort
 
         return cls(
             ticker=ticker,
@@ -132,7 +188,9 @@ class Debenture:
             issue_date=emissao_str,
             cashflows_df=all_cf_df,
             nominal_value=vne_num,
-            calendar_name=calendar_name
+            calendar_name=calendar_name,
+            multiplicador_di=mult_num,
+            amortizacao_sobre_vne=amort_vne
         )
 
     def _get_rate_for_du(self, discount_rate_or_curve: Union[float, Curve], du: int) -> float:
@@ -143,7 +201,8 @@ class Debenture:
         raise TypeError("A taxa de desconto deve ser um float ou um objeto compilado de Curve.")
 
     def pu_par(self, base_date: Union[datetime.date, str], vna: float,
-               last_coupon_date: Union[datetime.date, str] = None) -> float:
+               last_coupon_date: Union[datetime.date, str] = None,
+               fator_di_acumulado: Optional[float] = None) -> float:
         """
         Calcula o PU Par na data de referência:
         PU Par = VNA * (1 + Juros_Acruados)
@@ -151,7 +210,7 @@ class Debenture:
         base_date = self._normalize_date(base_date)
         vna = float(vna)
 
-        if self.coupon_rate <= 0.0:
+        if not self._is_di_linked() and self.coupon_rate <= 0.0:
             return vna
 
         # Identifica a data do último pagamento de cupom anterior a base_date
@@ -173,7 +232,25 @@ class Debenture:
         if du_passado <= 0:
             return vna
 
-        # Juros acruados pró-rata dia útil (A-9)
+        if self._is_pct_di():
+            f_di = (
+                float(fator_di_acumulado)
+                if fator_di_acumulado is not None
+                else self._fetch_di_factor(last_date, base_date, multiplicador=self.multiplicador_di, round_factor_8=False)
+            )
+            return math.trunc((vna * f_di) * 1e6) / 1e6
+
+        if self._is_di_linked():
+            f_di = (
+                float(fator_di_acumulado)
+                if fator_di_acumulado is not None
+                else self._fetch_di_factor(last_date, base_date, multiplicador=1.0, round_factor_8=True)
+            )
+            f_spr = round(math.pow(1.0 + self.coupon_rate, du_passado / 252.0), 9)
+            f_juros = math.trunc(f_di * f_spr * 1e9) / 1e9
+            return math.trunc((vna * f_juros) * 1e6) / 1e6
+
+        # Juros acruados pró-rata dia útil (A-9) para IPCA, IGP-M e Prefixado
         f_juros = math.pow(1.0 + self.coupon_rate, du_passado / 252.0) - 1.0
         juros_val = math.trunc((vna * f_juros) * 1e6) / 1e6
         return vna + juros_val
@@ -181,13 +258,22 @@ class Debenture:
     def cashflow_table(self, base_date: Union[datetime.date, str],
                        discount_rate_or_curve: Union[float, Curve],
                        vna: float,
-                       last_coupon_date: Union[datetime.date, str] = None) -> pd.DataFrame:
+                       last_coupon_date: Union[datetime.date, str] = None,
+                       di_curve: Optional[Union[float, Curve]] = None,
+                       pu_par_val: Optional[float] = None,
+                       fator_di_acumulado: Optional[float] = None) -> pd.DataFrame:
         """
         Retorna a decomposição analítica fluxo a fluxo dos eventos futuros de juros e amortização,
         com as respectivas taxas, fatores de desconto T-14 e valores presentes.
+        Para debêntures indexadas ao DI (DI + Spread ou % do DI), exige o parâmetro 'di_curve'.
         """
         base_date = self._normalize_date(base_date)
         vna = float(vna)
+        is_di = self._is_di_linked()
+        is_pct_di = self._is_pct_di()
+
+        if is_di and di_curve is None:
+            raise ValueError(f"Para debêntures indexadas ao DI ({self.ticker}), informe 'di_curve'.")
 
         if self.cashflows_df is None or self.cashflows_df.empty:
             raise ValueError(f"Não há agenda de fluxos carregada para a debênture {self.ticker}.")
@@ -209,27 +295,76 @@ class Debenture:
             else:
                 prev_event_date = self.issue_date if self.issue_date else base_date
 
+        fator_acruado_di = 1.0
+        if is_di:
+            pu_par_atual = (
+                float(pu_par_val)
+                if pu_par_val is not None
+                else self.pu_par(base_date, vna, last_coupon_date=last_coupon_date, fator_di_acumulado=fator_di_acumulado)
+            )
+            fator_acruado_di = (pu_par_atual / vna) if vna > 0.0 else 1.0
+
         rows = []
         saldo_vna = vna
+        prev_du_di = 0
+        prev_f_di = 1.0
 
         for _, row in future_df.iterrows():
             d_ev = row["data_evento"]
             d_pg = row["data_pagamento"]
             evento = str(row["evento"]).strip()
+            evento_lower = evento.lower()
             tipo = str(row["tipo"]).strip()
             perc = float(row.get("taxa_percentual", 0.0))
 
             du_desc = self.calendar.bizdays(base_date, d_pg)
             r_desc = self._get_rate_for_du(discount_rate_or_curve, du_desc)
 
-            # Fator de desconto T-14
-            df_val = math.trunc(math.pow(1.0 + r_desc, du_desc / 252.0) * 1e14) / 1e14
+            if is_di:
+                r_di = self._get_rate_for_du(di_curve, du_desc)
+                f_di_acum = math.pow(1.0 + r_di, du_desc / 252.0)
+                if is_pct_di:
+                    di_d = math.pow(1.0 + r_di, 1.0 / 252.0) - 1.0
+                    df_val = math.trunc(math.pow(1.0 + di_d * r_desc, du_desc) * 1e14) / 1e14
+                else:
+                    df_val = math.trunc((f_di_acum * math.pow(1.0 + r_desc, du_desc / 252.0)) * 1e14) / 1e14
+                taxa_desconto_eff = (math.pow(df_val, 252.0 / du_desc) - 1.0) if du_desc > 0 else 0.0
+            else:
+                # Fator de desconto T-14
+                df_val = math.trunc(math.pow(1.0 + r_desc, du_desc / 252.0) * 1e14) / 1e14
+                taxa_desconto_eff = r_desc
 
-            if "Juros" in evento:
-                # O período contratual de contagem de juros ocorre entre as datas de liquidação (d_pg)
-                du_period = self.calendar.bizdays(prev_event_date, d_pg)
-                r_cupom = (perc / 100.0) if perc > 0.0 else self.coupon_rate
-                f_cupom = math.trunc((math.pow(1.0 + r_cupom, du_period / 252.0) - 1.0) * 1e9) / 1e9
+            if "juros" in evento_lower:
+                if is_di:
+                    if is_pct_di:
+                        if prev_du_di == 0:
+                            di_d_rem = math.pow(f_di_acum, 1.0 / du_desc) - 1.0
+                            f_rem = math.pow(1.0 + di_d_rem * self.multiplicador_di, du_desc)
+                            f_cupom = (fator_acruado_di * f_rem) - 1.0
+                        else:
+                            du_p = du_desc - prev_du_di
+                            f_di_p = f_di_acum / prev_f_di
+                            di_d_p = math.pow(f_di_p, 1.0 / du_p) - 1.0
+                            f_cupom = math.pow(1.0 + di_d_p * self.multiplicador_di, du_p) - 1.0
+                        r_cupom = self.multiplicador_di
+                    else:
+                        r_cupom = (perc / 100.0) if perc > 0.0 else self.coupon_rate
+                        if prev_du_di == 0:
+                            f_spr_rem = math.pow(1.0 + r_cupom, du_desc / 252.0)
+                            f_cupom = (fator_acruado_di * f_di_acum * f_spr_rem) - 1.0
+                        else:
+                            du_p = du_desc - prev_du_di
+                            f_di_p = f_di_acum / prev_f_di
+                            f_spr_p = math.pow(1.0 + r_cupom, du_p / 252.0)
+                            f_cupom = (f_di_p * f_spr_p) - 1.0
+                    prev_du_di = du_desc
+                    prev_f_di = f_di_acum
+                else:
+                    # O período contratual de contagem de juros ocorre entre as datas de liquidação (d_pg)
+                    du_period = self.calendar.bizdays(prev_event_date, d_pg)
+                    r_cupom = (perc / 100.0) if perc > 0.0 else self.coupon_rate
+                    f_cupom = math.trunc((math.pow(1.0 + r_cupom, du_period / 252.0) - 1.0) * 1e9) / 1e9
+
                 # Critério padrão SND: valor unitário dos juros truncado em 6 casas decimais (T-6)
                 valor_fluxo = math.trunc((saldo_vna * f_cupom) * 1e6) / 1e6
                 pv_val = valor_fluxo / df_val
@@ -242,18 +377,19 @@ class Debenture:
                     "tipo": tipo,
                     "taxa_cupom": r_cupom,
                     "fluxo_nominal": valor_fluxo,
-                    "taxa_desconto": r_desc,
+                    "taxa_desconto": taxa_desconto_eff,
                     "fator_desconto": df_val,
                     "valor_presente": pv_val
                 })
                 prev_event_date = d_pg
 
-            elif evento in ["Amortização", "Vencimento"]:
-                if evento == "Vencimento" or perc <= 0.0 or perc >= 100.0:
+            elif "amort" in evento_lower or "vencimento" in evento_lower:
+                if "vencimento" in evento_lower or perc <= 0.0 or (not self.amortizacao_sobre_vne and perc >= 100.0):
                     valor_fluxo = math.trunc(saldo_vna * 1e6) / 1e6
                     saldo_vna = 0.0
                 else:
-                    valor_fluxo = math.trunc((saldo_vna * (perc / 100.0)) * 1e6) / 1e6
+                    base_amort = vna if self.amortizacao_sobre_vne else saldo_vna
+                    valor_fluxo = min(saldo_vna, math.trunc((base_amort * (perc / 100.0)) * 1e6) / 1e6)
                     saldo_vna -= valor_fluxo
 
                 pv_val = valor_fluxo / df_val
@@ -265,7 +401,7 @@ class Debenture:
                     "tipo": tipo,
                     "taxa_cupom": 0.0,
                     "fluxo_nominal": valor_fluxo,
-                    "taxa_desconto": r_desc,
+                    "taxa_desconto": taxa_desconto_eff,
                     "fator_desconto": df_val,
                     "valor_presente": pv_val
                 })
@@ -276,7 +412,10 @@ class Debenture:
                       discount_rate_or_curve: Union[float, Curve],
                       vna: float,
                       last_coupon_date: Union[datetime.date, str] = None,
-                      return_cashflows: bool = False) -> Union[float, Tuple[float, pd.DataFrame]]:
+                      return_cashflows: bool = False,
+                      di_curve: Optional[Union[float, Curve]] = None,
+                      pu_par_val: Optional[float] = None,
+                      fator_di_acumulado: Optional[float] = None) -> Union[float, Tuple[float, pd.DataFrame]]:
         """
         Calcula o Valor Presente (PU da Operação marcado a mercado) da debênture.
         Se return_cashflows=True, retorna a tupla (pu, df_fluxos).
@@ -285,7 +424,10 @@ class Debenture:
             base_date=base_date,
             discount_rate_or_curve=discount_rate_or_curve,
             vna=vna,
-            last_coupon_date=last_coupon_date
+            last_coupon_date=last_coupon_date,
+            di_curve=di_curve,
+            pu_par_val=pu_par_val,
+            fator_di_acumulado=fator_di_acumulado
         )
 
         if df_flows.empty:
@@ -300,21 +442,37 @@ class Debenture:
     def cotacao(self, base_date: Union[datetime.date, str],
                 discount_rate_or_curve: Union[float, Curve],
                 vna: float,
-                last_coupon_date: Union[datetime.date, str] = None) -> float:
+                last_coupon_date: Union[datetime.date, str] = None,
+                di_curve: Optional[Union[float, Curve]] = None,
+                pu_par_val: Optional[float] = None,
+                fator_di_acumulado: Optional[float] = None) -> float:
         """
         Calcula a cotação percentual sobre o PU Par (% PU Par):
         Cotação = (PU_Operacao / PU_Par) * 100
         """
-        pu_par_val = self.pu_par(base_date, vna, last_coupon_date=last_coupon_date)
-        if pu_par_val <= 0.0:
+        pu_par_atual = (
+            float(pu_par_val)
+            if pu_par_val is not None
+            else self.pu_par(base_date, vna, last_coupon_date=last_coupon_date, fator_di_acumulado=fator_di_acumulado)
+        )
+        if pu_par_atual <= 0.0:
             return 100.0
-        pu_val = self.present_value(base_date, discount_rate_or_curve, vna, last_coupon_date=last_coupon_date)
-        return math.trunc((pu_val / pu_par_val) * 1e6) / 1e4
+        pu_val = self.present_value(
+            base_date, discount_rate_or_curve, vna,
+            last_coupon_date=last_coupon_date,
+            di_curve=di_curve,
+            pu_par_val=pu_par_atual,
+            fator_di_acumulado=fator_di_acumulado
+        )
+        return math.trunc((pu_val / pu_par_atual) * 1e6) / 1e4
 
     def duration(self, base_date: Union[datetime.date, str],
                  discount_rate_or_curve: Union[float, Curve],
                  vna: float,
-                 last_coupon_date: Union[datetime.date, str] = None) -> float:
+                 last_coupon_date: Union[datetime.date, str] = None,
+                 di_curve: Optional[Union[float, Curve]] = None,
+                 pu_par_val: Optional[float] = None,
+                 fator_di_acumulado: Optional[float] = None) -> float:
         """
         Calcula a Macaulay Duration em dias úteis (DU).
         """
@@ -322,7 +480,10 @@ class Debenture:
             base_date=base_date,
             discount_rate_or_curve=discount_rate_or_curve,
             vna=vna,
-            last_coupon_date=last_coupon_date
+            last_coupon_date=last_coupon_date,
+            di_curve=di_curve,
+            pu_par_val=pu_par_val,
+            fator_di_acumulado=fator_di_acumulado
         )
         if df_flows.empty:
             return 0.0
@@ -338,7 +499,10 @@ class Debenture:
     def modified_duration(self, base_date: Union[datetime.date, str],
                           discount_rate_or_curve: Union[float, Curve],
                           vna: float,
-                          last_coupon_date: Union[datetime.date, str] = None) -> float:
+                          last_coupon_date: Union[datetime.date, str] = None,
+                          di_curve: Optional[Union[float, Curve]] = None,
+                          pu_par_val: Optional[float] = None,
+                          fator_di_acumulado: Optional[float] = None) -> float:
         """
         Calcula a Duration Modificada em anos (base BUS/252):
         D_mod = (1 / P) * sum( (t_k / (1 + y_k)) * PV_k ), onde t_k = DU_k / 252.
@@ -347,7 +511,10 @@ class Debenture:
             base_date=base_date,
             discount_rate_or_curve=discount_rate_or_curve,
             vna=vna,
-            last_coupon_date=last_coupon_date
+            last_coupon_date=last_coupon_date,
+            di_curve=di_curve,
+            pu_par_val=pu_par_val,
+            fator_di_acumulado=fator_di_acumulado
         )
         if df_flows.empty:
             return 0.0
@@ -363,20 +530,38 @@ class Debenture:
     def dv01(self, base_date: Union[datetime.date, str],
              discount_rate_or_curve: Union[float, Curve],
              vna: float,
-             last_coupon_date: Union[datetime.date, str] = None) -> float:
+             last_coupon_date: Union[datetime.date, str] = None,
+             di_curve: Optional[Union[float, Curve]] = None,
+             pu_par_val: Optional[float] = None,
+             fator_di_acumulado: Optional[float] = None) -> float:
         """
         Calcula o DV01 (Dollar Value of 01), variação monetária do PU para 1 ponto base (0,01% a.a.)
         de deslocamento paralelo na taxa de desconto:
         DV01 = PU * D_mod * 0.0001.
         """
-        pu_val = self.present_value(base_date, discount_rate_or_curve, vna, last_coupon_date=last_coupon_date)
-        d_mod = self.modified_duration(base_date, discount_rate_or_curve, vna, last_coupon_date=last_coupon_date)
+        pu_val = self.present_value(
+            base_date, discount_rate_or_curve, vna,
+            last_coupon_date=last_coupon_date,
+            di_curve=di_curve,
+            pu_par_val=pu_par_val,
+            fator_di_acumulado=fator_di_acumulado
+        )
+        d_mod = self.modified_duration(
+            base_date, discount_rate_or_curve, vna,
+            last_coupon_date=last_coupon_date,
+            di_curve=di_curve,
+            pu_par_val=pu_par_val,
+            fator_di_acumulado=fator_di_acumulado
+        )
         return float(pu_val * d_mod * 0.0001)
 
     def convexity(self, base_date: Union[datetime.date, str],
                   discount_rate_or_curve: Union[float, Curve],
                   vna: float,
-                  last_coupon_date: Union[datetime.date, str] = None) -> float:
+                  last_coupon_date: Union[datetime.date, str] = None,
+                  di_curve: Optional[Union[float, Curve]] = None,
+                  pu_par_val: Optional[float] = None,
+                  fator_di_acumulado: Optional[float] = None) -> float:
         """
         Calcula a Convexidade Analítica em anos^2 (base BUS/252):
         C = (1 / P) * sum( (t_k * (t_k + 1) / (1 + y_k)^2) * PV_k ), onde t_k = DU_k / 252.
@@ -385,7 +570,10 @@ class Debenture:
             base_date=base_date,
             discount_rate_or_curve=discount_rate_or_curve,
             vna=vna,
-            last_coupon_date=last_coupon_date
+            last_coupon_date=last_coupon_date,
+            di_curve=di_curve,
+            pu_par_val=pu_par_val,
+            fator_di_acumulado=fator_di_acumulado
         )
         if df_flows.empty:
             return 0.0
@@ -402,19 +590,31 @@ class Debenture:
     def risk_metrics(self, base_date: Union[datetime.date, str],
                      discount_rate_or_curve: Union[float, Curve],
                      vna: float,
-                     last_coupon_date: Union[datetime.date, str] = None) -> Dict[str, float]:
+                     last_coupon_date: Union[datetime.date, str] = None,
+                     di_curve: Optional[Union[float, Curve]] = None,
+                     pu_par_val: Optional[float] = None,
+                     fator_di_acumulado: Optional[float] = None) -> Dict[str, float]:
         """
         Consolida as métricas de precificação e sensibilidade da debênture na data de referência.
         """
-        pu_par_val = self.pu_par(base_date, vna, last_coupon_date=last_coupon_date)
-        pu_val, df_flows = self.present_value(
-            base_date, discount_rate_or_curve, vna, last_coupon_date=last_coupon_date, return_cashflows=True
+        pu_par_atual = (
+            float(pu_par_val)
+            if pu_par_val is not None
+            else self.pu_par(base_date, vna, last_coupon_date=last_coupon_date, fator_di_acumulado=fator_di_acumulado)
         )
-        cot_val = math.trunc((pu_val / pu_par_val) * 1e6) / 1e4 if pu_par_val > 0.0 else 100.0
+        pu_val, df_flows = self.present_value(
+            base_date, discount_rate_or_curve, vna,
+            last_coupon_date=last_coupon_date,
+            return_cashflows=True,
+            di_curve=di_curve,
+            pu_par_val=pu_par_atual,
+            fator_di_acumulado=fator_di_acumulado
+        )
+        cot_val = math.trunc((pu_val / pu_par_atual) * 1e6) / 1e4 if pu_par_atual > 0.0 else 100.0
 
         if df_flows.empty or df_flows["valor_presente"].sum() <= 0.0:
             return {
-                "pu_par": pu_par_val,
+                "pu_par": pu_par_atual,
                 "pu": pu_val,
                 "cotacao": cot_val,
                 "duration_du": 0.0,
@@ -433,7 +633,7 @@ class Debenture:
         conv_val = float(((t_anos * (t_anos + 1.0)) / np.power(1.0 + df_flows["taxa_desconto"], 2.0) * df_flows["valor_presente"]).sum() / total_pv)
 
         return {
-            "pu_par": pu_par_val,
+            "pu_par": pu_par_atual,
             "pu": pu_val,
             "cotacao": cot_val,
             "duration_du": dur_du,

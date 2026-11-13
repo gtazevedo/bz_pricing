@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from bz_pricing.curves.manager import CurveManager
 from bz_pricing.data.debentures import DebenturesClient, DebenturesAPI
 from bz_pricing.instruments.credit import Debenture
 
@@ -61,22 +62,77 @@ def test_debenture_valea0_pricing():
     assert abs(metrics["convexity"] - 44.6096) < 1e-2
 
 
-def test_debenture_aalm12_pricing():
+def test_debenture_aegpa0_prefixado_pricing():
+    client = DebenturesClient(data_dir="dados/debentures")
+    deb = Debenture.from_ticker("AEGPA0", client=client)
+
+    assert deb.ticker == "AEGPA0"
+    assert deb.indexador in ["PRÉ", "PRE"]
+    assert abs(deb.coupon_rate - 0.16762) < 1e-6
+
+    base_date = datetime.date(2026, 10, 30)
+    vna = 1000.00
+    taxa_ind = 0.179668
+
+    metrics = deb.risk_metrics(base_date, taxa_ind, vna=vna)
+    assert abs(metrics["pu_par"] - 1074.600743) < 1e-5
+    assert abs(metrics["pu"] - 1052.691191) < 1e-4
+    assert abs(metrics["cotacao"] - 97.9611) < 1e-4
+    assert abs(metrics["duration_du"] - 504.78) < 1e-2
+
+
+def test_debenture_aalm12_di_spread_pricing():
     client = DebenturesClient(data_dir="dados/debentures")
     deb = Debenture.from_ticker("AALM12", client=client)
 
     assert deb.ticker == "AALM12"
     assert deb.indexador == "DI"
+    assert abs(deb.coupon_rate - 0.016) < 1e-6
+    assert abs(deb.multiplicador_di - 1.0) < 1e-6
 
     base_date = datetime.date(2026, 10, 30)
+    curva_pre = CurveManager(allow_download=True).get_curve("PRE", base_date)
     vna = 1000.00
     taxa_ind = 0.008877
 
-    pu_calc, df_cf = deb.present_value(base_date, taxa_ind, vna=vna, return_cashflows=True)
+    # PU Par via SGS 12 e marcação a mercado via curva PRE
+    pu_par = deb.pu_par(base_date, vna=vna)
+    assert abs(pu_par - 1010.903086) < 1e-4
+
+    pu_calc, df_cf = deb.present_value(
+        base_date, taxa_ind, vna=vna, di_curve=curva_pre, return_cashflows=True
+    )
     assert len(df_cf) > 0
     assert "Amortização" in df_cf["evento"].values
     assert "Juros" in df_cf["evento"].values
 
-    dur = deb.duration(base_date, taxa_ind, vna=vna)
-    assert 400.0 < dur < 700.0
+    metrics = deb.risk_metrics(base_date, taxa_ind, vna=vna, di_curve=curva_pre)
+    assert abs(metrics["pu"] - 1025.332013) < 0.01
+    assert abs(metrics["cotacao"] - 101.4273) < 0.01
+    assert abs(metrics["duration_du"] - 508.56) < 0.1
+    assert metrics["dv01"] > 0.0
+
+
+def test_debenture_klbna2_pct_di_pricing():
+    client = DebenturesClient(data_dir="dados/debentures")
+    deb = Debenture.from_ticker("KLBNA2", client=client)
+
+    assert deb.ticker == "KLBNA2"
+    assert deb.indexador == "DI"
+    assert abs(deb.multiplicador_di - 1.1465) < 1e-6
+    assert deb.amortizacao_sobre_vne is True
+
+    base_date = datetime.date(2026, 10, 30)
+    curva_pre = CurveManager(allow_download=True).get_curve("PRE", base_date)
+    vna = 10000.00
+    taxa_ind = 1.03285  # 103.285% do DI
+
+    pu_par = deb.pu_par(base_date, vna=vna)
+    assert abs(pu_par - 10164.3278) < 1e-3
+
+    metrics = deb.risk_metrics(base_date, taxa_ind, vna=vna, di_curve=curva_pre)
+    assert abs(metrics["pu"] - 10360.376432) < 0.05
+    assert abs(metrics["cotacao"] - 101.9288) < 0.01
+    assert abs(metrics["duration_du"] - 309.77) < 0.1
+    assert metrics["dv01"] > 0.0
 
