@@ -50,8 +50,9 @@ def test_debenture_valea0_pricing():
     # 3. Medidas de risco e cotação
     cot = deb.cotacao(base_date, taxa_ind, vna=vna_oficial)
     dur = deb.duration(base_date, taxa_ind, vna=vna_oficial)
-    assert 90.0 < cot < 100.0
-    assert 1500.0 < dur < 1650.0
+    assert abs(pu_calc - 1022.352694) < 1e-4
+    assert abs(cot - 92.9616) < 1e-3
+    assert abs(dur - 1579.24) < 0.1
 
 
 def test_debenture_aalm12_pricing():

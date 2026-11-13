@@ -205,7 +205,7 @@ class Debenture:
         else:
             past_events = self.cashflows_df[self.cashflows_df["data_pagamento"] <= base_date]
             if not past_events.empty:
-                prev_event_date = past_events["data_evento"].iloc[-1]
+                prev_event_date = past_events["data_pagamento"].iloc[-1]
             else:
                 prev_event_date = self.issue_date if self.issue_date else base_date
 
@@ -226,7 +226,8 @@ class Debenture:
             df_val = math.trunc(math.pow(1.0 + r_desc, du_desc / 252.0) * 1e14) / 1e14
 
             if "Juros" in evento:
-                du_period = self.calendar.bizdays(prev_event_date, d_ev)
+                # O período contratual de contagem de juros ocorre entre as datas de liquidação (d_pg)
+                du_period = self.calendar.bizdays(prev_event_date, d_pg)
                 r_cupom = (perc / 100.0) if perc > 0.0 else self.coupon_rate
                 f_cupom = math.trunc((math.pow(1.0 + r_cupom, du_period / 252.0) - 1.0) * 1e9) / 1e9
                 valor_fluxo = saldo_vna * f_cupom
@@ -244,7 +245,7 @@ class Debenture:
                     "fator_desconto": df_val,
                     "valor_presente": pv_val
                 })
-                prev_event_date = d_ev
+                prev_event_date = d_pg
 
             elif evento in ["Amortização", "Vencimento"]:
                 if evento == "Vencimento" or perc <= 0.0 or perc >= 100.0:
