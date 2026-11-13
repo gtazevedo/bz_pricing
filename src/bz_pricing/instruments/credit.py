@@ -6,6 +6,7 @@ import pandas as pd
 
 from bz_pricing.core.calendars import get_calendar
 from bz_pricing.core.curves import Curve
+from bz_pricing.data.cricra import CRICRAClient
 from bz_pricing.data.debentures import DebenturesClient
 
 
@@ -26,7 +27,9 @@ class Debenture:
                  nominal_value: float = 1000.0,
                  calendar_name: str = "B3",
                  multiplicador_di: float = 1.0,
-                 amortizacao_sobre_vne: bool = False):
+                 amortizacao_sobre_vne: bool = False,
+                 coupon_day_count: str = "BUS/252",
+                 defasagem_di: int = 0):
         self.ticker = ticker.strip().upper()
         self.indexador = indexador.strip().upper()
         self.coupon_rate = 0.0 if (coupon_rate is None or (isinstance(coupon_rate, float) and math.isnan(coupon_rate))) else float(coupon_rate)
@@ -34,6 +37,8 @@ class Debenture:
         self.calendar = get_calendar(calendar_name)
         self.multiplicador_di = float(multiplicador_di)
         self.amortizacao_sobre_vne = bool(amortizacao_sobre_vne)
+        self.coupon_day_count = coupon_day_count.strip().upper()
+        self.defasagem_di = int(defasagem_di)
 
         if maturity_date:
             self.nominal_maturity_date = self._normalize_date(maturity_date)
@@ -78,14 +83,35 @@ class Debenture:
         """Indica se a debênture é remunerada exclusivamente por percentual do DI."""
         return self._is_di_linked() and self.coupon_rate <= 0.0 and self.multiplicador_di != 1.0
 
+    def _coupon_year_fraction(self, start_date: datetime.date, end_date: datetime.date) -> float:
+        """Calcula a fração de ano contratual para apuração de juros do cupom."""
+        if start_date >= end_date:
+            return 0.0
+        dc = self.coupon_day_count
+        if dc in ("BUS/252", "DU/252"):
+            return self.calendar.bizdays(start_date, end_date) / 252.0
+        if dc in ("ACT/360", "DC/360"):
+            return (end_date - start_date).days / 360.0
+        if dc in ("ACT/365", "DC/365"):
+            return (end_date - start_date).days / 365.0
+        if dc == "30/360":
+            d1 = min(start_date.day, 30)
+            d2 = 30 if (end_date.day == 31 and d1 == 30) else end_date.day
+            days_30 = (end_date.year - start_date.year) * 360 + (end_date.month - start_date.month) * 30 + (d2 - d1)
+            return days_30 / 360.0
+        raise ValueError(f"Convenção de contagem de dias '{self.coupon_day_count}' não suportada.")
+
     def _fetch_di_factor(self, start_date: datetime.date, end_date: datetime.date,
                          multiplicador: float = 1.0, round_factor_8: bool = False) -> float:
         """
         Calcula o fator de DI acumulado no intervalo [start_date, end_date)
-        via série SGS 12 do Banco Central (taxa DI diária).
+        via série SGS 12 do Banco Central (taxa DI diária), respeitando defasagem_di.
         """
         if start_date >= end_date:
             return 1.0
+        if self.defasagem_di > 0:
+            start_date = self.calendar.offset(start_date, -self.defasagem_di)
+            end_date = self.calendar.offset(end_date, -self.defasagem_di)
         from bcb import sgs
 
         df_cdi = sgs.get(
@@ -109,7 +135,7 @@ class Debenture:
 
     def _normalize_date(self, d: Union[datetime.date, str]) -> datetime.date:
         if isinstance(d, str):
-            return pd.to_datetime(d, dayfirst=True).date()
+            return pd.to_datetime(d, dayfirst="/" in d).date()
         return d
 
     @classmethod
@@ -250,8 +276,9 @@ class Debenture:
             f_juros = math.trunc(f_di * f_spr * 1e9) / 1e9
             return math.trunc((vna * f_juros) * 1e6) / 1e6
 
-        # Juros acruados pró-rata dia útil (A-9) para IPCA, IGP-M e Prefixado
-        f_juros = math.pow(1.0 + self.coupon_rate, du_passado / 252.0) - 1.0
+        # Juros acruados pró-rata (A-9) para IPCA, IGP-M e Prefixado
+        yf_passado = self._coupon_year_fraction(last_date, base_date)
+        f_juros = math.pow(1.0 + self.coupon_rate, yf_passado) - 1.0
         juros_val = math.trunc((vna * f_juros) * 1e6) / 1e6
         return vna + juros_val
 
@@ -361,9 +388,9 @@ class Debenture:
                     prev_f_di = f_di_acum
                 else:
                     # O período contratual de contagem de juros ocorre entre as datas de liquidação (d_pg)
-                    du_period = self.calendar.bizdays(prev_event_date, d_pg)
+                    yf_period = self._coupon_year_fraction(prev_event_date, d_pg)
                     r_cupom = (perc / 100.0) if perc > 0.0 else self.coupon_rate
-                    f_cupom = math.trunc((math.pow(1.0 + r_cupom, du_period / 252.0) - 1.0) * 1e9) / 1e9
+                    f_cupom = math.trunc((math.pow(1.0 + r_cupom, yf_period) - 1.0) * 1e9) / 1e9
 
                 # Critério padrão SND: valor unitário dos juros truncado em 6 casas decimais (T-6)
                 valor_fluxo = math.trunc((saldo_vna * f_cupom) * 1e6) / 1e6
@@ -642,3 +669,119 @@ class Debenture:
             "dv01": dv01_val,
             "convexity": conv_val
         }
+
+
+class CertificadoRecebiveis(Debenture):
+    """
+    Classe base para Certificados de Recebíveis (CRI e CRA) conforme metodologia ANBIMA.
+    Suporta convenções de contagem de dias contratuais no cupom (BUS/252, ACT/360,
+    ACT/365, 30/360), defasagem de DI no cálculo do PU Par, amortizações sobre VNE
+    ou saldo remanescente e desconto a mercado em base 252 dias úteis.
+    """
+
+    DEFAULT_LASTRO = ""
+
+    def __init__(self,
+                 ticker: str,
+                 maturity_date: Union[datetime.date, str] = None,
+                 indexador: str = "IPCA",
+                 coupon_rate: float = 0.0,
+                 issue_date: Union[datetime.date, str] = None,
+                 cashflows_df: Optional[pd.DataFrame] = None,
+                 nominal_value: float = 1000.0,
+                 calendar_name: str = "B3",
+                 multiplicador_di: float = 1.0,
+                 amortizacao_sobre_vne: bool = False,
+                 coupon_day_count: str = "BUS/252",
+                 defasagem_di: int = 0,
+                 securitizadora: str = "",
+                 lastro: str = "",
+                 serie: str = "",
+                 emissao: str = ""):
+        super().__init__(
+            ticker=ticker,
+            maturity_date=maturity_date,
+            indexador=indexador,
+            coupon_rate=coupon_rate,
+            issue_date=issue_date,
+            cashflows_df=cashflows_df,
+            nominal_value=nominal_value,
+            calendar_name=calendar_name,
+            multiplicador_di=multiplicador_di,
+            amortizacao_sobre_vne=amortizacao_sobre_vne,
+            coupon_day_count=coupon_day_count,
+            defasagem_di=defasagem_di
+        )
+        self.securitizadora = securitizadora.strip()
+        self.lastro = (lastro or self.DEFAULT_LASTRO).strip()
+        self.serie = str(serie).strip()
+        self.emissao = str(emissao).strip()
+
+    @classmethod
+    def from_schedule(cls,
+                      ticker: str,
+                      issue_date: Union[datetime.date, str],
+                      maturity_date: Union[datetime.date, str],
+                      indexador: str = "IPCA",
+                      coupon_rate: float = 0.0,
+                      coupon_freq: str = "mensal",
+                      amort_type: str = "bullet",
+                      amort_start_date: Optional[Union[datetime.date, str]] = None,
+                      custom_amort_schedule: Optional[List[Tuple[Union[datetime.date, str], float]]] = None,
+                      nominal_value: float = 1000.0,
+                      calendar_name: str = "B3",
+                      multiplicador_di: float = 1.0,
+                      amortizacao_sobre_vne: bool = False,
+                      coupon_day_count: str = "BUS/252",
+                      defasagem_di: int = 0,
+                      securitizadora: str = "",
+                      lastro: str = "",
+                      serie: str = "",
+                      emissao: str = ""):
+        """
+        Constrói um Certificado de Recebíveis (CRI ou CRA) gerando automaticamente
+        a agenda de eventos financeiros a partir dos parâmetros do termo de securitização.
+        """
+        df_cf = CRICRAClient.build_schedule(
+            issue_date=issue_date,
+            maturity_date=maturity_date,
+            coupon_freq=coupon_freq,
+            amort_type=amort_type,
+            amort_start_date=amort_start_date,
+            custom_amort_schedule=custom_amort_schedule,
+            calendar_name=calendar_name
+        )
+        return cls(
+            ticker=ticker,
+            maturity_date=maturity_date,
+            indexador=indexador,
+            coupon_rate=coupon_rate,
+            issue_date=issue_date,
+            cashflows_df=df_cf,
+            nominal_value=nominal_value,
+            calendar_name=calendar_name,
+            multiplicador_di=multiplicador_di,
+            amortizacao_sobre_vne=amortizacao_sobre_vne,
+            coupon_day_count=coupon_day_count,
+            defasagem_di=defasagem_di,
+            securitizadora=securitizadora,
+            lastro=lastro,
+            serie=serie,
+            emissao=emissao
+        )
+
+
+class CRI(CertificadoRecebiveis):
+    """
+    Certificado de Recebíveis Imobiliários (CRI) conforme metodologia ANBIMA.
+    """
+
+    DEFAULT_LASTRO = "Imobiliário"
+
+
+class CRA(CertificadoRecebiveis):
+    """
+    Certificado de Recebíveis do Agronegócio (CRA) conforme metodologia ANBIMA.
+    """
+
+    DEFAULT_LASTRO = "Agronegócio"
