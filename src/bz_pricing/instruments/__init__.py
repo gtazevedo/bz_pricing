@@ -9,6 +9,17 @@ from .credit import (
     LetraFinanceira,
     price_credit_portfolio,
 )
+from .derivatives import (
+    DI1Future,
+    DDIFuture,
+    DAPFuture,
+    DOLFuture,
+    INDFuture,
+    SwapDIxPRE,
+    SwapDIxIPCA,
+    NDFContract,
+    price_di1_portfolio,
+)
 
 __all__ = [
     "TituloPublico",
@@ -26,4 +37,13 @@ __all__ = [
     "FIDC",
     "LetraFinanceira",
     "price_credit_portfolio",
+    "DI1Future",
+    "DDIFuture",
+    "DAPFuture",
+    "DOLFuture",
+    "INDFuture",
+    "SwapDIxPRE",
+    "SwapDIxIPCA",
+    "NDFContract",
+    "price_di1_portfolio",
 ]
