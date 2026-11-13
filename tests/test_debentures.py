@@ -47,12 +47,18 @@ def test_debenture_valea0_pricing():
     assert set(["data_evento", "data_pagamento", "du", "evento", "fluxo_nominal", "valor_presente"]).issubset(df_cf.columns)
     assert abs(df_cf["valor_presente"].sum() - pu_calc) < 1e-4
 
-    # 3. Medidas de risco e cotação
+    # 3. Medidas de risco e cotação (aderência exata ao SND / ANBIMA)
     cot = deb.cotacao(base_date, taxa_ind, vna=vna_oficial)
     dur = deb.duration(base_date, taxa_ind, vna=vna_oficial)
-    assert abs(pu_calc - 1022.352694) < 1e-4
-    assert abs(cot - 92.9616) < 1e-3
-    assert abs(dur - 1579.24) < 0.1
+    assert abs(pu_calc - 1022.352694) < 1e-6
+    assert abs(cot - 92.9616) < 1e-4
+    assert abs(dur - 1579.24) < 1e-2
+
+    # 4. Métricas de sensibilidade (Modified Duration, DV01 e Convexidade)
+    metrics = deb.risk_metrics(base_date, taxa_ind, vna=vna_oficial)
+    assert abs(metrics["modified_duration"] - 5.822975) < 1e-4
+    assert abs(metrics["dv01"] - 0.595313) < 1e-4
+    assert abs(metrics["convexity"] - 44.6096) < 1e-2
 
 
 def test_debenture_aalm12_pricing():

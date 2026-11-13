@@ -230,7 +230,8 @@ class Debenture:
                 du_period = self.calendar.bizdays(prev_event_date, d_pg)
                 r_cupom = (perc / 100.0) if perc > 0.0 else self.coupon_rate
                 f_cupom = math.trunc((math.pow(1.0 + r_cupom, du_period / 252.0) - 1.0) * 1e9) / 1e9
-                valor_fluxo = saldo_vna * f_cupom
+                # Critério padrão SND: valor unitário dos juros truncado em 6 casas decimais (T-6)
+                valor_fluxo = math.trunc((saldo_vna * f_cupom) * 1e6) / 1e6
                 pv_val = valor_fluxo / df_val
 
                 rows.append({
@@ -249,10 +250,10 @@ class Debenture:
 
             elif evento in ["Amortização", "Vencimento"]:
                 if evento == "Vencimento" or perc <= 0.0 or perc >= 100.0:
-                    valor_fluxo = saldo_vna
+                    valor_fluxo = math.trunc(saldo_vna * 1e6) / 1e6
                     saldo_vna = 0.0
                 else:
-                    valor_fluxo = saldo_vna * (perc / 100.0)
+                    valor_fluxo = math.trunc((saldo_vna * (perc / 100.0)) * 1e6) / 1e6
                     saldo_vna -= valor_fluxo
 
                 pv_val = valor_fluxo / df_val
@@ -331,4 +332,113 @@ class Debenture:
             return 0.0
 
         dur = (df_flows["du"] * df_flows["valor_presente"]).sum() / total_pv
-        return round(float(dur), 2)
+        # Critério ANBIMA: truncamento em 2 casas decimais (T-2)
+        return math.trunc(float(dur) * 100.0) / 100.0
+
+    def modified_duration(self, base_date: Union[datetime.date, str],
+                          discount_rate_or_curve: Union[float, Curve],
+                          vna: float,
+                          last_coupon_date: Union[datetime.date, str] = None) -> float:
+        """
+        Calcula a Duration Modificada em anos (base BUS/252):
+        D_mod = (1 / P) * sum( (t_k / (1 + y_k)) * PV_k ), onde t_k = DU_k / 252.
+        """
+        df_flows = self.cashflow_table(
+            base_date=base_date,
+            discount_rate_or_curve=discount_rate_or_curve,
+            vna=vna,
+            last_coupon_date=last_coupon_date
+        )
+        if df_flows.empty:
+            return 0.0
+
+        total_pv = df_flows["valor_presente"].sum()
+        if total_pv <= 0.0:
+            return 0.0
+
+        t_anos = df_flows["du"] / 252.0
+        d_mod = ((t_anos / (1.0 + df_flows["taxa_desconto"])) * df_flows["valor_presente"]).sum() / total_pv
+        return float(d_mod)
+
+    def dv01(self, base_date: Union[datetime.date, str],
+             discount_rate_or_curve: Union[float, Curve],
+             vna: float,
+             last_coupon_date: Union[datetime.date, str] = None) -> float:
+        """
+        Calcula o DV01 (Dollar Value of 01), variação monetária do PU para 1 ponto base (0,01% a.a.)
+        de deslocamento paralelo na taxa de desconto:
+        DV01 = PU * D_mod * 0.0001.
+        """
+        pu_val = self.present_value(base_date, discount_rate_or_curve, vna, last_coupon_date=last_coupon_date)
+        d_mod = self.modified_duration(base_date, discount_rate_or_curve, vna, last_coupon_date=last_coupon_date)
+        return float(pu_val * d_mod * 0.0001)
+
+    def convexity(self, base_date: Union[datetime.date, str],
+                  discount_rate_or_curve: Union[float, Curve],
+                  vna: float,
+                  last_coupon_date: Union[datetime.date, str] = None) -> float:
+        """
+        Calcula a Convexidade Analítica em anos^2 (base BUS/252):
+        C = (1 / P) * sum( (t_k * (t_k + 1) / (1 + y_k)^2) * PV_k ), onde t_k = DU_k / 252.
+        """
+        df_flows = self.cashflow_table(
+            base_date=base_date,
+            discount_rate_or_curve=discount_rate_or_curve,
+            vna=vna,
+            last_coupon_date=last_coupon_date
+        )
+        if df_flows.empty:
+            return 0.0
+
+        total_pv = df_flows["valor_presente"].sum()
+        if total_pv <= 0.0:
+            return 0.0
+
+        t_anos = df_flows["du"] / 252.0
+        f_conv = (t_anos * (t_anos + 1.0)) / np.power(1.0 + df_flows["taxa_desconto"], 2.0)
+        conv = (f_conv * df_flows["valor_presente"]).sum() / total_pv
+        return float(conv)
+
+    def risk_metrics(self, base_date: Union[datetime.date, str],
+                     discount_rate_or_curve: Union[float, Curve],
+                     vna: float,
+                     last_coupon_date: Union[datetime.date, str] = None) -> Dict[str, float]:
+        """
+        Consolida as métricas de precificação e sensibilidade da debênture na data de referência.
+        """
+        pu_par_val = self.pu_par(base_date, vna, last_coupon_date=last_coupon_date)
+        pu_val, df_flows = self.present_value(
+            base_date, discount_rate_or_curve, vna, last_coupon_date=last_coupon_date, return_cashflows=True
+        )
+        cot_val = math.trunc((pu_val / pu_par_val) * 1e6) / 1e4 if pu_par_val > 0.0 else 100.0
+
+        if df_flows.empty or df_flows["valor_presente"].sum() <= 0.0:
+            return {
+                "pu_par": pu_par_val,
+                "pu": pu_val,
+                "cotacao": cot_val,
+                "duration_du": 0.0,
+                "duration_anos": 0.0,
+                "modified_duration": 0.0,
+                "dv01": 0.0,
+                "convexity": 0.0
+            }
+
+        total_pv = df_flows["valor_presente"].sum()
+        t_anos = df_flows["du"] / 252.0
+        dur_du = math.trunc(((df_flows["du"] * df_flows["valor_presente"]).sum() / total_pv) * 100.0) / 100.0
+        dur_anos = float((t_anos * df_flows["valor_presente"]).sum() / total_pv)
+        d_mod = float(((t_anos / (1.0 + df_flows["taxa_desconto"])) * df_flows["valor_presente"]).sum() / total_pv)
+        dv01_val = float(pu_val * d_mod * 0.0001)
+        conv_val = float(((t_anos * (t_anos + 1.0)) / np.power(1.0 + df_flows["taxa_desconto"], 2.0) * df_flows["valor_presente"]).sum() / total_pv)
+
+        return {
+            "pu_par": pu_par_val,
+            "pu": pu_val,
+            "cotacao": cot_val,
+            "duration_du": dur_du,
+            "duration_anos": dur_anos,
+            "modified_duration": d_mod,
+            "dv01": dv01_val,
+            "convexity": conv_val
+        }
