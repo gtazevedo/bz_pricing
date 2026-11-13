@@ -10,6 +10,13 @@ from bz_pricing.core.vna_engine import VNAEngine
 from bz_pricing.data.cricra import CRICRAClient
 from bz_pricing.data.debentures import DebenturesClient
 
+try:
+    from bz_pricing.core.credit_core import compute_credit_cashflows as _cy_compute_credit_cashflows
+    from bz_pricing.core.credit_core import evaluate_gross_up_pv as _cy_evaluate_gross_up_pv
+except ImportError:
+    _cy_compute_credit_cashflows = None
+    _cy_evaluate_gross_up_pv = None
+
 
 class Debenture:
     """
@@ -393,6 +400,90 @@ class Debenture:
             )
             fator_acruado_di = (pu_par_atual / vna) if vna > 0.0 else 1.0
 
+        if _cy_compute_credit_cashflows is not None:
+            d_ev_list = future_df["data_evento"].tolist()
+            d_pg_list = future_df["data_pagamento"].tolist()
+            ev_raw = future_df["evento"].astype(str).str.strip().tolist()
+            tipo_list = future_df["tipo"].astype(str).str.strip().tolist()
+            perc_raw = pd.to_numeric(future_df["taxa_percentual"], errors="coerce").fillna(0.0).to_numpy(dtype=np.float64)
+
+            keep_idx = []
+            du_list = []
+            yf_list = []
+            ev_codes = []
+            ev_labels = []
+            r_desc_list = []
+            r_di_list = []
+            prev_dt = prev_event_date
+
+            for idx, (ev_str, d_pg) in enumerate(zip(ev_raw, d_pg_list)):
+                ev_low = ev_str.lower()
+                if "juros" in ev_low:
+                    code = 0
+                    label = "Juros"
+                elif "amort" in ev_low or "vencimento" in ev_low:
+                    code = 2 if "vencimento" in ev_low else 1
+                    label = ev_str
+                else:
+                    continue
+
+                du_d = self.calendar.bizdays(base_date, d_pg)
+                yf_p = self._coupon_year_fraction(prev_dt, d_pg) if (code == 0 and not is_di) else 0.0
+                if code == 0:
+                    prev_dt = d_pg
+
+                keep_idx.append(idx)
+                du_list.append(du_d)
+                yf_list.append(yf_p)
+                ev_codes.append(code)
+                ev_labels.append(label)
+                r_desc_list.append(self._get_rate_for_du(discount_rate_or_curve, du_d))
+                r_di_list.append(self._get_rate_for_du(di_curve, du_d) if is_di else 0.0)
+
+            if not keep_idx:
+                return pd.DataFrame(columns=[
+                    "data_evento", "data_pagamento", "du", "evento", "tipo",
+                    "taxa_cupom", "fluxo_nominal", "taxa_desconto", "fator_desconto", "valor_presente"
+                ])
+
+            du_arr = np.asarray(du_list, dtype=np.int32)
+            yf_arr = np.asarray(yf_list, dtype=np.float64)
+            perc_arr = perc_raw[keep_idx]
+            ev_arr = np.asarray(ev_codes, dtype=np.int32)
+            r_desc_arr = np.asarray(r_desc_list, dtype=np.float64)
+            r_di_arr = np.asarray(r_di_list, dtype=np.float64)
+
+            taxa_cupom_arr, fluxo_arr, taxa_desc_arr, df_arr, pv_arr, _ = _cy_compute_credit_cashflows(
+                du_arr,
+                yf_arr,
+                perc_arr,
+                ev_arr,
+                r_desc_arr,
+                r_di_arr,
+                float(vna),
+                float(fator_acruado_di),
+                float(self.coupon_rate),
+                float(self.multiplicador_di),
+                float(self._value_scale),
+                bool(self._is_cricra),
+                bool(is_di),
+                bool(is_pct_di),
+                bool(self.amortizacao_sobre_vne),
+            )
+
+            return pd.DataFrame({
+                "data_evento": [d_ev_list[i] for i in keep_idx],
+                "data_pagamento": [d_pg_list[i] for i in keep_idx],
+                "du": du_arr,
+                "evento": ev_labels,
+                "tipo": [tipo_list[i] for i in keep_idx],
+                "taxa_cupom": taxa_cupom_arr,
+                "fluxo_nominal": fluxo_arr,
+                "taxa_desconto": taxa_desc_arr,
+                "fator_desconto": df_arr,
+                "valor_presente": pv_arr,
+            })
+
         rows = []
         saldo_vna = vna
         prev_du_di = 0
@@ -731,9 +822,12 @@ class Debenture:
             else:
                 adjusted_flows.append(fluxo)
 
-        flows_arr = np.asarray(adjusted_flows, dtype=float)
+        flows_arr = np.asarray(adjusted_flows, dtype=np.float64)
+        du_i32 = du_arr.astype(np.int32)
 
         def _pv_diff(rate: float) -> float:
+            if _cy_evaluate_gross_up_pv is not None:
+                return float(_cy_evaluate_gross_up_pv(du_i32, flows_arr, float(rate)) - pu_target)
             disc = np.power(1.0 + rate, du_arr / 252.0)
             return float(np.sum(flows_arr / disc) - pu_target)
 
@@ -1333,3 +1427,56 @@ class LetraFinanceira(CertificadoRecebiveis):
                 w = (prazo_meses - m0) / (m1 - m0)
                 return r0 + w * (r1 - r0)
         return vertices[-1][1]
+
+
+def price_credit_portfolio(
+    positions: List[Dict],
+    base_date: Union[datetime.date, str],
+    di_curve: Optional[Union[float, Curve]] = None,
+) -> pd.DataFrame:
+    """
+    Precifica em lote uma carteira de ativos de crédito privado (Debêntures, CRI,
+    CRA, FIDC e Letras Financeiras) utilizando o núcleo Cython, retornando um
+    DataFrame consolidado com PU, valor financeiro, duration, DV01, convexidade
+    e Z-Spread por ativo.
+
+    Cada item de `positions` é um dicionário com:
+    - `instrument`: instância de Debenture / CRI / CRA / CotaFIDC / LetraFinanceira
+    - `discount_rate`: taxa indicativa ou curva de desconto
+    - `quantity` (opcional, padrão 1.0): quantidade de títulos na carteira
+    - `vna`, `pu_par_val`, `fator_di_acumulado`, `di_curve`, `risk_free_rate`,
+      `ettj_pre_rate_or_curve`, `incentivada` (todos opcionais).
+    """
+    rows = []
+    for pos in positions:
+        inst: Debenture = pos["instrument"]
+        qty = float(pos.get("quantity", 1.0))
+        metrics = inst.risk_metrics(
+            base_date=base_date,
+            discount_rate_or_curve=pos["discount_rate"],
+            vna=pos.get("vna"),
+            last_coupon_date=pos.get("last_coupon_date"),
+            di_curve=pos.get("di_curve", di_curve),
+            pu_par_val=pos.get("pu_par_val"),
+            fator_di_acumulado=pos.get("fator_di_acumulado"),
+            risk_free_rate=pos.get("risk_free_rate"),
+            ettj_pre_rate_or_curve=pos.get("ettj_pre_rate_or_curve"),
+            incentivada=bool(pos.get("incentivada", False)),
+        )
+        rows.append({
+            "ticker": inst.ticker,
+            "classe": inst.__class__.__name__,
+            "indexador": inst.indexador,
+            "quantity": qty,
+            "pu_par": metrics["pu_par"],
+            "pu": metrics["pu"],
+            "valor_financeiro": math.trunc((metrics["pu"] * qty) * 100.0) / 100.0,
+            "cotacao": metrics["cotacao"],
+            "duration_du": metrics["duration_du"],
+            "modified_duration": metrics["modified_duration"],
+            "dv01": metrics["dv01"],
+            "dv01_financeiro": metrics["dv01"] * qty,
+            "convexity": metrics["convexity"],
+            "z_spread": metrics.get("z_spread"),
+        })
+    return pd.DataFrame(rows)

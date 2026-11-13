@@ -123,3 +123,38 @@ def test_anbima_data_client_get_ettj_parses_csv(tmp_path):
     assert abs(df.loc[0, "ettj_pref"] - 0.148) < 1e-9
     assert abs(df.loc[1, "ettj_ipca"] - 0.051) < 1e-9
 
+
+def test_price_credit_portfolio_cython_speed():
+    import time
+    from bz_pricing.instruments import CotaFIDC, LetraFinanceira, price_credit_portfolio
+
+    fidc = CotaFIDC.from_schedule(
+        ticker="FIDC-1",
+        issue_date="2026-01-02",
+        maturity_date="2028-01-03",
+        indexador="IPCA",
+        coupon_rate=0.07,
+        coupon_freq="semestral",
+    )
+    lf = LetraFinanceira.from_bullet(
+        ticker="LF-1",
+        issue_date="2026-01-02",
+        maturity_date="2028-01-03",
+        indexador="DI",
+        coupon_rate=0.005,
+        nominal_value=50000.0,
+    )
+    positions = [
+        {"instrument": fidc, "discount_rate": 0.075, "quantity": 100, "vna": 1050.0, "risk_free_rate": 0.065},
+        {"instrument": lf, "discount_rate": 0.006, "quantity": 10, "vna": 50000.0, "pu_par_val": 51000.0, "di_curve": 0.135},
+    ] * 100  # 200 ativos na carteira
+
+    t0 = time.perf_counter()
+    df = price_credit_portfolio(positions, base_date=datetime.date(2026, 7, 1))
+    elapsed = time.perf_counter() - t0
+
+    assert len(df) == 200
+    assert df["pu"].notna().all()
+    assert df["z_spread"].notna().all()
+    assert elapsed < 2.0
+
