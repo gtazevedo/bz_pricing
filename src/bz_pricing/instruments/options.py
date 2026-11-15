@@ -14,6 +14,7 @@ try:
         bsm_price_greeks as _cy_bsm,
         corrado_su_price as _cy_corrado_su,
         crr_american_price as _cy_crr_american,
+        crr_american_price_greeks as _cy_crr_american_greeks,
         implied_vol_black76 as _cy_iv_black76,
         implied_vol_bsm as _cy_iv_bsm,
         price_options_batch as _cy_price_batch,
@@ -22,6 +23,7 @@ except ImportError:
     _cy_bsm = None
     _cy_black76 = None
     _cy_crr_american = None
+    _cy_crr_american_greeks = None
     _cy_corrado_su = None
     _cy_iv_bsm = None
     _cy_iv_black76 = None
@@ -78,6 +80,11 @@ class _BaseOption:
             return float(rate_or_curve.get_rate(max(1, int(du))))
         return float(rate_or_curve)
 
+    def _resolve_vol(self, vol_or_surface: Any, du: int, forward: float) -> float:
+        if hasattr(vol_or_surface, "get_vol"):
+            return float(vol_or_surface.get_vol(max(1, int(du)), strike=self.strike, forward=float(forward)))
+        return float(vol_or_surface)
+
     def du(self, base_date: Union[datetime.date, str]) -> int:
         base_dt = self._normalize_date(base_date)
         return max(0, int(self.calendar.bizdays(base_dt, self.maturity_date)))
@@ -127,13 +134,21 @@ class EquityOption(_BaseOption):
         if _cy_bsm is None:
             raise RuntimeError("Extensão Cython 'options_core' não compilada.")
 
+        fwd_est = float(spot) * math.exp((r_cont - q_cont) * t_n)
+        vol_val = self._resolve_vol(vol, du_n, fwd_est)
+
         price_eu, delta, gamma, vega, theta, rho, vanna, volga = _cy_bsm(
-            float(spot), self.strike, r_cont, q_cont, t_n, float(vol), is_call
+            float(spot), self.strike, r_cont, q_cont, t_n, vol_val, is_call
         )
         if self.exercise == "AMERICAN":
-            price = _cy_crr_american(
-                float(spot), self.strike, r_cont, q_cont, t_n, float(vol), is_call, int(crr_steps)
-            )
+            if _cy_crr_american_greeks is not None:
+                price, delta, gamma, vega, theta, rho = _cy_crr_american_greeks(
+                    float(spot), self.strike, r_cont, q_cont, t_n, vol_val, is_call, int(crr_steps)
+                )
+            else:
+                price = _cy_crr_american(
+                    float(spot), self.strike, r_cont, q_cont, t_n, vol_val, is_call, int(crr_steps)
+                )
         else:
             price = price_eu
 
@@ -209,10 +224,16 @@ class FXOption(_BaseOption):
         r_cont = math.log(1.0 + max(-0.99, r_pre))
         if du_n > 0:
             q_cont = (252.0 / du_n) * math.log(max(1e-8, 1.0 + r_ddi * (dc_n / 360.0)))
-            sigma_eff = float(vol) * math.sqrt(du_n / (du_n + 1.0)) if fixing_vol_adjust else float(vol)
         else:
             q_cont = 0.0
-            sigma_eff = float(vol)
+        vol_val = self._resolve_vol(vol, du_n, 1.0) if not hasattr(vol, "get_vol") else None
+        if vol_val is None:
+            # Resolve com forward implícito aproximado via strike ou paridade unitária se spot não foi passado
+            vol_val = float(vol.get_vol(max(1, int(du_n)), strike=self.strike, forward=self.strike))
+        if du_n > 0:
+            sigma_eff = vol_val * math.sqrt(du_n / (du_n + 1.0)) if fixing_vol_adjust else vol_val
+        else:
+            sigma_eff = vol_val
         return du_n, dc_n, t_n, r_cont, q_cont, sigma_eff
 
     def risk_metrics(
@@ -270,11 +291,12 @@ class FXOption(_BaseOption):
         spot_ptax: float,
         pre_rate_or_curve: Union[float, Curve],
         cupom_limpo_or_curve: Union[float, Curve],
+        fixing_vol_adjust: bool = False,
     ) -> float:
-        _, _, t_n, r_cont, q_cont, _ = self._resolve_fx_params(
+        du_n, _, t_n, r_cont, q_cont, _ = self._resolve_fx_params(
             base_date, pre_rate_or_curve, cupom_limpo_or_curve, 0.15, False
         )
-        return float(
+        iv_eff = float(
             _cy_iv_bsm(
                 float(market_price),
                 float(spot_ptax),
@@ -285,6 +307,9 @@ class FXOption(_BaseOption):
                 self.option_type == "CALL",
             )
         )
+        if fixing_vol_adjust and du_n > 0 and not math.isnan(iv_eff):
+            return iv_eff / math.sqrt(du_n / (du_n + 1.0))
+        return iv_eff
 
 
 class IDIOption(_BaseOption):
@@ -306,9 +331,10 @@ class IDIOption(_BaseOption):
         r_eff = self._get_rate_for_du(pre_rate_or_curve, du_n)
         r_cont = math.log(1.0 + max(-0.99, r_eff))
         idi_fwd = float(idi_spot) * math.exp(r_cont * t_n)
+        vol_val = self._resolve_vol(vol, du_n, idi_fwd)
 
         price, delta, gamma, vega, theta, rho, vanna, volga = _cy_black76(
-            idi_fwd, self.strike, r_cont, t_n, float(vol), self.option_type == "CALL"
+            idi_fwd, self.strike, r_cont, t_n, vol_val, self.option_type == "CALL"
         )
         return {
             "du": float(du_n),
@@ -387,6 +413,8 @@ class DI1Option(_BaseOption):
         pu_c: float,
         pu_l: float,
     ):
+        if self.underlying_maturity_date <= self.maturity_date:
+            raise ValueError("underlying_maturity_date deve ser estritamente posterior a maturity_date.")
         base_dt = self._normalize_date(base_date)
         du_c = max(0, int(self.calendar.bizdays(base_dt, self.maturity_date)))
         du_l = max(du_c + 1, int(self.calendar.bizdays(base_dt, self.underlying_maturity_date)))
@@ -446,6 +474,8 @@ class DI1Option(_BaseOption):
         pu_l: float,
     ) -> float:
         t_c_dc, s_prime, k_prime, delta_annuity = self._resolve_di1_params(base_date, pu_c, pu_l)
+        if delta_annuity <= 0.0:
+            raise ValueError("delta_annuity deve ser positivo para inversão de volatilidade implícita.")
         undisc_target = float(market_price) / delta_annuity
         return float(
             _cy_iv_black76(undisc_target, s_prime, k_prime, 0.0, t_c_dc, self.option_type == "CALL")
@@ -472,6 +502,8 @@ class CorradoSuOption(_BaseOption):
         t_n = du_n / 252.0
         r_cont = math.log(1.0 + max(-0.99, self._get_rate_for_du(pre_rate_or_curve, du_n)))
         q_cont = math.log(1.0 + max(-0.99, self._get_rate_for_du(carry_or_div_yield, du_n)))
+        fwd_est = float(spot) * math.exp((r_cont - q_cont) * t_n)
+        vol_val = self._resolve_vol(vol, du_n, fwd_est)
         return float(
             _cy_corrado_su(
                 float(spot),
@@ -479,7 +511,7 @@ class CorradoSuOption(_BaseOption):
                 r_cont,
                 q_cont,
                 t_n,
-                float(vol),
+                vol_val,
                 float(kappa3),
                 float(kappa4),
                 self.option_type == "CALL",
@@ -530,7 +562,8 @@ def price_options_portfolio(
         q_eff = opt._get_rate_for_du(pos.get("carry_or_div_yield", 0.0), du_n)
         r_arr[i] = math.log(1.0 + max(-0.99, r_eff))
         q_arr[i] = math.log(1.0 + max(-0.99, q_eff))
-        sig_arr[i] = float(pos["vol"])
+        fwd_est = S_arr[i] * math.exp((r_arr[i] - q_arr[i]) * T_arr[i])
+        sig_arr[i] = opt._resolve_vol(pos["vol"], du_n, fwd_est)
         qty_arr[i] = float(pos.get("quantity", 1.0)) * float(opt.multiplier)
 
     p_arr, d_arr, g_arr, v_arr, t_arr, rho_arr = _cy_price_batch(

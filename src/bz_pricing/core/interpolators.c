@@ -1744,12 +1744,12 @@ struct __pyx_opt_args_10bz_pricing_4core_13interpolators_12Interpolator_interpol
   double *t_sec_nodes;
 };
 
-/* "bz_pricing/core/interpolators.pyx":26
+/* "bz_pricing/core/interpolators.pyx":58
  * 
  * cdef class Exponential252Interpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:             # <<<<<<<<<<<<<<
- *         cdef int i
- *         # TRATAMENTO DE EXTRAPOLAO
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:
 */
 struct __pyx_opt_args_10bz_pricing_4core_13interpolators_26Exponential252Interpolator_interpolate {
   int __pyx_n;
@@ -1757,12 +1757,12 @@ struct __pyx_opt_args_10bz_pricing_4core_13interpolators_26Exponential252Interpo
   double *t_sec_nodes;
 };
 
-/* "bz_pricing/core/interpolators.pyx":71
+/* "bz_pricing/core/interpolators.pyx":80
  * 
  * cdef class FlatForward252Interpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:             # <<<<<<<<<<<<<<
- *         cdef int i
- *         if t <= t_nodes[0]:
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:
 */
 struct __pyx_opt_args_10bz_pricing_4core_13interpolators_26FlatForward252Interpolator_interpolate {
   int __pyx_n;
@@ -1770,7 +1770,7 @@ struct __pyx_opt_args_10bz_pricing_4core_13interpolators_26FlatForward252Interpo
   double *t_sec_nodes;
 };
 
-/* "bz_pricing/core/interpolators.pyx":112
+/* "bz_pricing/core/interpolators.pyx":102
  * 
  * cdef class FlatForward252LinearInterpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:             # <<<<<<<<<<<<<<
@@ -1783,11 +1783,11 @@ struct __pyx_opt_args_10bz_pricing_4core_13interpolators_32FlatForward252LinearI
   double *t_sec_nodes;
 };
 
-/* "bz_pricing/core/interpolators.pyx":156
+/* "bz_pricing/core/interpolators.pyx":136
  * 
  * cdef class Interpolation360Interpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:             # <<<<<<<<<<<<<<
- *         # Para esta, t  DC
+ *         # Busca o intervalo em t_nodes e interpola exponencialmente sobre os dias corridos (t_sec_nodes)
  *         if t_sec_nodes == NULL:
 */
 struct __pyx_opt_args_10bz_pricing_4core_13interpolators_28Interpolation360Interpolator_interpolate {
@@ -1796,12 +1796,12 @@ struct __pyx_opt_args_10bz_pricing_4core_13interpolators_28Interpolation360Inter
   double *t_sec_nodes;
 };
 
-/* "bz_pricing/core/interpolators.pyx":199
+/* "bz_pricing/core/interpolators.pyx":168
  * 
  * cdef class Linear360Interpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:             # <<<<<<<<<<<<<<
- *         cdef int i
- *         if t <= t_nodes[0]:
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:
 */
 struct __pyx_opt_args_10bz_pricing_4core_13interpolators_21Linear360Interpolator_interpolate {
   int __pyx_n;
@@ -1809,12 +1809,12 @@ struct __pyx_opt_args_10bz_pricing_4core_13interpolators_21Linear360Interpolator
   double *t_sec_nodes;
 };
 
-/* "bz_pricing/core/interpolators.pyx":247
+/* "bz_pricing/core/interpolators.pyx":208
  * 
  * cdef class PriceInterpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:             # <<<<<<<<<<<<<<
- *         # Interpolao exponencial de preos entre vrtices de vencimento
- *         cdef int i
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:
 */
 struct __pyx_opt_args_10bz_pricing_4core_13interpolators_17PriceInterpolator_interpolate {
   int __pyx_n;
@@ -1822,12 +1822,12 @@ struct __pyx_opt_args_10bz_pricing_4core_13interpolators_17PriceInterpolator_int
   double *t_sec_nodes;
 };
 
-/* "bz_pricing/core/interpolators.pyx":285
+/* "bz_pricing/core/interpolators.pyx":226
  * 
  * cdef class FlatForward252LogInterpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:             # <<<<<<<<<<<<<<
- *         cdef int i
- *         if t <= t_nodes[0]:
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:
 */
 struct __pyx_opt_args_10bz_pricing_4core_13interpolators_29FlatForward252LogInterpolator_interpolate {
   int __pyx_n;
@@ -1850,31 +1850,31 @@ struct __pyx_obj_10bz_pricing_4core_13interpolators_Interpolator {
 };
 
 
-/* "bz_pricing/core/interpolators.pyx":25
+/* "bz_pricing/core/interpolators.pyx":57
  * 
  * 
  * cdef class Exponential252Interpolator(Interpolator):             # <<<<<<<<<<<<<<
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
- *         cdef int i
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
 */
 struct __pyx_obj_10bz_pricing_4core_13interpolators_Exponential252Interpolator {
   struct __pyx_obj_10bz_pricing_4core_13interpolators_Interpolator __pyx_base;
 };
 
 
-/* "bz_pricing/core/interpolators.pyx":70
+/* "bz_pricing/core/interpolators.pyx":79
  * 
  * 
  * cdef class FlatForward252Interpolator(Interpolator):             # <<<<<<<<<<<<<<
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
- *         cdef int i
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
 */
 struct __pyx_obj_10bz_pricing_4core_13interpolators_FlatForward252Interpolator {
   struct __pyx_obj_10bz_pricing_4core_13interpolators_Interpolator __pyx_base;
 };
 
 
-/* "bz_pricing/core/interpolators.pyx":111
+/* "bz_pricing/core/interpolators.pyx":101
  * 
  * 
  * cdef class FlatForward252LinearInterpolator(Interpolator):             # <<<<<<<<<<<<<<
@@ -1886,48 +1886,48 @@ struct __pyx_obj_10bz_pricing_4core_13interpolators_FlatForward252LinearInterpol
 };
 
 
-/* "bz_pricing/core/interpolators.pyx":155
+/* "bz_pricing/core/interpolators.pyx":135
  * 
  * 
  * cdef class Interpolation360Interpolator(Interpolator):             # <<<<<<<<<<<<<<
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
- *         # Para esta, t  DC
+ *         # Busca o intervalo em t_nodes e interpola exponencialmente sobre os dias corridos (t_sec_nodes)
 */
 struct __pyx_obj_10bz_pricing_4core_13interpolators_Interpolation360Interpolator {
   struct __pyx_obj_10bz_pricing_4core_13interpolators_Interpolator __pyx_base;
 };
 
 
-/* "bz_pricing/core/interpolators.pyx":198
+/* "bz_pricing/core/interpolators.pyx":167
  * 
  * 
  * cdef class Linear360Interpolator(Interpolator):             # <<<<<<<<<<<<<<
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
- *         cdef int i
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
 */
 struct __pyx_obj_10bz_pricing_4core_13interpolators_Linear360Interpolator {
   struct __pyx_obj_10bz_pricing_4core_13interpolators_Interpolator __pyx_base;
 };
 
 
-/* "bz_pricing/core/interpolators.pyx":246
+/* "bz_pricing/core/interpolators.pyx":207
  * 
  * 
  * cdef class PriceInterpolator(Interpolator):             # <<<<<<<<<<<<<<
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
- *         # Interpolao exponencial de preos entre vrtices de vencimento
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
 */
 struct __pyx_obj_10bz_pricing_4core_13interpolators_PriceInterpolator {
   struct __pyx_obj_10bz_pricing_4core_13interpolators_Interpolator __pyx_base;
 };
 
 
-/* "bz_pricing/core/interpolators.pyx":284
+/* "bz_pricing/core/interpolators.pyx":225
  * 
  * 
  * cdef class FlatForward252LogInterpolator(Interpolator):             # <<<<<<<<<<<<<<
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
- *         cdef int i
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
 */
 struct __pyx_obj_10bz_pricing_4core_13interpolators_FlatForward252LogInterpolator {
   struct __pyx_obj_10bz_pricing_4core_13interpolators_Interpolator __pyx_base;
@@ -1935,8 +1935,8 @@ struct __pyx_obj_10bz_pricing_4core_13interpolators_FlatForward252LogInterpolato
 
 
 
-/* "bz_pricing/core/interpolators.pyx":9
- * from bz_pricing.core.interpolators cimport ExtrapolationType, EXTRAP_FLAT, EXTRAP_FLAT_FORWARD, EXTRAP_LINEAR
+/* "bz_pricing/core/interpolators.pyx":41
+ *     return lo
  * 
  * cdef class Interpolator:             # <<<<<<<<<<<<<<
  *     """
@@ -1949,12 +1949,12 @@ struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_Interpolator {
 static struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_Interpolator *__pyx_vtabptr_10bz_pricing_4core_13interpolators_Interpolator;
 
 
-/* "bz_pricing/core/interpolators.pyx":25
+/* "bz_pricing/core/interpolators.pyx":57
  * 
  * 
  * cdef class Exponential252Interpolator(Interpolator):             # <<<<<<<<<<<<<<
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
- *         cdef int i
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
 */
 
 struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_Exponential252Interpolator {
@@ -1963,12 +1963,12 @@ struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_Exponential252Interpo
 static struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_Exponential252Interpolator *__pyx_vtabptr_10bz_pricing_4core_13interpolators_Exponential252Interpolator;
 
 
-/* "bz_pricing/core/interpolators.pyx":70
+/* "bz_pricing/core/interpolators.pyx":79
  * 
  * 
  * cdef class FlatForward252Interpolator(Interpolator):             # <<<<<<<<<<<<<<
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
- *         cdef int i
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
 */
 
 struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_FlatForward252Interpolator {
@@ -1977,7 +1977,7 @@ struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_FlatForward252Interpo
 static struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_FlatForward252Interpolator *__pyx_vtabptr_10bz_pricing_4core_13interpolators_FlatForward252Interpolator;
 
 
-/* "bz_pricing/core/interpolators.pyx":111
+/* "bz_pricing/core/interpolators.pyx":101
  * 
  * 
  * cdef class FlatForward252LinearInterpolator(Interpolator):             # <<<<<<<<<<<<<<
@@ -1991,12 +1991,12 @@ struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_FlatForward252LinearI
 static struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_FlatForward252LinearInterpolator *__pyx_vtabptr_10bz_pricing_4core_13interpolators_FlatForward252LinearInterpolator;
 
 
-/* "bz_pricing/core/interpolators.pyx":155
+/* "bz_pricing/core/interpolators.pyx":135
  * 
  * 
  * cdef class Interpolation360Interpolator(Interpolator):             # <<<<<<<<<<<<<<
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
- *         # Para esta, t  DC
+ *         # Busca o intervalo em t_nodes e interpola exponencialmente sobre os dias corridos (t_sec_nodes)
 */
 
 struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_Interpolation360Interpolator {
@@ -2005,12 +2005,12 @@ struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_Interpolation360Inter
 static struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_Interpolation360Interpolator *__pyx_vtabptr_10bz_pricing_4core_13interpolators_Interpolation360Interpolator;
 
 
-/* "bz_pricing/core/interpolators.pyx":198
+/* "bz_pricing/core/interpolators.pyx":167
  * 
  * 
  * cdef class Linear360Interpolator(Interpolator):             # <<<<<<<<<<<<<<
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
- *         cdef int i
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
 */
 
 struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_Linear360Interpolator {
@@ -2019,12 +2019,12 @@ struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_Linear360Interpolator
 static struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_Linear360Interpolator *__pyx_vtabptr_10bz_pricing_4core_13interpolators_Linear360Interpolator;
 
 
-/* "bz_pricing/core/interpolators.pyx":246
+/* "bz_pricing/core/interpolators.pyx":207
  * 
  * 
  * cdef class PriceInterpolator(Interpolator):             # <<<<<<<<<<<<<<
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
- *         # Interpolao exponencial de preos entre vrtices de vencimento
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
 */
 
 struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_PriceInterpolator {
@@ -2033,12 +2033,12 @@ struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_PriceInterpolator {
 static struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_PriceInterpolator *__pyx_vtabptr_10bz_pricing_4core_13interpolators_PriceInterpolator;
 
 
-/* "bz_pricing/core/interpolators.pyx":284
+/* "bz_pricing/core/interpolators.pyx":225
  * 
  * 
  * cdef class FlatForward252LogInterpolator(Interpolator):             # <<<<<<<<<<<<<<
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
- *         cdef int i
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
 */
 
 struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_FlatForward252LogInterpolator {
@@ -2940,6 +2940,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_29FlatForward252LogInte
 /* Module declarations from "libc.math" */
 
 /* Module declarations from "bz_pricing.core.interpolators" */
+static CYTHON_INLINE int __pyx_f_10bz_pricing_4core_13interpolators__find_interval(double, double *, int, int, int); /*proto*/
 static PyObject *__pyx_f_10bz_pricing_4core_13interpolators___pyx_unpickle_Interpolator__set_state(struct __pyx_obj_10bz_pricing_4core_13interpolators_Interpolator *, PyObject *); /*proto*/
 static PyObject *__pyx_f_10bz_pricing_4core_13interpolators___pyx_unpickle_Exponential252Interpolator__set_state(struct __pyx_obj_10bz_pricing_4core_13interpolators_Exponential252Interpolator *, PyObject *); /*proto*/
 static PyObject *__pyx_f_10bz_pricing_4core_13interpolators___pyx_unpickle_FlatForward252Interpolator__set_state(struct __pyx_obj_10bz_pricing_4core_13interpolators_FlatForward252Interpolator *, PyObject *); /*proto*/
@@ -3457,7 +3458,340 @@ return 0;
 #endif
 /* #### Code section: module_code ### */
 
-/* "bz_pricing/core/interpolators.pyx":17
+/* "bz_pricing/core/interpolators.pyx":10
+ * 
+ * 
+ * cdef inline int _find_interval(double t, double *t_nodes, int n_nodes, int extrap_left, int extrap_right) noexcept nogil:             # <<<<<<<<<<<<<<
+ *     """
+ *     Retorna:
+*/
+
+static CYTHON_INLINE int __pyx_f_10bz_pricing_4core_13interpolators__find_interval(double __pyx_v_t, double *__pyx_v_t_nodes, int __pyx_v_n_nodes, int __pyx_v_extrap_left, int __pyx_v_extrap_right) {
+  int __pyx_v_lo;
+  int __pyx_v_hi;
+  int __pyx_v_mid;
+  int __pyx_r;
+  int __pyx_t_1;
+
+  /* "bz_pricing/core/interpolators.pyx":17
+ *       i >= 0 indicando o intervalo [t_nodes[i], t_nodes[i+1]] via busca binria O(log n).
+ *     """
+ *     if n_nodes <= 1:             # <<<<<<<<<<<<<<
+ *         return -1
+ *     if t <= t_nodes[0]:
+*/
+  __pyx_t_1 = (__pyx_v_n_nodes <= 1);
+
+  if (__pyx_t_1) {
+
+
+    /* "bz_pricing/core/interpolators.pyx":18
+ *     """
+ *     if n_nodes <= 1:
+ *         return -1             # <<<<<<<<<<<<<<
+ *     if t <= t_nodes[0]:
+ *         if extrap_left == EXTRAP_FLAT:
+*/
+    {
+
+      __pyx_r = -1;
+    }
+    goto __pyx_L0;
+
+    /* "bz_pricing/core/interpolators.pyx":17
+ *       i >= 0 indicando o intervalo [t_nodes[i], t_nodes[i+1]] via busca binria O(log n).
+ *     """
+ *     if n_nodes <= 1:             # <<<<<<<<<<<<<<
+ *         return -1
+ *     if t <= t_nodes[0]:
+*/
+  }
+
+  /* "bz_pricing/core/interpolators.pyx":19
+ *     if n_nodes <= 1:
+ *         return -1
+ *     if t <= t_nodes[0]:             # <<<<<<<<<<<<<<
+ *         if extrap_left == EXTRAP_FLAT:
+ *             return -1
+*/
+  __pyx_t_1 = (__pyx_v_t <= (__pyx_v_t_nodes[0]));
+
+  if (__pyx_t_1) {
+
+
+    /* "bz_pricing/core/interpolators.pyx":20
+ *         return -1
+ *     if t <= t_nodes[0]:
+ *         if extrap_left == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
+ *             return -1
+ *         return 0
+*/
+    __pyx_t_1 = (__pyx_v_extrap_left == __pyx_e_10bz_pricing_4core_13interpolators_EXTRAP_FLAT);
+
+    if (__pyx_t_1) {
+
+
+      /* "bz_pricing/core/interpolators.pyx":21
+ *     if t <= t_nodes[0]:
+ *         if extrap_left == EXTRAP_FLAT:
+ *             return -1             # <<<<<<<<<<<<<<
+ *         return 0
+ *     if t >= t_nodes[n_nodes - 1]:
+*/
+      {
+
+        __pyx_r = -1;
+      }
+      goto __pyx_L0;
+
+      /* "bz_pricing/core/interpolators.pyx":20
+ *         return -1
+ *     if t <= t_nodes[0]:
+ *         if extrap_left == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
+ *             return -1
+ *         return 0
+*/
+    }
+
+    /* "bz_pricing/core/interpolators.pyx":22
+ *         if extrap_left == EXTRAP_FLAT:
+ *             return -1
+ *         return 0             # <<<<<<<<<<<<<<
+ *     if t >= t_nodes[n_nodes - 1]:
+ *         if extrap_right == EXTRAP_FLAT:
+*/
+    {
+
+      __pyx_r = 0;
+    }
+    goto __pyx_L0;
+
+    /* "bz_pricing/core/interpolators.pyx":19
+ *     if n_nodes <= 1:
+ *         return -1
+ *     if t <= t_nodes[0]:             # <<<<<<<<<<<<<<
+ *         if extrap_left == EXTRAP_FLAT:
+ *             return -1
+*/
+  }
+
+  /* "bz_pricing/core/interpolators.pyx":23
+ *             return -1
+ *         return 0
+ *     if t >= t_nodes[n_nodes - 1]:             # <<<<<<<<<<<<<<
+ *         if extrap_right == EXTRAP_FLAT:
+ *             return -2
+*/
+  __pyx_t_1 = (__pyx_v_t >= (__pyx_v_t_nodes[(__pyx_v_n_nodes - 1)]));
+
+  if (__pyx_t_1) {
+
+
+    /* "bz_pricing/core/interpolators.pyx":24
+ *         return 0
+ *     if t >= t_nodes[n_nodes - 1]:
+ *         if extrap_right == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
+ *             return -2
+ *         return n_nodes - 2
+*/
+    __pyx_t_1 = (__pyx_v_extrap_right == __pyx_e_10bz_pricing_4core_13interpolators_EXTRAP_FLAT);
+
+    if (__pyx_t_1) {
+
+
+      /* "bz_pricing/core/interpolators.pyx":25
+ *     if t >= t_nodes[n_nodes - 1]:
+ *         if extrap_right == EXTRAP_FLAT:
+ *             return -2             # <<<<<<<<<<<<<<
+ *         return n_nodes - 2
+ * 
+*/
+      {
+
+        __pyx_r = -2;
+      }
+      goto __pyx_L0;
+
+      /* "bz_pricing/core/interpolators.pyx":24
+ *         return 0
+ *     if t >= t_nodes[n_nodes - 1]:
+ *         if extrap_right == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
+ *             return -2
+ *         return n_nodes - 2
+*/
+    }
+
+    /* "bz_pricing/core/interpolators.pyx":26
+ *         if extrap_right == EXTRAP_FLAT:
+ *             return -2
+ *         return n_nodes - 2             # <<<<<<<<<<<<<<
+ * 
+ *     cdef int lo = 0
+*/
+    {
+
+      __pyx_r = (__pyx_v_n_nodes - 2);
+    }
+    goto __pyx_L0;
+
+    /* "bz_pricing/core/interpolators.pyx":23
+ *             return -1
+ *         return 0
+ *     if t >= t_nodes[n_nodes - 1]:             # <<<<<<<<<<<<<<
+ *         if extrap_right == EXTRAP_FLAT:
+ *             return -2
+*/
+  }
+
+  /* "bz_pricing/core/interpolators.pyx":28
+ *         return n_nodes - 2
+ * 
+ *     cdef int lo = 0             # <<<<<<<<<<<<<<
+ *     cdef int hi = n_nodes - 2
+ *     cdef int mid
+*/
+  __pyx_v_lo = 0;
+
+  /* "bz_pricing/core/interpolators.pyx":29
+ * 
+ *     cdef int lo = 0
+ *     cdef int hi = n_nodes - 2             # <<<<<<<<<<<<<<
+ *     cdef int mid
+ *     while lo <= hi:
+*/
+  __pyx_v_hi = (__pyx_v_n_nodes - 2);
+
+  /* "bz_pricing/core/interpolators.pyx":31
+ *     cdef int hi = n_nodes - 2
+ *     cdef int mid
+ *     while lo <= hi:             # <<<<<<<<<<<<<<
+ *         mid = (lo + hi) >> 1
+ *         if t < t_nodes[mid]:
+*/
+  while (1) {
+    __pyx_t_1 = (__pyx_v_lo <= __pyx_v_hi);
+
+
+    if (!__pyx_t_1) break;
+
+    /* "bz_pricing/core/interpolators.pyx":32
+ *     cdef int mid
+ *     while lo <= hi:
+ *         mid = (lo + hi) >> 1             # <<<<<<<<<<<<<<
+ *         if t < t_nodes[mid]:
+ *             hi = mid - 1
+*/
+    __pyx_v_mid = ((__pyx_v_lo + __pyx_v_hi) >> 1);
+
+    /* "bz_pricing/core/interpolators.pyx":33
+ *     while lo <= hi:
+ *         mid = (lo + hi) >> 1
+ *         if t < t_nodes[mid]:             # <<<<<<<<<<<<<<
+ *             hi = mid - 1
+ *         elif t > t_nodes[mid + 1]:
+*/
+    __pyx_t_1 = (__pyx_v_t < (__pyx_v_t_nodes[__pyx_v_mid]));
+
+    if (__pyx_t_1) {
+
+
+      /* "bz_pricing/core/interpolators.pyx":34
+ *         mid = (lo + hi) >> 1
+ *         if t < t_nodes[mid]:
+ *             hi = mid - 1             # <<<<<<<<<<<<<<
+ *         elif t > t_nodes[mid + 1]:
+ *             lo = mid + 1
+*/
+      __pyx_v_hi = (__pyx_v_mid - 1);
+
+      /* "bz_pricing/core/interpolators.pyx":33
+ *     while lo <= hi:
+ *         mid = (lo + hi) >> 1
+ *         if t < t_nodes[mid]:             # <<<<<<<<<<<<<<
+ *             hi = mid - 1
+ *         elif t > t_nodes[mid + 1]:
+*/
+      goto __pyx_L10;
+    }
+
+    /* "bz_pricing/core/interpolators.pyx":35
+ *         if t < t_nodes[mid]:
+ *             hi = mid - 1
+ *         elif t > t_nodes[mid + 1]:             # <<<<<<<<<<<<<<
+ *             lo = mid + 1
+ *         else:
+*/
+    __pyx_t_1 = (__pyx_v_t > (__pyx_v_t_nodes[(__pyx_v_mid + 1)]));
+
+    if (__pyx_t_1) {
+
+
+      /* "bz_pricing/core/interpolators.pyx":36
+ *             hi = mid - 1
+ *         elif t > t_nodes[mid + 1]:
+ *             lo = mid + 1             # <<<<<<<<<<<<<<
+ *         else:
+ *             return mid
+*/
+      __pyx_v_lo = (__pyx_v_mid + 1);
+
+      /* "bz_pricing/core/interpolators.pyx":35
+ *         if t < t_nodes[mid]:
+ *             hi = mid - 1
+ *         elif t > t_nodes[mid + 1]:             # <<<<<<<<<<<<<<
+ *             lo = mid + 1
+ *         else:
+*/
+      goto __pyx_L10;
+    }
+
+    /* "bz_pricing/core/interpolators.pyx":38
+ *             lo = mid + 1
+ *         else:
+ *             return mid             # <<<<<<<<<<<<<<
+ *     return lo
+ * 
+*/
+    /*else*/ {
+      {
+
+        __pyx_r = __pyx_v_mid;
+      }
+      goto __pyx_L0;
+    }
+    __pyx_L10:;
+  }
+
+  /* "bz_pricing/core/interpolators.pyx":39
+ *         else:
+ *             return mid
+ *     return lo             # <<<<<<<<<<<<<<
+ * 
+ * cdef class Interpolator:
+*/
+  {
+
+    __pyx_r = __pyx_v_lo;
+  }
+  goto __pyx_L0;
+
+  /* "bz_pricing/core/interpolators.pyx":10
+ * 
+ * 
+ * cdef inline int _find_interval(double t, double *t_nodes, int n_nodes, int extrap_left, int extrap_right) noexcept nogil:             # <<<<<<<<<<<<<<
+ *     """
+ *     Retorna:
+*/
+
+  /* function exit code */
+  __pyx_L0:;
+
+
+
+  return __pyx_r;
+}
+
+/* "bz_pricing/core/interpolators.pyx":49
  *     para projetar a mesma frmula de interpolao para fora da curva
  *     """
  *     def __init__(self, int extrap_left=0, int extrap_right=0):             # <<<<<<<<<<<<<<
@@ -3504,50 +3838,50 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_extrap_left,&__pyx_mstate_global->__pyx_n_u_extrap_right,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL_TPNEW(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 17, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 49, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 17, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 49, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 17, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 49, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 17, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 49, __pyx_L3_error)
     } else {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 17, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 49, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 17, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 49, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
     if (values[0]) {
-      __pyx_v_extrap_left = __Pyx_PyLong_As_int(values[0]); if (unlikely((__pyx_v_extrap_left == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 17, __pyx_L3_error)
+      __pyx_v_extrap_left = __Pyx_PyLong_As_int(values[0]); if (unlikely((__pyx_v_extrap_left == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 49, __pyx_L3_error)
     } else {
       __pyx_v_extrap_left = ((int)0);
     }
     if (values[1]) {
-      __pyx_v_extrap_right = __Pyx_PyLong_As_int(values[1]); if (unlikely((__pyx_v_extrap_right == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 17, __pyx_L3_error)
+      __pyx_v_extrap_right = __Pyx_PyLong_As_int(values[1]); if (unlikely((__pyx_v_extrap_right == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 49, __pyx_L3_error)
     } else {
       __pyx_v_extrap_right = ((int)0);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 0, 0, 2, __pyx_nargs); __PYX_ERR(0, 17, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 0, 0, 2, __pyx_nargs); __PYX_ERR(0, 49, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -3573,7 +3907,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 static int __pyx_pf_10bz_pricing_4core_13interpolators_12Interpolator___init__(struct __pyx_obj_10bz_pricing_4core_13interpolators_Interpolator *__pyx_v_self, int __pyx_v_extrap_left, int __pyx_v_extrap_right) {
   int __pyx_r;
 
-  /* "bz_pricing/core/interpolators.pyx":18
+  /* "bz_pricing/core/interpolators.pyx":50
  *     """
  *     def __init__(self, int extrap_left=0, int extrap_right=0):
  *         self._extrap_left = extrap_left             # <<<<<<<<<<<<<<
@@ -3582,7 +3916,7 @@ static int __pyx_pf_10bz_pricing_4core_13interpolators_12Interpolator___init__(s
 */
   __pyx_v_self->_extrap_left = __pyx_v_extrap_left;
 
-  /* "bz_pricing/core/interpolators.pyx":19
+  /* "bz_pricing/core/interpolators.pyx":51
  *     def __init__(self, int extrap_left=0, int extrap_right=0):
  *         self._extrap_left = extrap_left
  *         self._extrap_right = extrap_right             # <<<<<<<<<<<<<<
@@ -3591,7 +3925,7 @@ static int __pyx_pf_10bz_pricing_4core_13interpolators_12Interpolator___init__(s
 */
   __pyx_v_self->_extrap_right = __pyx_v_extrap_right;
 
-  /* "bz_pricing/core/interpolators.pyx":17
+  /* "bz_pricing/core/interpolators.pyx":49
  *     para projetar a mesma frmula de interpolao para fora da curva
  *     """
  *     def __init__(self, int extrap_left=0, int extrap_right=0):             # <<<<<<<<<<<<<<
@@ -3605,7 +3939,7 @@ static int __pyx_pf_10bz_pricing_4core_13interpolators_12Interpolator___init__(s
   return __pyx_r;
 }
 
-/* "bz_pricing/core/interpolators.pyx":21
+/* "bz_pricing/core/interpolators.pyx":53
  *         self._extrap_right = extrap_right
  * 
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:             # <<<<<<<<<<<<<<
@@ -3626,7 +3960,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_12Interpolator_interpol
   if (__pyx_optional_args) {
   }
 
-  /* "bz_pricing/core/interpolators.pyx":22
+  /* "bz_pricing/core/interpolators.pyx":54
  * 
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
  *         raise NotImplementedError("Mtodo base")             # <<<<<<<<<<<<<<
@@ -3639,14 +3973,14 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_12Interpolator_interpol
     PyObject *__pyx_callargs[2] = {__pyx_t_2, __pyx_mstate_global->__pyx_kp_u_Mtodo_base};
     __pyx_t_1 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_NotImplementedError)), __pyx_callargs+__pyx_t_3, (2-__pyx_t_3) | (__pyx_t_3*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 54, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __PYX_ERR(0, 22, __pyx_L1_error)
+  __PYX_ERR(0, 54, __pyx_L1_error)
 
-  /* "bz_pricing/core/interpolators.pyx":21
+  /* "bz_pricing/core/interpolators.pyx":53
  *         self._extrap_right = extrap_right
  * 
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:             # <<<<<<<<<<<<<<
@@ -4137,12 +4471,12 @@ static PyObject *__pyx_pf_10bz_pricing_4core_13interpolators_12Interpolator_4__s
   return __pyx_r;
 }
 
-/* "bz_pricing/core/interpolators.pyx":26
+/* "bz_pricing/core/interpolators.pyx":58
  * 
  * cdef class Exponential252Interpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:             # <<<<<<<<<<<<<<
- *         cdef int i
- *         # TRATAMENTO DE EXTRAPOLAO
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:
 */
 
 static double __pyx_f_10bz_pricing_4core_13interpolators_26Exponential252Interpolator_interpolate(struct __pyx_obj_10bz_pricing_4core_13interpolators_Exponential252Interpolator *__pyx_v_self, double __pyx_v_t, double *__pyx_v_t_nodes, double *__pyx_v_y_nodes, int __pyx_v_n_nodes, struct __pyx_opt_args_10bz_pricing_4core_13interpolators_26Exponential252Interpolator_interpolate *__pyx_optional_args) {
@@ -4156,214 +4490,93 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_26Exponential252Interpo
   double __pyx_v_factor;
   double __pyx_r;
   int __pyx_t_1;
-  long __pyx_t_2;
-  long __pyx_t_3;
-  int __pyx_t_4;
-  int __pyx_t_5;
-  double __pyx_t_6;
-  double __pyx_t_7;
+  double __pyx_t_2;
+  double __pyx_t_3;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   if (__pyx_optional_args) {
   }
 
-  /* "bz_pricing/core/interpolators.pyx":29
- *         cdef int i
- *         # TRATAMENTO DE EXTRAPOLAO
- *         if t <= t_nodes[0]: # Extrapolao (Incio)             # <<<<<<<<<<<<<<
- *             if self._extrap_left == EXTRAP_FLAT:
- *                 return y_nodes[0]
+  /* "bz_pricing/core/interpolators.pyx":59
+ * cdef class Exponential252Interpolator(Interpolator):
+ *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)             # <<<<<<<<<<<<<<
+ *         if i == -1:
+ *             return y_nodes[0]
 */
-  __pyx_t_1 = (__pyx_v_t <= (__pyx_v_t_nodes[0]));
+  __pyx_v_i = __pyx_f_10bz_pricing_4core_13interpolators__find_interval(__pyx_v_t, __pyx_v_t_nodes, __pyx_v_n_nodes, __pyx_v_self->__pyx_base._extrap_left, __pyx_v_self->__pyx_base._extrap_right);
+
+  /* "bz_pricing/core/interpolators.pyx":60
+ *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:             # <<<<<<<<<<<<<<
+ *             return y_nodes[0]
+ *         if i == -2:
+*/
+  __pyx_t_1 = (__pyx_v_i == -1L);
 
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/interpolators.pyx":30
- *         # TRATAMENTO DE EXTRAPOLAO
- *         if t <= t_nodes[0]: # Extrapolao (Incio)
- *             if self._extrap_left == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[0]
- *             # Se no for Flat, foramos o ndice 0. O cdigo pegar t_nodes[0] e t_nodes[1]
+    /* "bz_pricing/core/interpolators.pyx":61
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:
+ *             return y_nodes[0]             # <<<<<<<<<<<<<<
+ *         if i == -2:
+ *             return y_nodes[n_nodes - 1]
 */
-    __pyx_t_1 = (__pyx_v_self->__pyx_base._extrap_left == __pyx_e_10bz_pricing_4core_13interpolators_EXTRAP_FLAT);
+    {
 
-    if (__pyx_t_1) {
-
-
-      /* "bz_pricing/core/interpolators.pyx":31
- *         if t <= t_nodes[0]: # Extrapolao (Incio)
- *             if self._extrap_left == EXTRAP_FLAT:
- *                 return y_nodes[0]             # <<<<<<<<<<<<<<
- *             # Se no for Flat, foramos o ndice 0. O cdigo pegar t_nodes[0] e t_nodes[1]
- *             # e projetar a frmula matematicamente para trs (t < t_nodes[0]).
-*/
-      {
-
-        __pyx_r = (__pyx_v_y_nodes[0]);
-      }
-      goto __pyx_L0;
-
-      /* "bz_pricing/core/interpolators.pyx":30
- *         # TRATAMENTO DE EXTRAPOLAO
- *         if t <= t_nodes[0]: # Extrapolao (Incio)
- *             if self._extrap_left == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[0]
- *             # Se no for Flat, foramos o ndice 0. O cdigo pegar t_nodes[0] e t_nodes[1]
-*/
+      __pyx_r = (__pyx_v_y_nodes[0]);
     }
+    goto __pyx_L0;
 
-    /* "bz_pricing/core/interpolators.pyx":34
- *             # Se no for Flat, foramos o ndice 0. O cdigo pegar t_nodes[0] e t_nodes[1]
- *             # e projetar a frmula matematicamente para trs (t < t_nodes[0]).
- *             i = 0             # <<<<<<<<<<<<<<
- *         elif t >= t_nodes[n_nodes - 1]: # Extrapolao (Fim)
- *             if self._extrap_right == EXTRAP_FLAT:
+    /* "bz_pricing/core/interpolators.pyx":60
+ *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:             # <<<<<<<<<<<<<<
+ *             return y_nodes[0]
+ *         if i == -2:
 */
-    __pyx_v_i = 0;
-
-    /* "bz_pricing/core/interpolators.pyx":29
- *         cdef int i
- *         # TRATAMENTO DE EXTRAPOLAO
- *         if t <= t_nodes[0]: # Extrapolao (Incio)             # <<<<<<<<<<<<<<
- *             if self._extrap_left == EXTRAP_FLAT:
- *                 return y_nodes[0]
-*/
-    goto __pyx_L3;
   }
 
-  /* "bz_pricing/core/interpolators.pyx":35
- *             # e projetar a frmula matematicamente para trs (t < t_nodes[0]).
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]: # Extrapolao (Fim)             # <<<<<<<<<<<<<<
- *             if self._extrap_right == EXTRAP_FLAT:
- *                 return y_nodes[n_nodes - 1]
-*/
-  __pyx_t_1 = (__pyx_v_t >= (__pyx_v_t_nodes[(__pyx_v_n_nodes - 1)]));
-
-  if (__pyx_t_1) {
-
-
-    /* "bz_pricing/core/interpolators.pyx":36
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]: # Extrapolao (Fim)
- *             if self._extrap_right == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[n_nodes - 1]
- *             # Se no for Flat, foramos os dois ltimos ndices. O cdigo projetar
-*/
-    __pyx_t_1 = (__pyx_v_self->__pyx_base._extrap_right == __pyx_e_10bz_pricing_4core_13interpolators_EXTRAP_FLAT);
-
-    if (__pyx_t_1) {
-
-
-      /* "bz_pricing/core/interpolators.pyx":37
- *         elif t >= t_nodes[n_nodes - 1]: # Extrapolao (Fim)
- *             if self._extrap_right == EXTRAP_FLAT:
- *                 return y_nodes[n_nodes - 1]             # <<<<<<<<<<<<<<
- *             # Se no for Flat, foramos os dois ltimos ndices. O cdigo projetar
- *             # a frmula matematicamente para a frente, cumprindo o Flat Forward 252 (Fim).
-*/
-      {
-
-        __pyx_r = (__pyx_v_y_nodes[(__pyx_v_n_nodes - 1)]);
-      }
-      goto __pyx_L0;
-
-      /* "bz_pricing/core/interpolators.pyx":36
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]: # Extrapolao (Fim)
- *             if self._extrap_right == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[n_nodes - 1]
- *             # Se no for Flat, foramos os dois ltimos ndices. O cdigo projetar
-*/
-    }
-
-    /* "bz_pricing/core/interpolators.pyx":40
- *             # Se no for Flat, foramos os dois ltimos ndices. O cdigo projetar
- *             # a frmula matematicamente para a frente, cumprindo o Flat Forward 252 (Fim).
- *             i = n_nodes - 2             # <<<<<<<<<<<<<<
- *         else:
- *             for i in range(n_nodes - 1):
-*/
-    __pyx_v_i = (__pyx_v_n_nodes - 2);
-
-    /* "bz_pricing/core/interpolators.pyx":35
- *             # e projetar a frmula matematicamente para trs (t < t_nodes[0]).
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]: # Extrapolao (Fim)             # <<<<<<<<<<<<<<
- *             if self._extrap_right == EXTRAP_FLAT:
- *                 return y_nodes[n_nodes - 1]
-*/
-    goto __pyx_L3;
-  }
-
-  /* "bz_pricing/core/interpolators.pyx":42
- *             i = n_nodes - 2
- *         else:
- *             for i in range(n_nodes - 1):             # <<<<<<<<<<<<<<
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:
- *                     break
-*/
-  /*else*/ {
-
-    __pyx_t_2 = (__pyx_v_n_nodes - 1);
-    __pyx_t_3 = __pyx_t_2;
-
-    for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
-      __pyx_v_i = __pyx_t_4;
-
-      /* "bz_pricing/core/interpolators.pyx":43
- *         else:
- *             for i in range(n_nodes - 1):
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:             # <<<<<<<<<<<<<<
- *                     break
+  /* "bz_pricing/core/interpolators.pyx":62
+ *         if i == -1:
+ *             return y_nodes[0]
+ *         if i == -2:             # <<<<<<<<<<<<<<
+ *             return y_nodes[n_nodes - 1]
  * 
 */
-      __pyx_t_5 = ((__pyx_v_t_nodes[__pyx_v_i]) <= __pyx_v_t);
+  __pyx_t_1 = (__pyx_v_i == -2L);
 
-      if (__pyx_t_5) {
-
-      } else {
-
-        __pyx_t_1 = __pyx_t_5;
-
-        goto __pyx_L9_bool_binop_done;
-      }
-      __pyx_t_5 = (__pyx_v_t <= (__pyx_v_t_nodes[(__pyx_v_i + 1)]));
+  if (__pyx_t_1) {
 
 
-      __pyx_t_1 = __pyx_t_5;
-
-      __pyx_L9_bool_binop_done:;
-      if (__pyx_t_1) {
-
-
-        /* "bz_pricing/core/interpolators.pyx":44
- *             for i in range(n_nodes - 1):
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:
- *                     break             # <<<<<<<<<<<<<<
+    /* "bz_pricing/core/interpolators.pyx":63
+ *             return y_nodes[0]
+ *         if i == -2:
+ *             return y_nodes[n_nodes - 1]             # <<<<<<<<<<<<<<
  * 
  *         cdef double t1 = t_nodes[i]
 */
-        goto __pyx_L7_break;
+    {
 
-        /* "bz_pricing/core/interpolators.pyx":43
- *         else:
- *             for i in range(n_nodes - 1):
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:             # <<<<<<<<<<<<<<
- *                     break
+      __pyx_r = (__pyx_v_y_nodes[(__pyx_v_n_nodes - 1)]);
+    }
+    goto __pyx_L0;
+
+    /* "bz_pricing/core/interpolators.pyx":62
+ *         if i == -1:
+ *             return y_nodes[0]
+ *         if i == -2:             # <<<<<<<<<<<<<<
+ *             return y_nodes[n_nodes - 1]
  * 
 */
-      }
-    }
-    __pyx_L7_break:;
-
   }
-  __pyx_L3:;
 
-  /* "bz_pricing/core/interpolators.pyx":46
- *                     break
+  /* "bz_pricing/core/interpolators.pyx":65
+ *             return y_nodes[n_nodes - 1]
  * 
  *         cdef double t1 = t_nodes[i]             # <<<<<<<<<<<<<<
  *         cdef double t2 = t_nodes[i+1]
@@ -4371,7 +4584,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_26Exponential252Interpo
 */
   __pyx_v_t1 = (__pyx_v_t_nodes[__pyx_v_i]);
 
-  /* "bz_pricing/core/interpolators.pyx":47
+  /* "bz_pricing/core/interpolators.pyx":66
  * 
  *         cdef double t1 = t_nodes[i]
  *         cdef double t2 = t_nodes[i+1]             # <<<<<<<<<<<<<<
@@ -4380,7 +4593,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_26Exponential252Interpo
 */
   __pyx_v_t2 = (__pyx_v_t_nodes[(__pyx_v_i + 1)]);
 
-  /* "bz_pricing/core/interpolators.pyx":48
+  /* "bz_pricing/core/interpolators.pyx":67
  *         cdef double t1 = t_nodes[i]
  *         cdef double t2 = t_nodes[i+1]
  *         cdef double y1 = y_nodes[i]             # <<<<<<<<<<<<<<
@@ -4389,7 +4602,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_26Exponential252Interpo
 */
   __pyx_v_y1 = (__pyx_v_y_nodes[__pyx_v_i]);
 
-  /* "bz_pricing/core/interpolators.pyx":49
+  /* "bz_pricing/core/interpolators.pyx":68
  *         cdef double t2 = t_nodes[i+1]
  *         cdef double y1 = y_nodes[i]
  *         cdef double y2 = y_nodes[i+1]             # <<<<<<<<<<<<<<
@@ -4398,7 +4611,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_26Exponential252Interpo
 */
   __pyx_v_y2 = (__pyx_v_y_nodes[(__pyx_v_i + 1)]);
 
-  /* "bz_pricing/core/interpolators.pyx":51
+  /* "bz_pricing/core/interpolators.pyx":70
  *         cdef double y2 = y_nodes[i+1]
  * 
  *         if t1 == t2:             # <<<<<<<<<<<<<<
@@ -4410,7 +4623,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_26Exponential252Interpo
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/interpolators.pyx":52
+    /* "bz_pricing/core/interpolators.pyx":71
  * 
  *         if t1 == t2:
  *             return y1             # <<<<<<<<<<<<<<
@@ -4423,7 +4636,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_26Exponential252Interpo
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/interpolators.pyx":51
+    /* "bz_pricing/core/interpolators.pyx":70
  *         cdef double y2 = y_nodes[i+1]
  * 
  *         if t1 == t2:             # <<<<<<<<<<<<<<
@@ -4432,49 +4645,49 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_26Exponential252Interpo
 */
   }
 
-  /* "bz_pricing/core/interpolators.pyx":54
+  /* "bz_pricing/core/interpolators.pyx":73
  *             return y1
  * 
  *         cdef double f1 = 1.0 + y1             # <<<<<<<<<<<<<<
  *         cdef double f2 = 1.0 + y2
- *         """
+ *         cdef double factor = f1 * pow(f2 / f1, (t - t1) / (t2 - t1))
 */
   __pyx_v_f1 = (1.0 + __pyx_v_y1);
 
-  /* "bz_pricing/core/interpolators.pyx":55
+  /* "bz_pricing/core/interpolators.pyx":74
  * 
  *         cdef double f1 = 1.0 + y1
  *         cdef double f2 = 1.0 + y2             # <<<<<<<<<<<<<<
- *         """
- *         y = f1 * (f2/f1) ^((t - t1) / (t2 - t1)) - 1
+ *         cdef double factor = f1 * pow(f2 / f1, (t - t1) / (t2 - t1))
+ *         return factor - 1.0
 */
   __pyx_v_f2 = (1.0 + __pyx_v_y2);
 
-  /* "bz_pricing/core/interpolators.pyx":66
- *         O resultado e y, em formato decimal
- *         """
+  /* "bz_pricing/core/interpolators.pyx":75
+ *         cdef double f1 = 1.0 + y1
+ *         cdef double f2 = 1.0 + y2
  *         cdef double factor = f1 * pow(f2 / f1, (t - t1) / (t2 - t1))             # <<<<<<<<<<<<<<
  *         return factor - 1.0
  * 
 */
   if (unlikely(__pyx_v_f1 == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    __PYX_ERR(0, 66, __pyx_L1_error)
+    __PYX_ERR(0, 75, __pyx_L1_error)
   }
-  __pyx_t_6 = (__pyx_v_t - __pyx_v_t1);
+  __pyx_t_2 = (__pyx_v_t - __pyx_v_t1);
 
-  __pyx_t_7 = (__pyx_v_t2 - __pyx_v_t1);
+  __pyx_t_3 = (__pyx_v_t2 - __pyx_v_t1);
 
-  if (unlikely(__pyx_t_7 == 0)) {
+  if (unlikely(__pyx_t_3 == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    __PYX_ERR(0, 66, __pyx_L1_error)
+    __PYX_ERR(0, 75, __pyx_L1_error)
   }
-  __pyx_v_factor = (__pyx_v_f1 * pow((__pyx_v_f2 / __pyx_v_f1), (__pyx_t_6 / __pyx_t_7)));
+  __pyx_v_factor = (__pyx_v_f1 * pow((__pyx_v_f2 / __pyx_v_f1), (__pyx_t_2 / __pyx_t_3)));
 
 
 
-  /* "bz_pricing/core/interpolators.pyx":67
- *         """
+  /* "bz_pricing/core/interpolators.pyx":76
+ *         cdef double f2 = 1.0 + y2
  *         cdef double factor = f1 * pow(f2 / f1, (t - t1) / (t2 - t1))
  *         return factor - 1.0             # <<<<<<<<<<<<<<
  * 
@@ -4486,12 +4699,12 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_26Exponential252Interpo
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/interpolators.pyx":26
+  /* "bz_pricing/core/interpolators.pyx":58
  * 
  * cdef class Exponential252Interpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:             # <<<<<<<<<<<<<<
- *         cdef int i
- *         # TRATAMENTO DE EXTRAPOLAO
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:
 */
 
   /* function exit code */
@@ -4983,12 +5196,12 @@ static PyObject *__pyx_pf_10bz_pricing_4core_13interpolators_26Exponential252Int
   return __pyx_r;
 }
 
-/* "bz_pricing/core/interpolators.pyx":71
+/* "bz_pricing/core/interpolators.pyx":80
  * 
  * cdef class FlatForward252Interpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:             # <<<<<<<<<<<<<<
- *         cdef int i
- *         if t <= t_nodes[0]:
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:
 */
 
 static double __pyx_f_10bz_pricing_4core_13interpolators_26FlatForward252Interpolator_interpolate(struct __pyx_obj_10bz_pricing_4core_13interpolators_FlatForward252Interpolator *__pyx_v_self, double __pyx_v_t, double *__pyx_v_t_nodes, double *__pyx_v_y_nodes, int __pyx_v_n_nodes, struct __pyx_opt_args_10bz_pricing_4core_13interpolators_26FlatForward252Interpolator_interpolate *__pyx_optional_args) {
@@ -5002,214 +5215,94 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_26FlatForward252Interpo
   double __pyx_v_forward;
   double __pyx_r;
   int __pyx_t_1;
-  long __pyx_t_2;
-  long __pyx_t_3;
-  int __pyx_t_4;
-  int __pyx_t_5;
-  double __pyx_t_6;
-  double __pyx_t_7;
+  int __pyx_t_2;
+  double __pyx_t_3;
+  double __pyx_t_4;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   if (__pyx_optional_args) {
   }
 
-  /* "bz_pricing/core/interpolators.pyx":73
+  /* "bz_pricing/core/interpolators.pyx":81
+ * cdef class FlatForward252Interpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
- *         cdef int i
- *         if t <= t_nodes[0]:             # <<<<<<<<<<<<<<
- *             if self._extrap_left == EXTRAP_FLAT:
- *                 return y_nodes[0]
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)             # <<<<<<<<<<<<<<
+ *         if i == -1:
+ *             return y_nodes[0]
 */
-  __pyx_t_1 = (__pyx_v_t <= (__pyx_v_t_nodes[0]));
-
-  if (__pyx_t_1) {
-
-
-    /* "bz_pricing/core/interpolators.pyx":74
- *         cdef int i
- *         if t <= t_nodes[0]:
- *             if self._extrap_left == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[0]
- *             i = 0
-*/
-    __pyx_t_1 = (__pyx_v_self->__pyx_base._extrap_left == __pyx_e_10bz_pricing_4core_13interpolators_EXTRAP_FLAT);
-
-    if (__pyx_t_1) {
-
-
-      /* "bz_pricing/core/interpolators.pyx":75
- *         if t <= t_nodes[0]:
- *             if self._extrap_left == EXTRAP_FLAT:
- *                 return y_nodes[0]             # <<<<<<<<<<<<<<
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:
-*/
-      {
-
-        __pyx_r = (__pyx_v_y_nodes[0]);
-      }
-      goto __pyx_L0;
-
-      /* "bz_pricing/core/interpolators.pyx":74
- *         cdef int i
- *         if t <= t_nodes[0]:
- *             if self._extrap_left == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[0]
- *             i = 0
-*/
-    }
-
-    /* "bz_pricing/core/interpolators.pyx":76
- *             if self._extrap_left == EXTRAP_FLAT:
- *                 return y_nodes[0]
- *             i = 0             # <<<<<<<<<<<<<<
- *         elif t >= t_nodes[n_nodes - 1]:
- *             if self._extrap_right == EXTRAP_FLAT:
-*/
-    __pyx_v_i = 0;
-
-    /* "bz_pricing/core/interpolators.pyx":73
- *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
- *         cdef int i
- *         if t <= t_nodes[0]:             # <<<<<<<<<<<<<<
- *             if self._extrap_left == EXTRAP_FLAT:
- *                 return y_nodes[0]
-*/
-    goto __pyx_L3;
-  }
-
-  /* "bz_pricing/core/interpolators.pyx":77
- *                 return y_nodes[0]
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:             # <<<<<<<<<<<<<<
- *             if self._extrap_right == EXTRAP_FLAT:
- *                 return y_nodes[n_nodes - 1]
-*/
-  __pyx_t_1 = (__pyx_v_t >= (__pyx_v_t_nodes[(__pyx_v_n_nodes - 1)]));
-
-  if (__pyx_t_1) {
-
-
-    /* "bz_pricing/core/interpolators.pyx":78
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:
- *             if self._extrap_right == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[n_nodes - 1]
- *             i = n_nodes - 2
-*/
-    __pyx_t_1 = (__pyx_v_self->__pyx_base._extrap_right == __pyx_e_10bz_pricing_4core_13interpolators_EXTRAP_FLAT);
-
-    if (__pyx_t_1) {
-
-
-      /* "bz_pricing/core/interpolators.pyx":79
- *         elif t >= t_nodes[n_nodes - 1]:
- *             if self._extrap_right == EXTRAP_FLAT:
- *                 return y_nodes[n_nodes - 1]             # <<<<<<<<<<<<<<
- *             i = n_nodes - 2
- *         else:
-*/
-      {
-
-        __pyx_r = (__pyx_v_y_nodes[(__pyx_v_n_nodes - 1)]);
-      }
-      goto __pyx_L0;
-
-      /* "bz_pricing/core/interpolators.pyx":78
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:
- *             if self._extrap_right == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[n_nodes - 1]
- *             i = n_nodes - 2
-*/
-    }
-
-    /* "bz_pricing/core/interpolators.pyx":80
- *             if self._extrap_right == EXTRAP_FLAT:
- *                 return y_nodes[n_nodes - 1]
- *             i = n_nodes - 2             # <<<<<<<<<<<<<<
- *         else:
- *             for i in range(n_nodes - 1):
-*/
-    __pyx_v_i = (__pyx_v_n_nodes - 2);
-
-    /* "bz_pricing/core/interpolators.pyx":77
- *                 return y_nodes[0]
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:             # <<<<<<<<<<<<<<
- *             if self._extrap_right == EXTRAP_FLAT:
- *                 return y_nodes[n_nodes - 1]
-*/
-    goto __pyx_L3;
-  }
+  __pyx_v_i = __pyx_f_10bz_pricing_4core_13interpolators__find_interval(__pyx_v_t, __pyx_v_t_nodes, __pyx_v_n_nodes, __pyx_v_self->__pyx_base._extrap_left, __pyx_v_self->__pyx_base._extrap_right);
 
   /* "bz_pricing/core/interpolators.pyx":82
- *             i = n_nodes - 2
- *         else:
- *             for i in range(n_nodes - 1):             # <<<<<<<<<<<<<<
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:
- *                     break
+ *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:             # <<<<<<<<<<<<<<
+ *             return y_nodes[0]
+ *         if i == -2:
 */
-  /*else*/ {
+  __pyx_t_1 = (__pyx_v_i == -1L);
 
-    __pyx_t_2 = (__pyx_v_n_nodes - 1);
-    __pyx_t_3 = __pyx_t_2;
+  if (__pyx_t_1) {
 
-    for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
-      __pyx_v_i = __pyx_t_4;
 
-      /* "bz_pricing/core/interpolators.pyx":83
- *         else:
- *             for i in range(n_nodes - 1):
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:             # <<<<<<<<<<<<<<
- *                     break
+    /* "bz_pricing/core/interpolators.pyx":83
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:
+ *             return y_nodes[0]             # <<<<<<<<<<<<<<
+ *         if i == -2:
+ *             return y_nodes[n_nodes - 1]
+*/
+    {
+
+      __pyx_r = (__pyx_v_y_nodes[0]);
+    }
+    goto __pyx_L0;
+
+    /* "bz_pricing/core/interpolators.pyx":82
+ *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:             # <<<<<<<<<<<<<<
+ *             return y_nodes[0]
+ *         if i == -2:
+*/
+  }
+
+  /* "bz_pricing/core/interpolators.pyx":84
+ *         if i == -1:
+ *             return y_nodes[0]
+ *         if i == -2:             # <<<<<<<<<<<<<<
+ *             return y_nodes[n_nodes - 1]
  * 
 */
-      __pyx_t_5 = ((__pyx_v_t_nodes[__pyx_v_i]) <= __pyx_v_t);
+  __pyx_t_1 = (__pyx_v_i == -2L);
 
-      if (__pyx_t_5) {
-
-      } else {
-
-        __pyx_t_1 = __pyx_t_5;
-
-        goto __pyx_L9_bool_binop_done;
-      }
-      __pyx_t_5 = (__pyx_v_t <= (__pyx_v_t_nodes[(__pyx_v_i + 1)]));
+  if (__pyx_t_1) {
 
 
-      __pyx_t_1 = __pyx_t_5;
-
-      __pyx_L9_bool_binop_done:;
-      if (__pyx_t_1) {
-
-
-        /* "bz_pricing/core/interpolators.pyx":84
- *             for i in range(n_nodes - 1):
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:
- *                     break             # <<<<<<<<<<<<<<
+    /* "bz_pricing/core/interpolators.pyx":85
+ *             return y_nodes[0]
+ *         if i == -2:
+ *             return y_nodes[n_nodes - 1]             # <<<<<<<<<<<<<<
  * 
  *         cdef double t1 = t_nodes[i]
 */
-        goto __pyx_L7_break;
+    {
 
-        /* "bz_pricing/core/interpolators.pyx":83
- *         else:
- *             for i in range(n_nodes - 1):
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:             # <<<<<<<<<<<<<<
- *                     break
+      __pyx_r = (__pyx_v_y_nodes[(__pyx_v_n_nodes - 1)]);
+    }
+    goto __pyx_L0;
+
+    /* "bz_pricing/core/interpolators.pyx":84
+ *         if i == -1:
+ *             return y_nodes[0]
+ *         if i == -2:             # <<<<<<<<<<<<<<
+ *             return y_nodes[n_nodes - 1]
  * 
 */
-      }
-    }
-    __pyx_L7_break:;
-
   }
-  __pyx_L3:;
 
-  /* "bz_pricing/core/interpolators.pyx":86
- *                     break
+  /* "bz_pricing/core/interpolators.pyx":87
+ *             return y_nodes[n_nodes - 1]
  * 
  *         cdef double t1 = t_nodes[i]             # <<<<<<<<<<<<<<
  *         cdef double t2 = t_nodes[i+1]
@@ -5217,7 +5310,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_26FlatForward252Interpo
 */
   __pyx_v_t1 = (__pyx_v_t_nodes[__pyx_v_i]);
 
-  /* "bz_pricing/core/interpolators.pyx":87
+  /* "bz_pricing/core/interpolators.pyx":88
  * 
  *         cdef double t1 = t_nodes[i]
  *         cdef double t2 = t_nodes[i+1]             # <<<<<<<<<<<<<<
@@ -5226,7 +5319,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_26FlatForward252Interpo
 */
   __pyx_v_t2 = (__pyx_v_t_nodes[(__pyx_v_i + 1)]);
 
-  /* "bz_pricing/core/interpolators.pyx":88
+  /* "bz_pricing/core/interpolators.pyx":89
  *         cdef double t1 = t_nodes[i]
  *         cdef double t2 = t_nodes[i+1]
  *         cdef double y1 = y_nodes[i]             # <<<<<<<<<<<<<<
@@ -5235,30 +5328,44 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_26FlatForward252Interpo
 */
   __pyx_v_y1 = (__pyx_v_y_nodes[__pyx_v_i]);
 
-  /* "bz_pricing/core/interpolators.pyx":89
+  /* "bz_pricing/core/interpolators.pyx":90
  *         cdef double t2 = t_nodes[i+1]
  *         cdef double y1 = y_nodes[i]
  *         cdef double y2 = y_nodes[i+1]             # <<<<<<<<<<<<<<
  * 
- *         if t1 == t2:
+ *         if t1 == t2 or fabs(t) < 1e-12:
 */
   __pyx_v_y2 = (__pyx_v_y_nodes[(__pyx_v_i + 1)]);
 
-  /* "bz_pricing/core/interpolators.pyx":91
+  /* "bz_pricing/core/interpolators.pyx":92
  *         cdef double y2 = y_nodes[i+1]
  * 
- *         if t1 == t2:             # <<<<<<<<<<<<<<
+ *         if t1 == t2 or fabs(t) < 1e-12:             # <<<<<<<<<<<<<<
  *             return y1
  * 
 */
-  __pyx_t_1 = (__pyx_v_t1 == __pyx_v_t2);
+  __pyx_t_2 = (__pyx_v_t1 == __pyx_v_t2);
 
+  if (!__pyx_t_2) {
+
+  } else {
+
+    __pyx_t_1 = __pyx_t_2;
+
+    goto __pyx_L6_bool_binop_done;
+  }
+  __pyx_t_2 = (fabs(__pyx_v_t) < 1e-12);
+
+
+  __pyx_t_1 = __pyx_t_2;
+
+  __pyx_L6_bool_binop_done:;
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/interpolators.pyx":92
+    /* "bz_pricing/core/interpolators.pyx":93
  * 
- *         if t1 == t2:
+ *         if t1 == t2 or fabs(t) < 1e-12:
  *             return y1             # <<<<<<<<<<<<<<
  * 
  *         cdef double f1 = pow(1.0 + y1, t1 / 252.0)
@@ -5269,58 +5376,58 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_26FlatForward252Interpo
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/interpolators.pyx":91
+    /* "bz_pricing/core/interpolators.pyx":92
  *         cdef double y2 = y_nodes[i+1]
  * 
- *         if t1 == t2:             # <<<<<<<<<<<<<<
+ *         if t1 == t2 or fabs(t) < 1e-12:             # <<<<<<<<<<<<<<
  *             return y1
  * 
 */
   }
 
-  /* "bz_pricing/core/interpolators.pyx":94
+  /* "bz_pricing/core/interpolators.pyx":95
  *             return y1
  * 
  *         cdef double f1 = pow(1.0 + y1, t1 / 252.0)             # <<<<<<<<<<<<<<
  *         cdef double f2 = pow(1.0 + y2, t2 / 252.0)
- * 
+ *         cdef double forward = f1 * pow(f2 / f1, (t - t1) / (t2 - t1))
 */
   __pyx_v_f1 = pow((1.0 + __pyx_v_y1), (__pyx_v_t1 / 252.0));
 
-  /* "bz_pricing/core/interpolators.pyx":95
+  /* "bz_pricing/core/interpolators.pyx":96
  * 
  *         cdef double f1 = pow(1.0 + y1, t1 / 252.0)
  *         cdef double f2 = pow(1.0 + y2, t2 / 252.0)             # <<<<<<<<<<<<<<
- * 
- *         """
+ *         cdef double forward = f1 * pow(f2 / f1, (t - t1) / (t2 - t1))
+ *         return pow(forward, 252.0 / t) - 1.0
 */
   __pyx_v_f2 = pow((1.0 + __pyx_v_y2), (__pyx_v_t2 / 252.0));
 
-  /* "bz_pricing/core/interpolators.pyx":107
- *         O resultado e y, em formato decimal
- *         """
+  /* "bz_pricing/core/interpolators.pyx":97
+ *         cdef double f1 = pow(1.0 + y1, t1 / 252.0)
+ *         cdef double f2 = pow(1.0 + y2, t2 / 252.0)
  *         cdef double forward = f1 * pow(f2 / f1, (t - t1) / (t2 - t1))             # <<<<<<<<<<<<<<
  *         return pow(forward, 252.0 / t) - 1.0
  * 
 */
   if (unlikely(__pyx_v_f1 == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    __PYX_ERR(0, 107, __pyx_L1_error)
+    __PYX_ERR(0, 97, __pyx_L1_error)
   }
-  __pyx_t_6 = (__pyx_v_t - __pyx_v_t1);
+  __pyx_t_3 = (__pyx_v_t - __pyx_v_t1);
 
-  __pyx_t_7 = (__pyx_v_t2 - __pyx_v_t1);
+  __pyx_t_4 = (__pyx_v_t2 - __pyx_v_t1);
 
-  if (unlikely(__pyx_t_7 == 0)) {
+  if (unlikely(__pyx_t_4 == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    __PYX_ERR(0, 107, __pyx_L1_error)
+    __PYX_ERR(0, 97, __pyx_L1_error)
   }
-  __pyx_v_forward = (__pyx_v_f1 * pow((__pyx_v_f2 / __pyx_v_f1), (__pyx_t_6 / __pyx_t_7)));
+  __pyx_v_forward = (__pyx_v_f1 * pow((__pyx_v_f2 / __pyx_v_f1), (__pyx_t_3 / __pyx_t_4)));
 
 
 
-  /* "bz_pricing/core/interpolators.pyx":108
- *         """
+  /* "bz_pricing/core/interpolators.pyx":98
+ *         cdef double f2 = pow(1.0 + y2, t2 / 252.0)
  *         cdef double forward = f1 * pow(f2 / f1, (t - t1) / (t2 - t1))
  *         return pow(forward, 252.0 / t) - 1.0             # <<<<<<<<<<<<<<
  * 
@@ -5328,7 +5435,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_26FlatForward252Interpo
 */
   if (unlikely(__pyx_v_t == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    __PYX_ERR(0, 108, __pyx_L1_error)
+    __PYX_ERR(0, 98, __pyx_L1_error)
   }
   {
 
@@ -5336,12 +5443,12 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_26FlatForward252Interpo
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/interpolators.pyx":71
+  /* "bz_pricing/core/interpolators.pyx":80
  * 
  * cdef class FlatForward252Interpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:             # <<<<<<<<<<<<<<
- *         cdef int i
- *         if t <= t_nodes[0]:
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:
 */
 
   /* function exit code */
@@ -5833,7 +5940,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_13interpolators_26FlatForward252Int
   return __pyx_r;
 }
 
-/* "bz_pricing/core/interpolators.pyx":112
+/* "bz_pricing/core/interpolators.pyx":102
  * 
  * cdef class FlatForward252LinearInterpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:             # <<<<<<<<<<<<<<
@@ -5860,12 +5967,8 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_32FlatForward252LinearI
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
   size_t __pyx_t_4;
-  long __pyx_t_5;
-  long __pyx_t_6;
-  int __pyx_t_7;
-  int __pyx_t_8;
-  double __pyx_t_9;
-  double __pyx_t_10;
+  double __pyx_t_5;
+  double __pyx_t_6;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -5880,7 +5983,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_32FlatForward252LinearI
   }
 
 
-  /* "bz_pricing/core/interpolators.pyx":113
+  /* "bz_pricing/core/interpolators.pyx":103
  * cdef class FlatForward252LinearInterpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
  *         if t_sec_nodes == NULL:             # <<<<<<<<<<<<<<
@@ -5892,12 +5995,12 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_32FlatForward252LinearI
   if (unlikely(__pyx_t_1)) {
 
 
-    /* "bz_pricing/core/interpolators.pyx":114
+    /* "bz_pricing/core/interpolators.pyx":104
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
  *         if t_sec_nodes == NULL:
  *             raise ValueError("t_sec_nodes (DC)  obrigatrio para FlatForward252LinearInterpolator")             # <<<<<<<<<<<<<<
  * 
- *         cdef int i
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
 */
     __pyx_t_3 = NULL;
     __pyx_t_4 = 1;
@@ -5905,14 +6008,14 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_32FlatForward252LinearI
       PyObject *__pyx_callargs[2] = {__pyx_t_3, __pyx_mstate_global->__pyx_kp_u_t_sec_nodes_DC_obrigatrio_para_F};
       __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 114, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 104, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
     }
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __PYX_ERR(0, 114, __pyx_L1_error)
+    __PYX_ERR(0, 104, __pyx_L1_error)
 
-    /* "bz_pricing/core/interpolators.pyx":113
+    /* "bz_pricing/core/interpolators.pyx":103
  * cdef class FlatForward252LinearInterpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
  *         if t_sec_nodes == NULL:             # <<<<<<<<<<<<<<
@@ -5921,202 +6024,85 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_32FlatForward252LinearI
 */
   }
 
-  /* "bz_pricing/core/interpolators.pyx":117
+  /* "bz_pricing/core/interpolators.pyx":106
+ *             raise ValueError("t_sec_nodes (DC)  obrigatrio para FlatForward252LinearInterpolator")
  * 
- *         cdef int i
- *         if t <= t_nodes[0]:             # <<<<<<<<<<<<<<
- *             if self._extrap_left == EXTRAP_FLAT:
- *                 return y_nodes[0]
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)             # <<<<<<<<<<<<<<
+ *         if i == -1:
+ *             return y_nodes[0]
 */
-  __pyx_t_1 = (__pyx_v_t <= (__pyx_v_t_nodes[0]));
+  __pyx_v_i = __pyx_f_10bz_pricing_4core_13interpolators__find_interval(__pyx_v_t, __pyx_v_t_nodes, __pyx_v_n_nodes, __pyx_v_self->__pyx_base._extrap_left, __pyx_v_self->__pyx_base._extrap_right);
+
+  /* "bz_pricing/core/interpolators.pyx":107
+ * 
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:             # <<<<<<<<<<<<<<
+ *             return y_nodes[0]
+ *         if i == -2:
+*/
+  __pyx_t_1 = (__pyx_v_i == -1L);
 
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/interpolators.pyx":118
- *         cdef int i
- *         if t <= t_nodes[0]:
- *             if self._extrap_left == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[0]
- *             i = 0
+    /* "bz_pricing/core/interpolators.pyx":108
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:
+ *             return y_nodes[0]             # <<<<<<<<<<<<<<
+ *         if i == -2:
+ *             return y_nodes[n_nodes - 1]
 */
-    __pyx_t_1 = (__pyx_v_self->__pyx_base._extrap_left == __pyx_e_10bz_pricing_4core_13interpolators_EXTRAP_FLAT);
+    {
 
-    if (__pyx_t_1) {
-
-
-      /* "bz_pricing/core/interpolators.pyx":119
- *         if t <= t_nodes[0]:
- *             if self._extrap_left == EXTRAP_FLAT:
- *                 return y_nodes[0]             # <<<<<<<<<<<<<<
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:
-*/
-      {
-
-        __pyx_r = (__pyx_v_y_nodes[0]);
-      }
-      goto __pyx_L0;
-
-      /* "bz_pricing/core/interpolators.pyx":118
- *         cdef int i
- *         if t <= t_nodes[0]:
- *             if self._extrap_left == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[0]
- *             i = 0
-*/
+      __pyx_r = (__pyx_v_y_nodes[0]);
     }
+    goto __pyx_L0;
 
-    /* "bz_pricing/core/interpolators.pyx":120
- *             if self._extrap_left == EXTRAP_FLAT:
- *                 return y_nodes[0]
- *             i = 0             # <<<<<<<<<<<<<<
- *         elif t >= t_nodes[n_nodes - 1]:
- *             if self._extrap_right == EXTRAP_FLAT:
-*/
-    __pyx_v_i = 0;
-
-    /* "bz_pricing/core/interpolators.pyx":117
+    /* "bz_pricing/core/interpolators.pyx":107
  * 
- *         cdef int i
- *         if t <= t_nodes[0]:             # <<<<<<<<<<<<<<
- *             if self._extrap_left == EXTRAP_FLAT:
- *                 return y_nodes[0]
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:             # <<<<<<<<<<<<<<
+ *             return y_nodes[0]
+ *         if i == -2:
 */
-    goto __pyx_L4;
   }
 
-  /* "bz_pricing/core/interpolators.pyx":121
- *                 return y_nodes[0]
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:             # <<<<<<<<<<<<<<
- *             if self._extrap_right == EXTRAP_FLAT:
- *                 return y_nodes[n_nodes - 1]
+  /* "bz_pricing/core/interpolators.pyx":109
+ *         if i == -1:
+ *             return y_nodes[0]
+ *         if i == -2:             # <<<<<<<<<<<<<<
+ *             return y_nodes[n_nodes - 1]
+ * 
 */
-  __pyx_t_1 = (__pyx_v_t >= (__pyx_v_t_nodes[(__pyx_v_n_nodes - 1)]));
+  __pyx_t_1 = (__pyx_v_i == -2L);
 
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/interpolators.pyx":122
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:
- *             if self._extrap_right == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[n_nodes - 1]
- *             i = n_nodes - 2
-*/
-    __pyx_t_1 = (__pyx_v_self->__pyx_base._extrap_right == __pyx_e_10bz_pricing_4core_13interpolators_EXTRAP_FLAT);
-
-    if (__pyx_t_1) {
-
-
-      /* "bz_pricing/core/interpolators.pyx":123
- *         elif t >= t_nodes[n_nodes - 1]:
- *             if self._extrap_right == EXTRAP_FLAT:
- *                 return y_nodes[n_nodes - 1]             # <<<<<<<<<<<<<<
- *             i = n_nodes - 2
- *         else:
-*/
-      {
-
-        __pyx_r = (__pyx_v_y_nodes[(__pyx_v_n_nodes - 1)]);
-      }
-      goto __pyx_L0;
-
-      /* "bz_pricing/core/interpolators.pyx":122
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:
- *             if self._extrap_right == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[n_nodes - 1]
- *             i = n_nodes - 2
-*/
-    }
-
-    /* "bz_pricing/core/interpolators.pyx":124
- *             if self._extrap_right == EXTRAP_FLAT:
- *                 return y_nodes[n_nodes - 1]
- *             i = n_nodes - 2             # <<<<<<<<<<<<<<
- *         else:
- *             for i in range(n_nodes - 1):
-*/
-    __pyx_v_i = (__pyx_v_n_nodes - 2);
-
-    /* "bz_pricing/core/interpolators.pyx":121
- *                 return y_nodes[0]
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:             # <<<<<<<<<<<<<<
- *             if self._extrap_right == EXTRAP_FLAT:
- *                 return y_nodes[n_nodes - 1]
-*/
-    goto __pyx_L4;
-  }
-
-  /* "bz_pricing/core/interpolators.pyx":126
- *             i = n_nodes - 2
- *         else:
- *             for i in range(n_nodes - 1):             # <<<<<<<<<<<<<<
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:
- *                     break
-*/
-  /*else*/ {
-
-    __pyx_t_5 = (__pyx_v_n_nodes - 1);
-    __pyx_t_6 = __pyx_t_5;
-
-    for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
-      __pyx_v_i = __pyx_t_7;
-
-      /* "bz_pricing/core/interpolators.pyx":127
- *         else:
- *             for i in range(n_nodes - 1):
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:             # <<<<<<<<<<<<<<
- *                     break
- * 
-*/
-      __pyx_t_8 = ((__pyx_v_t_nodes[__pyx_v_i]) <= __pyx_v_t);
-
-      if (__pyx_t_8) {
-
-      } else {
-
-        __pyx_t_1 = __pyx_t_8;
-
-        goto __pyx_L10_bool_binop_done;
-      }
-      __pyx_t_8 = (__pyx_v_t <= (__pyx_v_t_nodes[(__pyx_v_i + 1)]));
-
-
-      __pyx_t_1 = __pyx_t_8;
-
-      __pyx_L10_bool_binop_done:;
-      if (__pyx_t_1) {
-
-
-        /* "bz_pricing/core/interpolators.pyx":128
- *             for i in range(n_nodes - 1):
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:
- *                     break             # <<<<<<<<<<<<<<
+    /* "bz_pricing/core/interpolators.pyx":110
+ *             return y_nodes[0]
+ *         if i == -2:
+ *             return y_nodes[n_nodes - 1]             # <<<<<<<<<<<<<<
  * 
  *         cdef double du1 = t_nodes[i]
 */
-        goto __pyx_L8_break;
+    {
 
-        /* "bz_pricing/core/interpolators.pyx":127
- *         else:
- *             for i in range(n_nodes - 1):
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:             # <<<<<<<<<<<<<<
- *                     break
+      __pyx_r = (__pyx_v_y_nodes[(__pyx_v_n_nodes - 1)]);
+    }
+    goto __pyx_L0;
+
+    /* "bz_pricing/core/interpolators.pyx":109
+ *         if i == -1:
+ *             return y_nodes[0]
+ *         if i == -2:             # <<<<<<<<<<<<<<
+ *             return y_nodes[n_nodes - 1]
  * 
 */
-      }
-    }
-    __pyx_L8_break:;
-
   }
-  __pyx_L4:;
 
-  /* "bz_pricing/core/interpolators.pyx":130
- *                     break
+  /* "bz_pricing/core/interpolators.pyx":112
+ *             return y_nodes[n_nodes - 1]
  * 
  *         cdef double du1 = t_nodes[i]             # <<<<<<<<<<<<<<
  *         cdef double du2 = t_nodes[i+1]
@@ -6124,7 +6110,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_32FlatForward252LinearI
 */
   __pyx_v_du1 = (__pyx_v_t_nodes[__pyx_v_i]);
 
-  /* "bz_pricing/core/interpolators.pyx":131
+  /* "bz_pricing/core/interpolators.pyx":113
  * 
  *         cdef double du1 = t_nodes[i]
  *         cdef double du2 = t_nodes[i+1]             # <<<<<<<<<<<<<<
@@ -6133,7 +6119,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_32FlatForward252LinearI
 */
   __pyx_v_du2 = (__pyx_v_t_nodes[(__pyx_v_i + 1)]);
 
-  /* "bz_pricing/core/interpolators.pyx":132
+  /* "bz_pricing/core/interpolators.pyx":114
  *         cdef double du1 = t_nodes[i]
  *         cdef double du2 = t_nodes[i+1]
  *         cdef double dc1 = t_sec_nodes[i]             # <<<<<<<<<<<<<<
@@ -6142,7 +6128,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_32FlatForward252LinearI
 */
   __pyx_v_dc1 = (__pyx_v_t_sec_nodes[__pyx_v_i]);
 
-  /* "bz_pricing/core/interpolators.pyx":133
+  /* "bz_pricing/core/interpolators.pyx":115
  *         cdef double du2 = t_nodes[i+1]
  *         cdef double dc1 = t_sec_nodes[i]
  *         cdef double dc2 = t_sec_nodes[i+1]             # <<<<<<<<<<<<<<
@@ -6151,7 +6137,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_32FlatForward252LinearI
 */
   __pyx_v_dc2 = (__pyx_v_t_sec_nodes[(__pyx_v_i + 1)]);
 
-  /* "bz_pricing/core/interpolators.pyx":134
+  /* "bz_pricing/core/interpolators.pyx":116
  *         cdef double dc1 = t_sec_nodes[i]
  *         cdef double dc2 = t_sec_nodes[i+1]
  *         cdef double y1 = y_nodes[i]             # <<<<<<<<<<<<<<
@@ -6160,7 +6146,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_32FlatForward252LinearI
 */
   __pyx_v_y1 = (__pyx_v_y_nodes[__pyx_v_i]);
 
-  /* "bz_pricing/core/interpolators.pyx":135
+  /* "bz_pricing/core/interpolators.pyx":117
  *         cdef double dc2 = t_sec_nodes[i+1]
  *         cdef double y1 = y_nodes[i]
  *         cdef double y2 = y_nodes[i+1]             # <<<<<<<<<<<<<<
@@ -6169,7 +6155,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_32FlatForward252LinearI
 */
   __pyx_v_y2 = (__pyx_v_y_nodes[(__pyx_v_i + 1)]);
 
-  /* "bz_pricing/core/interpolators.pyx":137
+  /* "bz_pricing/core/interpolators.pyx":119
  *         cdef double y2 = y_nodes[i+1]
  * 
  *         if du1 == du2:             # <<<<<<<<<<<<<<
@@ -6181,7 +6167,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_32FlatForward252LinearI
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/interpolators.pyx":138
+    /* "bz_pricing/core/interpolators.pyx":120
  * 
  *         if du1 == du2:
  *             return y1             # <<<<<<<<<<<<<<
@@ -6194,7 +6180,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_32FlatForward252LinearI
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/interpolators.pyx":137
+    /* "bz_pricing/core/interpolators.pyx":119
  *         cdef double y2 = y_nodes[i+1]
  * 
  *         if du1 == du2:             # <<<<<<<<<<<<<<
@@ -6203,7 +6189,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_32FlatForward252LinearI
 */
   }
 
-  /* "bz_pricing/core/interpolators.pyx":140
+  /* "bz_pricing/core/interpolators.pyx":122
  *             return y1
  * 
  *         cdef double f1 = 1.0 + (y1 * dc1) / 360.0             # <<<<<<<<<<<<<<
@@ -6212,7 +6198,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_32FlatForward252LinearI
 */
   __pyx_v_f1 = (1.0 + ((__pyx_v_y1 * __pyx_v_dc1) / 360.0));
 
-  /* "bz_pricing/core/interpolators.pyx":141
+  /* "bz_pricing/core/interpolators.pyx":123
  * 
  *         cdef double f1 = 1.0 + (y1 * dc1) / 360.0
  *         cdef double f2 = 1.0 + (y2 * dc2) / 360.0             # <<<<<<<<<<<<<<
@@ -6221,7 +6207,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_32FlatForward252LinearI
 */
   __pyx_v_f2 = (1.0 + ((__pyx_v_y2 * __pyx_v_dc2) / 360.0));
 
-  /* "bz_pricing/core/interpolators.pyx":143
+  /* "bz_pricing/core/interpolators.pyx":125
  *         cdef double f2 = 1.0 + (y2 * dc2) / 360.0
  * 
  *         cdef double forward = f1 * pow(f2 / f1, (t - du1) / (du2 - du1))             # <<<<<<<<<<<<<<
@@ -6230,56 +6216,56 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_32FlatForward252LinearI
 */
   if (unlikely(__pyx_v_f1 == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    __PYX_ERR(0, 143, __pyx_L1_error)
+    __PYX_ERR(0, 125, __pyx_L1_error)
   }
-  __pyx_t_9 = (__pyx_v_t - __pyx_v_du1);
+  __pyx_t_5 = (__pyx_v_t - __pyx_v_du1);
 
-  __pyx_t_10 = (__pyx_v_du2 - __pyx_v_du1);
+  __pyx_t_6 = (__pyx_v_du2 - __pyx_v_du1);
 
-  if (unlikely(__pyx_t_10 == 0)) {
+  if (unlikely(__pyx_t_6 == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    __PYX_ERR(0, 143, __pyx_L1_error)
+    __PYX_ERR(0, 125, __pyx_L1_error)
   }
-  __pyx_v_forward = (__pyx_v_f1 * pow((__pyx_v_f2 / __pyx_v_f1), (__pyx_t_9 / __pyx_t_10)));
+  __pyx_v_forward = (__pyx_v_f1 * pow((__pyx_v_f2 / __pyx_v_f1), (__pyx_t_5 / __pyx_t_6)));
 
 
 
-  /* "bz_pricing/core/interpolators.pyx":145
+  /* "bz_pricing/core/interpolators.pyx":127
  *         cdef double forward = f1 * pow(f2 / f1, (t - du1) / (du2 - du1))
  * 
  *         if t_sec == 0.0:             # <<<<<<<<<<<<<<
- *             # Fallback para aproximao de t_sec caso no seja informado (til para plotting)
  *             t_sec = dc1 + (dc2 - dc1) * ((t - du1) / (du2 - du1))
+ *             if t_sec == 0.0:
 */
   __pyx_t_1 = (__pyx_v_t_sec == 0.0);
 
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/interpolators.pyx":147
+    /* "bz_pricing/core/interpolators.pyx":128
+ * 
  *         if t_sec == 0.0:
- *             # Fallback para aproximao de t_sec caso no seja informado (til para plotting)
  *             t_sec = dc1 + (dc2 - dc1) * ((t - du1) / (du2 - du1))             # <<<<<<<<<<<<<<
- * 
  *             if t_sec == 0.0:
+ *                 t_sec = 1.0
 */
-    __pyx_t_10 = (__pyx_v_t - __pyx_v_du1);
+    __pyx_t_6 = (__pyx_v_t - __pyx_v_du1);
 
-    __pyx_t_9 = (__pyx_v_du2 - __pyx_v_du1);
+    __pyx_t_5 = (__pyx_v_du2 - __pyx_v_du1);
 
-    if (unlikely(__pyx_t_9 == 0)) {
+    if (unlikely(__pyx_t_5 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-      __PYX_ERR(0, 147, __pyx_L1_error)
+      __PYX_ERR(0, 128, __pyx_L1_error)
     }
-    __pyx_v_t_sec = (__pyx_v_dc1 + ((__pyx_v_dc2 - __pyx_v_dc1) * (__pyx_t_10 / __pyx_t_9)));
+    __pyx_v_t_sec = (__pyx_v_dc1 + ((__pyx_v_dc2 - __pyx_v_dc1) * (__pyx_t_6 / __pyx_t_5)));
 
 
 
-    /* "bz_pricing/core/interpolators.pyx":149
+    /* "bz_pricing/core/interpolators.pyx":129
+ *         if t_sec == 0.0:
  *             t_sec = dc1 + (dc2 - dc1) * ((t - du1) / (du2 - du1))
- * 
  *             if t_sec == 0.0:             # <<<<<<<<<<<<<<
- *                 t_sec = 1.0 # Previne diviso por zero extrema
+ *                 t_sec = 1.0
  * 
 */
     __pyx_t_1 = (__pyx_v_t_sec == 0.0);
@@ -6287,35 +6273,35 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_32FlatForward252LinearI
     if (__pyx_t_1) {
 
 
-      /* "bz_pricing/core/interpolators.pyx":150
- * 
+      /* "bz_pricing/core/interpolators.pyx":130
+ *             t_sec = dc1 + (dc2 - dc1) * ((t - du1) / (du2 - du1))
  *             if t_sec == 0.0:
- *                 t_sec = 1.0 # Previne diviso por zero extrema             # <<<<<<<<<<<<<<
+ *                 t_sec = 1.0             # <<<<<<<<<<<<<<
  * 
  *         return (forward - 1.0) * (360.0 / t_sec)
 */
       __pyx_v_t_sec = 1.0;
 
-      /* "bz_pricing/core/interpolators.pyx":149
+      /* "bz_pricing/core/interpolators.pyx":129
+ *         if t_sec == 0.0:
  *             t_sec = dc1 + (dc2 - dc1) * ((t - du1) / (du2 - du1))
- * 
  *             if t_sec == 0.0:             # <<<<<<<<<<<<<<
- *                 t_sec = 1.0 # Previne diviso por zero extrema
+ *                 t_sec = 1.0
  * 
 */
     }
 
-    /* "bz_pricing/core/interpolators.pyx":145
+    /* "bz_pricing/core/interpolators.pyx":127
  *         cdef double forward = f1 * pow(f2 / f1, (t - du1) / (du2 - du1))
  * 
  *         if t_sec == 0.0:             # <<<<<<<<<<<<<<
- *             # Fallback para aproximao de t_sec caso no seja informado (til para plotting)
  *             t_sec = dc1 + (dc2 - dc1) * ((t - du1) / (du2 - du1))
+ *             if t_sec == 0.0:
 */
   }
 
-  /* "bz_pricing/core/interpolators.pyx":152
- *                 t_sec = 1.0 # Previne diviso por zero extrema
+  /* "bz_pricing/core/interpolators.pyx":132
+ *                 t_sec = 1.0
  * 
  *         return (forward - 1.0) * (360.0 / t_sec)             # <<<<<<<<<<<<<<
  * 
@@ -6323,7 +6309,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_32FlatForward252LinearI
 */
   if (unlikely(__pyx_v_t_sec == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    __PYX_ERR(0, 152, __pyx_L1_error)
+    __PYX_ERR(0, 132, __pyx_L1_error)
   }
   {
 
@@ -6331,7 +6317,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_32FlatForward252LinearI
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/interpolators.pyx":112
+  /* "bz_pricing/core/interpolators.pyx":102
  * 
  * cdef class FlatForward252LinearInterpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:             # <<<<<<<<<<<<<<
@@ -6834,11 +6820,11 @@ static PyObject *__pyx_pf_10bz_pricing_4core_13interpolators_32FlatForward252Lin
   return __pyx_r;
 }
 
-/* "bz_pricing/core/interpolators.pyx":156
+/* "bz_pricing/core/interpolators.pyx":136
  * 
  * cdef class Interpolation360Interpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:             # <<<<<<<<<<<<<<
- *         # Para esta, t  DC
+ *         # Busca o intervalo em t_nodes e interpola exponencialmente sobre os dias corridos (t_sec_nodes)
  *         if t_sec_nodes == NULL:
 */
 
@@ -6859,12 +6845,8 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_28Interpolation360Inter
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
   size_t __pyx_t_4;
-  long __pyx_t_5;
-  long __pyx_t_6;
-  int __pyx_t_7;
-  int __pyx_t_8;
-  double __pyx_t_9;
-  double __pyx_t_10;
+  double __pyx_t_5;
+  double __pyx_t_6;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -6879,9 +6861,9 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_28Interpolation360Inter
   }
 
 
-  /* "bz_pricing/core/interpolators.pyx":158
+  /* "bz_pricing/core/interpolators.pyx":138
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
- *         # Para esta, t  DC
+ *         # Busca o intervalo em t_nodes e interpola exponencialmente sobre os dias corridos (t_sec_nodes)
  *         if t_sec_nodes == NULL:             # <<<<<<<<<<<<<<
  *             raise ValueError("t_sec_nodes (DC)  obrigatrio para Interpolation360Interpolator")
  * 
@@ -6891,12 +6873,12 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_28Interpolation360Inter
   if (unlikely(__pyx_t_1)) {
 
 
-    /* "bz_pricing/core/interpolators.pyx":159
- *         # Para esta, t  DC
+    /* "bz_pricing/core/interpolators.pyx":139
+ *         # Busca o intervalo em t_nodes e interpola exponencialmente sobre os dias corridos (t_sec_nodes)
  *         if t_sec_nodes == NULL:
  *             raise ValueError("t_sec_nodes (DC)  obrigatrio para Interpolation360Interpolator")             # <<<<<<<<<<<<<<
  * 
- *         cdef int i
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
 */
     __pyx_t_3 = NULL;
     __pyx_t_4 = 1;
@@ -6904,218 +6886,101 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_28Interpolation360Inter
       PyObject *__pyx_callargs[2] = {__pyx_t_3, __pyx_mstate_global->__pyx_kp_u_t_sec_nodes_DC_obrigatrio_para_I};
       __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_4, (2-__pyx_t_4) | (__pyx_t_4*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 159, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 139, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
     }
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __PYX_ERR(0, 159, __pyx_L1_error)
+    __PYX_ERR(0, 139, __pyx_L1_error)
 
-    /* "bz_pricing/core/interpolators.pyx":158
+    /* "bz_pricing/core/interpolators.pyx":138
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
- *         # Para esta, t  DC
+ *         # Busca o intervalo em t_nodes e interpola exponencialmente sobre os dias corridos (t_sec_nodes)
  *         if t_sec_nodes == NULL:             # <<<<<<<<<<<<<<
  *             raise ValueError("t_sec_nodes (DC)  obrigatrio para Interpolation360Interpolator")
  * 
 */
   }
 
-  /* "bz_pricing/core/interpolators.pyx":162
+  /* "bz_pricing/core/interpolators.pyx":141
+ *             raise ValueError("t_sec_nodes (DC)  obrigatrio para Interpolation360Interpolator")
  * 
- *         cdef int i
- *         if t <= t_nodes[0]:             # <<<<<<<<<<<<<<
- *             if self._extrap_left == EXTRAP_FLAT:
- *                 return y_nodes[0]
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)             # <<<<<<<<<<<<<<
+ *         if i == -1:
+ *             return y_nodes[0]
 */
-  __pyx_t_1 = (__pyx_v_t <= (__pyx_v_t_nodes[0]));
+  __pyx_v_i = __pyx_f_10bz_pricing_4core_13interpolators__find_interval(__pyx_v_t, __pyx_v_t_nodes, __pyx_v_n_nodes, __pyx_v_self->__pyx_base._extrap_left, __pyx_v_self->__pyx_base._extrap_right);
+
+  /* "bz_pricing/core/interpolators.pyx":142
+ * 
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:             # <<<<<<<<<<<<<<
+ *             return y_nodes[0]
+ *         if i == -2:
+*/
+  __pyx_t_1 = (__pyx_v_i == -1L);
 
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/interpolators.pyx":163
- *         cdef int i
- *         if t <= t_nodes[0]:
- *             if self._extrap_left == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[0]
- *             i = 0
+    /* "bz_pricing/core/interpolators.pyx":143
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:
+ *             return y_nodes[0]             # <<<<<<<<<<<<<<
+ *         if i == -2:
+ *             return y_nodes[n_nodes - 1]
 */
-    __pyx_t_1 = (__pyx_v_self->__pyx_base._extrap_left == __pyx_e_10bz_pricing_4core_13interpolators_EXTRAP_FLAT);
+    {
 
-    if (__pyx_t_1) {
-
-
-      /* "bz_pricing/core/interpolators.pyx":164
- *         if t <= t_nodes[0]:
- *             if self._extrap_left == EXTRAP_FLAT:
- *                 return y_nodes[0]             # <<<<<<<<<<<<<<
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:
-*/
-      {
-
-        __pyx_r = (__pyx_v_y_nodes[0]);
-      }
-      goto __pyx_L0;
-
-      /* "bz_pricing/core/interpolators.pyx":163
- *         cdef int i
- *         if t <= t_nodes[0]:
- *             if self._extrap_left == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[0]
- *             i = 0
-*/
+      __pyx_r = (__pyx_v_y_nodes[0]);
     }
+    goto __pyx_L0;
 
-    /* "bz_pricing/core/interpolators.pyx":165
- *             if self._extrap_left == EXTRAP_FLAT:
- *                 return y_nodes[0]
- *             i = 0             # <<<<<<<<<<<<<<
- *         elif t >= t_nodes[n_nodes - 1]:
- *             if self._extrap_right == EXTRAP_FLAT:
-*/
-    __pyx_v_i = 0;
-
-    /* "bz_pricing/core/interpolators.pyx":162
+    /* "bz_pricing/core/interpolators.pyx":142
  * 
- *         cdef int i
- *         if t <= t_nodes[0]:             # <<<<<<<<<<<<<<
- *             if self._extrap_left == EXTRAP_FLAT:
- *                 return y_nodes[0]
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:             # <<<<<<<<<<<<<<
+ *             return y_nodes[0]
+ *         if i == -2:
 */
-    goto __pyx_L4;
   }
 
-  /* "bz_pricing/core/interpolators.pyx":166
- *                 return y_nodes[0]
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:             # <<<<<<<<<<<<<<
- *             if self._extrap_right == EXTRAP_FLAT:
- *                 return y_nodes[n_nodes - 1]
+  /* "bz_pricing/core/interpolators.pyx":144
+ *         if i == -1:
+ *             return y_nodes[0]
+ *         if i == -2:             # <<<<<<<<<<<<<<
+ *             return y_nodes[n_nodes - 1]
+ * 
 */
-  __pyx_t_1 = (__pyx_v_t >= (__pyx_v_t_nodes[(__pyx_v_n_nodes - 1)]));
+  __pyx_t_1 = (__pyx_v_i == -2L);
 
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/interpolators.pyx":167
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:
- *             if self._extrap_right == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[n_nodes - 1]
- *             i = n_nodes - 2
-*/
-    __pyx_t_1 = (__pyx_v_self->__pyx_base._extrap_right == __pyx_e_10bz_pricing_4core_13interpolators_EXTRAP_FLAT);
-
-    if (__pyx_t_1) {
-
-
-      /* "bz_pricing/core/interpolators.pyx":168
- *         elif t >= t_nodes[n_nodes - 1]:
- *             if self._extrap_right == EXTRAP_FLAT:
- *                 return y_nodes[n_nodes - 1]             # <<<<<<<<<<<<<<
- *             i = n_nodes - 2
- *         else:
-*/
-      {
-
-        __pyx_r = (__pyx_v_y_nodes[(__pyx_v_n_nodes - 1)]);
-      }
-      goto __pyx_L0;
-
-      /* "bz_pricing/core/interpolators.pyx":167
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:
- *             if self._extrap_right == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[n_nodes - 1]
- *             i = n_nodes - 2
-*/
-    }
-
-    /* "bz_pricing/core/interpolators.pyx":169
- *             if self._extrap_right == EXTRAP_FLAT:
- *                 return y_nodes[n_nodes - 1]
- *             i = n_nodes - 2             # <<<<<<<<<<<<<<
- *         else:
- *             for i in range(n_nodes - 1):
-*/
-    __pyx_v_i = (__pyx_v_n_nodes - 2);
-
-    /* "bz_pricing/core/interpolators.pyx":166
- *                 return y_nodes[0]
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:             # <<<<<<<<<<<<<<
- *             if self._extrap_right == EXTRAP_FLAT:
- *                 return y_nodes[n_nodes - 1]
-*/
-    goto __pyx_L4;
-  }
-
-  /* "bz_pricing/core/interpolators.pyx":171
- *             i = n_nodes - 2
- *         else:
- *             for i in range(n_nodes - 1):             # <<<<<<<<<<<<<<
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:
- *                     break
-*/
-  /*else*/ {
-
-    __pyx_t_5 = (__pyx_v_n_nodes - 1);
-    __pyx_t_6 = __pyx_t_5;
-
-    for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
-      __pyx_v_i = __pyx_t_7;
-
-      /* "bz_pricing/core/interpolators.pyx":172
- *         else:
- *             for i in range(n_nodes - 1):
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:             # <<<<<<<<<<<<<<
- *                     break
- * 
-*/
-      __pyx_t_8 = ((__pyx_v_t_nodes[__pyx_v_i]) <= __pyx_v_t);
-
-      if (__pyx_t_8) {
-
-      } else {
-
-        __pyx_t_1 = __pyx_t_8;
-
-        goto __pyx_L10_bool_binop_done;
-      }
-      __pyx_t_8 = (__pyx_v_t <= (__pyx_v_t_nodes[(__pyx_v_i + 1)]));
-
-
-      __pyx_t_1 = __pyx_t_8;
-
-      __pyx_L10_bool_binop_done:;
-      if (__pyx_t_1) {
-
-
-        /* "bz_pricing/core/interpolators.pyx":173
- *             for i in range(n_nodes - 1):
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:
- *                     break             # <<<<<<<<<<<<<<
+    /* "bz_pricing/core/interpolators.pyx":145
+ *             return y_nodes[0]
+ *         if i == -2:
+ *             return y_nodes[n_nodes - 1]             # <<<<<<<<<<<<<<
  * 
  *         cdef double dc1 = t_sec_nodes[i]
 */
-        goto __pyx_L8_break;
+    {
 
-        /* "bz_pricing/core/interpolators.pyx":172
- *         else:
- *             for i in range(n_nodes - 1):
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:             # <<<<<<<<<<<<<<
- *                     break
+      __pyx_r = (__pyx_v_y_nodes[(__pyx_v_n_nodes - 1)]);
+    }
+    goto __pyx_L0;
+
+    /* "bz_pricing/core/interpolators.pyx":144
+ *         if i == -1:
+ *             return y_nodes[0]
+ *         if i == -2:             # <<<<<<<<<<<<<<
+ *             return y_nodes[n_nodes - 1]
  * 
 */
-      }
-    }
-    __pyx_L8_break:;
-
   }
-  __pyx_L4:;
 
-  /* "bz_pricing/core/interpolators.pyx":175
- *                     break
+  /* "bz_pricing/core/interpolators.pyx":147
+ *             return y_nodes[n_nodes - 1]
  * 
  *         cdef double dc1 = t_sec_nodes[i]             # <<<<<<<<<<<<<<
  *         cdef double dc2 = t_sec_nodes[i+1]
@@ -7123,7 +6988,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_28Interpolation360Inter
 */
   __pyx_v_dc1 = (__pyx_v_t_sec_nodes[__pyx_v_i]);
 
-  /* "bz_pricing/core/interpolators.pyx":176
+  /* "bz_pricing/core/interpolators.pyx":148
  * 
  *         cdef double dc1 = t_sec_nodes[i]
  *         cdef double dc2 = t_sec_nodes[i+1]             # <<<<<<<<<<<<<<
@@ -7132,7 +6997,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_28Interpolation360Inter
 */
   __pyx_v_dc2 = (__pyx_v_t_sec_nodes[(__pyx_v_i + 1)]);
 
-  /* "bz_pricing/core/interpolators.pyx":177
+  /* "bz_pricing/core/interpolators.pyx":149
  *         cdef double dc1 = t_sec_nodes[i]
  *         cdef double dc2 = t_sec_nodes[i+1]
  *         cdef double y1 = y_nodes[i]             # <<<<<<<<<<<<<<
@@ -7141,7 +7006,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_28Interpolation360Inter
 */
   __pyx_v_y1 = (__pyx_v_y_nodes[__pyx_v_i]);
 
-  /* "bz_pricing/core/interpolators.pyx":178
+  /* "bz_pricing/core/interpolators.pyx":150
  *         cdef double dc2 = t_sec_nodes[i+1]
  *         cdef double y1 = y_nodes[i]
  *         cdef double y2 = y_nodes[i+1]             # <<<<<<<<<<<<<<
@@ -7150,7 +7015,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_28Interpolation360Inter
 */
   __pyx_v_y2 = (__pyx_v_y_nodes[(__pyx_v_i + 1)]);
 
-  /* "bz_pricing/core/interpolators.pyx":180
+  /* "bz_pricing/core/interpolators.pyx":152
  *         cdef double y2 = y_nodes[i+1]
  * 
  *         if dc1 == dc2:             # <<<<<<<<<<<<<<
@@ -7162,7 +7027,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_28Interpolation360Inter
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/interpolators.pyx":181
+    /* "bz_pricing/core/interpolators.pyx":153
  * 
  *         if dc1 == dc2:
  *             return y1             # <<<<<<<<<<<<<<
@@ -7175,7 +7040,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_28Interpolation360Inter
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/interpolators.pyx":180
+    /* "bz_pricing/core/interpolators.pyx":152
  *         cdef double y2 = y_nodes[i+1]
  * 
  *         if dc1 == dc2:             # <<<<<<<<<<<<<<
@@ -7184,7 +7049,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_28Interpolation360Inter
 */
   }
 
-  /* "bz_pricing/core/interpolators.pyx":183
+  /* "bz_pricing/core/interpolators.pyx":155
  *             return y1
  * 
  *         cdef double f1 = 1.0 + (y1 * dc1) / 360.0             # <<<<<<<<<<<<<<
@@ -7193,7 +7058,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_28Interpolation360Inter
 */
   __pyx_v_f1 = (1.0 + ((__pyx_v_y1 * __pyx_v_dc1) / 360.0));
 
-  /* "bz_pricing/core/interpolators.pyx":184
+  /* "bz_pricing/core/interpolators.pyx":156
  * 
  *         cdef double f1 = 1.0 + (y1 * dc1) / 360.0
  *         cdef double f2 = 1.0 + (y2 * dc2) / 360.0             # <<<<<<<<<<<<<<
@@ -7202,40 +7067,40 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_28Interpolation360Inter
 */
   __pyx_v_f2 = (1.0 + ((__pyx_v_y2 * __pyx_v_dc2) / 360.0));
 
-  /* "bz_pricing/core/interpolators.pyx":186
+  /* "bz_pricing/core/interpolators.pyx":158
  *         cdef double f2 = 1.0 + (y2 * dc2) / 360.0
  * 
  *         if t_sec == 0.0:             # <<<<<<<<<<<<<<
- *             # Fallback para aproximao de t_sec caso no seja informado (til para plotting)
  *             t_sec = dc1 + (dc2 - dc1) * ((t - t_nodes[i]) / (t_nodes[i+1] - t_nodes[i]))
+ *             if t_sec == 0.0:
 */
   __pyx_t_1 = (__pyx_v_t_sec == 0.0);
 
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/interpolators.pyx":188
+    /* "bz_pricing/core/interpolators.pyx":159
+ * 
  *         if t_sec == 0.0:
- *             # Fallback para aproximao de t_sec caso no seja informado (til para plotting)
  *             t_sec = dc1 + (dc2 - dc1) * ((t - t_nodes[i]) / (t_nodes[i+1] - t_nodes[i]))             # <<<<<<<<<<<<<<
- * 
  *             if t_sec == 0.0:
+ *                 return y1
 */
-    __pyx_t_9 = (__pyx_v_t - (__pyx_v_t_nodes[__pyx_v_i]));
+    __pyx_t_5 = (__pyx_v_t - (__pyx_v_t_nodes[__pyx_v_i]));
 
-    __pyx_t_10 = ((__pyx_v_t_nodes[(__pyx_v_i + 1)]) - (__pyx_v_t_nodes[__pyx_v_i]));
+    __pyx_t_6 = ((__pyx_v_t_nodes[(__pyx_v_i + 1)]) - (__pyx_v_t_nodes[__pyx_v_i]));
 
-    if (unlikely(__pyx_t_10 == 0)) {
+    if (unlikely(__pyx_t_6 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-      __PYX_ERR(0, 188, __pyx_L1_error)
+      __PYX_ERR(0, 159, __pyx_L1_error)
     }
-    __pyx_v_t_sec = (__pyx_v_dc1 + ((__pyx_v_dc2 - __pyx_v_dc1) * (__pyx_t_9 / __pyx_t_10)));
+    __pyx_v_t_sec = (__pyx_v_dc1 + ((__pyx_v_dc2 - __pyx_v_dc1) * (__pyx_t_5 / __pyx_t_6)));
 
 
 
-    /* "bz_pricing/core/interpolators.pyx":190
+    /* "bz_pricing/core/interpolators.pyx":160
+ *         if t_sec == 0.0:
  *             t_sec = dc1 + (dc2 - dc1) * ((t - t_nodes[i]) / (t_nodes[i+1] - t_nodes[i]))
- * 
  *             if t_sec == 0.0:             # <<<<<<<<<<<<<<
  *                 return y1
  * 
@@ -7245,8 +7110,8 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_28Interpolation360Inter
     if (__pyx_t_1) {
 
 
-      /* "bz_pricing/core/interpolators.pyx":191
- * 
+      /* "bz_pricing/core/interpolators.pyx":161
+ *             t_sec = dc1 + (dc2 - dc1) * ((t - t_nodes[i]) / (t_nodes[i+1] - t_nodes[i]))
  *             if t_sec == 0.0:
  *                 return y1             # <<<<<<<<<<<<<<
  * 
@@ -7258,57 +7123,57 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_28Interpolation360Inter
       }
       goto __pyx_L0;
 
-      /* "bz_pricing/core/interpolators.pyx":190
+      /* "bz_pricing/core/interpolators.pyx":160
+ *         if t_sec == 0.0:
  *             t_sec = dc1 + (dc2 - dc1) * ((t - t_nodes[i]) / (t_nodes[i+1] - t_nodes[i]))
- * 
  *             if t_sec == 0.0:             # <<<<<<<<<<<<<<
  *                 return y1
  * 
 */
     }
 
-    /* "bz_pricing/core/interpolators.pyx":186
+    /* "bz_pricing/core/interpolators.pyx":158
  *         cdef double f2 = 1.0 + (y2 * dc2) / 360.0
  * 
  *         if t_sec == 0.0:             # <<<<<<<<<<<<<<
- *             # Fallback para aproximao de t_sec caso no seja informado (til para plotting)
  *             t_sec = dc1 + (dc2 - dc1) * ((t - t_nodes[i]) / (t_nodes[i+1] - t_nodes[i]))
+ *             if t_sec == 0.0:
 */
   }
 
-  /* "bz_pricing/core/interpolators.pyx":193
+  /* "bz_pricing/core/interpolators.pyx":163
  *                 return y1
  * 
  *         cdef double forward = f1 * pow(f2 / f1, (t_sec - dc1) / (dc2 - dc1))             # <<<<<<<<<<<<<<
- * 
  *         return (forward - 1.0) * (360.0 / t_sec)
+ * 
 */
   if (unlikely(__pyx_v_f1 == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    __PYX_ERR(0, 193, __pyx_L1_error)
+    __PYX_ERR(0, 163, __pyx_L1_error)
   }
-  __pyx_t_10 = (__pyx_v_t_sec - __pyx_v_dc1);
+  __pyx_t_6 = (__pyx_v_t_sec - __pyx_v_dc1);
 
-  __pyx_t_9 = (__pyx_v_dc2 - __pyx_v_dc1);
+  __pyx_t_5 = (__pyx_v_dc2 - __pyx_v_dc1);
 
-  if (unlikely(__pyx_t_9 == 0)) {
+  if (unlikely(__pyx_t_5 == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    __PYX_ERR(0, 193, __pyx_L1_error)
+    __PYX_ERR(0, 163, __pyx_L1_error)
   }
-  __pyx_v_forward = (__pyx_v_f1 * pow((__pyx_v_f2 / __pyx_v_f1), (__pyx_t_10 / __pyx_t_9)));
+  __pyx_v_forward = (__pyx_v_f1 * pow((__pyx_v_f2 / __pyx_v_f1), (__pyx_t_6 / __pyx_t_5)));
 
 
 
-  /* "bz_pricing/core/interpolators.pyx":195
- *         cdef double forward = f1 * pow(f2 / f1, (t_sec - dc1) / (dc2 - dc1))
+  /* "bz_pricing/core/interpolators.pyx":164
  * 
+ *         cdef double forward = f1 * pow(f2 / f1, (t_sec - dc1) / (dc2 - dc1))
  *         return (forward - 1.0) * (360.0 / t_sec)             # <<<<<<<<<<<<<<
  * 
  * 
 */
   if (unlikely(__pyx_v_t_sec == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    __PYX_ERR(0, 195, __pyx_L1_error)
+    __PYX_ERR(0, 164, __pyx_L1_error)
   }
   {
 
@@ -7316,11 +7181,11 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_28Interpolation360Inter
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/interpolators.pyx":156
+  /* "bz_pricing/core/interpolators.pyx":136
  * 
  * cdef class Interpolation360Interpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:             # <<<<<<<<<<<<<<
- *         # Para esta, t  DC
+ *         # Busca o intervalo em t_nodes e interpola exponencialmente sobre os dias corridos (t_sec_nodes)
  *         if t_sec_nodes == NULL:
 */
 
@@ -7817,12 +7682,12 @@ static PyObject *__pyx_pf_10bz_pricing_4core_13interpolators_28Interpolation360I
   return __pyx_r;
 }
 
-/* "bz_pricing/core/interpolators.pyx":199
+/* "bz_pricing/core/interpolators.pyx":168
  * 
  * cdef class Linear360Interpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:             # <<<<<<<<<<<<<<
- *         cdef int i
- *         if t <= t_nodes[0]:
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:
 */
 
 static double __pyx_f_10bz_pricing_4core_13interpolators_21Linear360Interpolator_interpolate(struct __pyx_obj_10bz_pricing_4core_13interpolators_Linear360Interpolator *__pyx_v_self, double __pyx_v_t, double *__pyx_v_t_nodes, double *__pyx_v_y_nodes, int __pyx_v_n_nodes, struct __pyx_opt_args_10bz_pricing_4core_13interpolators_21Linear360Interpolator_interpolate *__pyx_optional_args) {
@@ -7838,12 +7703,8 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_21Linear360Interpolator
   double __pyx_v_forward;
   double __pyx_r;
   int __pyx_t_1;
-  long __pyx_t_2;
-  long __pyx_t_3;
-  int __pyx_t_4;
-  int __pyx_t_5;
-  double __pyx_t_6;
-  double __pyx_t_7;
+  double __pyx_t_2;
+  double __pyx_t_3;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -7857,201 +7718,84 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_21Linear360Interpolator
   }
 
 
-  /* "bz_pricing/core/interpolators.pyx":201
+  /* "bz_pricing/core/interpolators.pyx":169
+ * cdef class Linear360Interpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
- *         cdef int i
- *         if t <= t_nodes[0]:             # <<<<<<<<<<<<<<
- *             if self._extrap_left == EXTRAP_FLAT:
- *                 return y_nodes[0]
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)             # <<<<<<<<<<<<<<
+ *         if i == -1:
+ *             return y_nodes[0]
 */
-  __pyx_t_1 = (__pyx_v_t <= (__pyx_v_t_nodes[0]));
+  __pyx_v_i = __pyx_f_10bz_pricing_4core_13interpolators__find_interval(__pyx_v_t, __pyx_v_t_nodes, __pyx_v_n_nodes, __pyx_v_self->__pyx_base._extrap_left, __pyx_v_self->__pyx_base._extrap_right);
+
+  /* "bz_pricing/core/interpolators.pyx":170
+ *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:             # <<<<<<<<<<<<<<
+ *             return y_nodes[0]
+ *         if i == -2:
+*/
+  __pyx_t_1 = (__pyx_v_i == -1L);
 
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/interpolators.pyx":202
- *         cdef int i
- *         if t <= t_nodes[0]:
- *             if self._extrap_left == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[0]
- *             i = 0
+    /* "bz_pricing/core/interpolators.pyx":171
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:
+ *             return y_nodes[0]             # <<<<<<<<<<<<<<
+ *         if i == -2:
+ *             return y_nodes[n_nodes - 1]
 */
-    __pyx_t_1 = (__pyx_v_self->__pyx_base._extrap_left == __pyx_e_10bz_pricing_4core_13interpolators_EXTRAP_FLAT);
+    {
 
-    if (__pyx_t_1) {
-
-
-      /* "bz_pricing/core/interpolators.pyx":203
- *         if t <= t_nodes[0]:
- *             if self._extrap_left == EXTRAP_FLAT:
- *                 return y_nodes[0]             # <<<<<<<<<<<<<<
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:
-*/
-      {
-
-        __pyx_r = (__pyx_v_y_nodes[0]);
-      }
-      goto __pyx_L0;
-
-      /* "bz_pricing/core/interpolators.pyx":202
- *         cdef int i
- *         if t <= t_nodes[0]:
- *             if self._extrap_left == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[0]
- *             i = 0
-*/
+      __pyx_r = (__pyx_v_y_nodes[0]);
     }
+    goto __pyx_L0;
 
-    /* "bz_pricing/core/interpolators.pyx":204
- *             if self._extrap_left == EXTRAP_FLAT:
- *                 return y_nodes[0]
- *             i = 0             # <<<<<<<<<<<<<<
- *         elif t >= t_nodes[n_nodes - 1]:
- *             if self._extrap_right == EXTRAP_FLAT:
-*/
-    __pyx_v_i = 0;
-
-    /* "bz_pricing/core/interpolators.pyx":201
+    /* "bz_pricing/core/interpolators.pyx":170
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
- *         cdef int i
- *         if t <= t_nodes[0]:             # <<<<<<<<<<<<<<
- *             if self._extrap_left == EXTRAP_FLAT:
- *                 return y_nodes[0]
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:             # <<<<<<<<<<<<<<
+ *             return y_nodes[0]
+ *         if i == -2:
 */
-    goto __pyx_L3;
   }
 
-  /* "bz_pricing/core/interpolators.pyx":205
- *                 return y_nodes[0]
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:             # <<<<<<<<<<<<<<
- *             if self._extrap_right == EXTRAP_FLAT:
- *                 return y_nodes[n_nodes - 1]
-*/
-  __pyx_t_1 = (__pyx_v_t >= (__pyx_v_t_nodes[(__pyx_v_n_nodes - 1)]));
-
-  if (__pyx_t_1) {
-
-
-    /* "bz_pricing/core/interpolators.pyx":206
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:
- *             if self._extrap_right == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[n_nodes - 1]
- *             i = n_nodes - 2
-*/
-    __pyx_t_1 = (__pyx_v_self->__pyx_base._extrap_right == __pyx_e_10bz_pricing_4core_13interpolators_EXTRAP_FLAT);
-
-    if (__pyx_t_1) {
-
-
-      /* "bz_pricing/core/interpolators.pyx":207
- *         elif t >= t_nodes[n_nodes - 1]:
- *             if self._extrap_right == EXTRAP_FLAT:
- *                 return y_nodes[n_nodes - 1]             # <<<<<<<<<<<<<<
- *             i = n_nodes - 2
- *         else:
-*/
-      {
-
-        __pyx_r = (__pyx_v_y_nodes[(__pyx_v_n_nodes - 1)]);
-      }
-      goto __pyx_L0;
-
-      /* "bz_pricing/core/interpolators.pyx":206
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:
- *             if self._extrap_right == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[n_nodes - 1]
- *             i = n_nodes - 2
-*/
-    }
-
-    /* "bz_pricing/core/interpolators.pyx":208
- *             if self._extrap_right == EXTRAP_FLAT:
- *                 return y_nodes[n_nodes - 1]
- *             i = n_nodes - 2             # <<<<<<<<<<<<<<
- *         else:
- *             for i in range(n_nodes - 1):
-*/
-    __pyx_v_i = (__pyx_v_n_nodes - 2);
-
-    /* "bz_pricing/core/interpolators.pyx":205
- *                 return y_nodes[0]
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:             # <<<<<<<<<<<<<<
- *             if self._extrap_right == EXTRAP_FLAT:
- *                 return y_nodes[n_nodes - 1]
-*/
-    goto __pyx_L3;
-  }
-
-  /* "bz_pricing/core/interpolators.pyx":210
- *             i = n_nodes - 2
- *         else:
- *             for i in range(n_nodes - 1):             # <<<<<<<<<<<<<<
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:
- *                     break
-*/
-  /*else*/ {
-
-    __pyx_t_2 = (__pyx_v_n_nodes - 1);
-    __pyx_t_3 = __pyx_t_2;
-
-    for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
-      __pyx_v_i = __pyx_t_4;
-
-      /* "bz_pricing/core/interpolators.pyx":211
- *         else:
- *             for i in range(n_nodes - 1):
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:             # <<<<<<<<<<<<<<
- *                     break
+  /* "bz_pricing/core/interpolators.pyx":172
+ *         if i == -1:
+ *             return y_nodes[0]
+ *         if i == -2:             # <<<<<<<<<<<<<<
+ *             return y_nodes[n_nodes - 1]
  * 
 */
-      __pyx_t_5 = ((__pyx_v_t_nodes[__pyx_v_i]) <= __pyx_v_t);
+  __pyx_t_1 = (__pyx_v_i == -2L);
 
-      if (__pyx_t_5) {
-
-      } else {
-
-        __pyx_t_1 = __pyx_t_5;
-
-        goto __pyx_L9_bool_binop_done;
-      }
-      __pyx_t_5 = (__pyx_v_t <= (__pyx_v_t_nodes[(__pyx_v_i + 1)]));
+  if (__pyx_t_1) {
 
 
-      __pyx_t_1 = __pyx_t_5;
-
-      __pyx_L9_bool_binop_done:;
-      if (__pyx_t_1) {
-
-
-        /* "bz_pricing/core/interpolators.pyx":212
- *             for i in range(n_nodes - 1):
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:
- *                     break             # <<<<<<<<<<<<<<
+    /* "bz_pricing/core/interpolators.pyx":173
+ *             return y_nodes[0]
+ *         if i == -2:
+ *             return y_nodes[n_nodes - 1]             # <<<<<<<<<<<<<<
  * 
  *         cdef double dc1
 */
-        goto __pyx_L7_break;
+    {
 
-        /* "bz_pricing/core/interpolators.pyx":211
- *         else:
- *             for i in range(n_nodes - 1):
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:             # <<<<<<<<<<<<<<
- *                     break
+      __pyx_r = (__pyx_v_y_nodes[(__pyx_v_n_nodes - 1)]);
+    }
+    goto __pyx_L0;
+
+    /* "bz_pricing/core/interpolators.pyx":172
+ *         if i == -1:
+ *             return y_nodes[0]
+ *         if i == -2:             # <<<<<<<<<<<<<<
+ *             return y_nodes[n_nodes - 1]
  * 
 */
-      }
-    }
-    __pyx_L7_break:;
-
   }
-  __pyx_L3:;
 
-  /* "bz_pricing/core/interpolators.pyx":216
+  /* "bz_pricing/core/interpolators.pyx":177
  *         cdef double dc1
  *         cdef double dc2
  *         if t_sec_nodes != NULL:             # <<<<<<<<<<<<<<
@@ -8063,7 +7807,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_21Linear360Interpolator
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/interpolators.pyx":217
+    /* "bz_pricing/core/interpolators.pyx":178
  *         cdef double dc2
  *         if t_sec_nodes != NULL:
  *             dc1 = t_sec_nodes[i]             # <<<<<<<<<<<<<<
@@ -8072,7 +7816,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_21Linear360Interpolator
 */
     __pyx_v_dc1 = (__pyx_v_t_sec_nodes[__pyx_v_i]);
 
-    /* "bz_pricing/core/interpolators.pyx":218
+    /* "bz_pricing/core/interpolators.pyx":179
  *         if t_sec_nodes != NULL:
  *             dc1 = t_sec_nodes[i]
  *             dc2 = t_sec_nodes[i+1]             # <<<<<<<<<<<<<<
@@ -8081,7 +7825,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_21Linear360Interpolator
 */
     __pyx_v_dc2 = (__pyx_v_t_sec_nodes[(__pyx_v_i + 1)]);
 
-    /* "bz_pricing/core/interpolators.pyx":219
+    /* "bz_pricing/core/interpolators.pyx":180
  *             dc1 = t_sec_nodes[i]
  *             dc2 = t_sec_nodes[i+1]
  *             if t_sec == 0.0:             # <<<<<<<<<<<<<<
@@ -8093,26 +7837,26 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_21Linear360Interpolator
     if (__pyx_t_1) {
 
 
-      /* "bz_pricing/core/interpolators.pyx":220
+      /* "bz_pricing/core/interpolators.pyx":181
  *             dc2 = t_sec_nodes[i+1]
  *             if t_sec == 0.0:
  *                 t_sec = dc1 + (dc2 - dc1) * ((t - t_nodes[i]) / (t_nodes[i+1] - t_nodes[i]))             # <<<<<<<<<<<<<<
  *         else:
  *             # Caso a curva seja pura em Dias Corridos (DC), t_nodes  o prprio vetor de DC
 */
-      __pyx_t_6 = (__pyx_v_t - (__pyx_v_t_nodes[__pyx_v_i]));
+      __pyx_t_2 = (__pyx_v_t - (__pyx_v_t_nodes[__pyx_v_i]));
 
-      __pyx_t_7 = ((__pyx_v_t_nodes[(__pyx_v_i + 1)]) - (__pyx_v_t_nodes[__pyx_v_i]));
+      __pyx_t_3 = ((__pyx_v_t_nodes[(__pyx_v_i + 1)]) - (__pyx_v_t_nodes[__pyx_v_i]));
 
-      if (unlikely(__pyx_t_7 == 0)) {
+      if (unlikely(__pyx_t_3 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        __PYX_ERR(0, 220, __pyx_L1_error)
+        __PYX_ERR(0, 181, __pyx_L1_error)
       }
-      __pyx_v_t_sec = (__pyx_v_dc1 + ((__pyx_v_dc2 - __pyx_v_dc1) * (__pyx_t_6 / __pyx_t_7)));
+      __pyx_v_t_sec = (__pyx_v_dc1 + ((__pyx_v_dc2 - __pyx_v_dc1) * (__pyx_t_2 / __pyx_t_3)));
 
 
 
-      /* "bz_pricing/core/interpolators.pyx":219
+      /* "bz_pricing/core/interpolators.pyx":180
  *             dc1 = t_sec_nodes[i]
  *             dc2 = t_sec_nodes[i+1]
  *             if t_sec == 0.0:             # <<<<<<<<<<<<<<
@@ -8121,17 +7865,17 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_21Linear360Interpolator
 */
     }
 
-    /* "bz_pricing/core/interpolators.pyx":216
+    /* "bz_pricing/core/interpolators.pyx":177
  *         cdef double dc1
  *         cdef double dc2
  *         if t_sec_nodes != NULL:             # <<<<<<<<<<<<<<
  *             dc1 = t_sec_nodes[i]
  *             dc2 = t_sec_nodes[i+1]
 */
-    goto __pyx_L11;
+    goto __pyx_L5;
   }
 
-  /* "bz_pricing/core/interpolators.pyx":223
+  /* "bz_pricing/core/interpolators.pyx":184
  *         else:
  *             # Caso a curva seja pura em Dias Corridos (DC), t_nodes  o prprio vetor de DC
  *             dc1 = t_nodes[i]             # <<<<<<<<<<<<<<
@@ -8141,7 +7885,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_21Linear360Interpolator
   /*else*/ {
     __pyx_v_dc1 = (__pyx_v_t_nodes[__pyx_v_i]);
 
-    /* "bz_pricing/core/interpolators.pyx":224
+    /* "bz_pricing/core/interpolators.pyx":185
  *             # Caso a curva seja pura em Dias Corridos (DC), t_nodes  o prprio vetor de DC
  *             dc1 = t_nodes[i]
  *             dc2 = t_nodes[i+1]             # <<<<<<<<<<<<<<
@@ -8150,7 +7894,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_21Linear360Interpolator
 */
     __pyx_v_dc2 = (__pyx_v_t_nodes[(__pyx_v_i + 1)]);
 
-    /* "bz_pricing/core/interpolators.pyx":225
+    /* "bz_pricing/core/interpolators.pyx":186
  *             dc1 = t_nodes[i]
  *             dc2 = t_nodes[i+1]
  *             if t_sec == 0.0:             # <<<<<<<<<<<<<<
@@ -8162,7 +7906,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_21Linear360Interpolator
     if (__pyx_t_1) {
 
 
-      /* "bz_pricing/core/interpolators.pyx":226
+      /* "bz_pricing/core/interpolators.pyx":187
  *             dc2 = t_nodes[i+1]
  *             if t_sec == 0.0:
  *                 t_sec = t             # <<<<<<<<<<<<<<
@@ -8171,7 +7915,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_21Linear360Interpolator
 */
       __pyx_v_t_sec = __pyx_v_t;
 
-      /* "bz_pricing/core/interpolators.pyx":225
+      /* "bz_pricing/core/interpolators.pyx":186
  *             dc1 = t_nodes[i]
  *             dc2 = t_nodes[i+1]
  *             if t_sec == 0.0:             # <<<<<<<<<<<<<<
@@ -8180,9 +7924,9 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_21Linear360Interpolator
 */
     }
   }
-  __pyx_L11:;
+  __pyx_L5:;
 
-  /* "bz_pricing/core/interpolators.pyx":228
+  /* "bz_pricing/core/interpolators.pyx":189
  *                 t_sec = t
  * 
  *         cdef double y1 = y_nodes[i]             # <<<<<<<<<<<<<<
@@ -8191,7 +7935,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_21Linear360Interpolator
 */
   __pyx_v_y1 = (__pyx_v_y_nodes[__pyx_v_i]);
 
-  /* "bz_pricing/core/interpolators.pyx":229
+  /* "bz_pricing/core/interpolators.pyx":190
  * 
  *         cdef double y1 = y_nodes[i]
  *         cdef double y2 = y_nodes[i+1]             # <<<<<<<<<<<<<<
@@ -8200,7 +7944,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_21Linear360Interpolator
 */
   __pyx_v_y2 = (__pyx_v_y_nodes[(__pyx_v_i + 1)]);
 
-  /* "bz_pricing/core/interpolators.pyx":231
+  /* "bz_pricing/core/interpolators.pyx":192
  *         cdef double y2 = y_nodes[i+1]
  * 
  *         if dc1 == dc2:             # <<<<<<<<<<<<<<
@@ -8212,7 +7956,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_21Linear360Interpolator
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/interpolators.pyx":232
+    /* "bz_pricing/core/interpolators.pyx":193
  * 
  *         if dc1 == dc2:
  *             return y1             # <<<<<<<<<<<<<<
@@ -8225,7 +7969,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_21Linear360Interpolator
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/interpolators.pyx":231
+    /* "bz_pricing/core/interpolators.pyx":192
  *         cdef double y2 = y_nodes[i+1]
  * 
  *         if dc1 == dc2:             # <<<<<<<<<<<<<<
@@ -8234,7 +7978,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_21Linear360Interpolator
 */
   }
 
-  /* "bz_pricing/core/interpolators.pyx":234
+  /* "bz_pricing/core/interpolators.pyx":195
  *             return y1
  * 
  *         cdef double f1 = (y1 * dc1) / 360.0             # <<<<<<<<<<<<<<
@@ -8243,7 +7987,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_21Linear360Interpolator
 */
   __pyx_v_f1 = ((__pyx_v_y1 * __pyx_v_dc1) / 360.0);
 
-  /* "bz_pricing/core/interpolators.pyx":235
+  /* "bz_pricing/core/interpolators.pyx":196
  * 
  *         cdef double f1 = (y1 * dc1) / 360.0
  *         cdef double f2 = (y2 * dc2) / 360.0             # <<<<<<<<<<<<<<
@@ -8252,7 +7996,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_21Linear360Interpolator
 */
   __pyx_v_f2 = ((__pyx_v_y2 * __pyx_v_dc2) / 360.0);
 
-  /* "bz_pricing/core/interpolators.pyx":237
+  /* "bz_pricing/core/interpolators.pyx":198
  *         cdef double f2 = (y2 * dc2) / 360.0
  * 
  *         if t_sec == 0.0:             # <<<<<<<<<<<<<<
@@ -8264,7 +8008,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_21Linear360Interpolator
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/interpolators.pyx":238
+    /* "bz_pricing/core/interpolators.pyx":199
  * 
  *         if t_sec == 0.0:
  *             t_sec = 1.0 # Previne diviso por zero extrema             # <<<<<<<<<<<<<<
@@ -8273,7 +8017,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_21Linear360Interpolator
 */
     __pyx_v_t_sec = 1.0;
 
-    /* "bz_pricing/core/interpolators.pyx":237
+    /* "bz_pricing/core/interpolators.pyx":198
  *         cdef double f2 = (y2 * dc2) / 360.0
  * 
  *         if t_sec == 0.0:             # <<<<<<<<<<<<<<
@@ -8282,51 +8026,51 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_21Linear360Interpolator
 */
   }
 
-  /* "bz_pricing/core/interpolators.pyx":241
+  /* "bz_pricing/core/interpolators.pyx":202
  * 
  *         # Ponderao linear pelos dias corridos (ACT/360)
  *         cdef double forward = f1 + (f2 - f1) * ((t_sec - dc1) / (dc2 - dc1))             # <<<<<<<<<<<<<<
  * 
  *         return (forward * 360.0) / t_sec
 */
-  __pyx_t_7 = (__pyx_v_t_sec - __pyx_v_dc1);
+  __pyx_t_3 = (__pyx_v_t_sec - __pyx_v_dc1);
 
-  __pyx_t_6 = (__pyx_v_dc2 - __pyx_v_dc1);
+  __pyx_t_2 = (__pyx_v_dc2 - __pyx_v_dc1);
 
-  if (unlikely(__pyx_t_6 == 0)) {
+  if (unlikely(__pyx_t_2 == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    __PYX_ERR(0, 241, __pyx_L1_error)
+    __PYX_ERR(0, 202, __pyx_L1_error)
   }
-  __pyx_v_forward = (__pyx_v_f1 + ((__pyx_v_f2 - __pyx_v_f1) * (__pyx_t_7 / __pyx_t_6)));
+  __pyx_v_forward = (__pyx_v_f1 + ((__pyx_v_f2 - __pyx_v_f1) * (__pyx_t_3 / __pyx_t_2)));
 
 
 
-  /* "bz_pricing/core/interpolators.pyx":243
+  /* "bz_pricing/core/interpolators.pyx":204
  *         cdef double forward = f1 + (f2 - f1) * ((t_sec - dc1) / (dc2 - dc1))
  * 
  *         return (forward * 360.0) / t_sec             # <<<<<<<<<<<<<<
  * 
  * 
 */
-  __pyx_t_6 = (__pyx_v_forward * 360.0);
+  __pyx_t_2 = (__pyx_v_forward * 360.0);
 
   if (unlikely(__pyx_v_t_sec == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    __PYX_ERR(0, 243, __pyx_L1_error)
+    __PYX_ERR(0, 204, __pyx_L1_error)
   }
   {
 
-    __pyx_r = (__pyx_t_6 / __pyx_v_t_sec);
+    __pyx_r = (__pyx_t_2 / __pyx_v_t_sec);
   }
 
   goto __pyx_L0;
 
-  /* "bz_pricing/core/interpolators.pyx":199
+  /* "bz_pricing/core/interpolators.pyx":168
  * 
  * cdef class Linear360Interpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:             # <<<<<<<<<<<<<<
- *         cdef int i
- *         if t <= t_nodes[0]:
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:
 */
 
   /* function exit code */
@@ -8819,12 +8563,12 @@ static PyObject *__pyx_pf_10bz_pricing_4core_13interpolators_21Linear360Interpol
   return __pyx_r;
 }
 
-/* "bz_pricing/core/interpolators.pyx":247
+/* "bz_pricing/core/interpolators.pyx":208
  * 
  * cdef class PriceInterpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:             # <<<<<<<<<<<<<<
- *         # Interpolao exponencial de preos entre vrtices de vencimento
- *         cdef int i
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:
 */
 
 static double __pyx_f_10bz_pricing_4core_13interpolators_17PriceInterpolator_interpolate(struct __pyx_obj_10bz_pricing_4core_13interpolators_PriceInterpolator *__pyx_v_self, double __pyx_v_t, double *__pyx_v_t_nodes, double *__pyx_v_y_nodes, int __pyx_v_n_nodes, struct __pyx_opt_args_10bz_pricing_4core_13interpolators_17PriceInterpolator_interpolate *__pyx_optional_args) {
@@ -8835,214 +8579,93 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_17PriceInterpolator_int
   double __pyx_v_p2;
   double __pyx_r;
   int __pyx_t_1;
-  long __pyx_t_2;
-  long __pyx_t_3;
-  int __pyx_t_4;
-  int __pyx_t_5;
-  double __pyx_t_6;
-  double __pyx_t_7;
+  double __pyx_t_2;
+  double __pyx_t_3;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   if (__pyx_optional_args) {
   }
 
-  /* "bz_pricing/core/interpolators.pyx":250
- *         # Interpolao exponencial de preos entre vrtices de vencimento
- *         cdef int i
- *         if t <= t_nodes[0]:             # <<<<<<<<<<<<<<
- *             if self._extrap_left == EXTRAP_FLAT:
- *                 return y_nodes[0]
+  /* "bz_pricing/core/interpolators.pyx":209
+ * cdef class PriceInterpolator(Interpolator):
+ *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)             # <<<<<<<<<<<<<<
+ *         if i == -1:
+ *             return y_nodes[0]
 */
-  __pyx_t_1 = (__pyx_v_t <= (__pyx_v_t_nodes[0]));
+  __pyx_v_i = __pyx_f_10bz_pricing_4core_13interpolators__find_interval(__pyx_v_t, __pyx_v_t_nodes, __pyx_v_n_nodes, __pyx_v_self->__pyx_base._extrap_left, __pyx_v_self->__pyx_base._extrap_right);
+
+  /* "bz_pricing/core/interpolators.pyx":210
+ *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:             # <<<<<<<<<<<<<<
+ *             return y_nodes[0]
+ *         if i == -2:
+*/
+  __pyx_t_1 = (__pyx_v_i == -1L);
 
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/interpolators.pyx":251
- *         cdef int i
- *         if t <= t_nodes[0]:
- *             if self._extrap_left == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[0]
- *             i = 0
+    /* "bz_pricing/core/interpolators.pyx":211
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:
+ *             return y_nodes[0]             # <<<<<<<<<<<<<<
+ *         if i == -2:
+ *             return y_nodes[n_nodes - 1]
 */
-    __pyx_t_1 = (__pyx_v_self->__pyx_base._extrap_left == __pyx_e_10bz_pricing_4core_13interpolators_EXTRAP_FLAT);
+    {
 
-    if (__pyx_t_1) {
-
-
-      /* "bz_pricing/core/interpolators.pyx":252
- *         if t <= t_nodes[0]:
- *             if self._extrap_left == EXTRAP_FLAT:
- *                 return y_nodes[0]             # <<<<<<<<<<<<<<
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:
-*/
-      {
-
-        __pyx_r = (__pyx_v_y_nodes[0]);
-      }
-      goto __pyx_L0;
-
-      /* "bz_pricing/core/interpolators.pyx":251
- *         cdef int i
- *         if t <= t_nodes[0]:
- *             if self._extrap_left == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[0]
- *             i = 0
-*/
+      __pyx_r = (__pyx_v_y_nodes[0]);
     }
+    goto __pyx_L0;
 
-    /* "bz_pricing/core/interpolators.pyx":253
- *             if self._extrap_left == EXTRAP_FLAT:
- *                 return y_nodes[0]
- *             i = 0             # <<<<<<<<<<<<<<
- *         elif t >= t_nodes[n_nodes - 1]:
- *             if self._extrap_right == EXTRAP_FLAT:
+    /* "bz_pricing/core/interpolators.pyx":210
+ *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:             # <<<<<<<<<<<<<<
+ *             return y_nodes[0]
+ *         if i == -2:
 */
-    __pyx_v_i = 0;
-
-    /* "bz_pricing/core/interpolators.pyx":250
- *         # Interpolao exponencial de preos entre vrtices de vencimento
- *         cdef int i
- *         if t <= t_nodes[0]:             # <<<<<<<<<<<<<<
- *             if self._extrap_left == EXTRAP_FLAT:
- *                 return y_nodes[0]
-*/
-    goto __pyx_L3;
   }
 
-  /* "bz_pricing/core/interpolators.pyx":254
- *                 return y_nodes[0]
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:             # <<<<<<<<<<<<<<
- *             if self._extrap_right == EXTRAP_FLAT:
- *                 return y_nodes[n_nodes - 1]
-*/
-  __pyx_t_1 = (__pyx_v_t >= (__pyx_v_t_nodes[(__pyx_v_n_nodes - 1)]));
-
-  if (__pyx_t_1) {
-
-
-    /* "bz_pricing/core/interpolators.pyx":255
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:
- *             if self._extrap_right == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[n_nodes - 1]
- *             i = n_nodes - 2
-*/
-    __pyx_t_1 = (__pyx_v_self->__pyx_base._extrap_right == __pyx_e_10bz_pricing_4core_13interpolators_EXTRAP_FLAT);
-
-    if (__pyx_t_1) {
-
-
-      /* "bz_pricing/core/interpolators.pyx":256
- *         elif t >= t_nodes[n_nodes - 1]:
- *             if self._extrap_right == EXTRAP_FLAT:
- *                 return y_nodes[n_nodes - 1]             # <<<<<<<<<<<<<<
- *             i = n_nodes - 2
- *         else:
-*/
-      {
-
-        __pyx_r = (__pyx_v_y_nodes[(__pyx_v_n_nodes - 1)]);
-      }
-      goto __pyx_L0;
-
-      /* "bz_pricing/core/interpolators.pyx":255
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:
- *             if self._extrap_right == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[n_nodes - 1]
- *             i = n_nodes - 2
-*/
-    }
-
-    /* "bz_pricing/core/interpolators.pyx":257
- *             if self._extrap_right == EXTRAP_FLAT:
- *                 return y_nodes[n_nodes - 1]
- *             i = n_nodes - 2             # <<<<<<<<<<<<<<
- *         else:
- *             for i in range(n_nodes - 1):
-*/
-    __pyx_v_i = (__pyx_v_n_nodes - 2);
-
-    /* "bz_pricing/core/interpolators.pyx":254
- *                 return y_nodes[0]
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:             # <<<<<<<<<<<<<<
- *             if self._extrap_right == EXTRAP_FLAT:
- *                 return y_nodes[n_nodes - 1]
-*/
-    goto __pyx_L3;
-  }
-
-  /* "bz_pricing/core/interpolators.pyx":259
- *             i = n_nodes - 2
- *         else:
- *             for i in range(n_nodes - 1):             # <<<<<<<<<<<<<<
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:
- *                     break
-*/
-  /*else*/ {
-
-    __pyx_t_2 = (__pyx_v_n_nodes - 1);
-    __pyx_t_3 = __pyx_t_2;
-
-    for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
-      __pyx_v_i = __pyx_t_4;
-
-      /* "bz_pricing/core/interpolators.pyx":260
- *         else:
- *             for i in range(n_nodes - 1):
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:             # <<<<<<<<<<<<<<
- *                     break
+  /* "bz_pricing/core/interpolators.pyx":212
+ *         if i == -1:
+ *             return y_nodes[0]
+ *         if i == -2:             # <<<<<<<<<<<<<<
+ *             return y_nodes[n_nodes - 1]
  * 
 */
-      __pyx_t_5 = ((__pyx_v_t_nodes[__pyx_v_i]) <= __pyx_v_t);
+  __pyx_t_1 = (__pyx_v_i == -2L);
 
-      if (__pyx_t_5) {
-
-      } else {
-
-        __pyx_t_1 = __pyx_t_5;
-
-        goto __pyx_L9_bool_binop_done;
-      }
-      __pyx_t_5 = (__pyx_v_t <= (__pyx_v_t_nodes[(__pyx_v_i + 1)]));
+  if (__pyx_t_1) {
 
 
-      __pyx_t_1 = __pyx_t_5;
-
-      __pyx_L9_bool_binop_done:;
-      if (__pyx_t_1) {
-
-
-        /* "bz_pricing/core/interpolators.pyx":261
- *             for i in range(n_nodes - 1):
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:
- *                     break             # <<<<<<<<<<<<<<
+    /* "bz_pricing/core/interpolators.pyx":213
+ *             return y_nodes[0]
+ *         if i == -2:
+ *             return y_nodes[n_nodes - 1]             # <<<<<<<<<<<<<<
  * 
  *         cdef double t1 = t_nodes[i]
 */
-        goto __pyx_L7_break;
+    {
 
-        /* "bz_pricing/core/interpolators.pyx":260
- *         else:
- *             for i in range(n_nodes - 1):
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:             # <<<<<<<<<<<<<<
- *                     break
+      __pyx_r = (__pyx_v_y_nodes[(__pyx_v_n_nodes - 1)]);
+    }
+    goto __pyx_L0;
+
+    /* "bz_pricing/core/interpolators.pyx":212
+ *         if i == -1:
+ *             return y_nodes[0]
+ *         if i == -2:             # <<<<<<<<<<<<<<
+ *             return y_nodes[n_nodes - 1]
  * 
 */
-      }
-    }
-    __pyx_L7_break:;
-
   }
-  __pyx_L3:;
 
-  /* "bz_pricing/core/interpolators.pyx":263
- *                     break
+  /* "bz_pricing/core/interpolators.pyx":215
+ *             return y_nodes[n_nodes - 1]
  * 
  *         cdef double t1 = t_nodes[i]             # <<<<<<<<<<<<<<
  *         cdef double t2 = t_nodes[i+1]
@@ -9050,7 +8673,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_17PriceInterpolator_int
 */
   __pyx_v_t1 = (__pyx_v_t_nodes[__pyx_v_i]);
 
-  /* "bz_pricing/core/interpolators.pyx":264
+  /* "bz_pricing/core/interpolators.pyx":216
  * 
  *         cdef double t1 = t_nodes[i]
  *         cdef double t2 = t_nodes[i+1]             # <<<<<<<<<<<<<<
@@ -9059,7 +8682,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_17PriceInterpolator_int
 */
   __pyx_v_t2 = (__pyx_v_t_nodes[(__pyx_v_i + 1)]);
 
-  /* "bz_pricing/core/interpolators.pyx":265
+  /* "bz_pricing/core/interpolators.pyx":217
  *         cdef double t1 = t_nodes[i]
  *         cdef double t2 = t_nodes[i+1]
  *         cdef double p1 = y_nodes[i]             # <<<<<<<<<<<<<<
@@ -9068,7 +8691,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_17PriceInterpolator_int
 */
   __pyx_v_p1 = (__pyx_v_y_nodes[__pyx_v_i]);
 
-  /* "bz_pricing/core/interpolators.pyx":266
+  /* "bz_pricing/core/interpolators.pyx":218
  *         cdef double t2 = t_nodes[i+1]
  *         cdef double p1 = y_nodes[i]
  *         cdef double p2 = y_nodes[i+1]             # <<<<<<<<<<<<<<
@@ -9077,24 +8700,24 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_17PriceInterpolator_int
 */
   __pyx_v_p2 = (__pyx_v_y_nodes[(__pyx_v_i + 1)]);
 
-  /* "bz_pricing/core/interpolators.pyx":268
+  /* "bz_pricing/core/interpolators.pyx":220
  *         cdef double p2 = y_nodes[i+1]
  * 
  *         if t1 == t2:             # <<<<<<<<<<<<<<
  *             return p1
- * 
+ *         return p1 * pow(p2 / p1, (t - t1) / (t2 - t1))
 */
   __pyx_t_1 = (__pyx_v_t1 == __pyx_v_t2);
 
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/interpolators.pyx":269
+    /* "bz_pricing/core/interpolators.pyx":221
  * 
  *         if t1 == t2:
  *             return p1             # <<<<<<<<<<<<<<
+ *         return p1 * pow(p2 / p1, (t - t1) / (t2 - t1))
  * 
- *         """
 */
     {
 
@@ -9102,48 +8725,48 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_17PriceInterpolator_int
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/interpolators.pyx":268
+    /* "bz_pricing/core/interpolators.pyx":220
  *         cdef double p2 = y_nodes[i+1]
  * 
  *         if t1 == t2:             # <<<<<<<<<<<<<<
  *             return p1
- * 
+ *         return p1 * pow(p2 / p1, (t - t1) / (t2 - t1))
 */
   }
 
-  /* "bz_pricing/core/interpolators.pyx":281
- *         O resultado e p, em formato decimal
- *         """
+  /* "bz_pricing/core/interpolators.pyx":222
+ *         if t1 == t2:
+ *             return p1
  *         return p1 * pow(p2 / p1, (t - t1) / (t2 - t1))             # <<<<<<<<<<<<<<
  * 
  * 
 */
   if (unlikely(__pyx_v_p1 == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    __PYX_ERR(0, 281, __pyx_L1_error)
+    __PYX_ERR(0, 222, __pyx_L1_error)
   }
-  __pyx_t_6 = (__pyx_v_t - __pyx_v_t1);
+  __pyx_t_2 = (__pyx_v_t - __pyx_v_t1);
 
-  __pyx_t_7 = (__pyx_v_t2 - __pyx_v_t1);
+  __pyx_t_3 = (__pyx_v_t2 - __pyx_v_t1);
 
-  if (unlikely(__pyx_t_7 == 0)) {
+  if (unlikely(__pyx_t_3 == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    __PYX_ERR(0, 281, __pyx_L1_error)
+    __PYX_ERR(0, 222, __pyx_L1_error)
   }
   {
 
-    __pyx_r = (__pyx_v_p1 * pow((__pyx_v_p2 / __pyx_v_p1), (__pyx_t_6 / __pyx_t_7)));
+    __pyx_r = (__pyx_v_p1 * pow((__pyx_v_p2 / __pyx_v_p1), (__pyx_t_2 / __pyx_t_3)));
   }
 
 
   goto __pyx_L0;
 
-  /* "bz_pricing/core/interpolators.pyx":247
+  /* "bz_pricing/core/interpolators.pyx":208
  * 
  * cdef class PriceInterpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:             # <<<<<<<<<<<<<<
- *         # Interpolao exponencial de preos entre vrtices de vencimento
- *         cdef int i
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:
 */
 
   /* function exit code */
@@ -9632,12 +9255,12 @@ static PyObject *__pyx_pf_10bz_pricing_4core_13interpolators_17PriceInterpolator
   return __pyx_r;
 }
 
-/* "bz_pricing/core/interpolators.pyx":285
+/* "bz_pricing/core/interpolators.pyx":226
  * 
  * cdef class FlatForward252LogInterpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:             # <<<<<<<<<<<<<<
- *         cdef int i
- *         if t <= t_nodes[0]:
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:
 */
 
 static double __pyx_f_10bz_pricing_4core_13interpolators_29FlatForward252LogInterpolator_interpolate(struct __pyx_obj_10bz_pricing_4core_13interpolators_FlatForward252LogInterpolator *__pyx_v_self, double __pyx_v_t, double *__pyx_v_t_nodes, double *__pyx_v_y_nodes, int __pyx_v_n_nodes, struct __pyx_opt_args_10bz_pricing_4core_13interpolators_29FlatForward252LogInterpolator_interpolate *__pyx_optional_args) {
@@ -9651,214 +9274,94 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_29FlatForward252LogInte
   double __pyx_v_ln_forward;
   double __pyx_r;
   int __pyx_t_1;
-  long __pyx_t_2;
-  long __pyx_t_3;
-  int __pyx_t_4;
-  int __pyx_t_5;
-  double __pyx_t_6;
-  double __pyx_t_7;
+  int __pyx_t_2;
+  double __pyx_t_3;
+  double __pyx_t_4;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   if (__pyx_optional_args) {
   }
 
-  /* "bz_pricing/core/interpolators.pyx":287
+  /* "bz_pricing/core/interpolators.pyx":227
+ * cdef class FlatForward252LogInterpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
- *         cdef int i
- *         if t <= t_nodes[0]:             # <<<<<<<<<<<<<<
- *             if self._extrap_left == EXTRAP_FLAT:
- *                 return y_nodes[0]
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)             # <<<<<<<<<<<<<<
+ *         if i == -1:
+ *             return y_nodes[0]
 */
-  __pyx_t_1 = (__pyx_v_t <= (__pyx_v_t_nodes[0]));
+  __pyx_v_i = __pyx_f_10bz_pricing_4core_13interpolators__find_interval(__pyx_v_t, __pyx_v_t_nodes, __pyx_v_n_nodes, __pyx_v_self->__pyx_base._extrap_left, __pyx_v_self->__pyx_base._extrap_right);
+
+  /* "bz_pricing/core/interpolators.pyx":228
+ *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:             # <<<<<<<<<<<<<<
+ *             return y_nodes[0]
+ *         if i == -2:
+*/
+  __pyx_t_1 = (__pyx_v_i == -1L);
 
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/interpolators.pyx":288
- *         cdef int i
- *         if t <= t_nodes[0]:
- *             if self._extrap_left == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[0]
- *             i = 0
+    /* "bz_pricing/core/interpolators.pyx":229
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:
+ *             return y_nodes[0]             # <<<<<<<<<<<<<<
+ *         if i == -2:
+ *             return y_nodes[n_nodes - 1]
 */
-    __pyx_t_1 = (__pyx_v_self->__pyx_base._extrap_left == __pyx_e_10bz_pricing_4core_13interpolators_EXTRAP_FLAT);
+    {
 
-    if (__pyx_t_1) {
-
-
-      /* "bz_pricing/core/interpolators.pyx":289
- *         if t <= t_nodes[0]:
- *             if self._extrap_left == EXTRAP_FLAT:
- *                 return y_nodes[0]             # <<<<<<<<<<<<<<
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:
-*/
-      {
-
-        __pyx_r = (__pyx_v_y_nodes[0]);
-      }
-      goto __pyx_L0;
-
-      /* "bz_pricing/core/interpolators.pyx":288
- *         cdef int i
- *         if t <= t_nodes[0]:
- *             if self._extrap_left == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[0]
- *             i = 0
-*/
+      __pyx_r = (__pyx_v_y_nodes[0]);
     }
+    goto __pyx_L0;
 
-    /* "bz_pricing/core/interpolators.pyx":290
- *             if self._extrap_left == EXTRAP_FLAT:
- *                 return y_nodes[0]
- *             i = 0             # <<<<<<<<<<<<<<
- *         elif t >= t_nodes[n_nodes - 1]:
- *             if self._extrap_right == EXTRAP_FLAT:
-*/
-    __pyx_v_i = 0;
-
-    /* "bz_pricing/core/interpolators.pyx":287
+    /* "bz_pricing/core/interpolators.pyx":228
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
- *         cdef int i
- *         if t <= t_nodes[0]:             # <<<<<<<<<<<<<<
- *             if self._extrap_left == EXTRAP_FLAT:
- *                 return y_nodes[0]
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:             # <<<<<<<<<<<<<<
+ *             return y_nodes[0]
+ *         if i == -2:
 */
-    goto __pyx_L3;
   }
 
-  /* "bz_pricing/core/interpolators.pyx":291
- *                 return y_nodes[0]
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:             # <<<<<<<<<<<<<<
- *             if self._extrap_right == EXTRAP_FLAT:
- *                 return y_nodes[n_nodes - 1]
-*/
-  __pyx_t_1 = (__pyx_v_t >= (__pyx_v_t_nodes[(__pyx_v_n_nodes - 1)]));
-
-  if (__pyx_t_1) {
-
-
-    /* "bz_pricing/core/interpolators.pyx":292
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:
- *             if self._extrap_right == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[n_nodes - 1]
- *             i = n_nodes - 2
-*/
-    __pyx_t_1 = (__pyx_v_self->__pyx_base._extrap_right == __pyx_e_10bz_pricing_4core_13interpolators_EXTRAP_FLAT);
-
-    if (__pyx_t_1) {
-
-
-      /* "bz_pricing/core/interpolators.pyx":293
- *         elif t >= t_nodes[n_nodes - 1]:
- *             if self._extrap_right == EXTRAP_FLAT:
- *                 return y_nodes[n_nodes - 1]             # <<<<<<<<<<<<<<
- *             i = n_nodes - 2
- *         else:
-*/
-      {
-
-        __pyx_r = (__pyx_v_y_nodes[(__pyx_v_n_nodes - 1)]);
-      }
-      goto __pyx_L0;
-
-      /* "bz_pricing/core/interpolators.pyx":292
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:
- *             if self._extrap_right == EXTRAP_FLAT:             # <<<<<<<<<<<<<<
- *                 return y_nodes[n_nodes - 1]
- *             i = n_nodes - 2
-*/
-    }
-
-    /* "bz_pricing/core/interpolators.pyx":294
- *             if self._extrap_right == EXTRAP_FLAT:
- *                 return y_nodes[n_nodes - 1]
- *             i = n_nodes - 2             # <<<<<<<<<<<<<<
- *         else:
- *             for i in range(n_nodes - 1):
-*/
-    __pyx_v_i = (__pyx_v_n_nodes - 2);
-
-    /* "bz_pricing/core/interpolators.pyx":291
- *                 return y_nodes[0]
- *             i = 0
- *         elif t >= t_nodes[n_nodes - 1]:             # <<<<<<<<<<<<<<
- *             if self._extrap_right == EXTRAP_FLAT:
- *                 return y_nodes[n_nodes - 1]
-*/
-    goto __pyx_L3;
-  }
-
-  /* "bz_pricing/core/interpolators.pyx":296
- *             i = n_nodes - 2
- *         else:
- *             for i in range(n_nodes - 1):             # <<<<<<<<<<<<<<
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:
- *                     break
-*/
-  /*else*/ {
-
-    __pyx_t_2 = (__pyx_v_n_nodes - 1);
-    __pyx_t_3 = __pyx_t_2;
-
-    for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
-      __pyx_v_i = __pyx_t_4;
-
-      /* "bz_pricing/core/interpolators.pyx":297
- *         else:
- *             for i in range(n_nodes - 1):
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:             # <<<<<<<<<<<<<<
- *                     break
+  /* "bz_pricing/core/interpolators.pyx":230
+ *         if i == -1:
+ *             return y_nodes[0]
+ *         if i == -2:             # <<<<<<<<<<<<<<
+ *             return y_nodes[n_nodes - 1]
  * 
 */
-      __pyx_t_5 = ((__pyx_v_t_nodes[__pyx_v_i]) <= __pyx_v_t);
+  __pyx_t_1 = (__pyx_v_i == -2L);
 
-      if (__pyx_t_5) {
-
-      } else {
-
-        __pyx_t_1 = __pyx_t_5;
-
-        goto __pyx_L9_bool_binop_done;
-      }
-      __pyx_t_5 = (__pyx_v_t <= (__pyx_v_t_nodes[(__pyx_v_i + 1)]));
+  if (__pyx_t_1) {
 
 
-      __pyx_t_1 = __pyx_t_5;
-
-      __pyx_L9_bool_binop_done:;
-      if (__pyx_t_1) {
-
-
-        /* "bz_pricing/core/interpolators.pyx":298
- *             for i in range(n_nodes - 1):
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:
- *                     break             # <<<<<<<<<<<<<<
+    /* "bz_pricing/core/interpolators.pyx":231
+ *             return y_nodes[0]
+ *         if i == -2:
+ *             return y_nodes[n_nodes - 1]             # <<<<<<<<<<<<<<
  * 
  *         cdef double t1 = t_nodes[i]
 */
-        goto __pyx_L7_break;
+    {
 
-        /* "bz_pricing/core/interpolators.pyx":297
- *         else:
- *             for i in range(n_nodes - 1):
- *                 if t_nodes[i] <= t and t <= t_nodes[i+1]:             # <<<<<<<<<<<<<<
- *                     break
+      __pyx_r = (__pyx_v_y_nodes[(__pyx_v_n_nodes - 1)]);
+    }
+    goto __pyx_L0;
+
+    /* "bz_pricing/core/interpolators.pyx":230
+ *         if i == -1:
+ *             return y_nodes[0]
+ *         if i == -2:             # <<<<<<<<<<<<<<
+ *             return y_nodes[n_nodes - 1]
  * 
 */
-      }
-    }
-    __pyx_L7_break:;
-
   }
-  __pyx_L3:;
 
-  /* "bz_pricing/core/interpolators.pyx":300
- *                     break
+  /* "bz_pricing/core/interpolators.pyx":233
+ *             return y_nodes[n_nodes - 1]
  * 
  *         cdef double t1 = t_nodes[i]             # <<<<<<<<<<<<<<
  *         cdef double t2 = t_nodes[i+1]
@@ -9866,7 +9369,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_29FlatForward252LogInte
 */
   __pyx_v_t1 = (__pyx_v_t_nodes[__pyx_v_i]);
 
-  /* "bz_pricing/core/interpolators.pyx":301
+  /* "bz_pricing/core/interpolators.pyx":234
  * 
  *         cdef double t1 = t_nodes[i]
  *         cdef double t2 = t_nodes[i+1]             # <<<<<<<<<<<<<<
@@ -9875,7 +9378,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_29FlatForward252LogInte
 */
   __pyx_v_t2 = (__pyx_v_t_nodes[(__pyx_v_i + 1)]);
 
-  /* "bz_pricing/core/interpolators.pyx":302
+  /* "bz_pricing/core/interpolators.pyx":235
  *         cdef double t1 = t_nodes[i]
  *         cdef double t2 = t_nodes[i+1]
  *         cdef double y1 = y_nodes[i]             # <<<<<<<<<<<<<<
@@ -9884,30 +9387,44 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_29FlatForward252LogInte
 */
   __pyx_v_y1 = (__pyx_v_y_nodes[__pyx_v_i]);
 
-  /* "bz_pricing/core/interpolators.pyx":303
+  /* "bz_pricing/core/interpolators.pyx":236
  *         cdef double t2 = t_nodes[i+1]
  *         cdef double y1 = y_nodes[i]
  *         cdef double y2 = y_nodes[i+1]             # <<<<<<<<<<<<<<
  * 
- *         if t1 == t2:
+ *         if t1 == t2 or fabs(t) < 1e-12:
 */
   __pyx_v_y2 = (__pyx_v_y_nodes[(__pyx_v_i + 1)]);
 
-  /* "bz_pricing/core/interpolators.pyx":305
+  /* "bz_pricing/core/interpolators.pyx":238
  *         cdef double y2 = y_nodes[i+1]
  * 
- *         if t1 == t2:             # <<<<<<<<<<<<<<
+ *         if t1 == t2 or fabs(t) < 1e-12:             # <<<<<<<<<<<<<<
  *             return y1
  * 
 */
-  __pyx_t_1 = (__pyx_v_t1 == __pyx_v_t2);
+  __pyx_t_2 = (__pyx_v_t1 == __pyx_v_t2);
 
+  if (!__pyx_t_2) {
+
+  } else {
+
+    __pyx_t_1 = __pyx_t_2;
+
+    goto __pyx_L6_bool_binop_done;
+  }
+  __pyx_t_2 = (fabs(__pyx_v_t) < 1e-12);
+
+
+  __pyx_t_1 = __pyx_t_2;
+
+  __pyx_L6_bool_binop_done:;
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/interpolators.pyx":306
+    /* "bz_pricing/core/interpolators.pyx":239
  * 
- *         if t1 == t2:
+ *         if t1 == t2 or fabs(t) < 1e-12:
  *             return y1             # <<<<<<<<<<<<<<
  * 
  *         cdef double ln_f1 = (t1 / 252.0) * log(1.0 + y1)
@@ -9918,16 +9435,16 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_29FlatForward252LogInte
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/interpolators.pyx":305
+    /* "bz_pricing/core/interpolators.pyx":238
  *         cdef double y2 = y_nodes[i+1]
  * 
- *         if t1 == t2:             # <<<<<<<<<<<<<<
+ *         if t1 == t2 or fabs(t) < 1e-12:             # <<<<<<<<<<<<<<
  *             return y1
  * 
 */
   }
 
-  /* "bz_pricing/core/interpolators.pyx":308
+  /* "bz_pricing/core/interpolators.pyx":241
  *             return y1
  * 
  *         cdef double ln_f1 = (t1 / 252.0) * log(1.0 + y1)             # <<<<<<<<<<<<<<
@@ -9936,7 +9453,7 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_29FlatForward252LogInte
 */
   __pyx_v_ln_f1 = ((__pyx_v_t1 / 252.0) * log((1.0 + __pyx_v_y1)));
 
-  /* "bz_pricing/core/interpolators.pyx":309
+  /* "bz_pricing/core/interpolators.pyx":242
  * 
  *         cdef double ln_f1 = (t1 / 252.0) * log(1.0 + y1)
  *         cdef double ln_f2 = (t2 / 252.0) * log(1.0 + y2)             # <<<<<<<<<<<<<<
@@ -9945,49 +9462,49 @@ static double __pyx_f_10bz_pricing_4core_13interpolators_29FlatForward252LogInte
 */
   __pyx_v_ln_f2 = ((__pyx_v_t2 / 252.0) * log((1.0 + __pyx_v_y2)));
 
-  /* "bz_pricing/core/interpolators.pyx":310
+  /* "bz_pricing/core/interpolators.pyx":243
  *         cdef double ln_f1 = (t1 / 252.0) * log(1.0 + y1)
  *         cdef double ln_f2 = (t2 / 252.0) * log(1.0 + y2)
  *         cdef double ln_forward = ln_f1 + (ln_f2 - ln_f1) * ((t - t1) / (t2 - t1))             # <<<<<<<<<<<<<<
  * 
  *         return exp(ln_forward * 252.0 / t) - 1.0
 */
-  __pyx_t_6 = (__pyx_v_t - __pyx_v_t1);
+  __pyx_t_3 = (__pyx_v_t - __pyx_v_t1);
 
-  __pyx_t_7 = (__pyx_v_t2 - __pyx_v_t1);
+  __pyx_t_4 = (__pyx_v_t2 - __pyx_v_t1);
 
-  if (unlikely(__pyx_t_7 == 0)) {
+  if (unlikely(__pyx_t_4 == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    __PYX_ERR(0, 310, __pyx_L1_error)
+    __PYX_ERR(0, 243, __pyx_L1_error)
   }
-  __pyx_v_ln_forward = (__pyx_v_ln_f1 + ((__pyx_v_ln_f2 - __pyx_v_ln_f1) * (__pyx_t_6 / __pyx_t_7)));
+  __pyx_v_ln_forward = (__pyx_v_ln_f1 + ((__pyx_v_ln_f2 - __pyx_v_ln_f1) * (__pyx_t_3 / __pyx_t_4)));
 
 
 
-  /* "bz_pricing/core/interpolators.pyx":312
+  /* "bz_pricing/core/interpolators.pyx":245
  *         cdef double ln_forward = ln_f1 + (ln_f2 - ln_f1) * ((t - t1) / (t2 - t1))
  * 
  *         return exp(ln_forward * 252.0 / t) - 1.0             # <<<<<<<<<<<<<<
 */
-  __pyx_t_7 = (__pyx_v_ln_forward * 252.0);
+  __pyx_t_4 = (__pyx_v_ln_forward * 252.0);
 
   if (unlikely(__pyx_v_t == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    __PYX_ERR(0, 312, __pyx_L1_error)
+    __PYX_ERR(0, 245, __pyx_L1_error)
   }
   {
 
-    __pyx_r = (exp((__pyx_t_7 / __pyx_v_t)) - 1.0);
+    __pyx_r = (exp((__pyx_t_4 / __pyx_v_t)) - 1.0);
   }
 
   goto __pyx_L0;
 
-  /* "bz_pricing/core/interpolators.pyx":285
+  /* "bz_pricing/core/interpolators.pyx":226
  * 
  * cdef class FlatForward252LogInterpolator(Interpolator):
  *     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:             # <<<<<<<<<<<<<<
- *         cdef int i
- *         if t <= t_nodes[0]:
+ *         cdef int i = _find_interval(t, t_nodes, n_nodes, self._extrap_left, self._extrap_right)
+ *         if i == -1:
 */
 
   /* function exit code */
@@ -14260,14 +13777,14 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_13interpolators_In
   __pyx_vtabptr_10bz_pricing_4core_13interpolators_Interpolator = &__pyx_vtable_10bz_pricing_4core_13interpolators_Interpolator;
   __pyx_vtable_10bz_pricing_4core_13interpolators_Interpolator.interpolate = (double (*)(struct __pyx_obj_10bz_pricing_4core_13interpolators_Interpolator *, double, double *, double *, int, struct __pyx_opt_args_10bz_pricing_4core_13interpolators_12Interpolator_interpolate *__pyx_optional_args))__pyx_f_10bz_pricing_4core_13interpolators_12Interpolator_interpolate;
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10bz_pricing_4core_13interpolators_Interpolator_spec, NULL); if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator)) __PYX_ERR(0, 9, __pyx_L1_error)
+  __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10bz_pricing_4core_13interpolators_Interpolator_spec, NULL); if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator)) __PYX_ERR(0, 41, __pyx_L1_error)
   #else
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator = &__pyx_type_10bz_pricing_4core_13interpolators_Interpolator;
   #endif
   #if !CYTHON_COMPILING_IN_LIMITED_API
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator) < (0)) __PYX_ERR(0, 9, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator) < (0)) __PYX_ERR(0, 41, __pyx_L1_error)
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount((PyObject*)__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator);
@@ -14277,9 +13794,9 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_13interpolators_In
     __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator->tp_getattro = PyObject_GenericGetAttr;
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator, __pyx_vtabptr_10bz_pricing_4core_13interpolators_Interpolator) < (0)) __PYX_ERR(0, 9, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_Interpolator, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator) < (0)) __PYX_ERR(0, 9, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator) < (0)) __PYX_ERR(0, 9, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator, __pyx_vtabptr_10bz_pricing_4core_13interpolators_Interpolator) < (0)) __PYX_ERR(0, 41, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_Interpolator, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator) < (0)) __PYX_ERR(0, 41, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator) < (0)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -14300,11 +13817,11 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_13interpolators_Ex
   __pyx_vtable_10bz_pricing_4core_13interpolators_Exponential252Interpolator.__pyx_base = *__pyx_vtabptr_10bz_pricing_4core_13interpolators_Interpolator;
   __pyx_vtable_10bz_pricing_4core_13interpolators_Exponential252Interpolator.__pyx_base.interpolate = (double (*)(struct __pyx_obj_10bz_pricing_4core_13interpolators_Interpolator *, double, double *, double *, int, struct __pyx_opt_args_10bz_pricing_4core_13interpolators_12Interpolator_interpolate *__pyx_optional_args))__pyx_f_10bz_pricing_4core_13interpolators_26Exponential252Interpolator_interpolate;
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Exponential252Interpolator = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10bz_pricing_4core_13interpolators_Exponential252Interpolator_spec, __pyx_t_1);
   __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Exponential252Interpolator)) __PYX_ERR(0, 25, __pyx_L1_error)
+  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Exponential252Interpolator)) __PYX_ERR(0, 57, __pyx_L1_error)
   #else
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Exponential252Interpolator = &__pyx_type_10bz_pricing_4core_13interpolators_Exponential252Interpolator;
   #endif
@@ -14312,7 +13829,7 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_13interpolators_Ex
   __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_Exponential252Interpolator->tp_base = __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator;
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Exponential252Interpolator) < (0)) __PYX_ERR(0, 25, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Exponential252Interpolator) < (0)) __PYX_ERR(0, 57, __pyx_L1_error)
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount((PyObject*)__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Exponential252Interpolator);
@@ -14322,9 +13839,9 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_13interpolators_Ex
     __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Exponential252Interpolator->tp_getattro = PyObject_GenericGetAttr;
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Exponential252Interpolator, __pyx_vtabptr_10bz_pricing_4core_13interpolators_Exponential252Interpolator) < (0)) __PYX_ERR(0, 25, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_Exponential252Interpolator, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Exponential252Interpolator) < (0)) __PYX_ERR(0, 25, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Exponential252Interpolator) < (0)) __PYX_ERR(0, 25, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Exponential252Interpolator, __pyx_vtabptr_10bz_pricing_4core_13interpolators_Exponential252Interpolator) < (0)) __PYX_ERR(0, 57, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_Exponential252Interpolator, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Exponential252Interpolator) < (0)) __PYX_ERR(0, 57, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Exponential252Interpolator) < (0)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -14346,11 +13863,11 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_13interpolators_Fl
   __pyx_vtable_10bz_pricing_4core_13interpolators_FlatForward252Interpolator.__pyx_base = *__pyx_vtabptr_10bz_pricing_4core_13interpolators_Interpolator;
   __pyx_vtable_10bz_pricing_4core_13interpolators_FlatForward252Interpolator.__pyx_base.interpolate = (double (*)(struct __pyx_obj_10bz_pricing_4core_13interpolators_Interpolator *, double, double *, double *, int, struct __pyx_opt_args_10bz_pricing_4core_13interpolators_12Interpolator_interpolate *__pyx_optional_args))__pyx_f_10bz_pricing_4core_13interpolators_26FlatForward252Interpolator_interpolate;
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 70, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 79, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252Interpolator = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10bz_pricing_4core_13interpolators_FlatForward252Interpolator_spec, __pyx_t_1);
   __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252Interpolator)) __PYX_ERR(0, 70, __pyx_L1_error)
+  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252Interpolator)) __PYX_ERR(0, 79, __pyx_L1_error)
   #else
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252Interpolator = &__pyx_type_10bz_pricing_4core_13interpolators_FlatForward252Interpolator;
   #endif
@@ -14358,7 +13875,7 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_13interpolators_Fl
   __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252Interpolator->tp_base = __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator;
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252Interpolator) < (0)) __PYX_ERR(0, 70, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252Interpolator) < (0)) __PYX_ERR(0, 79, __pyx_L1_error)
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount((PyObject*)__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252Interpolator);
@@ -14368,9 +13885,9 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_13interpolators_Fl
     __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252Interpolator->tp_getattro = PyObject_GenericGetAttr;
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252Interpolator, __pyx_vtabptr_10bz_pricing_4core_13interpolators_FlatForward252Interpolator) < (0)) __PYX_ERR(0, 70, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_FlatForward252Interpolator, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252Interpolator) < (0)) __PYX_ERR(0, 70, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252Interpolator) < (0)) __PYX_ERR(0, 70, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252Interpolator, __pyx_vtabptr_10bz_pricing_4core_13interpolators_FlatForward252Interpolator) < (0)) __PYX_ERR(0, 79, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_FlatForward252Interpolator, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252Interpolator) < (0)) __PYX_ERR(0, 79, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252Interpolator) < (0)) __PYX_ERR(0, 79, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -14392,11 +13909,11 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_13interpolators_Fl
   __pyx_vtable_10bz_pricing_4core_13interpolators_FlatForward252LinearInterpolator.__pyx_base = *__pyx_vtabptr_10bz_pricing_4core_13interpolators_Interpolator;
   __pyx_vtable_10bz_pricing_4core_13interpolators_FlatForward252LinearInterpolator.__pyx_base.interpolate = (double (*)(struct __pyx_obj_10bz_pricing_4core_13interpolators_Interpolator *, double, double *, double *, int, struct __pyx_opt_args_10bz_pricing_4core_13interpolators_12Interpolator_interpolate *__pyx_optional_args))__pyx_f_10bz_pricing_4core_13interpolators_32FlatForward252LinearInterpolator_interpolate;
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 111, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 101, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LinearInterpolator = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10bz_pricing_4core_13interpolators_FlatForward252LinearInterpolator_spec, __pyx_t_1);
   __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LinearInterpolator)) __PYX_ERR(0, 111, __pyx_L1_error)
+  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LinearInterpolator)) __PYX_ERR(0, 101, __pyx_L1_error)
   #else
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LinearInterpolator = &__pyx_type_10bz_pricing_4core_13interpolators_FlatForward252LinearInterpolator;
   #endif
@@ -14404,7 +13921,7 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_13interpolators_Fl
   __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LinearInterpolator->tp_base = __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator;
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LinearInterpolator) < (0)) __PYX_ERR(0, 111, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LinearInterpolator) < (0)) __PYX_ERR(0, 101, __pyx_L1_error)
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount((PyObject*)__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LinearInterpolator);
@@ -14414,9 +13931,9 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_13interpolators_Fl
     __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LinearInterpolator->tp_getattro = PyObject_GenericGetAttr;
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LinearInterpolator, __pyx_vtabptr_10bz_pricing_4core_13interpolators_FlatForward252LinearInterpolator) < (0)) __PYX_ERR(0, 111, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_FlatForward252LinearInterpolator, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LinearInterpolator) < (0)) __PYX_ERR(0, 111, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LinearInterpolator) < (0)) __PYX_ERR(0, 111, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LinearInterpolator, __pyx_vtabptr_10bz_pricing_4core_13interpolators_FlatForward252LinearInterpolator) < (0)) __PYX_ERR(0, 101, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_FlatForward252LinearInterpolator, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LinearInterpolator) < (0)) __PYX_ERR(0, 101, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LinearInterpolator) < (0)) __PYX_ERR(0, 101, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -14438,11 +13955,11 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_13interpolators_In
   __pyx_vtable_10bz_pricing_4core_13interpolators_Interpolation360Interpolator.__pyx_base = *__pyx_vtabptr_10bz_pricing_4core_13interpolators_Interpolator;
   __pyx_vtable_10bz_pricing_4core_13interpolators_Interpolation360Interpolator.__pyx_base.interpolate = (double (*)(struct __pyx_obj_10bz_pricing_4core_13interpolators_Interpolator *, double, double *, double *, int, struct __pyx_opt_args_10bz_pricing_4core_13interpolators_12Interpolator_interpolate *__pyx_optional_args))__pyx_f_10bz_pricing_4core_13interpolators_28Interpolation360Interpolator_interpolate;
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 155, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 135, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolation360Interpolator = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10bz_pricing_4core_13interpolators_Interpolation360Interpolator_spec, __pyx_t_1);
   __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolation360Interpolator)) __PYX_ERR(0, 155, __pyx_L1_error)
+  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolation360Interpolator)) __PYX_ERR(0, 135, __pyx_L1_error)
   #else
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolation360Interpolator = &__pyx_type_10bz_pricing_4core_13interpolators_Interpolation360Interpolator;
   #endif
@@ -14450,7 +13967,7 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_13interpolators_In
   __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolation360Interpolator->tp_base = __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator;
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolation360Interpolator) < (0)) __PYX_ERR(0, 155, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolation360Interpolator) < (0)) __PYX_ERR(0, 135, __pyx_L1_error)
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount((PyObject*)__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolation360Interpolator);
@@ -14460,9 +13977,9 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_13interpolators_In
     __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolation360Interpolator->tp_getattro = PyObject_GenericGetAttr;
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolation360Interpolator, __pyx_vtabptr_10bz_pricing_4core_13interpolators_Interpolation360Interpolator) < (0)) __PYX_ERR(0, 155, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_Interpolation360Interpolator, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolation360Interpolator) < (0)) __PYX_ERR(0, 155, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolation360Interpolator) < (0)) __PYX_ERR(0, 155, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolation360Interpolator, __pyx_vtabptr_10bz_pricing_4core_13interpolators_Interpolation360Interpolator) < (0)) __PYX_ERR(0, 135, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_Interpolation360Interpolator, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolation360Interpolator) < (0)) __PYX_ERR(0, 135, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolation360Interpolator) < (0)) __PYX_ERR(0, 135, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -14484,11 +14001,11 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_13interpolators_Li
   __pyx_vtable_10bz_pricing_4core_13interpolators_Linear360Interpolator.__pyx_base = *__pyx_vtabptr_10bz_pricing_4core_13interpolators_Interpolator;
   __pyx_vtable_10bz_pricing_4core_13interpolators_Linear360Interpolator.__pyx_base.interpolate = (double (*)(struct __pyx_obj_10bz_pricing_4core_13interpolators_Interpolator *, double, double *, double *, int, struct __pyx_opt_args_10bz_pricing_4core_13interpolators_12Interpolator_interpolate *__pyx_optional_args))__pyx_f_10bz_pricing_4core_13interpolators_21Linear360Interpolator_interpolate;
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 198, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 167, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Linear360Interpolator = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10bz_pricing_4core_13interpolators_Linear360Interpolator_spec, __pyx_t_1);
   __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Linear360Interpolator)) __PYX_ERR(0, 198, __pyx_L1_error)
+  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Linear360Interpolator)) __PYX_ERR(0, 167, __pyx_L1_error)
   #else
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Linear360Interpolator = &__pyx_type_10bz_pricing_4core_13interpolators_Linear360Interpolator;
   #endif
@@ -14496,7 +14013,7 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_13interpolators_Li
   __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_Linear360Interpolator->tp_base = __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator;
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Linear360Interpolator) < (0)) __PYX_ERR(0, 198, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Linear360Interpolator) < (0)) __PYX_ERR(0, 167, __pyx_L1_error)
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount((PyObject*)__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Linear360Interpolator);
@@ -14506,9 +14023,9 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_13interpolators_Li
     __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Linear360Interpolator->tp_getattro = PyObject_GenericGetAttr;
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Linear360Interpolator, __pyx_vtabptr_10bz_pricing_4core_13interpolators_Linear360Interpolator) < (0)) __PYX_ERR(0, 198, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_Linear360Interpolator, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Linear360Interpolator) < (0)) __PYX_ERR(0, 198, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Linear360Interpolator) < (0)) __PYX_ERR(0, 198, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Linear360Interpolator, __pyx_vtabptr_10bz_pricing_4core_13interpolators_Linear360Interpolator) < (0)) __PYX_ERR(0, 167, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_Linear360Interpolator, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Linear360Interpolator) < (0)) __PYX_ERR(0, 167, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_Linear360Interpolator) < (0)) __PYX_ERR(0, 167, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -14530,11 +14047,11 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_13interpolators_Pr
   __pyx_vtable_10bz_pricing_4core_13interpolators_PriceInterpolator.__pyx_base = *__pyx_vtabptr_10bz_pricing_4core_13interpolators_Interpolator;
   __pyx_vtable_10bz_pricing_4core_13interpolators_PriceInterpolator.__pyx_base.interpolate = (double (*)(struct __pyx_obj_10bz_pricing_4core_13interpolators_Interpolator *, double, double *, double *, int, struct __pyx_opt_args_10bz_pricing_4core_13interpolators_12Interpolator_interpolate *__pyx_optional_args))__pyx_f_10bz_pricing_4core_13interpolators_17PriceInterpolator_interpolate;
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 246, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 207, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_PriceInterpolator = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10bz_pricing_4core_13interpolators_PriceInterpolator_spec, __pyx_t_1);
   __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_PriceInterpolator)) __PYX_ERR(0, 246, __pyx_L1_error)
+  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_PriceInterpolator)) __PYX_ERR(0, 207, __pyx_L1_error)
   #else
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_PriceInterpolator = &__pyx_type_10bz_pricing_4core_13interpolators_PriceInterpolator;
   #endif
@@ -14542,7 +14059,7 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_13interpolators_Pr
   __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_PriceInterpolator->tp_base = __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator;
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_PriceInterpolator) < (0)) __PYX_ERR(0, 246, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_PriceInterpolator) < (0)) __PYX_ERR(0, 207, __pyx_L1_error)
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount((PyObject*)__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_PriceInterpolator);
@@ -14552,9 +14069,9 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_13interpolators_Pr
     __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_PriceInterpolator->tp_getattro = PyObject_GenericGetAttr;
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_PriceInterpolator, __pyx_vtabptr_10bz_pricing_4core_13interpolators_PriceInterpolator) < (0)) __PYX_ERR(0, 246, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_PriceInterpolator, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_PriceInterpolator) < (0)) __PYX_ERR(0, 246, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_PriceInterpolator) < (0)) __PYX_ERR(0, 246, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_PriceInterpolator, __pyx_vtabptr_10bz_pricing_4core_13interpolators_PriceInterpolator) < (0)) __PYX_ERR(0, 207, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_PriceInterpolator, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_PriceInterpolator) < (0)) __PYX_ERR(0, 207, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_PriceInterpolator) < (0)) __PYX_ERR(0, 207, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -14576,11 +14093,11 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_13interpolators_Fl
   __pyx_vtable_10bz_pricing_4core_13interpolators_FlatForward252LogInterpolator.__pyx_base = *__pyx_vtabptr_10bz_pricing_4core_13interpolators_Interpolator;
   __pyx_vtable_10bz_pricing_4core_13interpolators_FlatForward252LogInterpolator.__pyx_base.interpolate = (double (*)(struct __pyx_obj_10bz_pricing_4core_13interpolators_Interpolator *, double, double *, double *, int, struct __pyx_opt_args_10bz_pricing_4core_13interpolators_12Interpolator_interpolate *__pyx_optional_args))__pyx_f_10bz_pricing_4core_13interpolators_29FlatForward252LogInterpolator_interpolate;
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 284, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 225, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LogInterpolator = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10bz_pricing_4core_13interpolators_FlatForward252LogInterpolator_spec, __pyx_t_1);
   __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LogInterpolator)) __PYX_ERR(0, 284, __pyx_L1_error)
+  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LogInterpolator)) __PYX_ERR(0, 225, __pyx_L1_error)
   #else
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LogInterpolator = &__pyx_type_10bz_pricing_4core_13interpolators_FlatForward252LogInterpolator;
   #endif
@@ -14588,7 +14105,7 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_13interpolators_Fl
   __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LogInterpolator->tp_base = __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_13interpolators_Interpolator;
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LogInterpolator) < (0)) __PYX_ERR(0, 284, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LogInterpolator) < (0)) __PYX_ERR(0, 225, __pyx_L1_error)
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount((PyObject*)__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LogInterpolator);
@@ -14598,9 +14115,9 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_13interpolators_Fl
     __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LogInterpolator->tp_getattro = PyObject_GenericGetAttr;
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LogInterpolator, __pyx_vtabptr_10bz_pricing_4core_13interpolators_FlatForward252LogInterpolator) < (0)) __PYX_ERR(0, 284, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_FlatForward252LogInterpolator, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LogInterpolator) < (0)) __PYX_ERR(0, 284, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LogInterpolator) < (0)) __PYX_ERR(0, 284, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LogInterpolator, __pyx_vtabptr_10bz_pricing_4core_13interpolators_FlatForward252LogInterpolator) < (0)) __PYX_ERR(0, 225, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_FlatForward252LogInterpolator, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LogInterpolator) < (0)) __PYX_ERR(0, 225, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_FlatForward252LogInterpolator) < (0)) __PYX_ERR(0, 225, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;

@@ -231,3 +231,44 @@ def test_surface_advanced_validation_breeden_dupire_and_oos():
     oos_sabr = validate_slice_out_of_sample(strikes, prices, opt_types, fwd, r_c, 63, model="sabr")
     assert oos_sabr["rmse_vol_bps"] < 50.0
 
+
+def test_options_and_surface_edge_case_fixes():
+    from bz_pricing.core.options_core import sabr_implied_vol, implied_vol_bsm
+
+    # 1. SABR com rho nos extremos não pode dar ZeroDivisionError ou NaN
+    v_extreme = sabr_implied_vol(0.14, 0.12, 0.5, 0.035, 0.5, 1.0, 0.35)
+    assert math.isfinite(v_extreme) and v_extreme > 0.0
+
+    # 2. Corrado-Su gaussiano (kappa3=0, kappa4=3) deve coincidir exatamente com BSM
+    base_dt = datetime.date(2026, 7, 1)
+    mat_dt = datetime.date(2027, 1, 4)
+    eq_c = EquityOption("PETRC40", mat_dt, 40.0, "CALL", "EUROPEAN")
+    cs_c = CorradoSuOption("PETRC40", mat_dt, 40.0, "CALL", "EUROPEAN")
+    p_eq = eq_c.price(base_dt, 39.0, 0.14, 0.30)
+    p_cs = cs_c.price(base_dt, 39.0, 0.14, 0.30, kappa3=0.0, kappa4=3.0)
+    assert abs(p_cs - p_eq) < 1e-10
+
+    # 3. Gregas CRR consistentes para put americana deep ITM (delta mais próximo de -1 que BSM europeu)
+    am_put = EquityOption("VALEO50", mat_dt, 55.0, "PUT", "AMERICAN")
+    eu_put = EquityOption("VALEO50", mat_dt, 55.0, "PUT", "EUROPEAN")
+    rm_am = am_put.risk_metrics(base_dt, 38.0, 0.14, 0.25, crr_steps=200)
+    rm_eu = eu_put.risk_metrics(base_dt, 38.0, 0.14, 0.25)
+    assert rm_am["price"] > rm_eu["price"]
+    assert rm_am["delta"] < rm_eu["delta"]
+
+    # 4. FXOption.implied_volatility com fixing_vol_adjust=True recupera a vol original
+    fx_c = FXOption("DOLC580", mat_dt, 5.80, "CALL")
+    p_fx_adj = fx_c.price(base_dt, 5.65, 0.14, 0.05, 0.18, fixing_vol_adjust=True)
+    iv_fx_adj = fx_c.implied_volatility(base_dt, p_fx_adj, 5.65, 0.14, 0.05, fixing_vol_adjust=True)
+    assert abs(iv_fx_adj - 0.18) < 1e-6
+
+    # 5. implied_vol_bsm retorna NaN acima do limite superior de não arbitragem
+    iv_nan = implied_vol_bsm(100.0, 50.0, 40.0, 0.10, 0.0, 1.0, True)
+    assert math.isnan(iv_nan)
+
+    # 6. Instrumentos aceitam VolatilitySurface diretamente
+    sl = SVISlice(a=0.015, b=0.04, rho=-0.30, m=0.0, sigma=0.12, T=eq_c.du(base_dt) / 252.0)
+    surf = VolatilitySurface.from_svi_slices({eq_c.du(base_dt): sl})
+    p_surf = eq_c.price(base_dt, 39.0, 0.14, surf)
+    assert math.isfinite(p_surf) and p_surf > 0.0
+

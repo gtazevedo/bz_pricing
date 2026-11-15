@@ -5,7 +5,7 @@
 
 import numpy as np
 cimport numpy as np
-from libc.math cimport exp, log, sqrt, erf, fabs, pow, fmax
+from libc.math cimport exp, log, sqrt, erf, fabs, pow, fmax, NAN
 from libc.stdlib cimport malloc, free
 
 cdef double INV_SQRT_2PI = 0.3989422804014327
@@ -186,6 +186,97 @@ cpdef tuple black76_price_greeks(
     return (price, delta, gamma, vega, theta, rho, vanna, volga)
 
 
+cdef double _crr_american_core(
+    double S,
+    double K,
+    double r,
+    double q,
+    double T,
+    double sigma,
+    bint is_call,
+    int steps,
+    double* out_delta,
+    double* out_gamma,
+    double* out_theta,
+) noexcept nogil:
+    """Núcleo CRR em C puro: calcula preço americano e delta/gamma/theta diretamente da árvore."""
+    if T <= 0.0 or sigma <= 0.0 or steps <= 0 or S <= 0.0 or K <= 0.0:
+        out_delta[0] = (1.0 if S > K else 0.0) if is_call else (-1.0 if K > S else 0.0)
+        out_gamma[0] = 0.0
+        out_theta[0] = 0.0
+        return fmax(S - K, 0.0) if is_call else fmax(K - S, 0.0)
+
+    cdef double* values = <double*>malloc((steps + 1) * sizeof(double))
+    if values == NULL:
+        out_delta[0] = 0.0
+        out_gamma[0] = 0.0
+        out_theta[0] = 0.0
+        return 0.0
+
+    cdef double dt = T / steps
+    cdef double u = exp(sigma * sqrt(dt))
+    cdef double d = 1.0 / u
+    cdef double d_sq = d * d
+    cdef double disc = exp(-r * dt)
+    cdef double p = (exp((r - q) * dt) - d) / (u - d)
+    if p < 0.0:
+        p = 0.0
+    elif p > 1.0:
+        p = 1.0
+    cdef double one_minus_p = 1.0 - p
+
+    cdef int i, j
+    cdef double spot_i = S * pow(u, steps)
+    for i in range(steps + 1):
+        values[i] = fmax(spot_i - K, 0.0) if is_call else fmax(K - spot_i, 0.0)
+        spot_i *= d_sq
+
+    cdef double v20 = 0.0, v21 = 0.0, v22 = 0.0
+    cdef double v10 = 0.0, v11 = 0.0
+    cdef double spot_row_start = S * pow(u, steps - 1)
+    cdef double hold, exercise
+
+    for j in range(steps - 1, -1, -1):
+        spot_i = spot_row_start
+        for i in range(j + 1):
+            hold = disc * (p * values[i] + one_minus_p * values[i + 1])
+            exercise = (spot_i - K) if is_call else (K - spot_i)
+            values[i] = hold if hold > exercise else exercise
+            spot_i *= d_sq
+        spot_row_start *= d
+        if j == 2:
+            v20 = values[0]
+            v21 = values[1]
+            v22 = values[2]
+        elif j == 1:
+            v10 = values[0]
+            v11 = values[1]
+
+    cdef double val = values[0]
+    free(values)
+
+    cdef double su = S * u
+    cdef double sd = S * d
+    if steps >= 1 and fabs(su - sd) > 1e-12:
+        out_delta[0] = (v10 - v11) / (su - sd)
+    else:
+        out_delta[0] = (1.0 if S > K else 0.0) if is_call else (-1.0 if K > S else 0.0)
+
+    cdef double suu, sdd, d1_u, d1_d
+    if steps >= 2 and fabs(su - sd) > 1e-12:
+        suu = S * u * u
+        sdd = S * d * d
+        d1_u = (v20 - v21) / (suu - S)
+        d1_d = (v21 - v22) / (S - sdd)
+        out_gamma[0] = (d1_u - d1_d) / (0.5 * (suu - sdd))
+        out_theta[0] = (v21 - val) / (2.0 * dt)
+    else:
+        out_gamma[0] = 0.0
+        out_theta[0] = 0.0
+
+    return val
+
+
 cpdef double crr_american_price(
     double S,
     double K,
@@ -197,44 +288,44 @@ cpdef double crr_american_price(
     int steps=200,
 ):
     """Árvore binomial Cox-Ross-Rubinstein (CRR) em C puro para opções americanas."""
-    if T <= 0.0 or sigma <= 0.0 or steps <= 0:
-        return fmax(S - K, 0.0) if is_call else fmax(K - S, 0.0)
+    cdef double d_tmp, g_tmp, t_tmp, val
+    with nogil:
+        val = _crr_american_core(S, K, r, q, T, sigma, is_call, steps, &d_tmp, &g_tmp, &t_tmp)
+    return val
 
-    cdef double dt, u, d, disc, p, one_minus_p, spot_i, exercise, hold, val
-    cdef int i, j
-    cdef double* values = <double*>malloc((steps + 1) * sizeof(double))
-    if values == NULL:
-        raise MemoryError("Falha ao alocar memória para árvore CRR.")
+
+cpdef tuple crr_american_price_greeks(
+    double S,
+    double K,
+    double r,
+    double q,
+    double T,
+    double sigma,
+    bint is_call=True,
+    int steps=200,
+):
+    """Preço americano CRR e gregas consistentes (delta/gamma/theta na árvore; vega/rho por diferenças finitas)."""
+    cdef double price, delta, gamma, theta, vega, rho
+    cdef double d_tmp, g_tmp, t_tmp
+    cdef double dv = 1e-4
+    cdef double dr = 1e-4
+    cdef double p_v_up, p_v_dn, p_r_up, p_r_dn
 
     with nogil:
-        dt = T / steps
-        u = exp(sigma * sqrt(dt))
-        d = 1.0 / u
-        disc = exp(-r * dt)
-        p = (exp((r - q) * dt) - d) / (u - d)
-        if p < 0.0:
-            p = 0.0
-        elif p > 1.0:
-            p = 1.0
-        one_minus_p = 1.0 - p
+        price = _crr_american_core(S, K, r, q, T, sigma, is_call, steps, &delta, &gamma, &theta)
+        if T > 0.0 and sigma > dv and S > 0.0 and K > 0.0:
+            p_v_up = _crr_american_core(S, K, r, q, T, sigma + dv, is_call, steps, &d_tmp, &g_tmp, &t_tmp)
+            p_v_dn = _crr_american_core(S, K, r, q, T, sigma - dv, is_call, steps, &d_tmp, &g_tmp, &t_tmp)
+            vega = (p_v_up - p_v_dn) / (2.0 * dv)
 
-        for i in range(steps + 1):
-            spot_i = S * pow(u, steps - 2 * i)
-            if is_call:
-                values[i] = fmax(spot_i - K, 0.0)
-            else:
-                values[i] = fmax(K - spot_i, 0.0)
+            p_r_up = _crr_american_core(S, K, r + dr, q, T, sigma, is_call, steps, &d_tmp, &g_tmp, &t_tmp)
+            p_r_dn = _crr_american_core(S, K, r - dr, q, T, sigma, is_call, steps, &d_tmp, &g_tmp, &t_tmp)
+            rho = (p_r_up - p_r_dn) / (2.0 * dr)
+        else:
+            vega = 0.0
+            rho = 0.0
 
-        for j in range(steps - 1, -1, -1):
-            for i in range(j + 1):
-                hold = disc * (p * values[i] + one_minus_p * values[i + 1])
-                spot_i = S * pow(u, j - 2 * i)
-                exercise = (spot_i - K) if is_call else (K - spot_i)
-                values[i] = hold if hold > exercise else exercise
-
-        val = values[0]
-        free(values)
-    return val
+    return (price, delta, gamma, vega, theta, rho)
 
 
 cpdef double corrado_su_price(
@@ -257,17 +348,18 @@ cpdef double corrado_su_price(
 
     cdef double sig_sqrt_T = sigma * sqrt(T)
     cdef double sig2_T = sigma * sigma * T
-    cdef double w = (kappa3 / 6.0) * sig_sqrt_T * sig2_T + (kappa4 / 24.0) * sig2_T * sig2_T
-    cdef double d = (log(S / K) + (r - q + 0.5 * sigma * sigma) * T - log(1.0 + w)) / sig_sqrt_T
+    cdef double exc_kurt = kappa4 - 3.0
+    cdef double w = (kappa3 / 6.0) * sig_sqrt_T * sig2_T + (exc_kurt / 24.0) * sig2_T * sig2_T
+    cdef double denom = fmax(1e-8, 1.0 + w)
+    cdef double d = (log(S / K) + (r - q + 0.5 * sigma * sigma) * T - log(denom)) / sig_sqrt_T
     cdef double nd = _norm_pdf(d)
-    cdef double denom = 1.0 + w
 
     cdef double q3 = (1.0 / (6.0 * denom)) * S * sig_sqrt_T * (2.0 * sig_sqrt_T - d) * nd
     cdef double q4 = (1.0 / (24.0 * denom)) * S * sig_sqrt_T * (
         d * d - 3.0 * d * sig_sqrt_T + 3.0 * sig2_T - 1.0
     ) * nd
 
-    cdef double call_cs = price_bs + kappa3 * q3 + (kappa4 - 3.0) * q4
+    cdef double call_cs = price_bs + kappa3 * q3 + exc_kurt * q4
     if call_cs < 0.0:
         call_cs = 0.0
     if is_call:
@@ -295,8 +387,11 @@ cpdef double implied_vol_bsm(
     cdef double df_q = exp(-q * T)
     cdef double df_r = exp(-r * T)
     cdef double intrinsic = fmax(S * df_q - K * df_r, 0.0) if is_call else fmax(K * df_r - S * df_q, 0.0)
+    cdef double upper_bound = (S * df_q) if is_call else (K * df_r)
     if target_price <= intrinsic + 1e-12:
         return 1e-6
+    if target_price >= upper_bound - 1e-12:
+        return NAN
 
     cdef double low = 1e-5
     cdef double high = 5.0
@@ -404,7 +499,13 @@ cpdef double sabr_implied_vol(
     log_fk = log(F / K)
     fk_pow = pow(F * K, 0.5 * one_minus_beta)
     z = (nu / alpha) * fk_pow * log_fk
-    x_z = log((sqrt(1.0 - 2.0 * rho * z + z * z) + z - rho) / (1.0 - rho))
+    cdef double rho_clamped = rho
+    if rho_clamped > 0.999999:
+        rho_clamped = 0.999999
+    elif rho_clamped < -0.999999:
+        rho_clamped = -0.999999
+    cdef double arg_log = fmax(1e-15, (sqrt(1.0 - 2.0 * rho_clamped * z + z * z) + z - rho_clamped) / (1.0 - rho_clamped))
+    x_z = log(arg_log)
 
     cdef double log2 = log_fk * log_fk
     cdef double log4 = log2 * log2
@@ -451,35 +552,44 @@ cpdef tuple price_options_batch(
     cdef double[:] rv = out_rho
 
     cdef double price, delta, gamma, vega, theta, rho, vanna, volga
+    cdef double d_tmp, g_tmp, t_tmp, p_v_up, p_v_dn, p_r_up, p_r_dn
+    cdef double d_vol = 1e-4
+    cdef double d_rate = 1e-4
 
-    for i in range(n):
-        if is_american_arr[i]:
-            pv[i] = crr_american_price(
-                S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i],
-                bool(is_call_arr[i]), crr_steps,
-            )
-            _bsm_core(
-                S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i],
-                bool(is_call_arr[i]),
-                &price, &delta, &gamma, &vega, &theta, &rho, &vanna, &volga,
-            )
-            dv[i] = delta
-            gv[i] = gamma
-            vv[i] = vega
-            tv[i] = theta
-            rv[i] = rho
-        else:
-            _bsm_core(
-                S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i],
-                bool(is_call_arr[i]),
-                &price, &delta, &gamma, &vega, &theta, &rho, &vanna, &volga,
-            )
-            pv[i] = price
-            dv[i] = delta
-            gv[i] = gamma
-            vv[i] = vega
-            tv[i] = theta
-            rv[i] = rho
+    cdef bint call_flag
+    with nogil:
+        for i in range(n):
+            call_flag = (is_call_arr[i] != 0)
+            if is_american_arr[i]:
+                pv[i] = _crr_american_core(
+                    S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i],
+                    call_flag, crr_steps, &delta, &gamma, &theta,
+                )
+                dv[i] = delta
+                gv[i] = gamma
+                tv[i] = theta
+                if T_arr[i] > 0.0 and sigma_arr[i] > d_vol and S_arr[i] > 0.0 and K_arr[i] > 0.0:
+                    p_v_up = _crr_american_core(S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i] + d_vol, call_flag, crr_steps, &d_tmp, &g_tmp, &t_tmp)
+                    p_v_dn = _crr_american_core(S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i] - d_vol, call_flag, crr_steps, &d_tmp, &g_tmp, &t_tmp)
+                    vv[i] = (p_v_up - p_v_dn) / (2.0 * d_vol)
+                    p_r_up = _crr_american_core(S_arr[i], K_arr[i], r_arr[i] + d_rate, q_arr[i], T_arr[i], sigma_arr[i], call_flag, crr_steps, &d_tmp, &g_tmp, &t_tmp)
+                    p_r_dn = _crr_american_core(S_arr[i], K_arr[i], r_arr[i] - d_rate, q_arr[i], T_arr[i], sigma_arr[i], call_flag, crr_steps, &d_tmp, &g_tmp, &t_tmp)
+                    rv[i] = (p_r_up - p_r_dn) / (2.0 * d_rate)
+                else:
+                    vv[i] = 0.0
+                    rv[i] = 0.0
+            else:
+                _bsm_core(
+                    S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i],
+                    call_flag,
+                    &price, &delta, &gamma, &vega, &theta, &rho, &vanna, &volga,
+                )
+                pv[i] = price
+                dv[i] = delta
+                gv[i] = gamma
+                vv[i] = vega
+                tv[i] = theta
+                rv[i] = rho
 
     return (out_price, out_delta, out_gamma, out_vega, out_theta, out_rho)
 

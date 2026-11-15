@@ -134,3 +134,31 @@ def test_extrapolation_forward():
     t_target = 60.0
     expected_right = f1 * math.pow(f2 / f1, (t_target - 21.0) / (42.0 - 21.0)) - 1.0
     assert math.isclose(curve.get_rate(t_target), expected_right, rel_tol=1e-9)
+
+
+def test_single_node_zero_t_and_complex_curve_rounding():
+    from bz_pricing.core.curves import ComplexCurve
+    from bz_pricing.core.interpolators import FlatForward252LogInterpolator
+
+    t_single = np.array([21.0], dtype=np.float64)
+    y_single = np.array([0.135], dtype=np.float64)
+    for cls in (Exponential252Interpolator, FlatForward252Interpolator, FlatForward252LogInterpolator, Linear360Interpolator):
+        c = SimpleCurve(t_single, y_single, cls(1, 1))
+        assert math.isclose(c.get_rate(1.0), 0.135, rel_tol=1e-12)
+        assert math.isclose(c.get_rate(252.0), 0.135, rel_tol=1e-12)
+
+    # t == 0.0 em FlatForward252Interpolator com extrapolação à esquerda não pode dividir por zero
+    c2 = SimpleCurve(np.array([21.0, 42.0], dtype=np.float64), np.array([0.10, 0.12], dtype=np.float64), FlatForward252Interpolator(1, 1))
+    r0 = c2.get_rate(0.0)
+    assert math.isfinite(r0) and math.isclose(r0, 0.10, rel_tol=1e-12)
+
+    # ComplexCurve aplica round_decimals também na extrapolação e expõe t_nodes / y_nodes
+    cc = ComplexCurve(
+        np.array([21.0, 42.0, 63.0], dtype=np.float64),
+        np.array([0.10123456, 0.11123456, 0.12123456], dtype=np.float64),
+        [FlatForward252Interpolator(0, 0), FlatForward252Interpolator(0, 0)],
+        round_decimals=4,
+    )
+    assert math.isclose(cc.get_rate(5.0), 0.1012, rel_tol=1e-12)
+    assert math.isclose(cc.get_rate(100.0), 0.1212, rel_tol=1e-12)
+    assert len(cc.t_nodes) == 3 and len(cc.y_nodes) == 3

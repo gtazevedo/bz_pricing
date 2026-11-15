@@ -187,7 +187,8 @@ class B3CurveBuilder:
                     round_decimals: int = -1,
                     round_mode: str = 'round',
                     smoothing: float = None,
-                    use_cython_smoothing: bool = False) -> SimpleCurve:
+                    use_cython_smoothing: bool = False,
+                    rates_in_percent: bool = None) -> SimpleCurve:
         """
         Pipeline principal para construir a Curva Cython a partir do DataFrame pandas.
         """
@@ -227,7 +228,8 @@ class B3CurveBuilder:
             
             t_list = df['DC' if index_by_dc else 'DU'].astype(float).tolist()
             raw_y = df[actual_rate].astype(float).values
-            if np.nanmax(np.abs(raw_y)) > 1.0:
+            is_pct = (np.nanmax(np.abs(raw_y)) > 1.0) if rates_in_percent is None else bool(rates_in_percent)
+            if is_pct:
                 y_list = (raw_y / 100.0).tolist()
             else:
                 y_list = raw_y.tolist()
@@ -249,7 +251,8 @@ class B3CurveBuilder:
             
             t_list = df[target_t_col].astype(float).tolist()
             raw_y = df[col_rate].astype(float).values
-            if np.nanmax(np.abs(raw_y)) > 1.0:
+            is_pct = (np.nanmax(np.abs(raw_y)) > 1.0) if rates_in_percent is None else bool(rates_in_percent)
+            if is_pct:
                 y_list = (raw_y / 100.0).tolist()
             else:
                 y_list = raw_y.tolist()
@@ -275,6 +278,12 @@ class B3CurveBuilder:
                 t_list.insert(0, v1_t)
                 y_list.insert(0, v1_rate)
                 dc_list.insert(0, float(v1_dc))
+                # Garante ordenação estrita caso t_list já contivesse prazos <= v1_t
+                if len(t_list) > 1 and t_list[0] > t_list[1]:
+                    triples = sorted(zip(t_list, y_list, dc_list), key=lambda x: x[0])
+                    t_list = [x[0] for x in triples]
+                    y_list = [x[1] for x in triples]
+                    dc_list = [x[2] for x in triples]
             else:
                 # Se já existe o vértice no dataset, sobrescrevemos com a taxa v1_rate
                 idx = t_list.index(v1_t)
@@ -297,9 +306,9 @@ class B3CurveBuilder:
             else:
                 base_curve = SimpleCurve(base_t, base_y, base_interp, round_decimals=-1, round_mode=round_mode)
                 
-            anchor_t = 10080.0 # Vértice âncora de 40 anos para travar a taxa forward
+            anchor_t = max(10080.0, float(max(t_list)) + 252.0) # Vértice âncora para travar a taxa forward
             anchor_y = base_curve.get_rate(anchor_t)
-            anchor_dc = 10080.0 if use_dc else 1.0
+            anchor_dc = max(1.0, round(anchor_t * 365.0 / 252.0)) if use_dc else 1.0
             
             if use_cython_smoothing:
                 from bz_pricing.core.curves import apply_cython_smoothing
@@ -331,9 +340,7 @@ class B3CurveBuilder:
                 
                 t_list = new_t_list
                 y_list = new_y_list
-                # Default DC to 1 when smoothing since exact day counting isn't as relevant for smoothed curves 
-                # if we are not evaluating complex instruments against the smoothed curve precisely.
-                dc_list = [1] * len(t_list)
+                dc_list = [max(1.0, round(float(t) * 365.0 / 252.0)) for t in t_list]
                 
             # Adiciona a âncora para forçar o interpolador a fazer o blend da suavizada com a base
             t_list.append(anchor_t)

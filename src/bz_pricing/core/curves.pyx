@@ -3,9 +3,6 @@
 # cython: wraparound=False
 
 from bz_pricing.core.interpolators cimport Interpolator
-from cpython cimport array
-import array
-import array
 import numpy as np
 from libc.math cimport round, pow, trunc
 
@@ -166,27 +163,36 @@ cdef class ComplexCurve(Curve):
         self._is_trunc = (round_mode == 'trunc')
         
     cpdef double get_rate(self, double t, double t_sec=0.0) except *:
-        cdef int i
+        cdef int i, lo, hi, mid
         cdef Interpolator interp
         cdef double * t_sec_ptr = NULL
+        cdef double rate
         
-        if self._t_sec_nodes is not None:
-            t_sec_ptr = &self._t_sec_nodes[0]
-            
-        if t <= self._t_nodes[0]:
-            interp = <Interpolator>self._interpolators[0]
-            return interp.interpolate(t, &self._t_nodes[0], &self._y_nodes[0], self._n_nodes, t_sec, t_sec_ptr)
-        
-        if t >= self._t_nodes[self._n_nodes - 1]:
-            interp = <Interpolator>self._interpolators[self._n_nodes - 2]
-            return interp.interpolate(t, &self._t_nodes[0], &self._y_nodes[0], self._n_nodes, t_sec, t_sec_ptr)
-            
-        for i in range(self._n_nodes - 1):
-            if self._t_nodes[i] <= t and t <= self._t_nodes[i+1]:
-                break
+        if self._n_nodes <= 1:
+            rate = self._y_nodes[0]
+        else:
+            if self._t_sec_nodes is not None:
+                t_sec_ptr = &self._t_sec_nodes[0]
                 
-        interp = <Interpolator>self._interpolators[i]
-        cdef double rate = interp.interpolate(t, &self._t_nodes[0], &self._y_nodes[0], self._n_nodes, t_sec, t_sec_ptr)
+            if t <= self._t_nodes[0]:
+                interp = <Interpolator>self._interpolators[0]
+            elif t >= self._t_nodes[self._n_nodes - 1]:
+                interp = <Interpolator>self._interpolators[self._n_nodes - 2]
+            else:
+                lo = 0
+                hi = self._n_nodes - 2
+                i = 0
+                while lo <= hi:
+                    mid = (lo + hi) >> 1
+                    if t < self._t_nodes[mid]:
+                        hi = mid - 1
+                    elif t > self._t_nodes[mid + 1]:
+                        lo = mid + 1
+                    else:
+                        i = mid
+                        break
+                interp = <Interpolator>self._interpolators[i]
+            rate = interp.interpolate(t, &self._t_nodes[0], &self._y_nodes[0], self._n_nodes, t_sec, t_sec_ptr)
         
         if self._round_decimals >= 0:
             if self._is_trunc:
@@ -195,6 +201,20 @@ cdef class ComplexCurve(Curve):
                 rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
             
         return rate
+
+    @property
+    def t_nodes(self):
+        return np.asarray(self._t_nodes)
+
+    @property
+    def y_nodes(self):
+        return np.asarray(self._y_nodes)
+
+    @property
+    def t_sec_nodes(self):
+        if self._t_sec_nodes is None:
+            return None
+        return np.asarray(self._t_sec_nodes)
 
 cdef class InflationCurve(Curve):
     """
@@ -431,6 +451,6 @@ cpdef tuple apply_cython_smoothing(double[:] t_nodes, double[:] y_nodes, double 
     # Cria o grid diário e evalua o spline
     cdef double[:] new_t = np.arange(1, max_du + 1, dtype=np.float64)
     cdef double[:] new_y = spline(np.asarray(new_t))
-    cdef double[:] new_dc = np.ones(max_du, dtype=np.float64)
+    cdef double[:] new_dc = np.maximum(1.0, np.round(np.asarray(new_t) * (365.0 / 252.0)))
     
     return (np.asarray(new_t), np.asarray(new_y), np.asarray(new_dc))

@@ -255,10 +255,14 @@ class VolatilitySurface:
         time_interp: str = "total_variance",
     ) -> "VolatilitySurface":
         surf = cls(dus, smile_mode="grid_delta", smile_interp=smile_interp, time_interp=time_interp)
+        if len(vols_matrix) != len(dus):
+            raise ValueError("vols_matrix deve ter o mesmo número de linhas que dus.")
         d_arr = np.asarray(deltas, dtype=np.float64)
         order = np.argsort(d_arr)
         d_sorted = d_arr[order]
         for idx, du in enumerate(dus):
+            if len(vols_matrix[idx]) != len(d_arr):
+                raise ValueError(f"Linha {idx} de vols_matrix deve ter o mesmo comprimento de deltas.")
             v_arr = np.asarray(vols_matrix[idx], dtype=np.float64)[order]
             surf._slices[int(du)] = (d_sorted, v_arr)
         return surf
@@ -273,10 +277,14 @@ class VolatilitySurface:
         time_interp: str = "total_variance",
     ) -> "VolatilitySurface":
         surf = cls(dus, smile_mode="grid_strike", smile_interp=smile_interp, time_interp=time_interp)
+        if len(vols_matrix) != len(dus):
+            raise ValueError("vols_matrix deve ter o mesmo número de linhas que dus.")
         k_arr = np.asarray(strikes, dtype=np.float64)
         order = np.argsort(k_arr)
         k_sorted = k_arr[order]
         for idx, du in enumerate(dus):
+            if len(vols_matrix[idx]) != len(k_arr):
+                raise ValueError(f"Linha {idx} de vols_matrix deve ter o mesmo comprimento de strikes.")
             v_arr = np.asarray(vols_matrix[idx], dtype=np.float64)[order]
             surf._slices[int(du)] = (k_sorted, v_arr)
         return surf
@@ -294,10 +302,14 @@ class VolatilitySurface:
             if strike is not None and forward is not None:
                 k = math.log(float(strike) / float(forward))
             elif delta is not None:
-                # Aproxima k a partir do delta usando vol ATM inicial
-                sig_atm = sl.implied_vol(0.0)
-                k_est = delta_to_strike(delta, 1.0, sig_atm, sl.T)
-                k = math.log(k_est)
+                # Ponto fixo para k(delta) consistente com sigma(k)
+                sig_est = sl.implied_vol(0.0)
+                k = 0.0
+                for _ in range(5):
+                    k_est = delta_to_strike(delta, 1.0, sig_est, sl.T)
+                    k = math.log(k_est)
+                    sig_est = float(sl.implied_vol(k))
+                return sig_est
             else:
                 raise ValueError("Informe 'strike' e 'forward' (ou 'delta') para superfície SVI.")
             return float(sl.implied_vol(k))
@@ -314,8 +326,16 @@ class VolatilitySurface:
                 x_eval = min(0.99, max(0.01, float(delta)))
             elif strike is not None and forward is not None:
                 t_val = du / 252.0
-                vol_atm = monotone_cubic_interp(x_nodes, y_nodes, 0.5)
-                x_eval = min(0.99, max(0.01, strike_to_delta(float(strike), float(forward), vol_atm, t_val)))
+                vol_est = monotone_cubic_interp(x_nodes, y_nodes, 0.5)
+                x_eval = 0.5
+                for _ in range(5):
+                    x_eval = min(0.99, max(0.01, strike_to_delta(float(strike), float(forward), vol_est, t_val)))
+                    vol_est = (
+                        exp_smile_interp(x_nodes, y_nodes, x_eval)
+                        if self.smile_interp == "exponential"
+                        else monotone_cubic_interp(x_nodes, y_nodes, x_eval)
+                    )
+                return vol_est
             else:
                 raise ValueError("Informe 'delta' ou ('strike', 'forward') para superfície por delta.")
         else:
@@ -402,15 +422,24 @@ class VolatilitySurface:
                 bfly_viol += int(np.sum(d2 < -tol))
 
         if len(self.dus) >= 2:
-            fwd0 = _resolve(forward_by_du, self.dus[0])
-            k_grid = np.linspace(0.8 * fwd0, 1.2 * fwd0, 13) if strikes is None else np.asarray(strikes, dtype=np.float64)
-            for k in k_grid:
-                tot_vars = []
-                for du in self.dus:
-                    fwd = _resolve(forward_by_du, du)
-                    vol = self.get_vol(du, strike=float(k), forward=fwd)
-                    tot_vars.append(vol * vol * (du / 252.0))
-                cal_viol += int(np.sum(np.diff(tot_vars) < -tol))
+            if strikes is None:
+                moneyness_grid = np.linspace(0.8, 1.2, 13)
+                for m_val in moneyness_grid:
+                    tot_vars = []
+                    for du in self.dus:
+                        fwd = _resolve(forward_by_du, du)
+                        vol = self.get_vol(du, strike=float(m_val * fwd), forward=fwd)
+                        tot_vars.append(vol * vol * (du / 252.0))
+                    cal_viol += int(np.sum(np.diff(tot_vars) < -tol))
+            else:
+                k_grid = np.asarray(strikes, dtype=np.float64)
+                for k in k_grid:
+                    tot_vars = []
+                    for du in self.dus:
+                        fwd = _resolve(forward_by_du, du)
+                        vol = self.get_vol(du, strike=float(k), forward=fwd)
+                        tot_vars.append(vol * vol * (du / 252.0))
+                    cal_viol += int(np.sum(np.diff(tot_vars) < -tol))
 
         return {
             "passed": (mono_viol == 0 and bfly_viol == 0 and cal_viol == 0),
@@ -529,9 +558,16 @@ class VolatilitySurface:
             fwd = _resolve(forward_by_du, du)
             _ = _resolve(r_cont_by_du, du)
 
-            du_minus = max(1, du - 1)
-            du_plus = du + 1
-            dt = (du_plus - du_minus) / 252.0
+            if du <= self.dus[0]:
+                du_minus = du
+                du_plus = du + 1
+            elif du >= self.dus[-1]:
+                du_minus = max(1, du - 1)
+                du_plus = du
+            else:
+                du_minus = max(1, du - 1)
+                du_plus = du + 1
+            dt = max(1.0 / 252.0, (du_plus - du_minus) / 252.0)
             fwd_minus = _resolve(forward_by_du, du_minus) if not isinstance(forward_by_du, dict) or du_minus in forward_by_du else fwd
             fwd_plus = _resolve(forward_by_du, du_plus) if not isinstance(forward_by_du, dict) or du_plus in forward_by_du else fwd
 

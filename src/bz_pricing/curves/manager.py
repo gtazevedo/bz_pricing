@@ -1,4 +1,5 @@
 import datetime
+import warnings
 from dateutil.relativedelta import relativedelta
 import pandas as pd
 import numpy as np
@@ -649,8 +650,12 @@ class CurveManager:
                                     round_decimals=config.get("round_decimals", 4),
                                     round_mode=config.get("round_mode", "round")
                                 )
-                    except Exception:
-                        pass
+                    except Exception as ex:
+                        warnings.warn(
+                            f"Falha ao calibrar {curve_name} por futuros DDI ({ex}); usando taxas referenciais.",
+                            RuntimeWarning,
+                            stacklevel=2,
+                        )
 
                 return self._build_from_nodes_data(curve_name, config, base_date, df_ref, **kwargs)
             elif curve_name == "LTN":
@@ -775,8 +780,12 @@ class CurveManager:
                         if df_dpl_ref is not None and not df_dpl_ref.empty:
                             v1_rows = df_dpl_ref[df_dpl_ref['day252'] == 1]
                             v1_rate = float(v1_rows['rate'].iloc[0]) if not v1_rows.empty else float(df_dpl_ref['rate'].iloc[0])
-                    except Exception:
-                        pass
+                    except Exception as ex:
+                        warnings.warn(
+                            f"Falha ao obter V1 de {curve_name} via taxas referenciais ({ex}); usando fallback Focus.",
+                            RuntimeWarning,
+                            stacklevel=2,
+                        )
                     if v1_rate is None:
                         focus_ipca = self._fetch_focus_monthly("IPCA", base_date)
                         prev_m = base_date - relativedelta(months=1)
