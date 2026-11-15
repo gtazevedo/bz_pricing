@@ -158,3 +158,66 @@ def test_price_credit_portfolio_cython_speed():
     assert df["z_spread"].notna().all()
     assert elapsed < 2.0
 
+
+def test_credit_ytm_and_tir_all_indexers():
+    from bz_pricing.instruments import CotaFIDC, LetraFinanceira, CRI
+
+    base_dt = datetime.date(2026, 7, 1)
+
+    # 1. Prefixado (YTM == TIR)
+    deb_pre = CRI.from_schedule(
+        ticker="CRI-PRE",
+        issue_date="2026-01-02",
+        maturity_date="2028-01-03",
+        indexador="PRE",
+        coupon_rate=0.12,
+        coupon_freq="semestral",
+    )
+    pu_pre = deb_pre.present_value(base_dt, 0.135)
+    assert abs(deb_pre.ytm(base_dt, pu_pre) - 0.135) < 1e-6
+    assert abs(deb_pre.tir(base_dt, pu_pre) - 0.135) < 1e-6
+
+    # 2. IPCA (YTM == TIR real)
+    fidc_ipca = CotaFIDC.from_schedule(
+        ticker="FIDC-IPCA",
+        issue_date="2026-01-02",
+        maturity_date="2028-01-03",
+        indexador="IPCA",
+        coupon_rate=0.07,
+        coupon_freq="semestral",
+    )
+    pu_ipca = fidc_ipca.present_value(base_dt, 0.082, vna=1050.0)
+    assert abs(fidc_ipca.ytm(base_dt, pu_ipca, vna=1050.0) - 0.082) < 1e-6
+    assert abs(fidc_ipca.tir(base_dt, pu_ipca, vna=1050.0) - 0.082) < 1e-6
+
+    # 3. DI + Spread (YTM = spread, TIR = DI + spread efetivo)
+    lf_di = LetraFinanceira.from_bullet(
+        ticker="LF-DI",
+        issue_date="2026-01-02",
+        maturity_date="2028-01-03",
+        indexador="DI",
+        coupon_rate=0.005,
+        nominal_value=50000.0,
+    )
+    pu_di = lf_di.present_value(base_dt, 0.012, vna=50000.0, pu_par_val=51000.0, di_curve=0.135)
+    ytm_di = lf_di.ytm(base_dt, pu_di, vna=50000.0, pu_par_val=51000.0, di_curve=0.135)
+    tir_di = lf_di.tir(base_dt, pu_di, vna=50000.0, pu_par_val=51000.0, di_curve=0.135)
+    assert abs(ytm_di - 0.012) < 1e-6
+    assert abs(tir_di - ((1.135 * 1.012) - 1.0)) < 1e-5
+
+    # 4. % do DI (YTM = multiplicador % do DI, TIR = taxa efetiva anual)
+    deb_pct = CotaFIDC.from_schedule(
+        ticker="FIDC-PCT",
+        issue_date="2026-01-02",
+        maturity_date="2028-01-03",
+        indexador="% DI",
+        multiplicador_di=1.05,
+        coupon_freq="semestral",
+    )
+    pu_pct = deb_pct.present_value(base_dt, 1.12, vna=1000.0, pu_par_val=1020.0, di_curve=0.14)
+    ytm_pct = deb_pct.ytm(base_dt, pu_pct, vna=1000.0, pu_par_val=1020.0, di_curve=0.14)
+    tir_pct = deb_pct.tir(base_dt, pu_pct, vna=1000.0, pu_par_val=1020.0, di_curve=0.14)
+    assert abs(ytm_pct - 1.12) < 1e-6
+    assert 0.14 < tir_pct < 0.18
+
+

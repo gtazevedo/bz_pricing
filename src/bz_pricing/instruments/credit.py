@@ -982,6 +982,121 @@ class Debenture:
 
         return out
 
+    def ytm(self, base_date: Union[datetime.date, str],
+            target_pu: float,
+            vna: Optional[float] = None,
+            last_coupon_date: Union[datetime.date, str] = None,
+            di_curve: Optional[Union[float, Curve]] = None,
+            pu_par_val: Optional[float] = None,
+            fator_di_acumulado: Optional[float] = None,
+            xtol: float = 1e-10) -> float:
+        """
+        Calcula o Yield to Maturity (ou Yield to Call em Letras Financeiras subordinadas)
+        implícito a partir de um PU de mercado (`target_pu`), na convenção de cotação do
+        indexador do ativo (taxa nominal PRÉ, taxa real IPCA/IGP-M, spread sobre DI ou
+        multiplicador percentual do DI).
+        """
+        from scipy.optimize import brentq
+
+        pu_obj = float(target_pu)
+        if pu_obj <= 0.0:
+            raise ValueError("'target_pu' deve ser estritamente positivo.")
+
+        base_dt = self._normalize_date(base_date)
+        vna_atual = self.resolve_vna(base_dt, vna=vna)
+        pu_par_atual = pu_par_val
+        if pu_par_atual is None and self._is_di_linked():
+            pu_par_atual = self.pu_par(
+                base_dt,
+                vna_atual,
+                last_coupon_date=last_coupon_date,
+                fator_di_acumulado=fator_di_acumulado,
+            )
+
+        def _obj(rate: float) -> float:
+            pu_val = self.present_value(
+                base_dt,
+                float(rate),
+                vna=vna_atual,
+                last_coupon_date=last_coupon_date,
+                di_curve=di_curve,
+                pu_par_val=pu_par_atual,
+                fator_di_acumulado=fator_di_acumulado,
+            )
+            return float(pu_val - pu_obj)
+
+        low = 1e-4 if self._is_pct_di() else -0.90
+        high = 5.0 if self._is_pct_di() else 2.0
+        f_low = _obj(low)
+        f_high = _obj(high)
+        while f_low * f_high > 0.0 and high < 100.0:
+            high *= 2.0
+            f_high = _obj(high)
+        if f_low * f_high > 0.0:
+            raise ValueError(f"Não foi possível isolar a raiz de YTM para {self.ticker} com target_pu={pu_obj}.")
+        return float(brentq(_obj, low, high, xtol=xtol))
+
+    def tir(self, base_date: Union[datetime.date, str],
+            target_pu: float,
+            vna: Optional[float] = None,
+            last_coupon_date: Union[datetime.date, str] = None,
+            di_curve: Optional[Union[float, Curve]] = None,
+            pu_par_val: Optional[float] = None,
+            fator_di_acumulado: Optional[float] = None,
+            xtol: float = 1e-10) -> float:
+        """
+        Calcula a Taxa Interna de Retorno (TIR) efetiva anual em base 252 dias úteis
+        sobre os fluxos futuros projetados do ativo para o PU informado (`target_pu`).
+        Em títulos indexados ao DI, retorna a taxa total implícita (DI + spread).
+        """
+        from scipy.optimize import brentq
+
+        pu_obj = float(target_pu)
+        if pu_obj <= 0.0:
+            raise ValueError("'target_pu' deve ser estritamente positivo.")
+
+        base_dt = self._normalize_date(base_date)
+        vna_atual = self.resolve_vna(base_dt, vna=vna)
+        pu_par_atual = pu_par_val
+        if pu_par_atual is None and self._is_di_linked():
+            pu_par_atual = self.pu_par(
+                base_dt,
+                vna_atual,
+                last_coupon_date=last_coupon_date,
+                fator_di_acumulado=fator_di_acumulado,
+            )
+
+        df_flows = self.cashflow_table(
+            base_dt,
+            0.0,
+            vna=vna_atual,
+            last_coupon_date=last_coupon_date,
+            di_curve=di_curve,
+            pu_par_val=pu_par_atual,
+            fator_di_acumulado=fator_di_acumulado,
+        )
+        if df_flows.empty:
+            raise ValueError(f"Não há fluxos futuros após {base_dt} para o cálculo de TIR de {self.ticker}.")
+
+        du_arr = df_flows["du"].to_numpy(dtype=np.float64)
+        du_i32 = du_arr.astype(np.int32)
+        flows_arr = df_flows["fluxo_nominal"].to_numpy(dtype=np.float64)
+
+        def _obj(rate: float) -> float:
+            if _cy_evaluate_gross_up_pv is not None:
+                return float(_cy_evaluate_gross_up_pv(du_i32, flows_arr, float(rate)) - pu_obj)
+            return float(np.sum(flows_arr / np.power(1.0 + rate, du_arr / 252.0)) - pu_obj)
+
+        low, high = -0.90, 5.0
+        f_low = _obj(low)
+        f_high = _obj(high)
+        while f_low * f_high > 0.0 and high < 100.0:
+            high *= 2.0
+            f_high = _obj(high)
+        if f_low * f_high > 0.0:
+            raise ValueError(f"Não foi possível isolar a raiz de TIR para {self.ticker} com target_pu={pu_obj}.")
+        return float(brentq(_obj, low, high, xtol=xtol))
+
 
 class CertificadoRecebiveis(Debenture):
     """
