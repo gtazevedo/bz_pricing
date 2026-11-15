@@ -20,6 +20,14 @@ from .derivatives import (
     NDFContract,
     price_di1_portfolio,
 )
+from .options import (
+    EquityOption,
+    FXOption,
+    IDIOption,
+    DI1Option,
+    CorradoSuOption,
+    price_options_portfolio,
+)
 
 __all__ = [
     "TituloPublico",
@@ -46,4 +54,10 @@ __all__ = [
     "SwapDIxIPCA",
     "NDFContract",
     "price_di1_portfolio",
+    "EquityOption",
+    "FXOption",
+    "IDIOption",
+    "DI1Option",
+    "CorradoSuOption",
+    "price_options_portfolio",
 ]
