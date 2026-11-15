@@ -198,3 +198,120 @@ class B3DataLoader:
             df['PU'] = df['PU'].str.replace(',', '.').astype(float)
             
         return df
+
+    def load_options_catalog(
+        self,
+        data: datetime.date,
+        asst: str = None,
+        auto_download: bool = True,
+    ) -> pd.DataFrame:
+        """
+        Carrega o cadastro de séries de opções do arquivo BVBG_IN para a data especificada,
+        normalizando tipo (call/put), estilo (european/american), strike e vencimento.
+        """
+        date_str = data.strftime("%Y%m%d")
+        path_in = os.path.join(self.data_dir, f"BVBG_IN_{date_str}.csv")
+
+        if not os.path.exists(path_in) and auto_download:
+            try:
+                from bz_pricing.data.scrapers import B3Scraper
+                scraper = B3Scraper(output_dir=self.data_dir)
+                scraper.download_instruments(data)
+            except Exception:
+                pass
+
+        if not os.path.exists(path_in):
+            raise FileNotFoundError(f"Arquivo de cadastro não encontrado: {path_in}")
+
+        df_in = pd.read_csv(path_in, sep=';', low_memory=False)
+        if 'OptnTp' not in df_in.columns:
+            return pd.DataFrame()
+
+        opts = df_in[df_in['OptnTp'].notna()].copy()
+        if asst is not None and 'Asst' in opts.columns:
+            opts = opts[opts['Asst'] == asst].copy()
+
+        keep_cols = [
+            'TckrSymb', 'Asst', 'AsstDesc', 'SctyCtgy',
+            'OptnTp', 'OptnStyle', 'ExrcStyle', 'ExrcPric',
+            'XprtnDt', 'CtrctMltplr', 'AsstQtnQty',
+        ]
+        keep_cols = [c for c in keep_cols if c in opts.columns]
+        opts = opts[keep_cols].drop_duplicates(subset=['TckrSymb']).copy()
+
+        opts['option_type'] = (
+            opts['OptnTp'].astype(str).str.upper().map({'CALL': 'call', 'PUTT': 'put', 'PUT': 'put'})
+        )
+
+        style_raw = pd.Series(index=opts.index, dtype=object)
+        if 'OptnStyle' in opts.columns:
+            style_raw = opts['OptnStyle']
+        if 'ExrcStyle' in opts.columns:
+            style_raw = style_raw.fillna(opts['ExrcStyle'])
+        opts['option_style'] = (
+            style_raw.astype(str).str.upper().map({'EURO': 'european', 'AMER': 'american'})
+        )
+
+        if 'ExrcPric' in opts.columns:
+            opts['ExrcPric'] = pd.to_numeric(opts['ExrcPric'], errors='coerce')
+        if 'CtrctMltplr' in opts.columns:
+            opts['CtrctMltplr'] = pd.to_numeric(opts['CtrctMltplr'], errors='coerce')
+        if 'XprtnDt' in opts.columns:
+            opts['XprtnDt'] = pd.to_datetime(opts['XprtnDt'], errors='coerce')
+
+        return opts.reset_index(drop=True)
+
+    def load_options(
+        self,
+        data: datetime.date,
+        asst: str = None,
+        only_priced: bool = False,
+        auto_download: bool = True,
+    ) -> pd.DataFrame:
+        """
+        Consolida as séries de opções do cadastro (BVBG_IN) com os preços e liquidez
+        do boletim de negociação (BVBG_SPRD) para uma data de referência.
+        """
+        date_str = data.strftime("%Y%m%d")
+        path_sprd = os.path.join(self.data_dir, f"BVBG_SPRD_{date_str}.csv")
+
+        if not os.path.exists(path_sprd) and auto_download:
+            try:
+                from bz_pricing.data.scrapers import B3Scraper
+                scraper = B3Scraper(output_dir=self.data_dir)
+                scraper.download_bvbg_187_01(data)
+            except Exception:
+                pass
+
+        if not os.path.exists(path_sprd):
+            raise FileNotFoundError(f"Arquivo de negociação não encontrado: {path_sprd}")
+
+        df_catalog = self.load_options_catalog(data, asst=asst, auto_download=auto_download)
+        if df_catalog.empty:
+            return df_catalog
+
+        df_sprd = pd.read_csv(path_sprd, sep=';', low_memory=False)
+        df_merged = pd.merge(df_sprd, df_catalog, on='TckrSymb', how='inner')
+
+        num_cols = [
+            'AdjstdQt', 'PrvsAdjstdQt', 'LastPric', 'TradAvrgPric',
+            'FrstPric', 'MinPric', 'MaxPric', 'OpnIntrst', 'RglrTxsQty',
+        ]
+        for col in num_cols:
+            if col in df_merged.columns:
+                df_merged[col] = pd.to_numeric(df_merged[col], errors='coerce')
+
+        ref_pric = pd.Series(float('nan'), index=df_merged.index, dtype=float)
+        for col in ('AdjstdQt', 'LastPric', 'TradAvrgPric'):
+            if col in df_merged.columns:
+                ref_pric = ref_pric.fillna(df_merged[col])
+        df_merged['RefPric'] = ref_pric
+
+        if only_priced:
+            df_merged = df_merged[df_merged['RefPric'].notna() & (df_merged['RefPric'] > 0)].copy()
+
+        sort_cols = [c for c in ('XprtnDt', 'ExrcPric', 'option_type') if c in df_merged.columns]
+        if sort_cols:
+            df_merged = df_merged.sort_values(by=sort_cols).reset_index(drop=True)
+
+        return df_merged

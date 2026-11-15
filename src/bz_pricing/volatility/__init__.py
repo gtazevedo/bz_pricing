@@ -6,6 +6,7 @@ from .surface import (
     strike_to_delta,
     monotone_cubic_interp,
     exp_smile_interp,
+    validate_slice_out_of_sample,
 )
 
 __all__ = [
@@ -16,5 +17,6 @@ __all__ = [
     "strike_to_delta",
     "monotone_cubic_interp",
     "exp_smile_interp",
+    "validate_slice_out_of_sample",
 ]
 

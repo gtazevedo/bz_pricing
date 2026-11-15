@@ -167,3 +167,67 @@ def test_price_options_portfolio_cython_speed():
     assert df["price"].notna().all()
     assert elapsed < 1.5
 
+
+def test_b3_loader_options_real_data():
+    import os
+    from bz_pricing.data.loaders import B3DataLoader
+
+    if not os.path.exists("dados/b3/BVBG_IN_20261030.csv") or not os.path.exists("dados/b3/BVBG_SPRD_20261030.csv"):
+        return
+
+    loader = B3DataLoader(data_dir="dados/b3")
+    ref_dt = datetime.date(2026, 10, 30)
+
+    cat_dol = loader.load_options_catalog(ref_dt, asst="DOL", auto_download=False)
+    assert len(cat_dol) > 0
+    assert set(cat_dol["option_type"].dropna().unique()).issubset({"call", "put"})
+    assert "european" in set(cat_dol["option_style"].dropna().unique())
+
+    dol_priced = loader.load_options(ref_dt, asst="DOL", only_priced=True, auto_download=False)
+    assert len(dol_priced) >= 10
+    assert (dol_priced["RefPric"] > 0).all()
+
+    idi_priced = loader.load_options(ref_dt, asst="IDI", only_priced=True, auto_download=False)
+    assert len(idi_priced) >= 10
+
+
+def test_surface_advanced_validation_breeden_dupire_and_oos():
+    from bz_pricing.core.options_core import black76_price_greeks
+    from bz_pricing.volatility import validate_slice_out_of_sample
+
+    fwd = 5.55
+    r_c = 0.14
+    sl_1 = SVISlice(a=0.008, b=0.025, rho=-0.30, m=0.0, sigma=0.10, T=63 / 252.0)
+    sl_2 = SVISlice(a=0.018, b=0.045, rho=-0.30, m=0.0, sigma=0.12, T=126 / 252.0)
+    surf = VolatilitySurface.from_svi_slices({63: sl_1, 126: sl_2})
+
+    wing = surf.wing_slope_check()
+    assert wing["passed"] is True
+
+    bl = surf.breeden_litzenberger_density(63, forward=fwd, r_cont=r_c)
+    assert bl["passed"] is True
+    assert bl["min_density"] >= -1e-6
+    assert 0.95 <= bl["integral"] <= 1.02
+
+    dup = surf.dupire_local_vol_grid(forward_by_du=fwd, r_cont_by_du=r_c)
+    assert dup["passed"] is True
+    assert dup["negative_nodes"] == 0
+    assert dup["min_local_var"] > 0.0
+
+    # Validação out-of-sample (SVI e SABR) sobre preços sintéticos exatos
+    strikes = np.linspace(4.9, 6.2, 11)
+    opt_types = ["put" if k < fwd else "call" for k in strikes]
+    t_val = 63 / 252.0
+    vols = sl_1.implied_vol(np.log(strikes / fwd))
+    prices = [
+        black76_price_greeks(fwd, float(k), r_c, t_val, float(v), ot == "call")[0]
+        for k, v, ot in zip(strikes, vols, opt_types)
+    ]
+
+    oos_svi = validate_slice_out_of_sample(strikes, prices, opt_types, fwd, r_c, 63, model="svi")
+    assert oos_svi["rmse_vol_bps"] < 5.0
+    assert oos_svi["rmse_price"] < 1e-3
+
+    oos_sabr = validate_slice_out_of_sample(strikes, prices, opt_types, fwd, r_c, 63, model="sabr")
+    assert oos_sabr["rmse_vol_bps"] < 50.0
+

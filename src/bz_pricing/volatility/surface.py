@@ -6,6 +6,7 @@ from scipy.optimize import least_squares
 
 from bz_pricing.core.options_core import (
     black76_price_greeks as _cy_black76,
+    implied_vol_black76 as _cy_iv_black76,
     norm_cdf as _cy_norm_cdf,
     norm_ppf as _cy_norm_ppf,
     sabr_implied_vol as _cy_sabr_vol,
@@ -417,4 +418,248 @@ class VolatilitySurface:
             "butterfly_violations": bfly_viol,
             "calendar_violations": cal_viol,
         }
+
+    def wing_slope_check(self) -> Dict[str, object]:
+        """
+        Verifica o limite de momentos de Lee (2004) nas asas das fatias SVI:
+            b * (1 + |rho|) <= 2, com b >= 0 e |rho| < 1.
+        """
+        details = []
+        all_ok = True
+        for du in self.dus:
+            sl = self._slices.get(du) if self._slices else None
+            if isinstance(sl, SVISlice):
+                max_slope = float(sl.b * (1.0 + abs(sl.rho)))
+                ok = (sl.b >= 0.0) and (abs(sl.rho) < 1.0) and (max_slope <= 2.0 + 1e-9)
+                all_ok = all_ok and ok
+                details.append({
+                    "du": du,
+                    "b": float(sl.b),
+                    "rho": float(sl.rho),
+                    "max_slope": max_slope,
+                    "passed": ok,
+                })
+        return {"passed": all_ok, "slices": details}
+
+    def breeden_litzenberger_density(
+        self,
+        du: int,
+        forward: float,
+        r_cont: float,
+        strikes: Optional[Sequence[float]] = None,
+    ) -> Dict[str, object]:
+        """
+        Extrai a densidade neutra ao risco via Breeden-Litzenberger:
+            f(K) = exp(r * T) * d^2 C / dK^2
+        """
+        k_grid = (
+            np.linspace(0.6 * forward, 1.4 * forward, 81)
+            if strikes is None
+            else np.asarray(strikes, dtype=np.float64)
+        )
+        if len(k_grid) < 3:
+            raise ValueError("São necessários ao menos 3 strikes para Breeden-Litzenberger.")
+
+        t_val = du / 252.0
+        calls = np.array(
+            [
+                _cy_black76(
+                    float(forward),
+                    float(k),
+                    float(r_cont),
+                    t_val,
+                    self.get_vol(du, strike=float(k), forward=float(forward)),
+                    True,
+                )[0]
+                for k in k_grid
+            ],
+            dtype=np.float64,
+        )
+        dk = np.diff(k_grid)
+        dk_mid = 0.5 * (dk[:-1] + dk[1:])
+        d2c = (
+            (calls[2:] - calls[1:-1]) / dk[1:]
+            - (calls[1:-1] - calls[:-2]) / dk[:-1]
+        ) / dk_mid
+        density = math.exp(r_cont * t_val) * d2c
+        k_mid = k_grid[1:-1]
+        integral = float(np.trapezoid(density, k_mid)) if hasattr(np, "trapezoid") else float(np.trapz(density, k_mid))
+        min_d = float(np.min(density))
+        return {
+            "strikes": k_mid,
+            "density": density,
+            "min_density": min_d,
+            "integral": integral,
+            "passed": min_d >= -1e-6,
+        }
+
+    def dupire_local_vol_grid(
+        self,
+        forward_by_du: Union[float, Dict[int, float], Callable[[int], float]],
+        r_cont_by_du: Union[float, Dict[int, float], Callable[[int], float]],
+        dus: Optional[Sequence[int]] = None,
+        strikes: Optional[Sequence[float]] = None,
+    ) -> Dict[str, object]:
+        """
+        Calcula a volatilidade local de Dupire em termos da variância total w(y, T) = sigma^2 * T:
+            sigma_loc^2 = (dw/dT) / [1 - (y/w)(dw/dy) + 0.25*(-0.25 - 1/w + y^2/w^2)*(dw/dy)^2 + 0.5*(d^2w/dy^2)]
+        """
+        def _resolve(obj, d):
+            if callable(obj):
+                return float(obj(d))
+            if isinstance(obj, dict):
+                return float(obj[d])
+            return float(obj)
+
+        eval_dus = list(self.dus) if dus is None else [int(d) for d in dus]
+        fwd_ref = _resolve(forward_by_du, eval_dus[0])
+        k_grid = (
+            np.linspace(0.75 * fwd_ref, 1.25 * fwd_ref, 21)
+            if strikes is None
+            else np.asarray(strikes, dtype=np.float64)
+        )
+
+        dy = 1e-3
+        local_vol = np.full((len(eval_dus), len(k_grid)), np.nan, dtype=np.float64)
+        min_var = float("inf")
+        neg_nodes = 0
+
+        for i, du in enumerate(eval_dus):
+            t_val = du / 252.0
+            fwd = _resolve(forward_by_du, du)
+            _ = _resolve(r_cont_by_du, du)
+
+            du_minus = max(1, du - 1)
+            du_plus = du + 1
+            dt = (du_plus - du_minus) / 252.0
+            fwd_minus = _resolve(forward_by_du, du_minus) if not isinstance(forward_by_du, dict) or du_minus in forward_by_du else fwd
+            fwd_plus = _resolve(forward_by_du, du_plus) if not isinstance(forward_by_du, dict) or du_plus in forward_by_du else fwd
+
+            for j, k in enumerate(k_grid):
+                k_f = float(k)
+                y = math.log(k_f / fwd)
+
+                sig_c = self.get_vol(du, strike=k_f, forward=fwd)
+                w_c = sig_c * sig_c * t_val
+
+                k_up = fwd * math.exp(y + dy)
+                k_dn = fwd * math.exp(y - dy)
+                sig_up = self.get_vol(du, strike=k_up, forward=fwd)
+                sig_dn = self.get_vol(du, strike=k_dn, forward=fwd)
+                w_up = sig_up * sig_up * t_val
+                w_dn = sig_dn * sig_dn * t_val
+
+                dw_dy = (w_up - w_dn) / (2.0 * dy)
+                d2w_dy2 = (w_up - 2.0 * w_c + w_dn) / (dy * dy)
+
+                sig_tp = self.get_vol(du_plus, strike=k_f, forward=fwd_plus)
+                sig_tm = self.get_vol(du_minus, strike=k_f, forward=fwd_minus)
+                w_tp = sig_tp * sig_tp * (du_plus / 252.0)
+                w_tm = sig_tm * sig_tm * (du_minus / 252.0)
+                dw_dt = (w_tp - w_tm) / dt
+
+                denom = (
+                    1.0
+                    - (y / max(1e-12, w_c)) * dw_dy
+                    + 0.25 * (-0.25 - 1.0 / max(1e-12, w_c) + (y * y) / max(1e-12, w_c * w_c)) * (dw_dy * dw_dy)
+                    + 0.5 * d2w_dy2
+                )
+                if denom <= 1e-12 or dw_dt <= 0.0:
+                    var_loc = dw_dt / denom if abs(denom) > 1e-12 else -1.0
+                    neg_nodes += 1
+                    min_var = min(min_var, var_loc)
+                else:
+                    var_loc = dw_dt / denom
+                    min_var = min(min_var, var_loc)
+                    local_vol[i, j] = math.sqrt(var_loc)
+
+        return {
+            "dus": np.asarray(eval_dus, dtype=int),
+            "strikes": k_grid,
+            "local_vol": local_vol,
+            "min_local_var": 0.0 if min_var == float("inf") else float(min_var),
+            "negative_nodes": int(neg_nodes),
+            "passed": neg_nodes == 0,
+        }
+
+
+def validate_slice_out_of_sample(
+    strikes: Sequence[float],
+    market_prices: Sequence[float],
+    option_types: Sequence[str],
+    forward: float,
+    r_cont: float,
+    du: int,
+    train_mask: Optional[Sequence[bool]] = None,
+    model: str = "svi",
+    sabr_beta: float = 0.5,
+) -> Dict[str, object]:
+    """
+    Calibra uma fatia (SVI ou SABR) no conjunto de treino e avalia o re-apreçamento
+    fora da amostra (out-of-sample) em bps de volatilidade implícita e em prêmio.
+    """
+    k_arr = np.asarray(strikes, dtype=np.float64)
+    p_arr = np.asarray(market_prices, dtype=np.float64)
+    is_call_arr = np.array([str(t).lower().startswith("c") for t in option_types], dtype=bool)
+    t_val = du / 252.0
+
+    mkt_vols = np.array(
+        [
+            _cy_iv_black76(float(p), float(forward), float(k), float(r_cont), t_val, bool(ic))
+            for p, k, ic in zip(p_arr, k_arr, is_call_arr)
+        ],
+        dtype=np.float64,
+    )
+
+    valid = np.isfinite(mkt_vols) & (mkt_vols > 0.0)
+    k_arr = k_arr[valid]
+    p_arr = p_arr[valid]
+    is_call_arr = is_call_arr[valid]
+    mkt_vols = mkt_vols[valid]
+
+    if train_mask is None:
+        mask = np.zeros(len(k_arr), dtype=bool)
+        mask[::2] = True
+        if np.sum(~mask) == 0:
+            mask[-1] = False
+    else:
+        mask = np.asarray(train_mask, dtype=bool)[valid]
+
+    if np.sum(mask) < 3 or np.sum(~mask) < 1:
+        raise ValueError("São necessários ao menos 3 pontos de treino e 1 ponto de teste válidos.")
+
+    if model.lower() == "svi":
+        k_log_train = np.log(k_arr[mask] / float(forward))
+        fitted_slice = SVISlice.fit(k_log_train, mkt_vols[mask], t_val)
+        pred_vols_test = fitted_slice.implied_vol(np.log(k_arr[~mask] / float(forward)))
+    elif model.lower() == "sabr":
+        fitted_slice = SABRSlice.fit(float(forward), k_arr[mask], mkt_vols[mask], t_val, beta=sabr_beta)
+        pred_vols_test = fitted_slice.implied_vol(k_arr[~mask])
+    else:
+        raise ValueError(f"Modelo '{model}' não suportado; use 'svi' ou 'sabr'.")
+
+    pred_prices_test = np.array(
+        [
+            _cy_black76(float(forward), float(k), float(r_cont), t_val, float(v), bool(ic))[0]
+            for k, v, ic in zip(k_arr[~mask], pred_vols_test, is_call_arr[~mask])
+        ],
+        dtype=np.float64,
+    )
+
+    vol_err_bps = (pred_vols_test - mkt_vols[~mask]) * 1e4
+    price_err = pred_prices_test - p_arr[~mask]
+
+    return {
+        "slice": fitted_slice,
+        "train_strikes": k_arr[mask],
+        "test_strikes": k_arr[~mask],
+        "test_market_vols": mkt_vols[~mask],
+        "test_pred_vols": pred_vols_test,
+        "test_market_prices": p_arr[~mask],
+        "test_pred_prices": pred_prices_test,
+        "rmse_vol_bps": float(np.sqrt(np.mean(vol_err_bps ** 2))),
+        "mae_vol_bps": float(np.mean(np.abs(vol_err_bps))),
+        "rmse_price": float(np.sqrt(np.mean(price_err ** 2))),
+        "mae_price": float(np.mean(np.abs(price_err))),
+    }
 
