@@ -517,16 +517,14 @@ class Debenture:
             if "juros" in evento_lower:
                 if is_di:
                     if is_pct_di:
+                        f_pct_acum = math.pow(1.0 + di_d * self.multiplicador_di, du_desc)
                         if prev_du_di == 0:
-                            di_d_rem = math.pow(f_di_acum, 1.0 / du_desc) - 1.0
-                            f_rem = math.pow(1.0 + di_d_rem * self.multiplicador_di, du_desc)
-                            f_cupom = (fator_acruado_di * f_rem) - 1.0
+                            f_cupom = (fator_acruado_di * f_pct_acum) - 1.0
                         else:
-                            du_p = du_desc - prev_du_di
-                            f_di_p = f_di_acum / prev_f_di
-                            di_d_p = math.pow(f_di_p, 1.0 / du_p) - 1.0
-                            f_cupom = math.pow(1.0 + di_d_p * self.multiplicador_di, du_p) - 1.0
+                            f_cupom = (f_pct_acum / prev_f_di) - 1.0
                         r_cupom = self.multiplicador_di
+                        prev_du_di = du_desc
+                        prev_f_di = f_pct_acum
                     else:
                         r_cupom = (perc / 100.0) if perc > 0.0 else self.coupon_rate
                         if prev_du_di == 0:
@@ -537,8 +535,8 @@ class Debenture:
                             f_di_p = f_di_acum / prev_f_di
                             f_spr_p = math.pow(1.0 + r_cupom, du_p / 252.0)
                             f_cupom = (f_di_p * f_spr_p) - 1.0
-                    prev_du_di = du_desc
-                    prev_f_di = f_di_acum
+                        prev_du_di = du_desc
+                        prev_f_di = f_di_acum
                 else:
                     # O período contratual de contagem de juros ocorre entre as datas de liquidação (d_pg)
                     yf_period = self._coupon_year_fraction(prev_event_date, d_pg)

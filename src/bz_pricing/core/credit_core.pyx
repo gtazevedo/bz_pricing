@@ -47,8 +47,8 @@ cpdef tuple compute_credit_cashflows(
     cdef int du, du_p, prev_du_di = 0, ev
     cdef double r_desc, r_di, f_di_acum, di_d, df_val, taxa_desc_eff
     cdef double prev_f_di = 1.0, saldo_vna = vna
-    cdef double di_d_rem, f_rem, f_cupom, f_cupom_raw, r_cupom
-    cdef double f_di_p, di_d_p, f_spr_rem, f_spr_p
+    cdef double di_d_rem, f_pct_acum, f_cupom, f_cupom_raw, r_cupom
+    cdef double f_di_p, f_spr_rem, f_spr_p
     cdef double valor_fluxo, pv_val, base_amort, p_val
     cdef double total_pv = 0.0, sum_du_pv = 0.0, sum_t_pv = 0.0
     cdef double sum_dmod_pv = 0.0, sum_conv_pv = 0.0, t_ano
@@ -79,16 +79,14 @@ cpdef tuple compute_credit_cashflows(
             if ev == 0:
                 if is_di:
                     if is_pct_di:
+                        f_pct_acum = pow(1.0 + di_d * multiplicador_di, du)
                         if prev_du_di == 0:
-                            di_d_rem = pow(f_di_acum, 1.0 / du) - 1.0
-                            f_rem = pow(1.0 + di_d_rem * multiplicador_di, du)
-                            f_cupom = (fator_acruado_di * f_rem) - 1.0
+                            f_cupom = (fator_acruado_di * f_pct_acum) - 1.0
                         else:
-                            du_p = du - prev_du_di
-                            f_di_p = f_di_acum / prev_f_di
-                            di_d_p = pow(f_di_p, 1.0 / du_p) - 1.0
-                            f_cupom = pow(1.0 + di_d_p * multiplicador_di, du_p) - 1.0
+                            f_cupom = (f_pct_acum / prev_f_di) - 1.0
                         r_cupom = multiplicador_di
+                        prev_du_di = du
+                        prev_f_di = f_pct_acum
                     else:
                         r_cupom = (p_val / 100.0) if p_val > 0.0 else coupon_rate
                         if prev_du_di == 0:
@@ -99,8 +97,8 @@ cpdef tuple compute_credit_cashflows(
                             f_di_p = f_di_acum / prev_f_di
                             f_spr_p = pow(1.0 + r_cupom, du_p / 252.0)
                             f_cupom = (f_di_p * f_spr_p) - 1.0
-                    prev_du_di = du
-                    prev_f_di = f_di_acum
+                        prev_du_di = du
+                        prev_f_di = f_di_acum
                 else:
                     r_cupom = (p_val / 100.0) if p_val > 0.0 else coupon_rate
                     f_cupom_raw = pow(1.0 + r_cupom, yf_period[i]) - 1.0
