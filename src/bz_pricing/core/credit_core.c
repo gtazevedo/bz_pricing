@@ -6,7 +6,7 @@
         "depends": [],
         "name": "bz_pricing.core.credit_core",
         "sources": [
-            "src/bz_pricing/core/credit_core.pyx"
+            "src\\bz_pricing\\core\\credit_core.pyx"
         ]
     },
     "module_name": "bz_pricing.core.credit_core"
@@ -19872,13 +19872,11 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
   double __pyx_v_taxa_desc_eff;
   double __pyx_v_prev_f_di;
   double __pyx_v_saldo_vna;
-  double __pyx_v_di_d_rem;
-  double __pyx_v_f_rem;
+  double __pyx_v_f_pct_acum;
   double __pyx_v_f_cupom;
   double __pyx_v_f_cupom_raw;
   double __pyx_v_r_cupom;
   double __pyx_v_f_di_p;
-  double __pyx_v_di_d_p;
   double __pyx_v_f_spr_rem;
   double __pyx_v_f_spr_p;
   double __pyx_v_valor_fluxo;
@@ -20306,14 +20304,14 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
  *     cdef int du, du_p, prev_du_di = 0, ev
  *     cdef double r_desc, r_di, f_di_acum, di_d, df_val, taxa_desc_eff
  *     cdef double prev_f_di = 1.0, saldo_vna = vna             # <<<<<<<<<<<<<<
- *     cdef double di_d_rem, f_rem, f_cupom, f_cupom_raw, r_cupom
- *     cdef double f_di_p, di_d_p, f_spr_rem, f_spr_p
+ *     cdef double di_d_rem, f_pct_acum, f_cupom, f_cupom_raw, r_cupom
+ *     cdef double f_di_p, f_spr_rem, f_spr_p
 */
   __pyx_v_prev_f_di = 1.0;
   __pyx_v_saldo_vna = __pyx_v_vna;
 
   /* "bz_pricing/core/credit_core.pyx":53
- *     cdef double f_di_p, di_d_p, f_spr_rem, f_spr_p
+ *     cdef double f_di_p, f_spr_rem, f_spr_p
  *     cdef double valor_fluxo, pv_val, base_amort, p_val
  *     cdef double total_pv = 0.0, sum_du_pv = 0.0, sum_t_pv = 0.0             # <<<<<<<<<<<<<<
  *     cdef double sum_dmod_pv = 0.0, sum_conv_pv = 0.0, t_ano
@@ -20568,7 +20566,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
  *             if ev == 0:
  *                 if is_di:             # <<<<<<<<<<<<<<
  *                     if is_pct_di:
- *                         if prev_du_di == 0:
+ *                         f_pct_acum = pow(1.0 + di_d * multiplicador_di, du)
 */
             if (__pyx_v_is_di) {
 
@@ -20576,120 +20574,102 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
  *             if ev == 0:
  *                 if is_di:
  *                     if is_pct_di:             # <<<<<<<<<<<<<<
+ *                         f_pct_acum = pow(1.0 + di_d * multiplicador_di, du)
  *                         if prev_du_di == 0:
- *                             di_d_rem = pow(f_di_acum, 1.0 / du) - 1.0
 */
               if (__pyx_v_is_pct_di) {
 
                 /* "bz_pricing/core/credit_core.pyx":82
  *                 if is_di:
  *                     if is_pct_di:
+ *                         f_pct_acum = pow(1.0 + di_d * multiplicador_di, du)             # <<<<<<<<<<<<<<
+ *                         if prev_du_di == 0:
+ *                             f_cupom = (fator_acruado_di * f_pct_acum) - 1.0
+*/
+                __pyx_v_f_pct_acum = pow((1.0 + (__pyx_v_di_d * __pyx_v_multiplicador_di)), __pyx_v_du);
+
+                /* "bz_pricing/core/credit_core.pyx":83
+ *                     if is_pct_di:
+ *                         f_pct_acum = pow(1.0 + di_d * multiplicador_di, du)
  *                         if prev_du_di == 0:             # <<<<<<<<<<<<<<
- *                             di_d_rem = pow(f_di_acum, 1.0 / du) - 1.0
- *                             f_rem = pow(1.0 + di_d_rem * multiplicador_di, du)
+ *                             f_cupom = (fator_acruado_di * f_pct_acum) - 1.0
+ *                         else:
 */
                 __pyx_t_12 = (__pyx_v_prev_du_di == 0);
 
                 if (__pyx_t_12) {
 
 
+                  /* "bz_pricing/core/credit_core.pyx":84
+ *                         f_pct_acum = pow(1.0 + di_d * multiplicador_di, du)
+ *                         if prev_du_di == 0:
+ *                             f_cupom = (fator_acruado_di * f_pct_acum) - 1.0             # <<<<<<<<<<<<<<
+ *                         else:
+ *                             f_cupom = (f_pct_acum / prev_f_di) - 1.0
+*/
+                  __pyx_v_f_cupom = ((__pyx_v_fator_acruado_di * __pyx_v_f_pct_acum) - 1.0);
+
                   /* "bz_pricing/core/credit_core.pyx":83
  *                     if is_pct_di:
- *                         if prev_du_di == 0:
- *                             di_d_rem = pow(f_di_acum, 1.0 / du) - 1.0             # <<<<<<<<<<<<<<
- *                             f_rem = pow(1.0 + di_d_rem * multiplicador_di, du)
- *                             f_cupom = (fator_acruado_di * f_rem) - 1.0
-*/
-                  __pyx_v_di_d_rem = (pow(__pyx_v_f_di_acum, (1.0 / ((double)__pyx_v_du))) - 1.0);
-
-                  /* "bz_pricing/core/credit_core.pyx":84
- *                         if prev_du_di == 0:
- *                             di_d_rem = pow(f_di_acum, 1.0 / du) - 1.0
- *                             f_rem = pow(1.0 + di_d_rem * multiplicador_di, du)             # <<<<<<<<<<<<<<
- *                             f_cupom = (fator_acruado_di * f_rem) - 1.0
- *                         else:
-*/
-                  __pyx_v_f_rem = pow((1.0 + (__pyx_v_di_d_rem * __pyx_v_multiplicador_di)), __pyx_v_du);
-
-                  /* "bz_pricing/core/credit_core.pyx":85
- *                             di_d_rem = pow(f_di_acum, 1.0 / du) - 1.0
- *                             f_rem = pow(1.0 + di_d_rem * multiplicador_di, du)
- *                             f_cupom = (fator_acruado_di * f_rem) - 1.0             # <<<<<<<<<<<<<<
- *                         else:
- *                             du_p = du - prev_du_di
-*/
-                  __pyx_v_f_cupom = ((__pyx_v_fator_acruado_di * __pyx_v_f_rem) - 1.0);
-
-                  /* "bz_pricing/core/credit_core.pyx":82
- *                 if is_di:
- *                     if is_pct_di:
+ *                         f_pct_acum = pow(1.0 + di_d * multiplicador_di, du)
  *                         if prev_du_di == 0:             # <<<<<<<<<<<<<<
- *                             di_d_rem = pow(f_di_acum, 1.0 / du) - 1.0
- *                             f_rem = pow(1.0 + di_d_rem * multiplicador_di, du)
+ *                             f_cupom = (fator_acruado_di * f_pct_acum) - 1.0
+ *                         else:
 */
                   goto __pyx_L14;
                 }
 
-                /* "bz_pricing/core/credit_core.pyx":87
- *                             f_cupom = (fator_acruado_di * f_rem) - 1.0
+                /* "bz_pricing/core/credit_core.pyx":86
+ *                             f_cupom = (fator_acruado_di * f_pct_acum) - 1.0
  *                         else:
- *                             du_p = du - prev_du_di             # <<<<<<<<<<<<<<
- *                             f_di_p = f_di_acum / prev_f_di
- *                             di_d_p = pow(f_di_p, 1.0 / du_p) - 1.0
+ *                             f_cupom = (f_pct_acum / prev_f_di) - 1.0             # <<<<<<<<<<<<<<
+ *                         r_cupom = multiplicador_di
+ *                         prev_du_di = du
 */
                 /*else*/ {
-                  __pyx_v_du_p = (__pyx_v_du - __pyx_v_prev_du_di);
-
-                  /* "bz_pricing/core/credit_core.pyx":88
- *                         else:
- *                             du_p = du - prev_du_di
- *                             f_di_p = f_di_acum / prev_f_di             # <<<<<<<<<<<<<<
- *                             di_d_p = pow(f_di_p, 1.0 / du_p) - 1.0
- *                             f_cupom = pow(1.0 + di_d_p * multiplicador_di, du_p) - 1.0
-*/
-                  __pyx_v_f_di_p = (__pyx_v_f_di_acum / __pyx_v_prev_f_di);
-
-                  /* "bz_pricing/core/credit_core.pyx":89
- *                             du_p = du - prev_du_di
- *                             f_di_p = f_di_acum / prev_f_di
- *                             di_d_p = pow(f_di_p, 1.0 / du_p) - 1.0             # <<<<<<<<<<<<<<
- *                             f_cupom = pow(1.0 + di_d_p * multiplicador_di, du_p) - 1.0
- *                         r_cupom = multiplicador_di
-*/
-                  __pyx_v_di_d_p = (pow(__pyx_v_f_di_p, (1.0 / ((double)__pyx_v_du_p))) - 1.0);
-
-                  /* "bz_pricing/core/credit_core.pyx":90
- *                             f_di_p = f_di_acum / prev_f_di
- *                             di_d_p = pow(f_di_p, 1.0 / du_p) - 1.0
- *                             f_cupom = pow(1.0 + di_d_p * multiplicador_di, du_p) - 1.0             # <<<<<<<<<<<<<<
- *                         r_cupom = multiplicador_di
- *                     else:
-*/
-                  __pyx_v_f_cupom = (pow((1.0 + (__pyx_v_di_d_p * __pyx_v_multiplicador_di)), __pyx_v_du_p) - 1.0);
+                  __pyx_v_f_cupom = ((__pyx_v_f_pct_acum / __pyx_v_prev_f_di) - 1.0);
                 }
                 __pyx_L14:;
 
-                /* "bz_pricing/core/credit_core.pyx":91
- *                             di_d_p = pow(f_di_p, 1.0 / du_p) - 1.0
- *                             f_cupom = pow(1.0 + di_d_p * multiplicador_di, du_p) - 1.0
+                /* "bz_pricing/core/credit_core.pyx":87
+ *                         else:
+ *                             f_cupom = (f_pct_acum / prev_f_di) - 1.0
  *                         r_cupom = multiplicador_di             # <<<<<<<<<<<<<<
+ *                         prev_du_di = du
+ *                         prev_f_di = f_pct_acum
+*/
+                __pyx_v_r_cupom = __pyx_v_multiplicador_di;
+
+                /* "bz_pricing/core/credit_core.pyx":88
+ *                             f_cupom = (f_pct_acum / prev_f_di) - 1.0
+ *                         r_cupom = multiplicador_di
+ *                         prev_du_di = du             # <<<<<<<<<<<<<<
+ *                         prev_f_di = f_pct_acum
+ *                     else:
+*/
+                __pyx_v_prev_du_di = __pyx_v_du;
+
+                /* "bz_pricing/core/credit_core.pyx":89
+ *                         r_cupom = multiplicador_di
+ *                         prev_du_di = du
+ *                         prev_f_di = f_pct_acum             # <<<<<<<<<<<<<<
  *                     else:
  *                         r_cupom = (p_val / 100.0) if p_val > 0.0 else coupon_rate
 */
-                __pyx_v_r_cupom = __pyx_v_multiplicador_di;
+                __pyx_v_prev_f_di = __pyx_v_f_pct_acum;
 
                 /* "bz_pricing/core/credit_core.pyx":81
  *             if ev == 0:
  *                 if is_di:
  *                     if is_pct_di:             # <<<<<<<<<<<<<<
+ *                         f_pct_acum = pow(1.0 + di_d * multiplicador_di, du)
  *                         if prev_du_di == 0:
- *                             di_d_rem = pow(f_di_acum, 1.0 / du) - 1.0
 */
                 goto __pyx_L13;
               }
 
-              /* "bz_pricing/core/credit_core.pyx":93
- *                         r_cupom = multiplicador_di
+              /* "bz_pricing/core/credit_core.pyx":91
+ *                         prev_f_di = f_pct_acum
  *                     else:
  *                         r_cupom = (p_val / 100.0) if p_val > 0.0 else coupon_rate             # <<<<<<<<<<<<<<
  *                         if prev_du_di == 0:
@@ -20708,7 +20688,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 
                 __pyx_v_r_cupom = __pyx_t_13;
 
-                /* "bz_pricing/core/credit_core.pyx":94
+                /* "bz_pricing/core/credit_core.pyx":92
  *                     else:
  *                         r_cupom = (p_val / 100.0) if p_val > 0.0 else coupon_rate
  *                         if prev_du_di == 0:             # <<<<<<<<<<<<<<
@@ -20720,7 +20700,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
                 if (__pyx_t_12) {
 
 
-                  /* "bz_pricing/core/credit_core.pyx":95
+                  /* "bz_pricing/core/credit_core.pyx":93
  *                         r_cupom = (p_val / 100.0) if p_val > 0.0 else coupon_rate
  *                         if prev_du_di == 0:
  *                             f_spr_rem = pow(1.0 + r_cupom, du / 252.0)             # <<<<<<<<<<<<<<
@@ -20729,7 +20709,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 */
                   __pyx_v_f_spr_rem = pow((1.0 + __pyx_v_r_cupom), (((double)__pyx_v_du) / 252.0));
 
-                  /* "bz_pricing/core/credit_core.pyx":96
+                  /* "bz_pricing/core/credit_core.pyx":94
  *                         if prev_du_di == 0:
  *                             f_spr_rem = pow(1.0 + r_cupom, du / 252.0)
  *                             f_cupom = (fator_acruado_di * f_di_acum * f_spr_rem) - 1.0             # <<<<<<<<<<<<<<
@@ -20738,7 +20718,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 */
                   __pyx_v_f_cupom = (((__pyx_v_fator_acruado_di * __pyx_v_f_di_acum) * __pyx_v_f_spr_rem) - 1.0);
 
-                  /* "bz_pricing/core/credit_core.pyx":94
+                  /* "bz_pricing/core/credit_core.pyx":92
  *                     else:
  *                         r_cupom = (p_val / 100.0) if p_val > 0.0 else coupon_rate
  *                         if prev_du_di == 0:             # <<<<<<<<<<<<<<
@@ -20748,7 +20728,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
                   goto __pyx_L15;
                 }
 
-                /* "bz_pricing/core/credit_core.pyx":98
+                /* "bz_pricing/core/credit_core.pyx":96
  *                             f_cupom = (fator_acruado_di * f_di_acum * f_spr_rem) - 1.0
  *                         else:
  *                             du_p = du - prev_du_di             # <<<<<<<<<<<<<<
@@ -20758,7 +20738,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
                 /*else*/ {
                   __pyx_v_du_p = (__pyx_v_du - __pyx_v_prev_du_di);
 
-                  /* "bz_pricing/core/credit_core.pyx":99
+                  /* "bz_pricing/core/credit_core.pyx":97
  *                         else:
  *                             du_p = du - prev_du_di
  *                             f_di_p = f_di_acum / prev_f_di             # <<<<<<<<<<<<<<
@@ -20767,58 +20747,58 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 */
                   __pyx_v_f_di_p = (__pyx_v_f_di_acum / __pyx_v_prev_f_di);
 
-                  /* "bz_pricing/core/credit_core.pyx":100
+                  /* "bz_pricing/core/credit_core.pyx":98
  *                             du_p = du - prev_du_di
  *                             f_di_p = f_di_acum / prev_f_di
  *                             f_spr_p = pow(1.0 + r_cupom, du_p / 252.0)             # <<<<<<<<<<<<<<
  *                             f_cupom = (f_di_p * f_spr_p) - 1.0
- *                     prev_du_di = du
+ *                         prev_du_di = du
 */
                   __pyx_v_f_spr_p = pow((1.0 + __pyx_v_r_cupom), (((double)__pyx_v_du_p) / 252.0));
 
-                  /* "bz_pricing/core/credit_core.pyx":101
+                  /* "bz_pricing/core/credit_core.pyx":99
  *                             f_di_p = f_di_acum / prev_f_di
  *                             f_spr_p = pow(1.0 + r_cupom, du_p / 252.0)
  *                             f_cupom = (f_di_p * f_spr_p) - 1.0             # <<<<<<<<<<<<<<
- *                     prev_du_di = du
- *                     prev_f_di = f_di_acum
+ *                         prev_du_di = du
+ *                         prev_f_di = f_di_acum
 */
                   __pyx_v_f_cupom = ((__pyx_v_f_di_p * __pyx_v_f_spr_p) - 1.0);
                 }
                 __pyx_L15:;
-              }
-              __pyx_L13:;
 
-              /* "bz_pricing/core/credit_core.pyx":102
+                /* "bz_pricing/core/credit_core.pyx":100
  *                             f_spr_p = pow(1.0 + r_cupom, du_p / 252.0)
  *                             f_cupom = (f_di_p * f_spr_p) - 1.0
- *                     prev_du_di = du             # <<<<<<<<<<<<<<
- *                     prev_f_di = f_di_acum
+ *                         prev_du_di = du             # <<<<<<<<<<<<<<
+ *                         prev_f_di = f_di_acum
  *                 else:
 */
-              __pyx_v_prev_du_di = __pyx_v_du;
+                __pyx_v_prev_du_di = __pyx_v_du;
 
-              /* "bz_pricing/core/credit_core.pyx":103
+                /* "bz_pricing/core/credit_core.pyx":101
  *                             f_cupom = (f_di_p * f_spr_p) - 1.0
- *                     prev_du_di = du
- *                     prev_f_di = f_di_acum             # <<<<<<<<<<<<<<
+ *                         prev_du_di = du
+ *                         prev_f_di = f_di_acum             # <<<<<<<<<<<<<<
  *                 else:
  *                     r_cupom = (p_val / 100.0) if p_val > 0.0 else coupon_rate
 */
-              __pyx_v_prev_f_di = __pyx_v_f_di_acum;
+                __pyx_v_prev_f_di = __pyx_v_f_di_acum;
+              }
+              __pyx_L13:;
 
               /* "bz_pricing/core/credit_core.pyx":80
  * 
  *             if ev == 0:
  *                 if is_di:             # <<<<<<<<<<<<<<
  *                     if is_pct_di:
- *                         if prev_du_di == 0:
+ *                         f_pct_acum = pow(1.0 + di_d * multiplicador_di, du)
 */
               goto __pyx_L12;
             }
 
-            /* "bz_pricing/core/credit_core.pyx":105
- *                     prev_f_di = f_di_acum
+            /* "bz_pricing/core/credit_core.pyx":103
+ *                         prev_f_di = f_di_acum
  *                 else:
  *                     r_cupom = (p_val / 100.0) if p_val > 0.0 else coupon_rate             # <<<<<<<<<<<<<<
  *                     f_cupom_raw = pow(1.0 + r_cupom, yf_period[i]) - 1.0
@@ -20837,7 +20817,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 
               __pyx_v_r_cupom = __pyx_t_13;
 
-              /* "bz_pricing/core/credit_core.pyx":106
+              /* "bz_pricing/core/credit_core.pyx":104
  *                 else:
  *                     r_cupom = (p_val / 100.0) if p_val > 0.0 else coupon_rate
  *                     f_cupom_raw = pow(1.0 + r_cupom, yf_period[i]) - 1.0             # <<<<<<<<<<<<<<
@@ -20847,7 +20827,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
               __pyx_t_11 = __pyx_v_i;
               __pyx_v_f_cupom_raw = (pow((1.0 + __pyx_v_r_cupom), (*((double *) ( /* dim=0 */ (__pyx_v_yf_period.data + __pyx_t_11 * __pyx_v_yf_period.strides[0]) )))) - 1.0);
 
-              /* "bz_pricing/core/credit_core.pyx":107
+              /* "bz_pricing/core/credit_core.pyx":105
  *                     r_cupom = (p_val / 100.0) if p_val > 0.0 else coupon_rate
  *                     f_cupom_raw = pow(1.0 + r_cupom, yf_period[i]) - 1.0
  *                     if is_cricra:             # <<<<<<<<<<<<<<
@@ -20856,7 +20836,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 */
               if (__pyx_v_is_cricra) {
 
-                /* "bz_pricing/core/credit_core.pyx":108
+                /* "bz_pricing/core/credit_core.pyx":106
  *                     f_cupom_raw = pow(1.0 + r_cupom, yf_period[i]) - 1.0
  *                     if is_cricra:
  *                         f_cupom = round(f_cupom_raw * 1e9) / 1e9             # <<<<<<<<<<<<<<
@@ -20865,7 +20845,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 */
                 __pyx_v_f_cupom = (round((__pyx_v_f_cupom_raw * 1e9)) / 1e9);
 
-                /* "bz_pricing/core/credit_core.pyx":107
+                /* "bz_pricing/core/credit_core.pyx":105
  *                     r_cupom = (p_val / 100.0) if p_val > 0.0 else coupon_rate
  *                     f_cupom_raw = pow(1.0 + r_cupom, yf_period[i]) - 1.0
  *                     if is_cricra:             # <<<<<<<<<<<<<<
@@ -20875,7 +20855,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
                 goto __pyx_L16;
               }
 
-              /* "bz_pricing/core/credit_core.pyx":110
+              /* "bz_pricing/core/credit_core.pyx":108
  *                         f_cupom = round(f_cupom_raw * 1e9) / 1e9
  *                     else:
  *                         f_cupom = trunc(f_cupom_raw * 1e9) / 1e9             # <<<<<<<<<<<<<<
@@ -20889,7 +20869,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
             }
             __pyx_L12:;
 
-            /* "bz_pricing/core/credit_core.pyx":112
+            /* "bz_pricing/core/credit_core.pyx":110
  *                         f_cupom = trunc(f_cupom_raw * 1e9) / 1e9
  * 
  *                 valor_fluxo = trunc((saldo_vna * f_cupom) * value_scale) / value_scale             # <<<<<<<<<<<<<<
@@ -20908,7 +20888,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
             goto __pyx_L11;
           }
 
-          /* "bz_pricing/core/credit_core.pyx":114
+          /* "bz_pricing/core/credit_core.pyx":112
  *                 valor_fluxo = trunc((saldo_vna * f_cupom) * value_scale) / value_scale
  *             else:
  *                 r_cupom = 0.0             # <<<<<<<<<<<<<<
@@ -20918,7 +20898,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
           /*else*/ {
             __pyx_v_r_cupom = 0.0;
 
-            /* "bz_pricing/core/credit_core.pyx":115
+            /* "bz_pricing/core/credit_core.pyx":113
  *             else:
  *                 r_cupom = 0.0
  *                 if ev == 2 or p_val <= 0.0 or ((not amortizacao_sobre_vne) and p_val >= 100.0):             # <<<<<<<<<<<<<<
@@ -20964,7 +20944,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
             if (__pyx_t_12) {
 
 
-              /* "bz_pricing/core/credit_core.pyx":116
+              /* "bz_pricing/core/credit_core.pyx":114
  *                 r_cupom = 0.0
  *                 if ev == 2 or p_val <= 0.0 or ((not amortizacao_sobre_vne) and p_val >= 100.0):
  *                     valor_fluxo = trunc(saldo_vna * value_scale) / value_scale             # <<<<<<<<<<<<<<
@@ -20973,7 +20953,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 */
               __pyx_v_valor_fluxo = (trunc((__pyx_v_saldo_vna * __pyx_v_value_scale)) / __pyx_v_value_scale);
 
-              /* "bz_pricing/core/credit_core.pyx":117
+              /* "bz_pricing/core/credit_core.pyx":115
  *                 if ev == 2 or p_val <= 0.0 or ((not amortizacao_sobre_vne) and p_val >= 100.0):
  *                     valor_fluxo = trunc(saldo_vna * value_scale) / value_scale
  *                     saldo_vna = 0.0             # <<<<<<<<<<<<<<
@@ -20982,7 +20962,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 */
               __pyx_v_saldo_vna = 0.0;
 
-              /* "bz_pricing/core/credit_core.pyx":115
+              /* "bz_pricing/core/credit_core.pyx":113
  *             else:
  *                 r_cupom = 0.0
  *                 if ev == 2 or p_val <= 0.0 or ((not amortizacao_sobre_vne) and p_val >= 100.0):             # <<<<<<<<<<<<<<
@@ -20992,7 +20972,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
               goto __pyx_L17;
             }
 
-            /* "bz_pricing/core/credit_core.pyx":119
+            /* "bz_pricing/core/credit_core.pyx":117
  *                     saldo_vna = 0.0
  *                 else:
  *                     base_amort = vna if amortizacao_sobre_vne else saldo_vna             # <<<<<<<<<<<<<<
@@ -21009,7 +20989,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
               }
               __pyx_v_base_amort = __pyx_t_13;
 
-              /* "bz_pricing/core/credit_core.pyx":120
+              /* "bz_pricing/core/credit_core.pyx":118
  *                 else:
  *                     base_amort = vna if amortizacao_sobre_vne else saldo_vna
  *                     valor_fluxo = _min_d(saldo_vna, trunc((base_amort * (p_val / 100.0)) * value_scale) / value_scale)             # <<<<<<<<<<<<<<
@@ -21018,7 +20998,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 */
               __pyx_v_valor_fluxo = __pyx_f_10bz_pricing_4core_11credit_core__min_d(__pyx_v_saldo_vna, (trunc(((__pyx_v_base_amort * (__pyx_v_p_val / 100.0)) * __pyx_v_value_scale)) / __pyx_v_value_scale));
 
-              /* "bz_pricing/core/credit_core.pyx":121
+              /* "bz_pricing/core/credit_core.pyx":119
  *                     base_amort = vna if amortizacao_sobre_vne else saldo_vna
  *                     valor_fluxo = _min_d(saldo_vna, trunc((base_amort * (p_val / 100.0)) * value_scale) / value_scale)
  *                     saldo_vna -= valor_fluxo             # <<<<<<<<<<<<<<
@@ -21031,7 +21011,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
           }
           __pyx_L11:;
 
-          /* "bz_pricing/core/credit_core.pyx":123
+          /* "bz_pricing/core/credit_core.pyx":121
  *                     saldo_vna -= valor_fluxo
  * 
  *             pv_val = valor_fluxo / df_val             # <<<<<<<<<<<<<<
@@ -21040,7 +21020,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 */
           __pyx_v_pv_val = (__pyx_v_valor_fluxo / __pyx_v_df_val);
 
-          /* "bz_pricing/core/credit_core.pyx":125
+          /* "bz_pricing/core/credit_core.pyx":123
  *             pv_val = valor_fluxo / df_val
  * 
  *             out_taxa_cupom[i] = r_cupom             # <<<<<<<<<<<<<<
@@ -21050,7 +21030,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
           __pyx_t_11 = __pyx_v_i;
           *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_out_taxa_cupom.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_out_taxa_cupom.diminfo[0].strides) = __pyx_v_r_cupom;
 
-          /* "bz_pricing/core/credit_core.pyx":126
+          /* "bz_pricing/core/credit_core.pyx":124
  * 
  *             out_taxa_cupom[i] = r_cupom
  *             out_fluxo[i] = valor_fluxo             # <<<<<<<<<<<<<<
@@ -21060,7 +21040,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
           __pyx_t_11 = __pyx_v_i;
           *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_out_fluxo.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_out_fluxo.diminfo[0].strides) = __pyx_v_valor_fluxo;
 
-          /* "bz_pricing/core/credit_core.pyx":127
+          /* "bz_pricing/core/credit_core.pyx":125
  *             out_taxa_cupom[i] = r_cupom
  *             out_fluxo[i] = valor_fluxo
  *             out_taxa_desc[i] = taxa_desc_eff             # <<<<<<<<<<<<<<
@@ -21070,7 +21050,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
           __pyx_t_11 = __pyx_v_i;
           *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_out_taxa_desc.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_out_taxa_desc.diminfo[0].strides) = __pyx_v_taxa_desc_eff;
 
-          /* "bz_pricing/core/credit_core.pyx":128
+          /* "bz_pricing/core/credit_core.pyx":126
  *             out_fluxo[i] = valor_fluxo
  *             out_taxa_desc[i] = taxa_desc_eff
  *             out_df[i] = df_val             # <<<<<<<<<<<<<<
@@ -21080,7 +21060,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
           __pyx_t_11 = __pyx_v_i;
           *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_out_df.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_out_df.diminfo[0].strides) = __pyx_v_df_val;
 
-          /* "bz_pricing/core/credit_core.pyx":129
+          /* "bz_pricing/core/credit_core.pyx":127
  *             out_taxa_desc[i] = taxa_desc_eff
  *             out_df[i] = df_val
  *             out_pv[i] = pv_val             # <<<<<<<<<<<<<<
@@ -21090,7 +21070,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
           __pyx_t_11 = __pyx_v_i;
           *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_out_pv.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_out_pv.diminfo[0].strides) = __pyx_v_pv_val;
 
-          /* "bz_pricing/core/credit_core.pyx":131
+          /* "bz_pricing/core/credit_core.pyx":129
  *             out_pv[i] = pv_val
  * 
  *             total_pv += pv_val             # <<<<<<<<<<<<<<
@@ -21099,7 +21079,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 */
           __pyx_v_total_pv = (__pyx_v_total_pv + __pyx_v_pv_val);
 
-          /* "bz_pricing/core/credit_core.pyx":132
+          /* "bz_pricing/core/credit_core.pyx":130
  * 
  *             total_pv += pv_val
  *             t_ano = du / 252.0             # <<<<<<<<<<<<<<
@@ -21108,7 +21088,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 */
           __pyx_v_t_ano = (((double)__pyx_v_du) / 252.0);
 
-          /* "bz_pricing/core/credit_core.pyx":133
+          /* "bz_pricing/core/credit_core.pyx":131
  *             total_pv += pv_val
  *             t_ano = du / 252.0
  *             sum_du_pv += du * pv_val             # <<<<<<<<<<<<<<
@@ -21117,7 +21097,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 */
           __pyx_v_sum_du_pv = (__pyx_v_sum_du_pv + (__pyx_v_du * __pyx_v_pv_val));
 
-          /* "bz_pricing/core/credit_core.pyx":134
+          /* "bz_pricing/core/credit_core.pyx":132
  *             t_ano = du / 252.0
  *             sum_du_pv += du * pv_val
  *             sum_t_pv += t_ano * pv_val             # <<<<<<<<<<<<<<
@@ -21126,7 +21106,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 */
           __pyx_v_sum_t_pv = (__pyx_v_sum_t_pv + (__pyx_v_t_ano * __pyx_v_pv_val));
 
-          /* "bz_pricing/core/credit_core.pyx":135
+          /* "bz_pricing/core/credit_core.pyx":133
  *             sum_du_pv += du * pv_val
  *             sum_t_pv += t_ano * pv_val
  *             sum_dmod_pv += (t_ano / (1.0 + taxa_desc_eff)) * pv_val             # <<<<<<<<<<<<<<
@@ -21135,7 +21115,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 */
           __pyx_v_sum_dmod_pv = (__pyx_v_sum_dmod_pv + ((__pyx_v_t_ano / (1.0 + __pyx_v_taxa_desc_eff)) * __pyx_v_pv_val));
 
-          /* "bz_pricing/core/credit_core.pyx":136
+          /* "bz_pricing/core/credit_core.pyx":134
  *             sum_t_pv += t_ano * pv_val
  *             sum_dmod_pv += (t_ano / (1.0 + taxa_desc_eff)) * pv_val
  *             sum_conv_pv += ((t_ano * (t_ano + 1.0)) / ((1.0 + taxa_desc_eff) * (1.0 + taxa_desc_eff))) * pv_val             # <<<<<<<<<<<<<<
@@ -21164,7 +21144,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
       }
   }
 
-  /* "bz_pricing/core/credit_core.pyx":138
+  /* "bz_pricing/core/credit_core.pyx":136
  *             sum_conv_pv += ((t_ano * (t_ano + 1.0)) / ((1.0 + taxa_desc_eff) * (1.0 + taxa_desc_eff))) * pv_val
  * 
  *     cdef double pu = vna if n == 0 else (trunc(total_pv * value_scale) / value_scale)             # <<<<<<<<<<<<<<
@@ -21183,7 +21163,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 
   __pyx_v_pu = __pyx_t_13;
 
-  /* "bz_pricing/core/credit_core.pyx":139
+  /* "bz_pricing/core/credit_core.pyx":137
  * 
  *     cdef double pu = vna if n == 0 else (trunc(total_pv * value_scale) / value_scale)
  *     cdef double dur_du = 0.0             # <<<<<<<<<<<<<<
@@ -21192,7 +21172,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 */
   __pyx_v_dur_du = 0.0;
 
-  /* "bz_pricing/core/credit_core.pyx":140
+  /* "bz_pricing/core/credit_core.pyx":138
  *     cdef double pu = vna if n == 0 else (trunc(total_pv * value_scale) / value_scale)
  *     cdef double dur_du = 0.0
  *     cdef double dur_anos = 0.0             # <<<<<<<<<<<<<<
@@ -21201,7 +21181,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 */
   __pyx_v_dur_anos = 0.0;
 
-  /* "bz_pricing/core/credit_core.pyx":141
+  /* "bz_pricing/core/credit_core.pyx":139
  *     cdef double dur_du = 0.0
  *     cdef double dur_anos = 0.0
  *     cdef double d_mod = 0.0             # <<<<<<<<<<<<<<
@@ -21210,7 +21190,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 */
   __pyx_v_d_mod = 0.0;
 
-  /* "bz_pricing/core/credit_core.pyx":142
+  /* "bz_pricing/core/credit_core.pyx":140
  *     cdef double dur_anos = 0.0
  *     cdef double d_mod = 0.0
  *     cdef double dv01 = 0.0             # <<<<<<<<<<<<<<
@@ -21219,7 +21199,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 */
   __pyx_v_dv01 = 0.0;
 
-  /* "bz_pricing/core/credit_core.pyx":143
+  /* "bz_pricing/core/credit_core.pyx":141
  *     cdef double d_mod = 0.0
  *     cdef double dv01 = 0.0
  *     cdef double conv = 0.0             # <<<<<<<<<<<<<<
@@ -21228,7 +21208,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 */
   __pyx_v_conv = 0.0;
 
-  /* "bz_pricing/core/credit_core.pyx":145
+  /* "bz_pricing/core/credit_core.pyx":143
  *     cdef double conv = 0.0
  * 
  *     if total_pv > 0.0:             # <<<<<<<<<<<<<<
@@ -21240,7 +21220,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
   if (__pyx_t_12) {
 
 
-    /* "bz_pricing/core/credit_core.pyx":146
+    /* "bz_pricing/core/credit_core.pyx":144
  * 
  *     if total_pv > 0.0:
  *         dur_du = trunc((sum_du_pv / total_pv) * 100.0) / 100.0             # <<<<<<<<<<<<<<
@@ -21249,7 +21229,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 */
     __pyx_v_dur_du = (trunc(((__pyx_v_sum_du_pv / __pyx_v_total_pv) * 100.0)) / 100.0);
 
-    /* "bz_pricing/core/credit_core.pyx":147
+    /* "bz_pricing/core/credit_core.pyx":145
  *     if total_pv > 0.0:
  *         dur_du = trunc((sum_du_pv / total_pv) * 100.0) / 100.0
  *         dur_anos = sum_t_pv / total_pv             # <<<<<<<<<<<<<<
@@ -21258,7 +21238,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 */
     __pyx_v_dur_anos = (__pyx_v_sum_t_pv / __pyx_v_total_pv);
 
-    /* "bz_pricing/core/credit_core.pyx":148
+    /* "bz_pricing/core/credit_core.pyx":146
  *         dur_du = trunc((sum_du_pv / total_pv) * 100.0) / 100.0
  *         dur_anos = sum_t_pv / total_pv
  *         d_mod = sum_dmod_pv / total_pv             # <<<<<<<<<<<<<<
@@ -21267,7 +21247,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 */
     __pyx_v_d_mod = (__pyx_v_sum_dmod_pv / __pyx_v_total_pv);
 
-    /* "bz_pricing/core/credit_core.pyx":149
+    /* "bz_pricing/core/credit_core.pyx":147
  *         dur_anos = sum_t_pv / total_pv
  *         d_mod = sum_dmod_pv / total_pv
  *         dv01 = pu * d_mod * 0.0001             # <<<<<<<<<<<<<<
@@ -21276,7 +21256,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 */
     __pyx_v_dv01 = ((__pyx_v_pu * __pyx_v_d_mod) * 0.0001);
 
-    /* "bz_pricing/core/credit_core.pyx":150
+    /* "bz_pricing/core/credit_core.pyx":148
  *         d_mod = sum_dmod_pv / total_pv
  *         dv01 = pu * d_mod * 0.0001
  *         conv = sum_conv_pv / total_pv             # <<<<<<<<<<<<<<
@@ -21285,7 +21265,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 */
     __pyx_v_conv = (__pyx_v_sum_conv_pv / __pyx_v_total_pv);
 
-    /* "bz_pricing/core/credit_core.pyx":145
+    /* "bz_pricing/core/credit_core.pyx":143
  *     cdef double conv = 0.0
  * 
  *     if total_pv > 0.0:             # <<<<<<<<<<<<<<
@@ -21294,39 +21274,39 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
 */
   }
 
-  /* "bz_pricing/core/credit_core.pyx":158
+  /* "bz_pricing/core/credit_core.pyx":156
  *         out_df,
  *         out_pv,
  *         (pu, dur_du, dur_anos, d_mod, dv01, conv),             # <<<<<<<<<<<<<<
  *     )
  * 
 */
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_pu); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_pu); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_6 = PyFloat_FromDouble(__pyx_v_dur_du); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_6 = PyFloat_FromDouble(__pyx_v_dur_du); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_5 = PyFloat_FromDouble(__pyx_v_dur_anos); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_5 = PyFloat_FromDouble(__pyx_v_dur_anos); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_d_mod); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_d_mod); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_dv01); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_dv01); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_conv); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_conv); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_15 = PyTuple_New(6); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_15 = PyTuple_New(6); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_15);
   __Pyx_GIVEREF(__pyx_t_1);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_15, 0, __pyx_t_1) != (0)) __PYX_ERR(0, 158, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_15, 0, __pyx_t_1) != (0)) __PYX_ERR(0, 156, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_6);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_15, 1, __pyx_t_6) != (0)) __PYX_ERR(0, 158, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_15, 1, __pyx_t_6) != (0)) __PYX_ERR(0, 156, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_5);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_15, 2, __pyx_t_5) != (0)) __PYX_ERR(0, 158, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_15, 2, __pyx_t_5) != (0)) __PYX_ERR(0, 156, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_2);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_15, 3, __pyx_t_2) != (0)) __PYX_ERR(0, 158, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_15, 3, __pyx_t_2) != (0)) __PYX_ERR(0, 156, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_3);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_15, 4, __pyx_t_3) != (0)) __PYX_ERR(0, 158, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_15, 4, __pyx_t_3) != (0)) __PYX_ERR(0, 156, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_4);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_15, 5, __pyx_t_4) != (0)) __PYX_ERR(0, 158, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_15, 5, __pyx_t_4) != (0)) __PYX_ERR(0, 156, __pyx_L1_error);
   __pyx_t_1 = 0;
   __pyx_t_6 = 0;
   __pyx_t_5 = 0;
@@ -21334,32 +21314,32 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
   __pyx_t_3 = 0;
   __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/credit_core.pyx":153
+  /* "bz_pricing/core/credit_core.pyx":151
  * 
  *     return (
  *         out_taxa_cupom,             # <<<<<<<<<<<<<<
  *         out_fluxo,
  *         out_taxa_desc,
 */
-  __pyx_t_4 = PyTuple_New(6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 153, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 151, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF((PyObject *)__pyx_v_out_taxa_cupom);
   __Pyx_GIVEREF((PyObject *)__pyx_v_out_taxa_cupom);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 0, ((PyObject *)__pyx_v_out_taxa_cupom)) != (0)) __PYX_ERR(0, 153, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 0, ((PyObject *)__pyx_v_out_taxa_cupom)) != (0)) __PYX_ERR(0, 151, __pyx_L1_error);
   __Pyx_INCREF((PyObject *)__pyx_v_out_fluxo);
   __Pyx_GIVEREF((PyObject *)__pyx_v_out_fluxo);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 1, ((PyObject *)__pyx_v_out_fluxo)) != (0)) __PYX_ERR(0, 153, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 1, ((PyObject *)__pyx_v_out_fluxo)) != (0)) __PYX_ERR(0, 151, __pyx_L1_error);
   __Pyx_INCREF((PyObject *)__pyx_v_out_taxa_desc);
   __Pyx_GIVEREF((PyObject *)__pyx_v_out_taxa_desc);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 2, ((PyObject *)__pyx_v_out_taxa_desc)) != (0)) __PYX_ERR(0, 153, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 2, ((PyObject *)__pyx_v_out_taxa_desc)) != (0)) __PYX_ERR(0, 151, __pyx_L1_error);
   __Pyx_INCREF((PyObject *)__pyx_v_out_df);
   __Pyx_GIVEREF((PyObject *)__pyx_v_out_df);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 3, ((PyObject *)__pyx_v_out_df)) != (0)) __PYX_ERR(0, 153, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 3, ((PyObject *)__pyx_v_out_df)) != (0)) __PYX_ERR(0, 151, __pyx_L1_error);
   __Pyx_INCREF((PyObject *)__pyx_v_out_pv);
   __Pyx_GIVEREF((PyObject *)__pyx_v_out_pv);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 4, ((PyObject *)__pyx_v_out_pv)) != (0)) __PYX_ERR(0, 153, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 4, ((PyObject *)__pyx_v_out_pv)) != (0)) __PYX_ERR(0, 151, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_15);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 5, __pyx_t_15) != (0)) __PYX_ERR(0, 153, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 5, __pyx_t_15) != (0)) __PYX_ERR(0, 151, __pyx_L1_error);
   __pyx_t_15 = 0;
   {
     PyObject *__pyx_temp;
@@ -21415,8 +21395,6 @@ static PyObject *__pyx_f_10bz_pricing_4core_11credit_core_compute_credit_cashflo
   __Pyx_XDECREF((PyObject *)__pyx_v_out_taxa_desc);
   __Pyx_XDECREF((PyObject *)__pyx_v_out_df);
   __Pyx_XDECREF((PyObject *)__pyx_v_out_pv);
-
-
 
 
 
@@ -21725,7 +21703,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_11credit_core_compute_credit_cashfl
   return __pyx_r;
 }
 
-/* "bz_pricing/core/credit_core.pyx":162
+/* "bz_pricing/core/credit_core.pyx":160
  * 
  * 
  * cpdef double evaluate_gross_up_pv(             # <<<<<<<<<<<<<<
@@ -21751,7 +21729,7 @@ static double __pyx_f_10bz_pricing_4core_11credit_core_evaluate_gross_up_pv(__Py
   Py_ssize_t __pyx_t_4;
   Py_ssize_t __pyx_t_5;
 
-  /* "bz_pricing/core/credit_core.pyx":168
+  /* "bz_pricing/core/credit_core.pyx":166
  * ) noexcept nogil:
  *     """Avalia o valor presente de um fluxo ajustado com gross-up de IR em C puro."""
  *     cdef Py_ssize_t n = du_arr.shape[0]             # <<<<<<<<<<<<<<
@@ -21760,7 +21738,7 @@ static double __pyx_f_10bz_pricing_4core_11credit_core_evaluate_gross_up_pv(__Py
 */
   __pyx_v_n = (__pyx_v_du_arr.shape[0]);
 
-  /* "bz_pricing/core/credit_core.pyx":170
+  /* "bz_pricing/core/credit_core.pyx":168
  *     cdef Py_ssize_t n = du_arr.shape[0]
  *     cdef Py_ssize_t i
  *     cdef double pv = 0.0             # <<<<<<<<<<<<<<
@@ -21769,7 +21747,7 @@ static double __pyx_f_10bz_pricing_4core_11credit_core_evaluate_gross_up_pv(__Py
 */
   __pyx_v_pv = 0.0;
 
-  /* "bz_pricing/core/credit_core.pyx":171
+  /* "bz_pricing/core/credit_core.pyx":169
  *     cdef Py_ssize_t i
  *     cdef double pv = 0.0
  *     for i in range(n):             # <<<<<<<<<<<<<<
@@ -21783,11 +21761,12 @@ static double __pyx_f_10bz_pricing_4core_11credit_core_evaluate_gross_up_pv(__Py
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "bz_pricing/core/credit_core.pyx":172
+    /* "bz_pricing/core/credit_core.pyx":170
  *     cdef double pv = 0.0
  *     for i in range(n):
  *         pv += flows_arr[i] / pow(1.0 + rate, du_arr[i] / 252.0)             # <<<<<<<<<<<<<<
  *     return pv
+ * 
 */
     __pyx_t_4 = __pyx_v_i;
     __pyx_t_5 = __pyx_v_i;
@@ -21795,10 +21774,11 @@ static double __pyx_f_10bz_pricing_4core_11credit_core_evaluate_gross_up_pv(__Py
   }
 
 
-  /* "bz_pricing/core/credit_core.pyx":173
+  /* "bz_pricing/core/credit_core.pyx":171
  *     for i in range(n):
  *         pv += flows_arr[i] / pow(1.0 + rate, du_arr[i] / 252.0)
  *     return pv             # <<<<<<<<<<<<<<
+ * 
 */
   {
 
@@ -21806,7 +21786,7 @@ static double __pyx_f_10bz_pricing_4core_11credit_core_evaluate_gross_up_pv(__Py
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/credit_core.pyx":162
+  /* "bz_pricing/core/credit_core.pyx":160
  * 
  * 
  * cpdef double evaluate_gross_up_pv(             # <<<<<<<<<<<<<<
@@ -21864,46 +21844,46 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_du_arr,&__pyx_mstate_global->__pyx_n_u_flows_arr,&__pyx_mstate_global->__pyx_n_u_rate,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 162, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 160, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 162, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 160, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 162, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 160, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 162, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 160, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "evaluate_gross_up_pv", 0) < (0)) __PYX_ERR(0, 162, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "evaluate_gross_up_pv", 0) < (0)) __PYX_ERR(0, 160, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 3; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("evaluate_gross_up_pv", 1, 3, 3, i); __PYX_ERR(0, 162, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("evaluate_gross_up_pv", 1, 3, 3, i); __PYX_ERR(0, 160, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 3)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 162, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 160, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 162, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 160, __pyx_L3_error)
       values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 162, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 160, __pyx_L3_error)
     }
-    __pyx_v_du_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_int(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_du_arr.memview)) __PYX_ERR(0, 163, __pyx_L3_error)
-    __pyx_v_flows_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_flows_arr.memview)) __PYX_ERR(0, 164, __pyx_L3_error)
-    __pyx_v_rate = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_rate == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 165, __pyx_L3_error)
+    __pyx_v_du_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_int(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_du_arr.memview)) __PYX_ERR(0, 161, __pyx_L3_error)
+    __pyx_v_flows_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_flows_arr.memview)) __PYX_ERR(0, 162, __pyx_L3_error)
+    __pyx_v_rate = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_rate == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 163, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("evaluate_gross_up_pv", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 162, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("evaluate_gross_up_pv", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 160, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -21937,9 +21917,9 @@ static PyObject *__pyx_pf_10bz_pricing_4core_11credit_core_2evaluate_gross_up_pv
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("evaluate_gross_up_pv", 0);
-  if (unlikely(!__pyx_v_du_arr.memview)) { __Pyx_RaiseUnboundLocalError("du_arr"); __PYX_ERR(0, 162, __pyx_L1_error) }
-  if (unlikely(!__pyx_v_flows_arr.memview)) { __Pyx_RaiseUnboundLocalError("flows_arr"); __PYX_ERR(0, 162, __pyx_L1_error) }
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_f_10bz_pricing_4core_11credit_core_evaluate_gross_up_pv(__pyx_v_du_arr, __pyx_v_flows_arr, __pyx_v_rate, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 162, __pyx_L1_error)
+  if (unlikely(!__pyx_v_du_arr.memview)) { __Pyx_RaiseUnboundLocalError("du_arr"); __PYX_ERR(0, 160, __pyx_L1_error) }
+  if (unlikely(!__pyx_v_flows_arr.memview)) { __Pyx_RaiseUnboundLocalError("flows_arr"); __PYX_ERR(0, 160, __pyx_L1_error) }
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_f_10bz_pricing_4core_11credit_core_evaluate_gross_up_pv(__pyx_v_du_arr, __pyx_v_flows_arr, __pyx_v_rate, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   {
     PyObject *__pyx_temp;
@@ -24288,19 +24268,19 @@ __Pyx_RefNannySetupContext("PyInit_credit_core", 0);
   if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_compute_credit_cashflows, __pyx_t_4) < (0)) __PYX_ERR(0, 15, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/credit_core.pyx":162
+  /* "bz_pricing/core/credit_core.pyx":160
  * 
  * 
  * cpdef double evaluate_gross_up_pv(             # <<<<<<<<<<<<<<
  *     int[:] du_arr,
  *     double[:] flows_arr,
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_11credit_core_3evaluate_gross_up_pv, 0, __pyx_mstate_global->__pyx_n_u_evaluate_gross_up_pv, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_credit_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[1])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 162, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_11credit_core_3evaluate_gross_up_pv, 0, __pyx_mstate_global->__pyx_n_u_evaluate_gross_up_pv, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_credit_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[1])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_evaluate_gross_up_pv, __pyx_t_4) < (0)) __PYX_ERR(0, 162, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_evaluate_gross_up_pv, __pyx_t_4) < (0)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "bz_pricing/core/credit_core.pyx":1
@@ -24492,30 +24472,30 @@ static int __Pyx_InitConstants(__pyx_mstatetype *__pyx_mstate) {
   CYTHON_UNUSED_VAR(__pyx_mstate);
   {
     const struct { const unsigned int length: 8; } str_length_index[] = {{6},{8},{1},{2},{15},{23},{25},{32},{20},{22},{1},{1},{37},{45},{22},{179},{8},{15},{7},{6},{2},{9},{50},{38},{33},{35},{30},{37},{5},{8},{8},{15},{20},{12},{9},{17},{8},{8},{12},{10},{8},{10},{8},{7},{14},{11},{10},{19},{14},{12},{10},{17},{13},{12},{12},{19},{8},{13},{3},{15},{21},{18},{4},{27},{1},{18},{24},{5},{11},{5},{15},{6},{7},{6},{9},{5},{20},{10},{16},{5},{7},{9},{6},{7},{2},{5},{9},{5},{9},{5},{8},{7},{4},{16},{4},{4},{2},{5},{3},{4},{4},{3},{10},{8},{4},{8},{10},{5},{4},{5},{4},{4},{6},{6},{6},{11},{6},{3},{1},{9},{5}};
-    const struct { const unsigned int length: 11; } bytes_length_index[] = {{1},{67},{1168}};
+    const struct { const unsigned int length: 11; } bytes_length_index[] = {{1},{67},{1109}};
     #ifndef CYTHON_COMPRESS_STRINGS
       #define CYTHON_COMPRESS_STRINGS 90
     #endif
-    #if (CYTHON_COMPRESS_STRINGS) == 1 /* compression: zlib (1773 bytes) */
-static const char cstring[] = "x\332}T\317S\333H\026\016\304$$\353\335\005b\006\030<)\331\231\204\354np\306@R3Ij\266\300\220Zv*\2631$$d\266J\325\226\332\246\203,\t\265\344\330\324\036\346\310QG\035u\324QG\035u\364QG\035\375\047\344O\330\257%\363c6SK\341\326\353\356\327\357\307\367\276\367$bK\337\365%\243\365\221*\366\217\265g\322\213W\264kX\203\003F?IF[z\241\030\272\315:\216\341p\211\350\252\2442K(\376\3571\323\317/\270m1\225\252W\224%\303\372\277\367\277=\273\320\374\361\357\r\242\353\206-\021\316YG\227lC\262(QW\r]\033H\335,\310\036\202\334\325{Dc\252\3245T\372H\242}\023oajEY\021~W\332\206e[D_y$u`\352\\\231\037\021\223\302\225D\372\214K?\0336\225\354# \321\030\330G\206.\341L\245\032kQ\213\330\024\336D|\260j\t%]z\275\363zu\343\373\215,Z\213\n\334\270\304\235\226\242!P\312\005h-\207i6\254\333\003\223\362\232\264\333\226\006\206#\351\024q!\013\023zW\037\330GT\2278\265\205 \255d9\023\233\031\272\214\347L\357\254\214ab=*^\277$\032\2475\242\2522\364\250bh\232\2703t^#-Ee\234\2644Ju\261v\024\306sI\325\r$\324&\216fK\262lQ\325Q\250,K\252\223Y\324\r}\025\t\366\030\321p\2530\235\331\262\254;]sPS\014\213\326\272x\306\210e\221\201\324&L\313\223`]\023\310^\321r\272\304>\372B\201[\312\343\326\251l\002?\244\362Xh>V\020\000\\d\257\314A\337\311B\024O\210\246\031\n\020\227rg*\261I\355wn\363\342\t\364s\336\360\332\346~cwwG\323\230\311\031\337\247\047\016\325\025*\030\\\273$\263,\277\036\364\361\333F%\345\237i\337\336\243mY\036\243\r4\220\271\250\307\245\320\2416\263iW\034\250\342\r\376\332\216\256\210/\256\370\371\253<O!u\t\323\263\257\241:Zv\247\223n\376\025\356e\031\311\312\312\021U\216\271\323\315wc+B\024\\\311%G7\231r\014\013;\372\271^\317\026(\010\033\047\016\321\316\315\236\027\362BR2\372^9\240}\261\001\267.B\341WB\277\220/\337\331\224\213\\\030\027\3451\034\220\230\202V\347\320\313-\247\335FS\000S\233\235\022\205\03027Z\026\225{P\343\003]aF\355\342\035o\021N/k\237\263\344J\355\025E\203\226\014\314\320\240\nm\021\345X1\272\246#\342\031k\021~\324\326\214O\\1\034\335\306b\"H\321\222\252\000+[D\244\371\354R\035""\031\264\301\nB(\250?\306\001\005~Y\013S\313\202C\264\276#\222\350X\006\312\353\230\262\331\243=\252\213hDs\330\206%\023\305r\210j\240\340m\215t8\234\023\373\351F\026\203\260\216a\002\226\217G\nS1\252h_@\205\014-\002AeXLp\005\002\250\303\363\345\224bZ\211Q%FT\326L\246\306\024\270\261\240\047\352\202\211\327\325\315\254\227\220\213\t Lj)\246aZY2\302\263P\315\276H\300\242\035\306\361A\371\306M\235u\204p\204r\242\347ljr\333\300\317r\024\033l\202A\307D7e\010P\231\243\236\271\310{:\351\017\3322\3341C=\245\000\346_\277N|.^\233Z\362nxm\177\323o\216\n\363n3-L\237M\235\275u+n=\235\376\323\031sO\274\353\336\232\267\357O\370%\177\317\357\005\007a=l\204V4\233\026\376pV\207\211\357\204\211\233^\317o\372$-<\217\326\242\203\270\0367\342\336pox\222\026\236\206\255\350FD\"\036?\030N\016+i\341YT\215^\306\225x=n\017\267\206x\262\036\256\205\007Q=jD\275x/>\371\342\340\363\215kS\367\375\315Q\241\234\224W\203\346\347\351kS\345d\371Q\362\350E\264\231\026\356&w\353\341\354\350\326\355t\272x\266\343\316\273\304=I\213\263\356\2027\341\315\n\341k\257\356m\246\305\222\273\235\237\314\273\037\274\023\177bT\374\363\331I:\263\340\366\305.\235){\r\010\005\177\313o\007\215\300\ng\323\231;\300\240\264\354\255{\304\263\3755\377 \330\300\371B4\031U\322\3227\336[\277\342\257\373\304\267\203\265\340mX\r\377\021m\307\223y\222\243\354\272\352\3773h\205\327\201\3276\336<\214\357!\231\376\320J\232\357\222w\207\311\341\007\341`\335my\023i\351[\277\341\237\004\323\341\r\200U\210\266\"2\302\321\346hf\311\233\207s\016O\033\276\025,\206w\302\255\260\023\355\215\201\232\221\3624\270{\017\205\313\303]@\366\213\313\336s_\tf\323\362\212\317\203J\360<T\201\271\210\256\222\226sW\205`+`\241\225\374\360\323\260\016\265d\345{\204\270\022\317\305\365Q\371\036\322j\005\023i\371\276\377!\003\002\302~0\001\367\245p/\354\301\375IZ~ \034\004\337\"\301\233\271\231\247Is?\331\177\223.V\375\312H,\376\323`.x\206B\256E\2071\271\022\324\303\340zP\017\266\303\311\360/\321z\324\212\047.\002\370k\274\025\037\347v~/\214K\237\267\242""\371\361C\377S\266\235\213\220{\305\237MK\002\223\322]\240\326\003]O\303\257@\325%\344]\252\372\367\300P5\250\006\273\341!\370h\307kqs\214W\325\277\017L\212\000\227\"\332\346\350\213\203\231\273\036\005\003D\034K\200\362\325pnX\037\315|\355U\362\032*\336\034X\322\006\262v\360$,$\033?\r7\206\275\344\355\373\344\375\241\360,\214\335\006E^\t\200\307!V\374\205\344aCl\253\376\003\240\273\034\356 \213\347\2612\374Jp\004\004\371%\371\345(9\372\230|<\316R\033\201\271\377\366\347\374\372\250\010\307\336\023\220\026\047M\227z\365\264\270\344\315z\367=\020\177\016\235\373\004\224:\027F\305E\261+\271\r\327\022\354_\362\356x[\036Iq|\303k\t\033e\357%\240y\023\314%\177\023\315\333L\213\337x\007\300\276\r\212\264A]\301Gc\270\237\274~\223\2749H\016:I\207%\354\243\030\026\357`I\361\027\203\371\200\004\003\224o5\266\206\030\013\210%-,#\252\202p]\020\010\213eT\270\371\353\300\235t+\351\364,\332\264\345\335\036w\310\315l\232L\337q\177\310\"\233\236q\213\271 \230]u_zU\364/6\377\301\034\302\220\232J\247o\375\346\377\326\037\317\336\243\247?!\342\315\377\002\313\216dS";
-    PyObject *data = __Pyx_DecompressString(cstring, 1773, 1);
+    #if (CYTHON_COMPRESS_STRINGS) == 1 /* compression: zlib (1754 bytes) */
+static const char cstring[] = "x\332}T\317S\333H\026\216\211!N\326\273\213\211\031`\360\244dg\210\263\273\340\214\201\244f\223\324l\201!5\354TfcHH\310l\225\252%\265\355\016\262Z\250[\216\315\356a\216\034u\324QG\035u\324QG\037u\324\321\177B\376\204}-\031\302l\266\226\302\255\327\335\357\347\367\276\327\022\342\322wC\211*\037\260\312\177h<\225\236\277\304}j\215\216\t\376(\321\216\364\\\245\006\047]\233\332LB\206&i\304\022\212\377}L\214\313\013\306-\242a\355\232\262D\255\377{\377\333\263+\315\037\376\326B\206A\271\204\030#]C\342T\2620\3226\250\241\217\244~\232\344\000\222<0\006H\047\232\324\247\032^\227\360\320\004[pUW\353\"n\275C-n!\243\276.u\301\325\2452\353!\023C(\t\r\t\223~\246\034K\274\007H\264F\274G\r\t\3164\254\023\005[\210c\210&\362\003\257\226P2\244W\373\2576\266\277\337N\263\265\260\300\215I\314VT\035\022\305L\200\246\330D\347\340\235\217L\314\032\322AG\032Q[20\344\005U\230\240w\335\200\367\260!1\314\205 \325\323\232\021\047\324\220\301\234\030\335\372\024&2\300\302\372\005\322\031n M\223A\017\253T\327\305\0355X\003)\252F\030Rt\214\r\261vU\3022I3(\024\324A\266\316%Y\266\260f\253X\226%\315N=\032\324\330\200\002\007\004\351p\253\022\203pY6\354\2769j\250\324\302\215>\230\021dYh$u\020\321\263\"H\337\004d\257i\331}\304{_(0K}\244\234\313&\340\007\245<\022\232\217TH\000B\244V\346hh\247)\n\023\244\353T\005\304\245,\230\2068j\374\217\333\254y\002\375\2147\254\261s\324:8\330\327ub2\302\216\360\231\215\r\025\013\0067>\223Y\226_\215\206\360\333\203N\312?\343!?\304\035Y\236\242\rh@\345\242\037\237\205.\346\204\343\2768\320\204\r\374ulC\025_\270b\227VY\235B\352#b\244_\252\331zzg\240~\366\025\341e\031\212\225\325\036VO\231\335\317vS/B\024\\\311$\3330\211z\n\036\366\215K\275\001\027(\010\037g6\322/\335^6\362JRS\372^;\300C\261\001n]\245\302\256\245~%\177\266\343\230\211Z\010\023\355\2416\220\030\003\255.\241\227\025\273\323\201\241\000L99G*\2422\243\212\205\345\001\250\261\221\241\022\332\270\262c\nb\370s\3573\226\\\353\275\252\352\240%\003f0\240*V\220z\252\322\276i\213|\246Z\210\365::\375\310Tj\033\034""\026\023\222\024#\251\t\260\322Ed\232\275]\232-\003m`\005B\250\320\177x\0160\340\227\2160\266,\010\010\243o\213\"\272\026\205\366\332\246l\016\360\000\033\"\0331\034\234Z2R-\033i\024\032\336\321Q\227Ap\304\237l\2479\010\357\360\230\000\313\247O\n\321\340\251\302C\001\025Th!\0204\002\213\t\\\001\001\250\303\262\345\034\303k%\236*\361D\245\303d\352D\2050\026\350\211\276\300\213\3277\314t\226\240\026\023\2000\261\245\232\324\264\322bDd\241\232~\241\000\013w\t\203\017\264o:\324\351D\210@\320N\2309\216M\306)\374,[\345\300&ph\2330M)\002Xf\320\317Ld\003\003\rG\035\031\302\021\252\235c\000\346\037\277\346>\025o\314\256\270sn\307\333\361\332\223\374\242\323N\362\205\213\331\2137N\325i&\205?\\\020\347\314\275\351n\272G^\316+{\207\336\300?\016\232A+\260\302R\222\377\335E\023\\|\047\\\334r\007^\333CI\376Y\270\031\036G\315\250\025\r\306\207\343\263$\377$P\302\271\020\205,z0\236\031W\223\374\323\260\026\276\210\252\321V\324\031\357\216\301d+\330\014\216\303f\330\n\007\321at\366\305\301\247\271\033\263k\336\316$_\211+\033~\373S\341\306l%^]\217\327\237\207;I\376^|\257\031\224&\267\357$\205\342\305\276\263\350 \347,)\226\234%7\347\226\204\360\265\333tw\222b\331\331\313N\026\235\367\356\231\227\233\024\377xq\226\314/9C\261K\346+n\013\204\274\267\353u\374\226o\005\245d\376.`P^u\267\\\344ro\323;\366\267\341|)\234\t\253I\371\033\367\215W\365\266<\344q\177\323\177\023\324\202\037\303\275h&+r\222^\327\274\277\373Jp\023\360\332\003\233\207\321}(f8\266\342\366\333\370\355I|\362^\004\330r\0247\227\224\277\365Z\336\231_\010\346\000\254|\270\033\242\t\034\355L\346W\334E\010\316 \322\266g\371\313\301\335`7\350\206\207S\240\346\245\254\014\346\334\207\306e\351.A\365\313k\336\221\237\363\313\376\241o\007\273\361\223\037\307\271dy\325}\346\251~)\251\324\343\372\367\220\317z\244\214s\223J\335\373\027\344\376ShE\245d\271\346U\205q;Y\026\321\305\326{\342/\370O\241\033\233\341I\204\256yy\350\337\364\233\376^0\023\374)\334\n\225(w\345\370\317\321nt\032\267\217\342\243\327\223\312}\200H\361\341r\315{""\237\202Zy \354\375o\001\231\333\341\342\324\320\373\230n\027\302\346\265\360\345{P\372\0008w\036|\005|[\211\000\365\232w\037h\246\3715\377 8\001R\361h3jO\213\256yk\200a\021\020\302\220m{\362\305\301\374=\027C\033E\036+\300\301\227\343\205qs2\377\265[\315\032\241\272\013\320\352\016t\202\373\217\203|\274\375\323x{<\210\337\274\213\337\235\210\310\302\331\035\300\352e\264\020\001\320\002\373r\325[\212\037\266\304\266\346=\000\310W\203}\250\342Y\244\216\277\022\215\206.\377\022\377\322\213{\037\342\017\247\th\227&@\277\177z\013^sR\204\300\356c`\036\234\264\035\3546\223\342\212[r\327\\`\357\002\214\337c\340\305\2450).\213]\331i9\226\240\360\212{\327\335uQ\002\307s\256\"|T\334\027\000\315k\177!\376\213\230\300vR\374\306=\006\354;\376\256\337\001\376\tR\321\361Q\374\352u\374\3728>\356\306]\022\223\017b\342\337\202\047\325[\366\027}\344\217\240}\033\2215\206\331\206\\\222\374*d\225\027\241\363\002a\261L\362\267~\03593N5)\224`\326\024\367\316\224\346\267\322\047\241p\327\371k\232Ya\336)f\202\240g\315y\341\326`\010a\363oxL\340\245\231M\n\267\177\363\177\373\367\027\357`0?B\306;\377\001_\016J4";
+    PyObject *data = __Pyx_DecompressString(cstring, 1754, 1);
     #define __Pyx_DecompressString_LZSS_UNUSED
     if (unlikely(!data)) __PYX_ERR(0, 1, __pyx_L1_error)
     const char* const bytes = __Pyx_PyBytes_AsString(data);
     #if !CYTHON_ASSUME_SAFE_MACROS
     if (likely(bytes)); else { Py_DECREF(data); __PYX_ERR(0, 1, __pyx_L1_error) }
     #endif
-    #elif (CYTHON_COMPRESS_STRINGS) > 0 && (CYTHON_COMPRESS_STRINGS) <= 90 /* compression: lzss (2293 bytes) */
-static const char cstring[] = "\377 at 0x o\377bject>.:\377 <Memory\377View of \377<contigu\377ous and gdir%\001\007\rin\021\005\177strided\"\010o or \004\031><(\t\376A\006>?Canno\377t assign\377 to read\177-only m\240\002\375v\242\000Invali\377d mode, \347exp\305\000|\000\047c\047\376t\001\047fortra\237n\047, gH\000%\005s\357hape\222\000 ax\377is Note \373th\207 Cytho\373n \021\000delib\237eratek\000\320\001c\367ter!\001n PE\337P-484\212\"re\376\264!s subcl\366\246\000es\261!buil\373ti\260\000ypes.\377 If you \223ne\224 \303\000p\316\000%\tt\177hen set\200\000\367e \047\357\002atio\377n_typing\355\047\355$iv\242\000o F\377alse.add}_\231 ecoll\266@\376+\000s.abcdi\177sableen\002\001\357gcis\004\003dno\377 default\377 __reduc\277e__ duM\002n\367on-\262@vial\376\033\000cinit__\377numpy.co\357re.m4\000iar\377ray fail\316\277\003imp\327 \033\010um\367ath\020\016src/\277bz_priU\000g\215/L\001/c~\000`\000W\002p\347yxu\250\002\333Aall\353oc\357  g\003dat\303a.\013\020\267C\211\204\001\346cs.\377ASCIIEll\377ipsisSeq_uence\276\204\001.\303\204\007\337__Pyx\001\000Di\377ct_NextR\317ef__\347$\213 __\366\274B__\001\005geti\227tem\r\001d0\001\027\000fgunc\035\001\030\000st\230`x)\001\203#3\001main\003\002\357odulM\002nam\346\002\003ewT\001\352\000_ch\037ecksuT\000\n\001?\004\360\025\001\352@\221@\037\001unpi\333ck?\000En \005vt<\323A\230\001qualO\005\301Eb\312Fc\272\204\002\277\001\335Dex\314\001\202\331`_\203\005\345`\262\006\003\006.\007t{es\372@_is_\370@?outine\324`\221E\377_buffera\377mortizac\377ao_sobre\373_v$\000synci\373o./\006sbase\270\362G\306c\361Hccl[\000_\376\261 traceba\377ckcomput\373e_\232eashfl\377owscount^\002\000pon_\217\206\001d\251!\370\000\002\246\001\266\210\003du_ar\275r\003\000desc\375@o\277deenum\276\206\002e\377rroreval\375u\261Agross_\377up_pveve\363nt\350\000\231\205\001tor_\377acruado_\177diflagsz\000\317at64\177\002Z\001fo\357rmat\314\207\004idi\357ndex\247!ric[ra\261 di\266 p\335`\364\006\000\270`s\274asize\307mem\247\210\001\237\210\001\310\205\002pl\313icd\000re\000\237and""\357imnp\355\205\002obj\375p\206 percpo\301p\036\000\312\000\324\001\047\001\003\002at\377eregiste\217rset\316\206\004\312\210\002e\001s\357tart\031\000pst=o\001\000ruct\313`\327 \337updat\375\002e_\357scal\005\003svn\337axyf_l\000io\367dze\226 O\200\001\360\377\014\000\005\031\230\006\230f\377\240A\240Q\340\004\025\220\377Q\330\004\010\210\005\210U\377\220!\2201\330\010\016\210\377i\220q\230\003\2302\230\377S\240\001\240\024\240R\240\377v\250V\2601\260C\260\377r\270\021\330\004\013\2101\372@\0000?\001\007\230v\240Q\377\240a\330\004;\2702\270\377V\3001\300C\300v\310\377R\310q\330\0046\260b\377\270\006\270a\270s\300&\377\310\002\310!\330\004:\270\377\"\270F\300!\3003\300\357f\310B\3100\0003\2602\377\260V\2701\270C\270v\347\300R\3000\000\002\014\360\006\000\377\005%\240A\340\004\034\320\377\034-\250Q\360\010\000\005\377\034\320\033,\320,<\270\377A\330\004\036\320\0361\260\377\021\340\t\n\330\010\014\210\377E\220\025\220a\220q\330\377\014\021\220\027\230\001\230\021\376\005\001\032\2301\230A\330\014\367\024\220D\014\003\025\220Z\230\377q\240\001\340\014\017\210q\337\330\020\027\220x\n\001\330\020\367\034\230C\024\000\004\240B\240\377f\250C\250r\260\021\330\373\020\023\201 \024\033\2303\230\377a\230t\2402\240V\250\3754\025\000\027\270\002\270!\330\377\024\035\230U\240!\2403\377\240a\240t\2502\250U\377\260\"\260H\270D\300\002\372\337\003\340\032\002\"\240J\250b\353\260\003\255 D1\000(\300#\376\333\000x\310r\320QW\320\337WY\320YZ]\0013\220\377b\230\001\330\024$\240C\277\240q\250\010\260\006\252 \004\337\270B\270a\340\020\000A\340\257\020\031\230\025z\000sg\0004\377\240r\250\030\260\023\260Bo\260g\270R\242$\020 \301\003\247s\220#\266@\251\003\027\373\000\030\377\033\230;\240c\250\021\330\377\034\047\240s\250!\250;s\260d\361 \232\001!\330\034e\003\377\004\250B\250i\260r\320\3579K\3101$\000\320\0478\376\324\000\047\300\022\3001\340\034\375#\324\000b\250\001\330\034%s\240Z\204\"\006\000S\250\001|\000\337\024\260R\260v|\000q\330[\034&]\001\250$\336\000\007A\003\3776\320QS\320S""T\330\337\030\"\240!\340\001\001\2406\357\250\022\250:\327@2\270Y\367\300a\330\213\007(\250\003\250\3771\250D\260\002\260)\270\3373\270b\300\001x\006*\300\307B\300kB\003s\021j\007\t\270\355\0252\004\240w\341 \t\270\022\377\2701\330\024!\240\021\330\355\024\220!\024\036\260@v\240R\377\240z\260\026\260r\270\031\375\300\256@\"\240#\240Q\240\377d\250\"\250I\260Y\270\377a\270t\3002\300Q\330]\024\253\"\"\240%\374 \014\332 \237e\2702\270Q\273\001\003\013\020\347\036\230e\377@\213!\031\270\"\377\270M\310\022\3101\340\020w\032\230!\276Cc\230\022\243`\375f\302@t\2505\260\004\320\3774K\3104\310v\320U\277X\320XY\330\024X\003\n\362\240`M\335!\234\004!\240\027\320w(C\300\264\000\"\240&\333 \367\033\260E\303\000;\300c\310\371\026\240a\236`[\320[h\320\337hj\320jk\326\002\340\014\377\025\220\\\240\022\2401\340}\014v\000\2305\240\001\330\017\000\377Q\220e\2301\330\014\031\377\230\021\230%\230q\330\014\237\022\220!\2205\320`\001\005\340\373\014\030\n\001\024\220C\220r\376\214\205\001\031\230\023\230B\230a\335\330\024\000\006\230b@\001\034\230}F\230 T\250\022\320+\271\206\001\377Q\330\014\035\230V\2403{\240f\240`f\260D\270\214\204\001\377o\310S\320PT\320T\377V\320Vg\320gi\320\353ij\251\207\001WG\000c\240\030\377\250\025\250a\250y\270\002\377\270-\300r\310\021\330\004\256\211\000\330\004\033\223\000\004w\001\004\374\216\204\001\001\001\340\004\007\200y\220\377\002\220!\330\010\021\220\025_\220b\230\n\240\234\205\003\007\311\207\002\357\010\023\2209\225\002\010\020\220\375\014\003\003\017\210s\220\"\220\377F\230\"\230A\330\010\017\377\210|\2302\230Q\340\004\217\005\330\010\t\000\000\000\003\010\001\t\377\r\210X\220Z\230w\240\007f\250A";
-    PyObject *data = __Pyx_DecompressString_LZSS(cstring, 2293, 2788);
+    #elif (CYTHON_COMPRESS_STRINGS) > 0 && (CYTHON_COMPRESS_STRINGS) <= 90 /* compression: lzss (2265 bytes) */
+static const char cstring[] = "\377 at 0x o\377bject>.:\377 <Memory\377View of \377<contigu\377ous and gdir%\001\007\rin\021\005\177strided\"\010o or \004\031><(\t\376A\006>?Canno\377t assign\377 to read\177-only m\240\002\375v\242\000Invali\377d mode, \347exp\305\000|\000\047c\047\376t\001\047fortra\237n\047, gH\000%\005s\357hape\222\000 ax\377is Note \373th\207 Cytho\373n \021\000delib\237eratek\000\320\001c\367ter!\001n PE\337P-484\212\"re\376\264!s subcl\366\246\000es\261!buil\373ti\260\000ypes.\377 If you \223ne\224 \303\000p\316\000%\tt\177hen set\200\000\367e \047\357\002atio\377n_typing\355\047\355$iv\242\000o F\377alse.add}_\231 ecoll\266@\376+\000s.abcdi\177sableen\002\001\357gcis\004\003dno\377 default\377 __reduc\277e__ duM\002n\367on-\262@vial\376\033\000cinit__\377numpy.co\357re.m4\000iar\377ray fail\316\277\003imp\327 \033\010um\367ath\020\016src/\277bz_priU\000g\215/L\001/c~\000`\000W\002p\347yxu\250\002\333Aall\353oc\357  g\003dat\303a.\013\020\267C\211\204\001\346cs.\377ASCIIEll\377ipsisSeq_uence\276\204\001.\303\204\007\337__Pyx\001\000Di\377ct_NextR\317ef__\347$\213 __\366\274B__\001\005geti\227tem\r\001d0\001\027\000fgunc\035\001\030\000st\230`x)\001\203#3\001main\003\002\357odulM\002nam\346\002\003ewT\001\352\000_ch\037ecksuT\000\n\001?\004\360\025\001\352@\221@\037\001unpi\333ck?\000En \005vt<\323A\230\001qualO\005\301Eb\312Fc\272\204\002\277\001\335Dex\314\001\202\331`_\203\005\345`\262\006\003\006.\007t{es\372@_is_\370@?outine\324`\221E\377_buffera\377mortizac\377ao_sobre\373_v$\000synci\373o./\006sbase\270\362G\306c\361Hccl[\000_\376\261 traceba\377ckcomput\373e_\232eashfl\377owscount^\002\000pon_\217\206\001d\251!\370\000\002\246\001\266\210\003du_ar\275r\003\000desc\375@o\277deenum\276\206\002e\377rroreval\375u\261Agross_\377up_pveve\363nt\350\000\231\205\001tor_\377acruado_\177diflagsz\000\317at64\177\002Z\001fo\357rmat\314\207\004idi\357ndex\247!ric[ra\261 di\266 p\335`\364\006\000\270`s\274asize\307mem\247\210\001\237\210\001\310\205\002pl\313icd\000re\000\237and""\357imnp\355\205\002obj\375p\206 percpo\301p\036\000\312\000\324\001\047\001\003\002at\377eregiste\217rset\316\206\004\312\210\002e\001s\357tart\031\000pst=o\001\000ruct\313`\327 \337updat\375\002e_\357scal\005\003svn\337axyf_l\000io\367dze\226 O\200\001\360\377\014\000\005\031\230\006\230f\377\240A\240Q\340\004\025\220\377Q\330\004\010\210\005\210U\377\220!\2201\330\010\016\210\377i\220q\230\003\2302\230\377S\240\001\240\024\240R\240\377v\250V\2601\260C\260\377r\270\021\330\004\013\2101\372@\0000?\001\007\230v\240Q\377\240a\330\004;\2702\270\377V\3001\300C\300v\310\377R\310q\330\0046\260b\377\270\006\270a\270s\300&\377\310\002\310!\330\004:\270\377\"\270F\300!\3003\300\357f\310B\3100\0003\2602\377\260V\2701\270C\270v\347\300R\3000\000\002\014\360\006\000\377\005%\240A\340\004\034\320\377\034-\250Q\360\010\000\005\377\034\320\033,\320,<\270\377A\330\004\036\320\0361\260\377\021\340\t\n\330\010\014\210\377E\220\025\220a\220q\330\377\014\021\220\027\230\001\230\021\376\005\001\032\2301\230A\330\014\367\024\220D\014\003\025\220Z\230\377q\240\001\340\014\017\210q\337\330\020\027\220x\n\001\330\020\367\034\230C\024\000\004\240B\240\377f\250C\250r\260\021\330\373\020\023\201 \024\033\2303\230\377a\230t\2402\240V\250\3754\025\000\027\270\002\270!\330\377\024\035\230U\240!\2403\377\240a\240t\2502\250U\377\260\"\260H\270D\300\002\372\337\003\340\032\002\"\240J\250b\353\260\003\255 D1\000(\300#\376\333\000x\310r\320QW\320\337WY\320YZ]\0013\220\377b\230\001\330\024$\240C\277\240q\250\010\260\006\252 \004\337\270B\270a\340\020\000A\340\257\020\031\230\025z\000sg\0004\377\240r\250\030\260\023\260Bo\260g\270R\242$\020 \301\003\247s\220#\266@\251\003\027\373\000\030\377%\240S\250\001\250\024\250\377R\250u\260B\3206H\377\310\001\330\030\033\230;\240\377c\250\021\330\034\047\320\047\3758\301\000,\300b\310\001\340\357\034\047\240{\271\000K\270r\377\300\021\330\030\"\240!\330\236:\000Q\330\030$\355 \013\001\240\3376\250\022\250:\234@2\270\367Y\300a;\010(\250\003\250\3771\250D\260\002""\260)\270\3373\270b\300\001P\006*\300\377B\300k\320QS\320SoT\340\034#\240 b\250\032\000\267%\240Z\320\"\034&\202\001\250\335$\227 \t\270\0252\004\240wn\n\002\022\2701t\010\024\036\365 \335v\361`z\260\026\355`\031\300\356\363 \"\240#\344`d\250\"\357\250I\260Y\322`t\3002\357\300Q\330\024\360\002\"\240%\372\301 \014\237 e\2702\270Q{\340\030\001\r\020\036\230e\304@\376\204\001\031\270\"\270M\310\022\177\3101\340\020\032\230!\203C\327c\230\022\350@f\207@t\250\3775\260\004\3204K\3104\377\310v\320UX\320XY\353\330\024X\003\n\345@M\300\022\357\3001\330\024\370!\024!\240\357\027\320(C\013\001\"\240&\376\360 \033\260E\270\022\270;\317\300c\310\026\345A\343@[\320\377[h\320hj\320jk\375\330+\000\021\340\014\025\220\\\277\240\022\2401\340\014v\000\230\3575\240\001\330\017\000Q\220e\377\2301\330\014\031\230\021\230\377%\230q\330\014\022\220!s\2205\225`\001\005\340\014\030\n\001\337\024\220C\220r\321\204\001\031\230\277\023\230B\230a\330\024\000\006\273\230b@\001\034\230F\230 T\357\250\022\320+\376\205\001Q\330\014\377\035\230V\2403\240f\250\277B\250f\260D\270\321ao\377\310S\320PT\320TV\377\320Vg\320gi\320i\365j\356\206\001WG\000c\240\030\250\377\025\250a\250y\270\002\270\177-\300r\310\021\330\004\211\000W\330\004\033\223\000\004w\001\004\323a\376\001\001\340\004\007\200y\220\002\377\220!\330\010\021\220\025\220\257b\230\n\240\341\204\003\007\216\207\002\010\367\023\2209\225\002\010\020\220\014\376\003\003\017\210s\220\"\220F\377\230\"\230A\330\010\017\210\377|\2302\230Q\340\004\005\307\330\010\t\000\000\000\003\010\001\t\r\377\210X\220Z\230w\240f\003\250A";
+    PyObject *data = __Pyx_DecompressString_LZSS(cstring, 2265, 2729);
     #define __Pyx_DecompressString_UNUSED
     if (unlikely(!data)) __PYX_ERR(0, 1, __pyx_L1_error)
     const char* const bytes = __Pyx_PyBytes_AsString(data);
     #if !CYTHON_ASSUME_SAFE_MACROS
     if (likely(bytes)); else { Py_DECREF(data); __PYX_ERR(0, 1, __pyx_L1_error) }
     #endif
-    #else /* compression: none (2788 bytes) */
-static const char bytes[] = " at 0x object>.: <MemoryView of <contiguous and direct><contiguous and indirect><strided and direct or indirect><strided and direct><strided and indirect>>?Cannot assign to read-only memoryviewInvalid mode, expected \047c\047 or \047fortran\047, got Invalid shape in axis Note that Cython is deliberately stricter than PEP-484 and rejects subclasses of builtin types. If you need to pass subclasses then set the \047annotation_typing\047 directive to False.add_notecollections.abcdisableenablegcisenabledno default __reduce__ due to non-trivial __cinit__numpy.core.multiarray failed to importnumpy.core.umath failed to importsrc/bz_pricing/core/credit_core.pyxunable to allocate array data.unable to allocate shape and strides.ASCIIEllipsisSequenceView.MemoryView__Pyx_PyDict_NextRef__annotate____class____class_getitem____dict____func____getstate____import____main____module____name____new____pyx_checksum__pyx_state__pyx_type__pyx_unpickle_Enum__pyx_vtable____qualname____reduce____reduce_cython____reduce_ex____set_name____setstate____setstate_cython____test___is_coroutineabcallocate_bufferamortizacao_sobre_vneasyncio.coroutinesbasebz_pricing.core.credit_coreccline_in_tracebackcompute_credit_cashflowscountcoupon_ratedtypedtype_is_objectdu_arrdu_descencodeenumerateerrorevaluate_gross_up_pvevent_codefator_acruado_diflagsfloat64flows_arrformatfortranidindexis_cricrais_diis_pct_diitemsitemsizememviewmodemultiplicador_dinamendimnpnumpyobjpackpercpopr_desc_arrr_di_arrrateregistersetdefaultshapesizestartstepstopstructunpackupdatevalue_scalevaluesvnaxyf_periodzerosO\200\001\360\014\000\005\031\230\006\230f\240A\240Q\340\004\025\220Q\330\004\010\210\005\210U\220!\2201\330\010\016\210i\220q\230\003\2302\230S\240\001\240\024\240R\240v\250V\2601\260C\260r\270\021\330\004\013\2101\200\001\3600\000\005\031\230\007\230v\240Q\240a\330\004;\2702\270V\3001\300C\300v\310R\310q\330\0046\260b\270\006\270a\270s\300&\310\002\310!\330\004:\270\"\270F\300!\3003\300f\310B\310a\330\0043\2602\260V\2701""\270C\270v\300R\300q\330\0043\2602\260V\2701\270C\270v\300R\300q\360\006\000\005%\240A\340\004\034\320\034-\250Q\360\010\000\005\034\320\033,\320,<\270A\330\004\036\320\0361\260\021\340\t\n\330\010\014\210E\220\025\220a\220q\330\014\021\220\027\230\001\230\021\330\014\021\220\032\2301\230A\330\014\024\220D\230\001\230\021\330\014\025\220Z\230q\240\001\340\014\017\210q\330\020\027\220x\230q\240\001\330\020\034\230C\230q\240\004\240B\240f\250C\250r\260\021\330\020\023\2201\330\024\033\2303\230a\230t\2402\240V\2504\250r\260\027\270\002\270!\330\024\035\230U\240!\2403\240a\240t\2502\250U\260\"\260H\270D\300\002\300&\310\002\310!\340\024\035\230U\240\"\240J\250b\260\003\2601\260D\270\002\270(\300#\300R\300x\310r\320QW\320WY\320YZ\330\020\023\2203\220b\230\001\330\024$\240C\240q\250\010\260\006\260b\270\004\270B\270a\340\024$\240A\340\020\031\230\025\230a\230s\240!\2404\240r\250\030\260\023\260B\260g\270R\270v\300R\300q\330\020 \240\001\340\014\017\210s\220#\220Q\330\020\023\2201\330\024\027\220q\330\030\033\230;\240c\250\021\330\034\047\240s\250!\250;\260d\270\"\270D\300\002\300!\330\034$\240C\240q\250\004\250B\250i\260r\3209K\3101\330\034\047\320\0478\270\002\270\047\300\022\3001\340\034#\2403\240b\250\001\330\034%\240Z\250r\260\021\330\034%\240S\250\001\250\030\260\024\260R\260v\270R\270q\330\034&\240c\250\021\250$\250b\260\007\260r\3209K\3106\320QS\320ST\330\030\"\240!\340\030\"\240!\2406\250\022\250:\260V\2702\270Y\300a\330\030\033\230;\240c\250\021\330\034(\250\003\2501\250D\260\002\260)\2703\270b\300\001\330\034\047\320\0478\270\002\270*\300B\300k\320QS\320ST\340\034#\2403\240b\250\001\330\034%\240Z\250r\260\021\330\034&\240c\250\021\250$\250b\260\t\270\025\270b\300\001\330\034\047\240w\250b\260\t\270\022\2701\330\024!\240\021\330\024 \240\001\340\024\036\230a\230v\240R\240z\260\026\260r\270\031\300!\330\024\"\240#\240Q\240d\250\"\250I\260Y\270a\270t\3002\300Q\330\024\027\220q\330\030\"\240%\240q\250\014\260B\260e\2702\270Q\340\030\"\240%\240q\250\014\260B\260e""\2702\270Q\340\020\036\230e\2402\240Z\250r\260\031\270\"\270M\310\022\3101\340\020\032\230!\330\020\023\2203\220c\230\022\2303\230f\240C\240t\2505\260\004\3204K\3104\310v\320UX\320XY\330\024\"\240%\240q\250\n\260\"\260M\300\022\3001\330\024 \240\001\340\024!\240\027\320(C\3001\330\024\"\240&\250\001\250\033\260E\270\022\270;\300c\310\026\310r\320QY\320Y[\320[h\320hj\320jk\330\024!\240\021\340\014\025\220\\\240\022\2401\340\014\032\230!\2305\240\001\330\014\025\220Q\220e\2301\330\014\031\230\021\230%\230q\330\014\022\220!\2205\230\001\330\014\022\220!\2205\230\001\340\014\030\230\001\330\014\024\220C\220r\230\021\330\014\031\230\023\230B\230a\330\014\030\230\006\230b\240\001\330\014\034\230F\240#\240T\250\022\320+;\2702\270Q\330\014\035\230V\2403\240f\250B\250f\260D\270\004\270B\270o\310S\320PT\320TV\320Vg\320gi\320ij\340\004\025\220W\230B\230c\240\030\250\025\250a\250y\270\002\270-\300r\310\021\330\004\031\230\021\330\004\033\2301\330\004\030\230\001\330\004\027\220q\330\004\027\220q\340\004\007\200y\220\002\220!\330\010\021\220\025\220b\230\n\240\"\240J\250b\260\007\260r\270\021\330\010\023\2209\230B\230a\330\010\020\220\014\230B\230a\330\010\017\210s\220\"\220F\230\"\230A\330\010\017\210|\2302\230Q\340\004\005\330\010\t\330\010\t\330\010\t\330\010\t\330\010\t\330\t\r\210X\220Z\230w\240f\250A";
+    #else /* compression: none (2729 bytes) */
+static const char bytes[] = " at 0x object>.: <MemoryView of <contiguous and direct><contiguous and indirect><strided and direct or indirect><strided and direct><strided and indirect>>?Cannot assign to read-only memoryviewInvalid mode, expected \047c\047 or \047fortran\047, got Invalid shape in axis Note that Cython is deliberately stricter than PEP-484 and rejects subclasses of builtin types. If you need to pass subclasses then set the \047annotation_typing\047 directive to False.add_notecollections.abcdisableenablegcisenabledno default __reduce__ due to non-trivial __cinit__numpy.core.multiarray failed to importnumpy.core.umath failed to importsrc/bz_pricing/core/credit_core.pyxunable to allocate array data.unable to allocate shape and strides.ASCIIEllipsisSequenceView.MemoryView__Pyx_PyDict_NextRef__annotate____class____class_getitem____dict____func____getstate____import____main____module____name____new____pyx_checksum__pyx_state__pyx_type__pyx_unpickle_Enum__pyx_vtable____qualname____reduce____reduce_cython____reduce_ex____set_name____setstate____setstate_cython____test___is_coroutineabcallocate_bufferamortizacao_sobre_vneasyncio.coroutinesbasebz_pricing.core.credit_coreccline_in_tracebackcompute_credit_cashflowscountcoupon_ratedtypedtype_is_objectdu_arrdu_descencodeenumerateerrorevaluate_gross_up_pvevent_codefator_acruado_diflagsfloat64flows_arrformatfortranidindexis_cricrais_diis_pct_diitemsitemsizememviewmodemultiplicador_dinamendimnpnumpyobjpackpercpopr_desc_arrr_di_arrrateregistersetdefaultshapesizestartstepstopstructunpackupdatevalue_scalevaluesvnaxyf_periodzerosO\200\001\360\014\000\005\031\230\006\230f\240A\240Q\340\004\025\220Q\330\004\010\210\005\210U\220!\2201\330\010\016\210i\220q\230\003\2302\230S\240\001\240\024\240R\240v\250V\2601\260C\260r\270\021\330\004\013\2101\200\001\3600\000\005\031\230\007\230v\240Q\240a\330\004;\2702\270V\3001\300C\300v\310R\310q\330\0046\260b\270\006\270a\270s\300&\310\002\310!\330\004:\270\"\270F\300!\3003\300f\310B\310a\330\0043\2602\260V\2701""\270C\270v\300R\300q\330\0043\2602\260V\2701\270C\270v\300R\300q\360\006\000\005%\240A\340\004\034\320\034-\250Q\360\010\000\005\034\320\033,\320,<\270A\330\004\036\320\0361\260\021\340\t\n\330\010\014\210E\220\025\220a\220q\330\014\021\220\027\230\001\230\021\330\014\021\220\032\2301\230A\330\014\024\220D\230\001\230\021\330\014\025\220Z\230q\240\001\340\014\017\210q\330\020\027\220x\230q\240\001\330\020\034\230C\230q\240\004\240B\240f\250C\250r\260\021\330\020\023\2201\330\024\033\2303\230a\230t\2402\240V\2504\250r\260\027\270\002\270!\330\024\035\230U\240!\2403\240a\240t\2502\250U\260\"\260H\270D\300\002\300&\310\002\310!\340\024\035\230U\240\"\240J\250b\260\003\2601\260D\270\002\270(\300#\300R\300x\310r\320QW\320WY\320YZ\330\020\023\2203\220b\230\001\330\024$\240C\240q\250\010\260\006\260b\270\004\270B\270a\340\024$\240A\340\020\031\230\025\230a\230s\240!\2404\240r\250\030\260\023\260B\260g\270R\270v\300R\300q\330\020 \240\001\340\014\017\210s\220#\220Q\330\020\023\2201\330\024\027\220q\330\030%\240S\250\001\250\024\250R\250u\260B\3206H\310\001\330\030\033\230;\240c\250\021\330\034\047\320\0478\270\002\270,\300b\310\001\340\034\047\240{\260\"\260K\270r\300\021\330\030\"\240!\330\030%\240Q\330\030$\240A\340\030\"\240!\2406\250\022\250:\260V\2702\270Y\300a\330\030\033\230;\240c\250\021\330\034(\250\003\2501\250D\260\002\260)\2703\270b\300\001\330\034\047\320\0478\270\002\270*\300B\300k\320QS\320ST\340\034#\2403\240b\250\001\330\034%\240Z\250r\260\021\330\034&\240c\250\021\250$\250b\260\t\270\025\270b\300\001\330\034\047\240w\250b\260\t\270\022\2701\330\030%\240Q\330\030$\240A\340\024\036\230a\230v\240R\240z\260\026\260r\270\031\300!\330\024\"\240#\240Q\240d\250\"\250I\260Y\270a\270t\3002\300Q\330\024\027\220q\330\030\"\240%\240q\250\014\260B\260e\2702\270Q\340\030\"\240%\240q\250\014\260B\260e\2702\270Q\340\020\036\230e\2402\240Z\250r\260\031\270\"\270M\310\022\3101\340\020\032\230!\330\020\023\2203\220c\230\022\2303\230f\240C\240t\2505\260\004\3204K\3104\310v""\320UX\320XY\330\024\"\240%\240q\250\n\260\"\260M\300\022\3001\330\024 \240\001\340\024!\240\027\320(C\3001\330\024\"\240&\250\001\250\033\260E\270\022\270;\300c\310\026\310r\320QY\320Y[\320[h\320hj\320jk\330\024!\240\021\340\014\025\220\\\240\022\2401\340\014\032\230!\2305\240\001\330\014\025\220Q\220e\2301\330\014\031\230\021\230%\230q\330\014\022\220!\2205\230\001\330\014\022\220!\2205\230\001\340\014\030\230\001\330\014\024\220C\220r\230\021\330\014\031\230\023\230B\230a\330\014\030\230\006\230b\240\001\330\014\034\230F\240#\240T\250\022\320+;\2702\270Q\330\014\035\230V\2403\240f\250B\250f\260D\270\004\270B\270o\310S\320PT\320TV\320Vg\320gi\320ij\340\004\025\220W\230B\230c\240\030\250\025\250a\250y\270\002\270-\300r\310\021\330\004\031\230\021\330\004\033\2301\330\004\030\230\001\330\004\027\220q\330\004\027\220q\340\004\007\200y\220\002\220!\330\010\021\220\025\220b\230\n\240\"\240J\250b\260\007\260r\270\021\330\010\023\2209\230B\230a\330\010\020\220\014\230B\230a\330\010\017\210s\220\"\220F\230\"\230A\330\010\017\210|\2302\230Q\340\004\005\330\010\t\330\010\t\330\010\t\330\010\t\330\010\t\330\t\r\210X\220Z\230w\240f\250A";
     PyObject *data = NULL;
     #define __Pyx_DecompressString_UNUSED
     #define __Pyx_DecompressString_LZSS_UNUSED
@@ -24644,7 +24624,7 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
     __pyx_mstate_global->__pyx_codeobj_tab[0] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_credit_core, __pyx_mstate->__pyx_n_u_compute_credit_cashflows, __pyx_mstate->__pyx_kp_b_iso88591_0_vQa_2V1CvRq_6b_as_F_3fBa_32V1, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[0])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 162};
+    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 160};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_du_arr, __pyx_mstate->__pyx_n_u_flows_arr, __pyx_mstate->__pyx_n_u_rate};
     __pyx_mstate_global->__pyx_codeobj_tab[1] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_credit_core, __pyx_mstate->__pyx_n_u_evaluate_gross_up_pv, __pyx_mstate->__pyx_kp_b_iso88591_fAQ_Q_U_1_iq_2S_RvV1Cr_1, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[1])) goto bad;
   }
