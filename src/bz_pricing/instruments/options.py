@@ -22,6 +22,7 @@ try:
         implied_vol_bachelier as _cy_iv_bachelier,
         implied_vol_black76 as _cy_iv_black76,
         implied_vol_bsm as _cy_iv_bsm,
+        price_black76_batch as _cy_price_b76_batch,
         price_options_batch as _cy_price_batch,
     )
 except ImportError:
@@ -37,6 +38,7 @@ except ImportError:
     _cy_iv_bsm = None
     _cy_iv_black76 = None
     _cy_iv_bachelier = None
+    _cy_price_b76_batch = None
     _cy_price_batch = None
 
 
@@ -535,64 +537,164 @@ def price_options_portfolio(
     crr_steps: int = 150,
 ) -> pd.DataFrame:
     """
-    Precifica em lote uma carteira de `EquityOption` (europeias e americanas) via Cython (`nogil`),
-    retornando prêmio unitário, MtM financeiro e gregas por posição.
+    Precifica em lote carteiras mistas de opções (`EquityOption`, `FXOption`, `IDIOption`, `DI1Option`
+    e `CorradoSuOption`) via núcleos Cython (`nogil`), retornando prêmio unitário, MtM e gregas.
     """
     if not positions:
         return pd.DataFrame()
-    if _cy_price_batch is None:
+    if _cy_price_batch is None or _cy_price_b76_batch is None:
         raise RuntimeError("Extensão Cython 'options_core' não compilada.")
 
     n = len(positions)
-    is_call_arr = np.empty(n, dtype=np.int32)
-    is_amer_arr = np.empty(n, dtype=np.int32)
-    S_arr = np.empty(n, dtype=np.float64)
-    K_arr = np.empty(n, dtype=np.float64)
-    r_arr = np.empty(n, dtype=np.float64)
-    q_arr = np.empty(n, dtype=np.float64)
-    T_arr = np.empty(n, dtype=np.float64)
-    sig_arr = np.empty(n, dtype=np.float64)
-    qty_arr = np.empty(n, dtype=np.float64)
+    bsm_idx: List[int] = []
+    b76_idx: List[int] = []
+    cs_idx: List[int] = []
+
     tickers = []
+    classes = []
     opt_types = []
     exercises = []
+    qty_arr = np.empty(n, dtype=np.float64)
+
+    p_out = np.empty(n, dtype=np.float64)
+    d_out = np.empty(n, dtype=np.float64)
+    g_out = np.empty(n, dtype=np.float64)
+    v_out = np.empty(n, dtype=np.float64)
+    t_out = np.empty(n, dtype=np.float64)
+    r_out = np.empty(n, dtype=np.float64)
+
+    bsm_params: List[tuple] = []
+    b76_params: List[tuple] = []
 
     for i, pos in enumerate(positions):
         opt = pos["instrument"]
         tickers.append(opt.ticker)
+        classes.append(opt.__class__.__name__)
         opt_types.append(opt.option_type)
         exercises.append(opt.exercise)
-        is_call_arr[i] = 1 if opt.option_type == "CALL" else 0
-        is_amer_arr[i] = 1 if opt.exercise == "AMERICAN" else 0
-        S_arr[i] = float(pos["spot"])
-        K_arr[i] = float(opt.strike)
-        du_n = opt.du(base_date)
-        T_arr[i] = du_n / 252.0
-        r_eff = opt._get_rate_for_du(pos["pre_rate_or_curve"], du_n)
-        q_eff = opt._get_rate_for_du(pos.get("carry_or_div_yield", 0.0), du_n)
-        r_arr[i] = math.log(1.0 + max(-0.99, r_eff))
-        q_arr[i] = math.log(1.0 + max(-0.99, q_eff))
-        fwd_est = S_arr[i] * math.exp((r_arr[i] - q_arr[i]) * T_arr[i])
-        sig_arr[i] = opt._resolve_vol(pos["vol"], du_n, fwd_est)
         qty_arr[i] = float(pos.get("quantity", 1.0)) * float(opt.multiplier)
 
-    p_arr, d_arr, g_arr, v_arr, t_arr, rho_arr = _cy_price_batch(
-        is_call_arr, is_amer_arr, S_arr, K_arr, r_arr, q_arr, T_arr, sig_arr, int(crr_steps)
-    )
+        if isinstance(opt, FXOption):
+            spot_ptax = float(pos["spot_ptax"])
+            du_n, _, t_n, r_c, q_c, sig_eff = opt._resolve_fx_params(
+                base_date,
+                pos["pre_rate_or_curve"],
+                pos["cupom_limpo_or_curve"],
+                pos["vol"],
+                bool(pos.get("fixing_vol_adjust", False)),
+            )
+            if hasattr(pos["vol"], "get_vol"):
+                fwd_est = spot_ptax * math.exp((r_c - q_c) * t_n)
+                sig_val = float(pos["vol"].get_vol(max(1, du_n), strike=opt.strike, forward=fwd_est))
+                sig_eff = sig_val * math.sqrt(du_n / (du_n + 1.0)) if (du_n > 0 and pos.get("fixing_vol_adjust", False)) else sig_val
+            bsm_idx.append(i)
+            bsm_params.append((1 if opt.option_type == "CALL" else 0, 0, spot_ptax, opt.strike, r_c, q_c, t_n, sig_eff))
+        elif isinstance(opt, IDIOption):
+            du_n = opt.du(base_date)
+            t_n = du_n / 252.0
+            r_c = math.log(1.0 + max(-0.99, opt._get_rate_for_du(pos["pre_rate_or_curve"], du_n)))
+            fwd = float(pos["idi_spot"]) * math.exp(r_c * t_n)
+            sig = opt._resolve_vol(pos["vol"], du_n, fwd)
+            b76_idx.append(i)
+            b76_params.append((1 if opt.option_type == "CALL" else 0, fwd, opt.strike, r_c, t_n, sig, 1.0))
+        elif isinstance(opt, DI1Option):
+            t_c_dc, s_prime, k_prime, delta_ann = opt._resolve_di1_params(base_date, pos["pu_c"], pos["pu_l"])
+            du_n = opt.du(base_date)
+            sig = opt._resolve_vol(pos["vol"], du_n, s_prime)
+            b76_idx.append(i)
+            b76_params.append((1 if opt.option_type == "CALL" else 0, s_prime, k_prime, 0.0, t_c_dc, sig, delta_ann))
+        elif isinstance(opt, CorradoSuOption):
+            cs_idx.append(i)
+            p_cs = opt.price(
+                base_date,
+                pos["spot"],
+                pos["pre_rate_or_curve"],
+                pos["vol"],
+                kappa3=pos.get("kappa3", 0.0),
+                kappa4=pos.get("kappa4", 3.0),
+                carry_or_div_yield=pos.get("carry_or_div_yield", 0.0),
+            )
+            p_out[i] = p_cs
+            d_out[i] = np.nan
+            g_out[i] = np.nan
+            v_out[i] = np.nan
+            t_out[i] = np.nan
+            r_out[i] = np.nan
+        elif isinstance(opt, EquityOption):
+            du_n = opt.du(base_date)
+            t_n = du_n / 252.0
+            r_c = math.log(1.0 + max(-0.99, opt._get_rate_for_du(pos["pre_rate_or_curve"], du_n)))
+            q_c = math.log(1.0 + max(-0.99, opt._get_rate_for_du(pos.get("carry_or_div_yield", 0.0), du_n)))
+            S_val = float(pos["spot"])
+            fwd_est = S_val * math.exp((r_c - q_c) * t_n)
+            sig = opt._resolve_vol(pos["vol"], du_n, fwd_est)
+            bsm_idx.append(i)
+            bsm_params.append((1 if opt.option_type == "CALL" else 0, 1 if opt.exercise == "AMERICAN" else 0, S_val, opt.strike, r_c, q_c, t_n, sig))
+        else:
+            raise TypeError(f"Instrumento não suportado em price_options_portfolio: {type(opt)}")
+
+    if bsm_idx:
+        ic_a = np.array([x[0] for x in bsm_params], dtype=np.int32)
+        ia_a = np.array([x[1] for x in bsm_params], dtype=np.int32)
+        S_a = np.array([x[2] for x in bsm_params], dtype=np.float64)
+        K_a = np.array([x[3] for x in bsm_params], dtype=np.float64)
+        r_a = np.array([x[4] for x in bsm_params], dtype=np.float64)
+        q_a = np.array([x[5] for x in bsm_params], dtype=np.float64)
+        T_a = np.array([x[6] for x in bsm_params], dtype=np.float64)
+        sg_a = np.array([x[7] for x in bsm_params], dtype=np.float64)
+        pb, db, gb, vb, tb, rb = _cy_price_batch(ic_a, ia_a, S_a, K_a, r_a, q_a, T_a, sg_a, int(crr_steps))
+        p_out[bsm_idx] = pb
+        d_out[bsm_idx] = db
+        g_out[bsm_idx] = gb
+        v_out[bsm_idx] = vb
+        t_out[bsm_idx] = tb
+        r_out[bsm_idx] = rb
+
+    if b76_idx:
+        ic_a = np.array([x[0] for x in b76_params], dtype=np.int32)
+        F_a = np.array([x[1] for x in b76_params], dtype=np.float64)
+        K_a = np.array([x[2] for x in b76_params], dtype=np.float64)
+        r_a = np.array([x[3] for x in b76_params], dtype=np.float64)
+        T_a = np.array([x[4] for x in b76_params], dtype=np.float64)
+        sg_a = np.array([x[5] for x in b76_params], dtype=np.float64)
+        sc_a = np.array([x[6] for x in b76_params], dtype=np.float64)
+        pb, db, gb, vb, tb, rb = _cy_price_b76_batch(ic_a, F_a, K_a, r_a, T_a, sg_a, sc_a)
+        p_out[b76_idx] = pb
+        d_out[b76_idx] = db
+        g_out[b76_idx] = gb
+        v_out[b76_idx] = vb
+        t_out[b76_idx] = tb
+        r_out[b76_idx] = rb
 
     return pd.DataFrame({
         "ticker": tickers,
+        "classe": classes,
         "option_type": opt_types,
         "exercise": exercises,
         "quantity": qty_arr,
-        "price": p_arr,
-        "mtm": p_arr * qty_arr,
-        "delta": d_arr,
-        "gamma": g_arr,
-        "vega_1pct": v_arr * 0.01,
-        "theta_du": t_arr / 252.0,
-        "rho": rho_arr,
+        "price": p_out,
+        "mtm": p_out * qty_arr,
+        "delta": d_out,
+        "gamma": g_out,
+        "vega_1pct": v_out * 0.01,
+        "theta_du": t_out / 252.0,
+        "rho": r_out,
     })
+
+
+def price_fx_options_portfolio(positions: List[Dict[str, Any]], base_date: Union[datetime.date, str]) -> pd.DataFrame:
+    """Atalho vetorizado em Cython para carteiras de `FXOption`."""
+    return price_options_portfolio(positions, base_date)
+
+
+def price_idi_options_portfolio(positions: List[Dict[str, Any]], base_date: Union[datetime.date, str]) -> pd.DataFrame:
+    """Atalho vetorizado em Cython para carteiras de `IDIOption`."""
+    return price_options_portfolio(positions, base_date)
+
+
+def price_di1_options_portfolio(positions: List[Dict[str, Any]], base_date: Union[datetime.date, str]) -> pd.DataFrame:
+    """Atalho vetorizado em Cython para carteiras de `DI1Option`."""
+    return price_options_portfolio(positions, base_date)
 
 
 class Swaption(_BaseOption):

@@ -220,4 +220,14 @@ preco_cap = cap.price(base_date, pre_rate_or_curve=0.142, vol=0.20, model="black
 bar_do = BarrierOption("VALE-DO", "2027-04-30", strike=60.0, barrier=52.0, option_type="CALL", barrier_type="down-and-out")
 asian_ar = AsianOption("PETR-AA", "2027-04-30", strike=40.0, option_type="CALL", average_type="arithmetic")
 print(f"Swaption: R$ {preco_swp:,.2f} | Cap: R$ {preco_cap:,.2f} | Barreira DO: R$ {bar_do.price(base_date, 62.0, 0.14, 0.30):.4f} | Asiática: R$ {asian_ar.price(base_date, 40.0, 0.14, 0.30):.4f}")
+
+# 5.5 Precificação em lote Cython para carteiras mistas (Equity, FX, IDI, DI1 e Corrado-Su)
+df_lote_opt = price_options_portfolio(
+    [
+        {"instrument": opt_am, "spot": 37.20, "pre_rate_or_curve": 0.1480, "vol": 0.32, "quantity": 100},
+        {"instrument": fx_call, "spot_ptax": 5.52, "pre_rate_or_curve": 0.1480, "cupom_limpo_or_curve": 0.0520, "vol": surf, "quantity": 10},
+    ],
+    base_date=base_date,
+)
+print(df_lote_opt[["ticker", "classe", "price", "mtm", "delta", "vega_1pct"]])
 ```

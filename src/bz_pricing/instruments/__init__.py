@@ -31,6 +31,9 @@ from .options import (
     BarrierOption,
     AsianOption,
     price_options_portfolio,
+    price_fx_options_portfolio,
+    price_idi_options_portfolio,
+    price_di1_options_portfolio,
 )
 
 __all__ = [
@@ -68,4 +71,7 @@ __all__ = [
     "BarrierOption",
     "AsianOption",
     "price_options_portfolio",
+    "price_fx_options_portfolio",
+    "price_idi_options_portfolio",
+    "price_di1_options_portfolio",
 ]

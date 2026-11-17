@@ -431,7 +431,7 @@ ndf = NDFContract("NDF-USD", "2027-01-29", forward_rate=5.65, notional_usd=100_0
 
 ## 7. Opções e Superfícies de Volatilidade (`options` e `volatility`)
 
-Os módulos [`options.py`](../src/bz_pricing/instruments/options.py) e [`surface.py`](../src/bz_pricing/volatility/surface.py) disponibilizam precificação analítica e numérica em Cython (`EquityOption`, `FXOption`, `IDIOption`, `DI1Option`, `CorradoSuOption`, `Swaption`, `CapFloor`, `BarrierOption`, `AsianOption`, `price_options_portfolio`), parametrizações de *smiles* (`SVISlice`, `SABRSlice`), superfície `VolatilitySurface`, auditoria de não arbitragem, densidade neutra ao risco (`breeden_litzenberger_density`), volatilidade local (`dupire_local_vol_grid`), validação *out-of-sample* (`validate_slice_out_of_sample`) e leitura de séries reais B3 (`B3DataLoader.load_options`):
+Os módulos [`options.py`](../src/bz_pricing/instruments/options.py) e [`surface.py`](../src/bz_pricing/volatility/surface.py) disponibilizam precificação analítica e numérica em Cython (`EquityOption`, `FXOption`, `IDIOption`, `DI1Option`, `CorradoSuOption`, `Swaption`, `CapFloor`, `BarrierOption`, `AsianOption`, além dos lotes `price_options_portfolio`, `price_fx_options_portfolio`, `price_idi_options_portfolio` e `price_di1_options_portfolio`), parametrizações de *smiles* (`SVISlice`, `SABRSlice`), superfície `VolatilitySurface`, auditoria de não arbitragem, densidade neutra ao risco (`breeden_litzenberger_density`), volatilidade local (`dupire_local_vol_grid`), validação *out-of-sample* (`validate_slice_out_of_sample`) e leitura de séries reais B3 (`B3DataLoader.load_options`):
 
 ```python
 import datetime

@@ -316,3 +316,40 @@ def test_swaption_capfloor_barrier_and_asian():
     ev_c = EquityOption("PETR-EV", exp_dt, 40.0, "CALL", "EUROPEAN").price(base_dt, 40.0, 0.14, 0.30, 0.0)
     assert 0.0 < ag_c <= aa_c <= ev_c
 
+
+def test_batch_portfolios_for_fx_idi_di1_and_mixed():
+    from bz_pricing.instruments import (
+        price_fx_options_portfolio,
+        price_idi_options_portfolio,
+        price_di1_options_portfolio,
+    )
+
+    base_dt = datetime.date(2026, 7, 1)
+    mat_dt = datetime.date(2027, 1, 4)
+
+    eq = EquityOption("PETRC40", mat_dt, 40.0, "CALL", "EUROPEAN")
+    fx = FXOption("DOLC580", mat_dt, 5.80, "CALL")
+    idi = IDIOption("IDIC600K", mat_dt, 600000.0, "CALL")
+    di1 = DI1Option("DI1C140", mat_dt, datetime.date(2028, 1, 3), 0.14)
+    cs = CorradoSuOption("VALEC60", mat_dt, 60.0, "CALL")
+
+    df_mix = price_options_portfolio(
+        [
+            {"instrument": eq, "spot": 39.0, "pre_rate_or_curve": 0.14, "vol": 0.30, "quantity": 10},
+            {"instrument": fx, "spot_ptax": 5.65, "pre_rate_or_curve": 0.14, "cupom_limpo_or_curve": 0.05, "vol": 0.18, "quantity": 5},
+            {"instrument": idi, "idi_spot": 560000.0, "pre_rate_or_curve": 0.14, "vol": 0.025, "quantity": 2},
+            {"instrument": di1, "pu_c": 93500.0, "pu_l": 81500.0, "vol": 0.15, "quantity": 1},
+            {"instrument": cs, "spot": 58.0, "pre_rate_or_curve": 0.14, "vol": 0.30, "kappa3": -0.3, "kappa4": 4.0, "quantity": 3},
+        ],
+        base_dt,
+    )
+    assert len(df_mix) == 5
+    assert df_mix["price"].notna().all()
+    assert abs(df_mix.loc[1, "price"] - fx.price(base_dt, 5.65, 0.14, 0.05, 0.18)) < 1e-8
+    assert abs(df_mix.loc[2, "price"] - idi.price(base_dt, 560000.0, 0.14, 0.025)) < 1e-8
+    assert abs(df_mix.loc[3, "price"] - di1.price(base_dt, 93500.0, 81500.0, 0.15)) < 1e-8
+
+    assert len(price_fx_options_portfolio([{"instrument": fx, "spot_ptax": 5.65, "pre_rate_or_curve": 0.14, "cupom_limpo_or_curve": 0.05, "vol": 0.18}], base_dt)) == 1
+    assert len(price_idi_options_portfolio([{"instrument": idi, "idi_spot": 560000.0, "pre_rate_or_curve": 0.14, "vol": 0.025}], base_dt)) == 1
+    assert len(price_di1_options_portfolio([{"instrument": di1, "pu_c": 93500.0, "pu_l": 81500.0, "vol": 0.15}], base_dt)) == 1
+

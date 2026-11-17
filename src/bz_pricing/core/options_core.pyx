@@ -854,3 +854,51 @@ cpdef double asian_arithmetic_tw_price(
     _bsm_core(S, K, r, q_eff, T, sig_eff, is_call, &price, &d_tmp, &g_tmp, &v_tmp, &th_tmp, &rh_tmp, &va_tmp, &vo_tmp)
     return price
 
+
+cpdef tuple price_black76_batch(
+    int[:] is_call_arr,
+    double[:] F_arr,
+    double[:] K_arr,
+    double[:] r_arr,
+    double[:] T_arr,
+    double[:] sigma_arr,
+    double[:] scale_arr,
+):
+    """Precifica em lote opções Black-76 (IDI, DI1, Swaptions) em Cython (`nogil`)."""
+    cdef Py_ssize_t n = F_arr.shape[0]
+    cdef Py_ssize_t i
+
+    cdef np.ndarray[np.float64_t, ndim=1] out_price = np.empty(n, dtype=np.float64)
+    cdef np.ndarray[np.float64_t, ndim=1] out_delta = np.empty(n, dtype=np.float64)
+    cdef np.ndarray[np.float64_t, ndim=1] out_gamma = np.empty(n, dtype=np.float64)
+    cdef np.ndarray[np.float64_t, ndim=1] out_vega = np.empty(n, dtype=np.float64)
+    cdef np.ndarray[np.float64_t, ndim=1] out_theta = np.empty(n, dtype=np.float64)
+    cdef np.ndarray[np.float64_t, ndim=1] out_rho = np.empty(n, dtype=np.float64)
+
+    cdef double[:] pv = out_price
+    cdef double[:] dv = out_delta
+    cdef double[:] gv = out_gamma
+    cdef double[:] vv = out_vega
+    cdef double[:] tv = out_theta
+    cdef double[:] rv = out_rho
+
+    cdef double price, delta, gamma, vega, theta, rho, vanna, volga, sc
+    cdef bint call_flag
+
+    with nogil:
+        for i in range(n):
+            call_flag = (is_call_arr[i] != 0)
+            sc = scale_arr[i]
+            _bsm_core(
+                F_arr[i], K_arr[i], r_arr[i], r_arr[i], T_arr[i], sigma_arr[i],
+                call_flag, &price, &delta, &gamma, &vega, &theta, &rho, &vanna, &volga,
+            )
+            pv[i] = price * sc
+            dv[i] = delta * sc
+            gv[i] = gamma * sc
+            vv[i] = vega * sc
+            tv[i] = theta * sc
+            rv[i] = rho * sc
+
+    return (out_price, out_delta, out_gamma, out_vega, out_theta, out_rho)
+
