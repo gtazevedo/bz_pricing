@@ -32,6 +32,7 @@ jobs:
             sed -i "s|(metodologia_curvas\.md)|(metodologia_curvas)|g" "$f"
             sed -i "s|(guia_uso_api\.md)|(guia_uso_api)|g" "$f"
             sed -i "s|(calendarios_convencoes\.md)|(calendarios_convencoes)|g" "$f"
+            sed -i "s|(exemplos_casos_uso\.md)|(exemplos_casos_uso)|g" "$f"
             sed -i "s|(README\.md)|(Home)|g" "$f"
           done
 

@@ -29,6 +29,11 @@ O pacote `bz-pricing` constitui uma biblioteca quantitativa de alta performance 
    - Convenções `BUS/252`, `ACT/360`, `ACT/365` e `30/360`;
    - Calendário de feriados nacionais e regras de rolagem de datas (`following`, `preceding`, `modified_following`);
    - Regimes de extrapolação constante (`EXTRAP_FLAT`) e por taxa a termo constante (`EXTRAP_FLAT_FORWARD`).
+4. **[Casos de Uso e Exemplos Práticos](exemplos_casos_uso.md)**
+   - Construção de curvas *onshore* e *offshore* (*offline* e automático);
+   - Títulos públicos federais, cálculo de VNA a partir do VNE (`calculate_ntnb_vna`, `calculate_lft_vna`, `calculate_vna_from_vne`) e fluxos customizados (`custom_cashflows`);
+   - Crédito privado (`Debenture`, `CRI`, `CRA`, `CotaFIDC`, `LetraFinanceira`), *Z-Spread*, YTM/TIR e avaliação em lote;
+   - Derivativos lineares, opções listadas e de balcão e validação de superfícies de volatilidade.
 
 ---
 
