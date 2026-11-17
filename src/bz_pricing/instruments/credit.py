@@ -366,6 +366,46 @@ class Debenture:
             self.vna_engine = engine
         return float(engine.calculate_vna(base_dt, self.calendar, anniversary_day=self.anniversary_day))
 
+    def calculate_vna(
+        self,
+        base_date: Union[datetime.date, str],
+        vne: Optional[float] = None,
+        base_vna_date: Optional[Union[datetime.date, str]] = None,
+        proj: Optional[float] = None,
+        history: Any = None,
+        projections: Any = None,
+        vna_engine: Optional[VNAEngine] = None,
+        allow_download: bool = True,
+    ) -> float:
+        """
+        Calcula o VNA a partir do VNE (`nominal_value` ou `vne`) e data-base (`issue_date` ou `base_vna_date`)
+        para qualquer indexador compatível (IPCA, IGP-M, SELIC, CDI/DI ou PRE).
+        """
+        from bz_pricing.core.vna_engine import calculate_vna_from_vne
+
+        base_dt = self._normalize_date(base_date)
+        if vna_engine is not None or (history is None and proj is None and allow_download and ("IPCA" in self.indexador or "IGP" in self.indexador) and vne is None and base_vna_date is None):
+            return self.resolve_vna(base_dt, vna_engine=vna_engine)
+
+        vne_val = float(vne) if vne is not None else float(self.nominal_value)
+        ref_start = self._normalize_date(base_vna_date) if base_vna_date is not None else self.issue_date
+        if ref_start is None:
+            if self.indexador in ("PRE", "PREFIXADO", "PRÉ", "FIXED"):
+                return vne_val
+            raise ValueError(f"Informe 'issue_date' ou 'base_vna_date' para calcular VNA a partir do VNE de {self.ticker}.")
+        return calculate_vna_from_vne(
+            vne=vne_val,
+            base_date=ref_start,
+            target_date=base_dt,
+            indexador=self.indexador,
+            anniversary_day=self.anniversary_day,
+            proj=proj,
+            history=history,
+            projections=projections,
+            cal=self.calendar,
+            allow_download=allow_download,
+        )
+
     def pu_par(self, base_date: Union[datetime.date, str], vna: Optional[float] = None,
                last_coupon_date: Union[datetime.date, str] = None,
                fator_di_acumulado: Optional[float] = None) -> float:

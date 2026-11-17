@@ -372,3 +372,40 @@ def test_tpf_custom_cashflows():
     pu_nb = ntnb_custom.present_value(base_dt, FlatCurve(0.05), vna=4771.575461)
     assert pu_nb > 4700.0
 
+
+def test_vna_from_vne_all_titles():
+    from bz_pricing.core.vna_engine import calculate_lft_vna, calculate_vna_from_vne
+    from bz_pricing.instruments.credit import Debenture
+
+    # 1. LFT oficial (base R$ 1.000,00 em 01/07/2000) na data 30/10/2026 = 20201.049997
+    vna_lft = calculate_lft_vna(datetime.date(2026, 10, 30))
+    assert abs(vna_lft - 20201.049997) < 1e-6
+
+    lft = LFT(datetime.date(2029, 3, 1))
+    pu_lft = lft.present_value(datetime.date(2026, 10, 30), FlatCurve(0.001))
+    assert pu_lft > 20000.0
+
+    # 2. Genérico a partir de VNE offline para SELIC/CDI, IGP-M, IPCA e PRE
+    vna_pre = calculate_vna_from_vne(1000.0, "2026-01-02", "2026-10-30", indexador="PRE")
+    assert vna_pre == 1000.0
+
+    daily = {"2026-10-28": 0.0005, "2026-10-29": 0.0005}
+    vna_cdi = calculate_vna_from_vne(1000.0, "2026-10-28", "2026-10-30", indexador="CDI", history=daily, allow_download=False)
+    assert abs(vna_cdi - 1001.00025) < 1e-6
+
+    vna_igpm = calculate_vna_from_vne(
+        1000.0, "2026-08-01", "2026-10-01", indexador="IGP-M",
+        history={"2026-08-01": 0.0050, "2026-09-01": 0.0040},
+        allow_download=False,
+    )
+    assert abs(vna_igpm - math.trunc((1000.0 * 1.005 * 1.004) * 1e6) / 1e6) < 1e-6
+
+    # 3. Debênture / Crédito calculando VNA a partir do VNE
+    deb = Debenture("DEB-VNE", maturity_date="2028-10-15", indexador="IPCA", issue_date="2026-08-15", nominal_value=1000.0)
+    vna_deb = deb.calculate_vna(
+        "2026-10-15",
+        history={"2026-08-01": 0.0030, "2026-09-01": 0.0020},
+        allow_download=False,
+    )
+    assert abs(vna_deb - math.trunc((1000.0 * 1.003 * 1.002) * 1e6) / 1e6) < 1e-6
+

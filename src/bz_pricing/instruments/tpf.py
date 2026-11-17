@@ -6,7 +6,17 @@ import pandas as pd
 
 from bz_pricing.core.calendars import get_calendar
 from bz_pricing.core.curves import Curve
-from bz_pricing.core.vna_engine import VNAEngine, calculate_ntnb_vna
+from bz_pricing.core.vna_engine import (
+    LFT_BASE_DATE,
+    LFT_BASE_VALUE,
+    NTNC_BASE_DATE,
+    NTNC_BASE_VALUE,
+    VNAEngine,
+    calculate_lft_vna,
+    calculate_ntnb_vna,
+    calculate_ntnc_vna,
+    calculate_vna_from_vne,
+)
 from bz_pricing.core.bonds import (
     LTN as _LTN_C,
     NTNF as _NTNF_C,
@@ -422,17 +432,38 @@ class LFT(TituloPublico):
         bond_c = _LFT_C(du)
         return bond_c.cotacao(agio_curve)
 
+    def calculate_vna(
+        self,
+        base_date: Union[datetime.date, str],
+        vne: float = LFT_BASE_VALUE,
+        base_vna_date: Union[datetime.date, str] = LFT_BASE_DATE,
+        daily_selic: Any = None,
+        allow_download: bool = True,
+    ) -> float:
+        """Calcula o VNA da LFT a partir do VNE e da taxa Selic acumulada."""
+        base_dt = self._normalize_date(base_date)
+        return calculate_lft_vna(
+            base_dt,
+            vne=vne,
+            base_date=base_vna_date,
+            daily_selic=daily_selic,
+            allow_download=allow_download,
+        )
+
     def present_value(self, base_date: Union[datetime.date, str], agio_curve: Curve, vna: float = None,
                       selic_curve: Curve = None, return_cashflows: bool = False,
-                      custom_cashflows: Any = None) -> Union[float, Tuple[float, pd.DataFrame]]:
+                      custom_cashflows: Any = None, daily_selic: Any = None,
+                      allow_download: bool = True) -> Union[float, Tuple[float, pd.DataFrame]]:
         base_date = self._normalize_date(base_date)
+        vna_val = float(vna) if vna is not None else 0.0
+        if vna_val <= 0.0 and selic_curve is None:
+            vna_val = self.calculate_vna(base_date, daily_selic=daily_selic, allow_download=allow_download)
         cf = custom_cashflows if custom_cashflows is not None else self.custom_cashflows
         if cf is not None:
-            res = self._custom_metrics(base_date, agio_curve, cf, vna=vna)
+            res = self._custom_metrics(base_date, agio_curve, cf, vna=vna_val)
             return (res["pu"], res["df"]) if return_cashflows else res["pu"]
         du = self.calendar.bizdays(base_date, self.maturity_date)
         bond_c = _LFT_C(du)
-        vna_val = float(vna) if vna is not None else 0.0
         pu = bond_c.present_value(agio_curve, vna=vna_val, selic_curve=selic_curve)
         if return_cashflows:
             effective_vna = vna_val
@@ -442,17 +473,27 @@ class LFT(TituloPublico):
             return pu, self.cashflow_table(base_date, agio_curve, vna=effective_vna)
         return pu
 
-    def duration(self, base_date: Union[datetime.date, str], agio_curve: Curve = None) -> float:
+    def duration(self, base_date: Union[datetime.date, str], agio_curve: Curve = None, custom_cashflows: Any = None) -> float:
         base_date = self._normalize_date(base_date)
+        cf = custom_cashflows if custom_cashflows is not None else self.custom_cashflows
+        if cf is not None:
+            if agio_curve is None:
+                raise ValueError("Informe 'agio_curve' para calcular duration de fluxos customizados.")
+            return self._custom_metrics(base_date, agio_curve, cf)["duration"]
         if base_date >= self.maturity_date:
             return 0.0
         return float(self.calendar.bizdays(base_date, self.maturity_date))
 
-    def dv01(self, base_date: Union[datetime.date, str], agio_curve: Curve, vna: float) -> float:
+    def dv01(self, base_date: Union[datetime.date, str], agio_curve: Curve, vna: float = None,
+             daily_selic: Any = None, allow_download: bool = True, custom_cashflows: Any = None) -> float:
         base_date = self._normalize_date(base_date)
+        vna_val = float(vna) if vna is not None else self.calculate_vna(base_date, daily_selic=daily_selic, allow_download=allow_download)
+        cf = custom_cashflows if custom_cashflows is not None else self.custom_cashflows
+        if cf is not None:
+            return self._custom_metrics(base_date, agio_curve, cf, vna=vna_val)["dv01"]
         du = self.calendar.bizdays(base_date, self.maturity_date)
         bond_c = _LFT_C(du)
-        return bond_c.dv01(agio_curve, float(vna))
+        return bond_c.dv01(agio_curve, vna_val)
 
 
 class NTNB(TituloPublico):
@@ -779,22 +820,52 @@ class NTNC(TituloPublico):
 
         return sorted(dates)
 
+    def calculate_vna(
+        self,
+        base_date: Union[datetime.date, str],
+        vne: float = NTNC_BASE_VALUE,
+        base_vna_date: Union[datetime.date, str] = NTNC_BASE_DATE,
+        igpm_proj: Optional[float] = None,
+        vna_engine: Optional[VNAEngine] = None,
+        inflation_curve: Optional[Curve] = None,
+        allow_download: bool = True,
+    ) -> float:
+        """Calcula o VNA da NTN-C a partir do VNE/data-base pelo IGP-M (aniversário dia 1)."""
+        base_dt = self._normalize_date(base_date)
+        if inflation_curve is not None:
+            b_dt = self._normalize_date(base_vna_date)
+            du_inf = self.calendar.bizdays(b_dt, base_dt)
+            igpm_r = inflation_curve.get_rate(du_inf)
+            igpm_f = math.trunc(math.pow(1.0 + igpm_r, du_inf / 252.0) * 1e14) / 1e14
+            return float(math.trunc((float(vne) * igpm_f) * 1e6) / 1e6)
+        if vna_engine is not None:
+            return float(vna_engine.calculate_vna(base_dt, cal=self.calendar, anniversary_day=1, ipca_proj=igpm_proj, truncate_monthly=False))
+        return float(calculate_ntnc_vna(base_dt, vne=vne, base_date=base_vna_date, igpm_proj=igpm_proj, cal=self.calendar, allow_download=allow_download))
+
     def cashflow_table(self, base_date: Union[datetime.date, str], real_curve: Curve, vna: float = None,
-                       inflation_curve: Curve = None, base_vna: float = None, base_vna_date: Union[datetime.date, str] = None) -> pd.DataFrame:
+                       inflation_curve: Curve = None, base_vna: float = None, base_vna_date: Union[datetime.date, str] = None,
+                       igpm_proj: Optional[float] = None, vna_engine: Optional[VNAEngine] = None,
+                       allow_download: bool = True, custom_cashflows: Any = None) -> pd.DataFrame:
         base_date = self._normalize_date(base_date)
+        if vna is not None:
+            vna_val = float(vna)
+        else:
+            vna_val = self.calculate_vna(
+                base_date,
+                vne=float(base_vna) if base_vna is not None else NTNC_BASE_VALUE,
+                base_vna_date=base_vna_date if base_vna_date is not None else NTNC_BASE_DATE,
+                igpm_proj=igpm_proj,
+                vna_engine=vna_engine,
+                inflation_curve=inflation_curve,
+                allow_download=allow_download,
+            )
+        cf = custom_cashflows if custom_cashflows is not None else self.custom_cashflows
+        if cf is not None:
+            return self._evaluate_custom_cashflows(base_date, real_curve, cf, vna=vna_val, rate_col_name='taxa_real')
+
         coupon_dates = self.get_coupon_dates(base_date)
         dus = np.array([self.calendar.bizdays(base_date, d) for d in coupon_dates], dtype=np.int32)
         bond_c = _NTNC_C(dus, self.coupon_rate)
-
-        vna_val = float(vna) if vna is not None else 0.0
-        base_vna_val = float(base_vna) if base_vna is not None else 0.0
-        if vna_val <= 0.0 and inflation_curve is not None and base_vna_val > 0.0 and base_vna_date is not None:
-            base_vna_date = self._normalize_date(base_vna_date)
-            du_inf = self.calendar.bizdays(base_vna_date, base_date)
-            igpm_r = inflation_curve.get_rate(du_inf)
-            igpm_f = math.trunc(math.pow(1.0 + igpm_r, du_inf / 252.0) * 1e14) / 1e14
-            vna_val = math.trunc((base_vna_val * igpm_f) * 1e6) / 1e6
-
         details = bond_c.cashflow_details(real_curve, vna=vna_val)
         rows = []
         for i, (du_val, fl_cot, rate, df, pv_cot, pv_fin) in enumerate(details):
@@ -823,34 +894,52 @@ class NTNC(TituloPublico):
 
     def present_value(self, base_date: Union[datetime.date, str], real_curve: Curve, vna: float = None,
                       inflation_curve: Curve = None, base_vna: float = None, base_vna_date: Union[datetime.date, str] = None,
-                      return_cashflows: bool = False) -> Union[float, Tuple[float, pd.DataFrame]]:
+                      igpm_proj: Optional[float] = None, vna_engine: Optional[VNAEngine] = None,
+                      allow_download: bool = True, return_cashflows: bool = False,
+                      custom_cashflows: Any = None) -> Union[float, Tuple[float, pd.DataFrame]]:
         base_date = self._normalize_date(base_date)
+        vna_val = (
+            float(vna)
+            if vna is not None
+            else self.calculate_vna(
+                base_date,
+                vne=float(base_vna) if base_vna is not None else NTNC_BASE_VALUE,
+                base_vna_date=base_vna_date if base_vna_date is not None else NTNC_BASE_DATE,
+                igpm_proj=igpm_proj,
+                vna_engine=vna_engine,
+                inflation_curve=inflation_curve,
+                allow_download=allow_download,
+            )
+        )
+        cf = custom_cashflows if custom_cashflows is not None else self.custom_cashflows
+        if cf is not None:
+            res = self._custom_metrics(base_date, real_curve, cf, vna=vna_val)
+            return (res["pu"], res["df"]) if return_cashflows else res["pu"]
+
         coupon_dates = self.get_coupon_dates(base_date)
         dus = np.array([self.calendar.bizdays(base_date, d) for d in coupon_dates], dtype=np.int32)
         bond_c = _NTNC_C(dus, self.coupon_rate)
-
-        vna_val = float(vna) if vna is not None else 0.0
-        base_vna_val = float(base_vna) if base_vna is not None else 0.0
-        du_inf = 0
-        if base_vna_date is not None and inflation_curve is not None:
-            base_vna_date = self._normalize_date(base_vna_date)
-            du_inf = self.calendar.bizdays(base_vna_date, base_date)
-
-        pu = bond_c.present_value(real_curve, vna=vna_val, inflation_curve=inflation_curve, base_vna=base_vna_val, du_inflation=du_inf)
+        pu = bond_c.present_value(real_curve, vna=vna_val)
         if return_cashflows:
             df_flows = self.cashflow_table(
                 base_date=base_date,
                 real_curve=real_curve,
-                vna=vna,
+                vna=vna_val,
                 inflation_curve=inflation_curve,
                 base_vna=base_vna,
-                base_vna_date=base_vna_date
+                base_vna_date=base_vna_date,
+                igpm_proj=igpm_proj,
+                vna_engine=vna_engine,
+                allow_download=allow_download,
             )
             return pu, df_flows
         return pu
 
-    def duration(self, base_date: Union[datetime.date, str], real_curve: Curve) -> float:
+    def duration(self, base_date: Union[datetime.date, str], real_curve: Curve, custom_cashflows: Any = None) -> float:
         base_date = self._normalize_date(base_date)
+        cf = custom_cashflows if custom_cashflows is not None else self.custom_cashflows
+        if cf is not None:
+            return self._custom_metrics(base_date, real_curve, cf)["duration"]
         if base_date >= self.maturity_date:
             return 0.0
         coupon_dates = self.get_coupon_dates(base_date)
@@ -858,8 +947,11 @@ class NTNC(TituloPublico):
         bond_c = _NTNC_C(dus, self.coupon_rate)
         return bond_c.duration(real_curve)
 
-    def modified_duration(self, base_date: Union[datetime.date, str], real_curve: Curve) -> float:
+    def modified_duration(self, base_date: Union[datetime.date, str], real_curve: Curve, custom_cashflows: Any = None) -> float:
         base_date = self._normalize_date(base_date)
+        cf = custom_cashflows if custom_cashflows is not None else self.custom_cashflows
+        if cf is not None:
+            return self._custom_metrics(base_date, real_curve, cf)["modified_duration"]
         if base_date >= self.maturity_date:
             return 0.0
         coupon_dates = self.get_coupon_dates(base_date)
@@ -867,12 +959,17 @@ class NTNC(TituloPublico):
         bond_c = _NTNC_C(dus, self.coupon_rate)
         return bond_c.modified_duration(real_curve)
 
-    def dv01(self, base_date: Union[datetime.date, str], real_curve: Curve, vna: float = None) -> float:
+    def dv01(self, base_date: Union[datetime.date, str], real_curve: Curve, vna: float = None,
+             igpm_proj: Optional[float] = None, vna_engine: Optional[VNAEngine] = None,
+             allow_download: bool = True, custom_cashflows: Any = None) -> float:
         base_date = self._normalize_date(base_date)
+        vna_val = float(vna) if vna is not None else self.calculate_vna(base_date, igpm_proj=igpm_proj, vna_engine=vna_engine, allow_download=allow_download)
+        cf = custom_cashflows if custom_cashflows is not None else self.custom_cashflows
+        if cf is not None:
+            return self._custom_metrics(base_date, real_curve, cf, vna=vna_val)["dv01"]
         if base_date >= self.maturity_date:
             return 0.0
         coupon_dates = self.get_coupon_dates(base_date)
         dus = np.array([self.calendar.bizdays(base_date, d) for d in coupon_dates], dtype=np.int32)
         bond_c = _NTNC_C(dus, self.coupon_rate)
-        vna_val = float(vna) if vna is not None else 0.0
         return bond_c.dv01(real_curve, vna=vna_val)

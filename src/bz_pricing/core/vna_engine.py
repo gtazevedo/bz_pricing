@@ -9,6 +9,31 @@ import pandas as pd
 
 NTNB_BASE_DATE = datetime.date(2000, 7, 15)
 NTNB_BASE_VALUE = 1000.0
+LFT_BASE_DATE = datetime.date(2000, 7, 1)
+LFT_BASE_VALUE = 1000.0
+NTNC_BASE_DATE = datetime.date(2000, 7, 1)
+NTNC_BASE_VALUE = 1000.0
+
+
+def _fetch_sgs_chunked(series_id: int, start_date: datetime.date, end_date: datetime.date, chunk_years: int = 9) -> pd.Series:
+    """Consulta uma série do BCB SGS em janelas de até `chunk_years` anos (contornando limite de 10 anos em séries diárias)."""
+    from bcb import sgs
+
+    parts = []
+    cur_start = start_date
+    while cur_start <= end_date:
+        cur_end = min(end_date, datetime.date(cur_start.year + chunk_years, cur_start.month, min(28, cur_start.day)))
+        if cur_end < cur_start:
+            cur_end = end_date
+        df_part = sgs.get({"VAL": series_id}, start=cur_start.strftime("%Y-%m-%d"), end=cur_end.strftime("%Y-%m-%d"))
+        if df_part is not None and not df_part.empty:
+            parts.append(df_part["VAL"].dropna())
+        cur_start = cur_end + datetime.timedelta(days=1)
+    if not parts:
+        return pd.Series(dtype=float)
+    s = pd.concat(parts)
+    s.index = pd.to_datetime(s.index)
+    return s[~s.index.duplicated(keep="last")].sort_index()
 
 
 def _coerce_monthly_series(data: Any) -> pd.Series:
@@ -257,5 +282,149 @@ def calculate_ntnb_vna(
         cal=cal,
         anniversary_day=15,
         ipca_proj=ipca_proj,
+        truncate_monthly=truncate_monthly,
+    )
+
+
+def calculate_selic_or_di_vna(
+    vne: float,
+    base_date: Union[datetime.date, str],
+    target_date: Union[datetime.date, str],
+    indicator: str = "SELIC",
+    daily_rates: Any = None,
+    allow_download: bool = True,
+) -> float:
+    """
+    Calcula o VNA a partir do VNE acumulando fatores diários da Selic (SGS 11) ou DI (SGS 12)
+    no intervalo [base_date, target_date - 1 dia], truncado em 6 casas decimais.
+    `daily_rates` (opcional) aceita dict/Series/DataFrame com taxas diárias em decimal.
+    """
+    base_dt = pd.to_datetime(base_date).date()
+    target_dt = pd.to_datetime(target_date).date()
+    if target_dt <= base_dt:
+        return float(vne)
+
+    end_acc = target_dt - datetime.timedelta(days=1)
+    if daily_rates is not None:
+        if isinstance(daily_rates, pd.Series):
+            s = daily_rates.copy()
+            s.index = pd.to_datetime(s.index)
+        elif isinstance(daily_rates, dict):
+            s = pd.Series(list(daily_rates.values()), index=pd.to_datetime(list(daily_rates.keys())), dtype=float)
+        elif isinstance(daily_rates, pd.DataFrame):
+            d_col = next((c for c in daily_rates.columns if str(c).lower() in ("date", "data")), daily_rates.columns[0])
+            v_col = next((c for c in daily_rates.columns if str(c).lower() in ("value", "valor", "rate", "taxa")), daily_rates.columns[-1])
+            s = pd.Series(daily_rates[v_col].astype(float).values, index=pd.to_datetime(daily_rates[d_col]))
+        else:
+            raise TypeError(f"Formato não suportado para daily_rates: {type(daily_rates)}")
+        s = s.sort_index()
+        s = s[(s.index.date >= base_dt) & (s.index.date <= end_acc)]
+    else:
+        if not allow_download:
+            raise ValueError(f"Informe 'daily_rates' para calcular VNA {indicator} offline (allow_download=False).")
+        series_id = 12 if "DI" in indicator.upper() and "SELIC" not in indicator.upper() else 11
+        s = _fetch_sgs_chunked(series_id, base_dt, end_acc) / 100.0
+
+    factor = float((1.0 + s.astype(float)).prod()) if len(s) > 0 else 1.0
+    return float(math.trunc((float(vne) * factor) * 1000000.0) / 1000000.0)
+
+
+def calculate_vna_from_vne(
+    vne: float,
+    base_date: Union[datetime.date, str],
+    target_date: Union[datetime.date, str],
+    indexador: str = "IPCA",
+    anniversary_day: Optional[int] = None,
+    proj: Optional[float] = None,
+    history: Any = None,
+    projections: Any = None,
+    cal: Any = None,
+    allow_download: bool = True,
+    truncate_monthly: bool = False,
+) -> float:
+    """
+    Calcula o VNA na data `target_date` a partir do Valor Nominal de Emissão (`vne`)
+    e data-base (`base_date`) para qualquer indexador compatível:
+    IPCA, IGP-M, SELIC, CDI/DI ou PRE/PREFIXADO.
+    """
+    idx = indexador.upper().strip()
+    if idx in ("PRE", "PREFIXADO", "PRÉ", "FIXED"):
+        return float(vne)
+    if "SELIC" in idx or idx in ("DI", "CDI"):
+        return calculate_selic_or_di_vna(
+            vne=vne,
+            base_date=base_date,
+            target_date=target_date,
+            indicator=idx,
+            daily_rates=history,
+            allow_download=allow_download,
+        )
+
+    base_dt = pd.to_datetime(base_date).date()
+    target_dt = pd.to_datetime(target_date).date()
+    anniv = int(anniversary_day) if anniversary_day is not None else (1 if "IGP" in idx else 15)
+
+    if history is not None:
+        engine = VNAEngine(base_vna_date=base_dt, base_vna_value=float(vne))
+        engine.ipca_history = _coerce_monthly_series(history)
+        if projections is not None:
+            engine.ipca_projections = _coerce_monthly_series(projections)
+    else:
+        if not allow_download:
+            raise ValueError(f"Informe 'history' para calcular VNA {idx} offline (allow_download=False).")
+        engine = VNAEngine.from_bcb(base_vna_date=base_dt, base_vna_value=float(vne), indicator=idx, ref_date=target_dt)
+        if projections is not None:
+            engine.ipca_projections = _coerce_monthly_series(projections)
+
+    return engine.calculate_vna(
+        target_dt,
+        cal=cal,
+        anniversary_day=anniv,
+        ipca_proj=proj,
+        truncate_monthly=truncate_monthly,
+    )
+
+
+def calculate_lft_vna(
+    target_date: Union[datetime.date, str],
+    vne: float = LFT_BASE_VALUE,
+    base_date: Union[datetime.date, str] = LFT_BASE_DATE,
+    daily_selic: Any = None,
+    allow_download: bool = True,
+) -> float:
+    """Calcula o VNA oficial da LFT (base R$ 1.000,00 em 01/07/2000) pela Selic acumulada."""
+    return calculate_selic_or_di_vna(
+        vne=vne,
+        base_date=base_date,
+        target_date=target_date,
+        indicator="SELIC",
+        daily_rates=daily_selic,
+        allow_download=allow_download,
+    )
+
+
+def calculate_ntnc_vna(
+    target_date: Union[datetime.date, str],
+    vne: float = NTNC_BASE_VALUE,
+    base_date: Union[datetime.date, str] = NTNC_BASE_DATE,
+    igpm_proj: Optional[float] = None,
+    igpm_history: Any = None,
+    igpm_projections: Any = None,
+    cal: Any = None,
+    allow_download: bool = True,
+    truncate_monthly: bool = False,
+) -> float:
+    """Calcula o VNA da NTN-C a partir do VNE/data-base pelo IGP-M (aniversário dia 1)."""
+    return calculate_vna_from_vne(
+        vne=vne,
+        base_date=base_date,
+        target_date=target_date,
+        indexador="IGP-M",
+        anniversary_day=1,
+        proj=igpm_proj,
+        history=igpm_history,
+        projections=igpm_projections,
+        cal=cal,
+        allow_download=allow_download,
         truncate_monthly=truncate_monthly,
     )
