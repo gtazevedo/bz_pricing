@@ -6,7 +6,7 @@ Este documento detalha as interfaces programáticas dos módulos de gerenciament
 
 ## 1. Orquestrador de Estruturas a Termo (`CurveManager`)
 
-A classe [`CurveManager`](../src/bz_pricing/curves/manager.py) centraliza a instanciação de curvas *onshore* e *offshore*, gerenciando a validação de insumos fornecidos pelo usuário (`allow_download=False` por padrão) ou a resolução automática a partir de bases locais e provedores públicos (`allow_download=True`).
+A classe [`CurveManager`](../src/bz_pricing/curves/manager.py) centraliza a instanciação de curvas *onshore* e *offshore* e gerencia a validação de insumos fornecidos pelo usuário (`allow_download=False` por padrão) ou a resolução automática a partir de bases locais e provedores públicos (`allow_download=True`).
 
 ```python
 import datetime
@@ -164,7 +164,7 @@ print(f"Taxa interpolada em 100 DU: {curva.get_rate(100.0) * 100:.4f}% a.a.")
 
 Os módulos [`bz_pricing.instruments.tpf`](../src/bz_pricing/instruments/tpf.py) e [`bz_pricing.core.bonds`](../src/bz_pricing/core/bonds.pyx) implementam a precificação analítica, a cotação percentual e as medidas de sensibilidade (*Duration* de Macaulay, *Duration* Modificada e DV01) para **LTN**, **NTN-F**, **LFT**, **NTN-B**, **NTN-B Principal** e **NTN-C** conforme os padrões oficiais da ANBIMA e do Tesouro Nacional.
 
-As funções de precificação operam sobre instâncias compiladas de [`Curve`](../src/bz_pricing/core/curves.pyx), admitindo curvas construídas diretamente a partir de nós customizados de mercado ou recuperadas via [`CurveManager`](../src/bz_pricing/curves/manager.py). Instrumentos que exigem indexadores compostos recebem múltiplas estruturas a termo de forma simultânea (multi-curvas).
+As funções de precificação operam sobre instâncias compiladas de [`Curve`](../src/bz_pricing/core/curves.pyx) e admitem curvas construídas diretamente a partir de nós customizados de mercado ou recuperadas via [`CurveManager`](../src/bz_pricing/curves/manager.py). Instrumentos que exigem indexadores compostos recebem múltiplas estruturas a termo de forma simultânea (multi-curvas).
 
 ```python
 import datetime
@@ -340,7 +340,7 @@ print(f"Total de debêntures com preços de mercado apurados: {len(df_mercado)}"
 
 ### 5.2 Avaliação Numérica e Decomposição de Fluxos (`Debenture`)
 
-A classe [`Debenture`](../src/bz_pricing/instruments/credit.py) modela o instrumento de crédito privado, integrando o histórico de liquidações para cômputo do saldo devedor e os fluxos contratuais futuros:
+A classe [`Debenture`](../src/bz_pricing/instruments/credit.py) modela o instrumento de crédito privado e integra o histórico de liquidações para cômputo do saldo devedor e os fluxos contratuais futuros:
 
 ```python
 import datetime

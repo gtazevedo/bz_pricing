@@ -19,7 +19,7 @@ O pacote `bz-pricing` constitui uma biblioteca quantitativa de alta performance 
 2. **[Guia de Referência da API](guia_uso_api.md)**
    - Orquestrador central de estruturas a termo (`CurveManager`);
    - Construção por vértices customizados e tratamento de exceções (`DataUnavailableError`);
-   - Extração e coleta automatizada de dados (`B3DataLoader` e `B3Scraper`, incluindo séries de opções `load_options`);
+   - Extração e coleta automatizada de dados (`B3DataLoader` e `B3Scraper`, com suporte a séries de opções via `load_options`);
    - Instanciação direta de curvas e interpoladores em Cython (`B3CurveBuilder` e `SimpleCurve`);
    - Precificação de títulos públicos federais (`TPF`), cálculo de VNA a partir do VNE (`VNAEngine`, `calculate_vna_from_vne`, `calculate_ntnb_vna`, `calculate_lft_vna`) e fluxos customizados (`custom_cashflows`);
    - Crédito privado (`Debenture`, `CRI`, `CRA`, `CotaFIDC`, `LetraFinanceira`), *Z-Spread*, YTM, TIR e lotes (`price_credit_portfolio`);

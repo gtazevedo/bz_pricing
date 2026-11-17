@@ -414,7 +414,7 @@ A consistência dos fluxos e do PU Par é verificada no caderno [`notebooks/vali
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | `VALEA0` | Vale S.A. | IPCA + 6,40% a.a. | R\$ 1.096,791130 | 0,270486% | R\$ 1.099,757794 | R\$ 1.099,757794 | R\$ 0,000000 |
 
-O arquivo oficial de mercado secundário de debêntures da ANBIMA (`db261030.txt`), contendo 1.272 ativos negociados, é utilizado para aprecimento a mercado e cálculo de duration individual e agregada.
+O arquivo oficial de mercado secundário de debêntures da ANBIMA (`db261030.txt`), com 1.272 ativos negociados, é utilizado para apreçamento a mercado e cálculo de duration individual e agregada.
 
 ---
 

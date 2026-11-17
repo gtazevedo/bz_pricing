@@ -219,7 +219,7 @@ Construídas a partir da cotação à vista de fechamento do índice ($\text{Spo
 
 $$P(\text{DU}_v) = \text{Spot}_t \times \left( \frac{\text{Fut}_1}{\text{Spot}_t} \right)^{\frac{\text{DU}_v}{\text{DU}_1}}$$
 
-No método `B3CurveBuilder.build_equity_index_curve`, a inserção de uma âncora exata em $\text{DU} = 2$ com valor $\text{Spot}_t \cdot (\text{Fut}_1 / \text{Spot}_t)^{2 / \text{DU}_1}$ permite que o `PriceInterpolator(0, 0)` reproduza analiticamente a expressão acima em todo o intervalo $[2, \text{DU}_1]$, preservando os nós esparsos dos vencimentos futuros.
+No método `B3CurveBuilder.build_equity_index_curve`, a inserção de uma âncora exata em $\text{DU} = 2$ com valor $\text{Spot}_t \cdot (\text{Fut}_1 / \text{Spot}_t)^{2 / \text{DU}_1}$ permite que o `PriceInterpolator(0, 0)` reproduza analiticamente a expressão acima em todo o intervalo $[2, \text{DU}_1]$ e preserve os nós esparsos dos vencimentos futuros.
 3. **Prazos entre Vencimentos e Após o Último Futuro:** Interpolados exponencialmente por `PriceInterpolator(extrap_left=0, extrap_right=0)`, o que mantém o último preço futuro constante após o derradeiro vencimento listado.
 
 ### 7.2 Estruturas a Termo de Custo de Carrego / Convenience Yield (`CYI`, `CYM`, `CYX` e Ações)
