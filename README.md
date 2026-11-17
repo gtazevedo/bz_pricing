@@ -46,8 +46,10 @@ O pacote estrutura-se em três camadas desacopladas que separam a ingestão de d
 4. **Cupons Cambiais, Spreads e Moedas a Termo (`BUS/252` e `ACT/360`):** Cupom Cambial Sujo (`DOL` sobre futuros `DDI`), Cupom Cambial Limpo (`DOC` e `DCL`), Cupons Cruzados de Euro (`EUC`) e Iene (`YCL`), Spreads de Taxas Offshore (`SDE`, `SGP`, `SMX`, `SYD`) e Estruturas a Termo de Câmbio (`PTX`, `EUR` e `JPY`);
 5. **Curvas Internacionais Offshore (`ACT/360`):** Curvas a termo de futuros de taxas *overnight* (`SFR` para SOFR, `EST` para €STR, `TIE` para F-TIIE) e curvas zero cupom de *Overnight Indexed Swaps* (`ZUS` / `LIB`, `ZEU` e `ZMX`);
 6. **Renda Variável e Convenience Yield (`BUS/252`):** Estruturas de preços futuros de índices (`INP` para Ibovespa, `BRP` para IBrX-50, `SML`, `MBR`, `VIX`), futuros de ações individuais e curvas de custo de carrego (`CYI`, `CYM`, `CYX`);
-7. **Títulos Públicos Federais (`TPF`):** Precificação exata (PU, cotação em base 100, VNA projetado e truncado em 6 casas decimais) e métricas de sensibilidade (*Duration* de Macaulay, *Duration* Modificada, DV01 e Convexidade) para **LTN**, **NTN-F**, **NTN-B** e **LFT**;
-8. **Crédito Privado e Debêntures:** Extração estruturada de cadastros e cronogramas de amortizações via Sistema Nacional de Debêntures (SND / `debentures.com.br`) e arquivos de mercado secundário ANBIMA, com cálculo de PU Par, juros acumulados, PU a mercado, duration e tabela de fluxos futuros.
+7. **Títulos Públicos Federais (`TPF`) e Cálculo de VNA a partir do VNE:** Precificação exata (PU, cotação em base 100, VNA calculado a partir do VNE via `calculate_vna_from_vne`, `calculate_ntnb_vna`, `calculate_lft_vna` e `calculate_ntnc_vna`, tanto *online* pelo BCB SGS/Focus quanto *offline*), suporte a fluxos customizados (`custom_cashflows`) e métricas de sensibilidade (*Duration* de Macaulay, *Duration* Modificada, DV01 e Convexidade) para **LTN**, **NTN-F**, **NTN-B**, **NTN-B Principal**, **NTN-C** e **LFT**;
+8. **Crédito Privado (`Debenture`, `CRI`, `CRA`, `CotaFIDC`, `LetraFinanceira`):** Extração estruturada no SND e ANBIMA, construção por cronograma (`from_schedule`) ou fluxos customizados (`from_cashflows` / `custom_cashflows`), além de PU Par, PU a mercado, *Z-Spread*, *gross-up* tributário, YTM, TIR, métricas de risco e precificação em lote (`price_credit_portfolio`);
+9. **Derivativos Lineares (`DI1Future`, `DDIFuture`, `DAPFuture`, `DOLFuture`, `INDFuture`, `SwapDIxPRE`, `SwapDIxIPCA`, `NDFContract`):** Precificação de futuros de juros, cupom cambial, cupom de IPCA, dólar, Ibovespa, *swaps* e NDFs com cálculo de PU, taxa implícita, ajuste financeiro, DV01 e avaliação em lote (`price_di1_portfolio`);
+10. **Opções e Superfícies de Volatilidade (`EquityOption`, `FXOption`, `IDIOption`, `DI1Option`, `CorradoSuOption`, `VolatilitySurface`):** Modelos Black-Scholes-Merton, Garman-Kohlhagen (com ajuste de *fixing*), Black-76 para opções de IDI e DI1, árvore binomial CRR em Cython para exercício americano (com gregas consistentes), Corrado & Su (Gram-Charlier), parametrizações `SVISlice` e `SABRSlice`, auditoria de não arbitragem B3, cota de Lee, densidade neutra ao risco de Breeden-Litzenberger, volatilidade local de Dupire, validação *out-of-sample* e leitura de séries reais B3 (`B3DataLoader.load_options`).
 
 ---
 
@@ -110,11 +112,14 @@ bz_pricing/
 ├── src/bz_pricing/
 │   ├── core/                            # Extensões compiladas em Cython / C
 │   │   ├── conventions.pxd              # Enums em C para DayCountConvention e CompoundingType
-│   │   ├── interpolators.pxd / .pyx     # Interpoladores nativos em Cython (nogil)
-│   │   ├── curves.pxd / .pyx            # Estruturas de curvas compiladas (SimpleCurve, ConvenienceYieldCurve, etc.)
-│   │   ├── bonds.pxd / .pyx             # Motor Cython de fluxos de caixa, PU, YTM e métricas de risco
+│   │   ├── interpolators.pxd / .pyx     # Interpoladores nativos em Cython (busca binária O(log n))
+│   │   ├── curves.pxd / .pyx            # Estruturas de curvas compiladas (SimpleCurve, ComplexCurve, ConvenienceYieldCurve)
+│   │   ├── bonds.pxd / .pyx             # Motor Cython de fluxos de caixa, PU, YTM e métricas de risco de TPF
+│   │   ├── credit_core.pyx              # Motor Cython para crédito privado, gross-up e Z-Spread
+│   │   ├── derivatives_core.pyx         # Motor Cython para futuros, swaps e NDF
+│   │   ├── options_core.pyx             # Motor Cython para BSM, Black-76, CRR americano, Corrado-Su, SVI e SABR
 │   │   ├── calendars.py                 # Integração com calendários de dias úteis (bizdays)
-│   │   └── vna_engine.py                # Cálculo e projeção de Valor Nominal Atualizado (IPCA / Selic)
+│   │   └── vna_engine.py                # Cálculo e projeção de VNA a partir do VNE (IPCA, IGP-M, Selic, CDI)
 │   │
 │   ├── curves/                          # Camada de Orquestração e Construção de Curvas
 │   │   ├── configs.py                   # Especificações de interpolação, arredondamento e convenções por curva
@@ -122,28 +127,45 @@ bz_pricing/
 │   │   ├── manager.py                   # Fachada central de resolução de insumos (CurveManager)
 │   │   └── exceptions.py                # Tratamento estruturado de exceções (DataUnavailableError)
 │   │
-│   ├── instruments/                     # Instrumentos de Renda Fixa Soberana e Privada
-│   │   ├── tpf.py                       # Precificação de LTN, NTN-F, NTN-B, NTN-C e LFT
-│   │   └── credit.py                    # Precificação de Debêntures (IPCA, CDI, Pré) e PU Par
+│   ├── instruments/                     # Instrumentos de Renda Fixa, Derivativos e Opções
+│   │   ├── tpf.py                       # Precificação de LTN, NTN-F, NTN-B, NTN-B Principal, NTN-C e LFT (com VNA e custom_cashflows)
+│   │   ├── credit.py                    # Debenture, CRI, CRA, CotaFIDC, LetraFinanceira, Z-Spread, YTM/TIR e fluxos customizados
+│   │   ├── derivatives.py               # Futuros (DI1, DDI, DAP, DOL, IND), Swaps (DIxPré, DIxIPCA) e NDF
+│   │   └── options.py                   # EquityOption, FXOption, IDIOption, DI1Option, CorradoSuOption e lotes
+│   │
+│   ├── volatility/                      # Superfícies de Volatilidade Implícita e Validação
+│   │   └── surface.py                   # SVISlice, SABRSlice, VolatilitySurface, Breeden-Litzenberger, Dupire e OOS
 │   │
 │   ├── bonds/                           # Construtores auxiliares de carteiras de títulos
-│   │   └── builder.py                   # BondBuilder integrado a dados secundários da ANBIMA
+│   │   └── builder.py                   # TPFBuilder integrado a dados secundários e VNAEngine
 │   │
 │   └── data/                            # Ingestão e Extração de Dados Públicos
-│       ├── loaders.py                   # Leitura e filtragem de arquivos SPRD, ANBIMA e taxas referenciais
+│       ├── loaders.py                   # Leitura de SPRD, IN (séries de opções), ANBIMA e taxas referenciais
+│       ├── anbima_data.py               # Cliente unificado ANBIMA Data (ETTJ, debêntures, CRI/CRA, LF)
+│       ├── cricra.py                    # Cliente e gerador de cronogramas de CRI/CRA
 │       ├── debentures.py                # Cliente de dados do SND (debentures.com.br) e mercado ANBIMA
 │       └── scrapers.py                  # Coletores automatizados (B3, ANBIMA, BCB SGS/Olinda, NY Fed, ECB, Banxico)
 │
 ├── notebooks/                           # Cadernos de Validação Empírica
 │   ├── analise_curvas.ipynb             # Auditoria visual e numérica de todas as famílias de curvas
-│   ├── validacao_tpfs.ipynb             # Validação fluxo a fluxo dos 50 títulos públicos federais ANBIMA
-│   └── validacao_debentures.ipynb       # Extração de dados SND, cálculo de PU Par e apreçamento de debêntures
+│   ├── validacao_tpfs.ipynb             # Validação de 50 TPFs ANBIMA, VNA a partir do VNE e fluxos customizados
+│   ├── validacao_debentures.ipynb       # Extração de dados SND, PU Par e apreçamento de debêntures
+│   ├── validacao_cricra.ipynb           # Validação de CRI e CRA contra preços indicativos ANBIMA
+│   ├── validacao_fidc_lf_zspread.ipynb  # Validação de FIDC, Letras Financeiras, Z-Spread, YTM e TIR
+│   ├── validacao_derivativos_lineares.ipynb # Validação de futuros, swaps e NDF frente aos manuais B3
+│   └── validacao_opcoes_superficies.ipynb   # Validação de opções, SVI/SABR, Breeden-Litzenberger, Dupire e DOLZ26
 │
-└── tests/                               # Suíte Automatizada de Testes Unitários e de Integração
-    ├── test_interpolators.py            # Testes dos operadores de interpolação e extrapolação em Cython
+└── tests/                               # Suíte Automatizada de Testes (80 testes)
+    ├── test_interpolators.py            # Testes dos operadores de interpolação, busca binária e casos de borda
     ├── test_curves.py                   # Testes de aderência por vértices e construção 100% offline por componentes
-    ├── test_bonds.py                    # Testes de precificação de títulos públicos federais
-    └── test_debentures.py               # Testes de extração SND e cálculo de debêntures (IPCA e CDI)
+    ├── test_bonds.py                    # Testes de TPFs, cálculo de VNA a partir do VNE e fluxos customizados
+    ├── test_debentures.py               # Testes de extração SND e cálculo de debêntures (IPCA, CDI e Pré)
+    ├── test_cricra.py                   # Testes de CRI e CRA
+    ├── test_fidc_lf.py                  # Testes de FIDC e Letras Financeiras
+    ├── test_zspread.py                  # Testes de Z-Spread, gross-up, YTM, TIR e fluxos customizados
+    ├── test_anbima_data.py              # Testes de clientes e cache ANBIMA Data
+    ├── test_derivatives.py              # Testes de futuros, swaps e NDF
+    └── test_options_vol.py              # Testes de opções, superfícies SVI/SABR, B3 loader, Breeden-Litzenberger e Dupire
 ```
 
 ---
@@ -270,11 +292,20 @@ pu_multi = ntnb.present_value(
     base_vna_date=datetime.date(2026, 9, 15)
 )
 print(f"NTN-B 2027 Multi-Curva: PU = R$ {pu_multi:.6f}")
+# 7. Cálculo automático de VNA a partir do VNE e fluxos customizados do usuário
+from bz_pricing.core.vna_engine import calculate_lft_vna, calculate_ntnb_vna, calculate_vna_from_vne
+
+vna_lft_calc = calculate_lft_vna(base_date)                  # R$ 20.201,049997 em 30/10/2026
+vna_ntnb_calc = calculate_ntnb_vna(base_date, ipca_proj=0.001972)
+pu_ntnb_auto = ntnb.present_value(base_date, curva_real, ipca_proj=0.001972)
+
+ntnf_custom = NTNF(custom_cashflows=[(datetime.date(2027, 1, 4), 50.0, "Cupom"), (datetime.date(2027, 7, 1), 1050.0, "Principal")])
+pu_custom = ntnf_custom.present_value(base_date, FlatCurve(0.1495))
 ```
 
-### 5.4 Precificação de Debêntures e Extração de Fluxos de Crédito Privado
+### 5.4 Precificação de Debêntures, Crédito Privado e Fluxos Customizados
 
-A precificação de debêntures e títulos de crédito privado integra a extração de cronogramas contratuais no Sistema Nacional de Debêntures (SND / `debentures.com.br`) e cotações de mercado secundário da ANBIMA:
+A precificação de debêntures e títulos de crédito privado (`Debenture`, `CRI`, `CRA`, `CotaFIDC`, `LetraFinanceira`) integra a extração de cronogramas contratuais no Sistema Nacional de Debêntures (SND / `debentures.com.br`), cotações de mercado secundário da ANBIMA, cálculo de VNA a partir do VNE e construção por fluxos customizados:
 
 ```python
 import datetime
@@ -284,7 +315,7 @@ from bz_pricing.instruments.credit import Debenture
 client = DebenturesClient(cache_dir="dados/debentures")
 base_date = datetime.date(2026, 10, 30)
 
-# 1. Carregamento analítico do ativo via código SND (ex.: VALEA0 - IPCA + 6,40% a.a.)
+# 1. Carregamento analítico do ativo via código SND (ex.: VALEA0 - IPCA + 6,3837% a.a.)
 deb = Debenture.from_ticker("VALEA0", client=client)
 
 # 2. Cômputo do PU Par teórico com base no VNA oficial e juros acumulados da emissão
@@ -292,19 +323,51 @@ vna_data = 1096.791130
 pu_par = deb.pu_par(base_date, vna=vna_data)
 print(f"VALEA0 - PU Par Teórico: R$ {pu_par:.6f}")
 
-# 3. Precificação a mercado por taxa indicativa e decomposição fluxo a fluxo
+# 3. Precificação a mercado por taxa indicativa, métricas de risco e Z-Spread
 taxa_mercado = 0.066548
 pu_mercado, df_fluxos = deb.present_value(
     base_date=base_date,
-    rate=taxa_mercado,
+    discount_rate_or_curve=taxa_mercado,
     vna=vna_data,
     return_cashflows=True
 )
-dur_mercado = deb.duration(base_date=base_date, rate=taxa_mercado, vna=vna_data)
+dur_mercado = deb.duration(base_date=base_date, discount_rate_or_curve=taxa_mercado, vna=vna_data)
+ytm_calc = deb.ytm(base_date, pu_mercado, vna=vna_data)
 
-print(f"VALEA0 - PU Mercado:     R$ {pu_mercado:.6f}")
-print(f"VALEA0 - Duration:       {dur_mercado:.2f} DU")
-print(df_fluxos[["data_evento", "du", "tipo_evento", "valor_evento", "pv_evento"]])
+print(f"VALEA0 - PU Mercado: R$ {pu_mercado:.6f} | Duration: {dur_mercado:.2f} DU | YTM: {ytm_calc*100:.4f}% a.a.")
+print(df_fluxos[["data_pagamento", "du", "evento", "fluxo_nominal", "valor_presente"]])
+
+# 4. Ativo construído diretamente com fluxos próprios do usuário
+deb_user = Debenture.from_cashflows(
+    "DEB-CUSTOM",
+    [(datetime.date(2027, 4, 30), 60.0, "Juros"), (datetime.date(2027, 10, 29), 1060.0, "Vencimento")],
+    indexador="PRE"
+)
+print(f"Debênture Custom PU: R$ {deb_user.present_value(base_date, 0.13):.6f}")
+```
+
+### 5.5 Derivativos Lineares, Opções e Superfícies de Volatilidade
+
+```python
+import datetime
+from bz_pricing.instruments import DI1Future, SwapDIxPRE, EquityOption, FXOption
+from bz_pricing.volatility import SVISlice, VolatilitySurface
+
+base_date = datetime.date(2026, 10, 30)
+
+# Futuro de DI1 e Swap DI x Pré
+di1 = DI1Future("DI1F28", "2028-01-03")
+pu_di1 = di1.pu(base_date, 0.1385)
+swap = SwapDIxPRE("SWAP-PRE", "2028-01-03", fixed_rate=0.1350, notional=1_000_000.0)
+
+# Opções e superfície SVI livre de arbitragem
+opt_am = EquityOption("PETRO38", "2027-01-04", 38.0, "PUT", "AMERICAN")
+rm = opt_am.risk_metrics(base_date, spot=37.5, pre_rate_or_curve=0.14, vol=0.30)
+
+sl = SVISlice(a=0.015, b=0.04, rho=-0.30, m=0.0, sigma=0.12, T=63 / 252.0)
+surf = VolatilitySurface.from_svi_slices({63: sl})
+fx_opt = FXOption("DOLC560", "2027-01-29", 5.60, "CALL")
+preco_fx = fx_opt.price(base_date, spot_ptax=5.55, pre_rate_or_curve=0.14, cupom_limpo_or_curve=0.05, vol=surf)
 ```
 
 ---
@@ -357,6 +420,7 @@ O arquivo oficial de mercado secundário de debêntures da ANBIMA (`db261030.txt
 
 ## 7. Referências Normativas e Bibliográficas
 
+- **B3 S.A. – Brasil, Bolsa, Balcão.** *Manual de Apreçamento de Opções da B3*. São Paulo: B3. Disponível em: <https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/consultas/mercado-de-derivativos/precos-referenciais/manuais-de-aprecamento/>.
 - **B3 S.A. – Brasil, Bolsa, Balcão.** *Manual de Curvas da B3: Metodologia de Apuração das Estruturas a Termo de Taxas de Juros, Moedas e Índices*. São Paulo: B3, 2024. Disponível em: <https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/consultas/mercado-de-derivativos/precos-referenciais/manuais-de-curvas/>.
 - **B3 S.A. – Brasil, Bolsa, Balcão.** *Preços Referenciais – Taxas Referenciais BM&FBOVESPA*. São Paulo: B3. Disponível em: <https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/consultas/mercado-de-derivativos/precos-referenciais/taxas-referenciais-bm-fbovespa/>.
 - **ANBIMA – Associação Brasileira das Entidades dos Mercados Financeiro e de Capitais.** *Metodologia de Precificação de Títulos Públicos Federais e Estrutura a Termo das Taxas de Juros (ETTJ)*. Rio de Janeiro: ANBIMA. Disponível em: <https://www.anbima.com.br/pt_br/informar/precos-e-indices/precos/titulos-publicos.htm>.

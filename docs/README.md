@@ -19,9 +19,12 @@ O pacote `bz-pricing` constitui uma biblioteca quantitativa de alta performance 
 2. **[Guia de Referência da API](guia_uso_api.md)**
    - Orquestrador central de estruturas a termo (`CurveManager`);
    - Construção por vértices customizados e tratamento de exceções (`DataUnavailableError`);
-   - Extração e coleta automatizada de dados (`B3DataLoader` e `B3Scraper`);
+   - Extração e coleta automatizada de dados (`B3DataLoader` e `B3Scraper`, incluindo séries de opções `load_options`);
    - Instanciação direta de curvas e interpoladores em Cython (`B3CurveBuilder` e `SimpleCurve`);
-   - Precificação e métricas de risco de títulos públicos federais (`TPF` e `VNAEngine`).
+   - Precificação de títulos públicos federais (`TPF`), cálculo de VNA a partir do VNE (`VNAEngine`, `calculate_vna_from_vne`, `calculate_ntnb_vna`, `calculate_lft_vna`) e fluxos customizados (`custom_cashflows`);
+   - Crédito privado (`Debenture`, `CRI`, `CRA`, `CotaFIDC`, `LetraFinanceira`), *Z-Spread*, YTM, TIR e lotes (`price_credit_portfolio`);
+   - Derivativos lineares (`DI1Future`, `DDIFuture`, `DAPFuture`, `DOLFuture`, `INDFuture`, `SwapDIxPRE`, `SwapDIxIPCA`, `NDFContract`);
+   - Opções e superfícies de volatilidade (`EquityOption`, `FXOption`, `IDIOption`, `DI1Option`, `CorradoSuOption`, `SVISlice`, `SABRSlice`, `VolatilitySurface`).
 3. **[Calendários, Convenções de Contagem de Dias e Regimes de Extrapolação](calendarios_convencoes.md)**
    - Convenções `BUS/252`, `ACT/360`, `ACT/365` e `30/360`;
    - Calendário de feriados nacionais e regras de rolagem de datas (`following`, `preceding`, `modified_following`);
@@ -41,5 +44,5 @@ poetry run python setup.py build_ext --inplace
 Para executar a suíte de testes automatizados:
 
 ```bash
-poetry run pytest -v
+poetry run pytest tests/ -v
 ```

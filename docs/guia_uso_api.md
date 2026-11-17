@@ -358,18 +358,93 @@ vna_data = 1096.791130
 pu_par = deb.pu_par(base_date, vna=vna_data)
 print(f"VALEA0 - PU Par Teórico: R$ {pu_par:.6f}")
 
-# 2. Precificação a mercado e duration por taxa indicativa ANBIMA (ex.: 6,6548% a.a.)
+# 2. Precificação a mercado, duration, YTM e TIR por taxa indicativa ANBIMA
 taxa_mercado = 0.066548
 pu_mercado, df_fluxos = deb.present_value(
     base_date=base_date,
-    rate=taxa_mercado,
+    discount_rate_or_curve=taxa_mercado,
     vna=vna_data,
     return_cashflows=True
 )
-dur_mercado = deb.duration(base_date=base_date, rate=taxa_mercado, vna=vna_data)
+dur_mercado = deb.duration(base_date=base_date, discount_rate_or_curve=taxa_mercado, vna=vna_data)
+ytm_calc = deb.ytm(base_date, pu_mercado, vna=vna_data)
 
 print(f"VALEA0 - PU Mercado:     R$ {pu_mercado:.6f}")
 print(f"VALEA0 - Duration:       {dur_mercado:.2f} DU")
-print(df_fluxos[["data_evento", "du", "tipo_evento", "valor_evento", "fator_desconto", "pv_evento"]])
+print(f"VALEA0 - YTM:            {ytm_calc * 100:.4f}% a.a.")
+print(df_fluxos[["data_pagamento", "du", "evento", "fluxo_nominal", "fator_desconto", "valor_presente"]])
+```
+
+### 5.3 Fluxos Customizados, Securitização (`CRI`/`CRA`/`FIDC`), `LetraFinanceira` e `Z-Spread`
+
+Todos os instrumentos de renda fixa (`LTN`, `NTNF`, `LFT`, `NTNB`, `NTNBPrincipal`, `NTNC`, `Debenture`, `CRI`, `CRA`, `CotaFIDC`, `LetraFinanceira`) aceitam fluxos próprios via `custom_cashflows` (ou `Debenture.from_cashflows` / `from_schedule`), e o módulo [`bz_pricing.core.vna_engine`](../src/bz_pricing/core/vna_engine.py) calcula o VNA a partir do VNE para qualquer indexador compatível:
+
+```python
+import datetime
+from bz_pricing.core.vna_engine import calculate_lft_vna, calculate_ntnb_vna, calculate_vna_from_vne
+from bz_pricing.instruments import NTNF, Debenture, CRI, CotaFIDC, LetraFinanceira, price_credit_portfolio
+
+base_date = datetime.date(2026, 10, 30)
+
+# 1. Cálculo de VNA a partir do VNE (online via BCB/Focus ou offline com séries do usuário)
+vna_lft = calculate_lft_vna(base_date)
+vna_ntnb = calculate_ntnb_vna(base_date, ipca_proj=0.001972)
+vna_deb = calculate_vna_from_vne(
+    vne=1000.0,
+    base_date="2026-08-15",
+    target_date="2026-10-15",
+    indexador="IPCA",
+    history={"2026-08-01": 0.0030, "2026-09-01": 0.0020},
+    allow_download=False,
+)
+
+# 2. Precificação por fluxos customizados em TPF e Crédito Privado
+ntnf_user = NTNF(custom_cashflows=[(datetime.date(2027, 1, 4), 50.0, "Cupom"), (datetime.date(2027, 7, 1), 1050.0, "Principal")])
+deb_user = Debenture.from_cashflows("DEB-CUSTOM", [(datetime.date(2027, 4, 30), 1060.0, "Vencimento")], indexador="PRE")
+
+# 3. Securitização, Z-Spread com gross-up tributário e avaliação em lote
+cri = CRI.from_schedule("CRI-01", "2026-01-02", "2028-01-03", indexador="IPCA", coupon_rate=0.075, coupon_freq="mensal")
+z_sprd = cri.z_spread(base_date, market_pu=1015.0, ettj_pre_rate_or_curve=0.065, vna=1035.0, incentivada=True)
+df_carteira = price_credit_portfolio([{"instrument": deb_user, "discount_rate": 0.13, "quantity": 10}], base_date)
+```
+
+---
+
+## 6. Derivativos Lineares (`bz_pricing.instruments.derivatives`)
+
+O módulo [`derivatives.py`](../src/bz_pricing/instruments/derivatives.py) implementa futuros listados (`DI1Future`, `DDIFuture`, `DAPFuture`, `DOLFuture`, `INDFuture`), *swaps* (`SwapDIxPRE`, `SwapDIxIPCA`) e contratos a termo de moeda (`NDFContract`), além de precificação vetorizada em lote (`price_di1_portfolio`):
+
+```python
+import datetime
+from bz_pricing.instruments import DI1Future, SwapDIxPRE, NDFContract
+
+base_date = datetime.date(2026, 10, 30)
+di1 = DI1Future("DI1F28", "2028-01-03")
+pu_di1 = di1.pu(base_date, 0.1385)
+dv01_di1 = di1.dv01(base_date, 0.1385)
+
+swap = SwapDIxPRE("SWAP-PRE", "2028-01-03", fixed_rate=0.1350, notional=1_000_000.0)
+ndf = NDFContract("NDF-USD", "2027-01-29", forward_rate=5.65, notional_usd=100_000.0)
+```
+
+---
+
+## 7. Opções e Superfícies de Volatilidade (`options` e `volatility`)
+
+Os módulos [`options.py`](../src/bz_pricing/instruments/options.py) e [`surface.py`](../src/bz_pricing/volatility/surface.py) disponibilizam precificação analítica e numérica em Cython (`EquityOption`, `FXOption`, `IDIOption`, `DI1Option`, `CorradoSuOption`, `price_options_portfolio`), parametrizações de *smiles* (`SVISlice`, `SABRSlice`), superfície `VolatilitySurface`, auditoria de não arbitragem, densidade neutra ao risco (`breeden_litzenberger_density`), volatilidade local (`dupire_local_vol_grid`), validação *out-of-sample* (`validate_slice_out_of_sample`) e leitura de séries reais B3 (`B3DataLoader.load_options`):
+
+```python
+import datetime
+from bz_pricing.instruments import EquityOption, FXOption
+from bz_pricing.volatility import SVISlice, VolatilitySurface
+
+base_date = datetime.date(2026, 10, 30)
+opt_am = EquityOption("PETRO38", "2027-01-04", 38.0, "PUT", "AMERICAN")
+rm = opt_am.risk_metrics(base_date, spot=37.5, pre_rate_or_curve=0.14, vol=0.30)
+
+sl = SVISlice(a=0.015, b=0.04, rho=-0.30, m=0.0, sigma=0.12, T=63 / 252.0)
+surf = VolatilitySurface.from_svi_slices({63: sl})
+arb = surf.check_no_arbitrage(forward_by_du=5.55, r_cont_by_du=0.13)
+bl = surf.breeden_litzenberger_density(63, forward=5.55, r_cont=0.13)
 ```
 
