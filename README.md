@@ -277,9 +277,9 @@ ntnb = NTNB(maturity_date=datetime.date(2027, 5, 15), coupon_rate=0.06)
 pu_ntnb = ntnb.present_value(base_date, curva_real, vna=4771.575461)
 print(f"NTN-B 2027: PU = R$ {pu_ntnb:.6f}")
 
-# 5. NTN-C (Indexada ao IGP-M com Cupons Semestrais)
-ntnc = NTNC(maturity_date=datetime.date(2031, 1, 1), coupon_rate=0.06)
-pu_ntnc = ntnc.present_value(base_date, FlatCurve(0.077739), vna=8321.942046)
+# 5. NTN-C (Indexada ao IGP-M com Cupons Semestrais — série 2031 paga 12% a.a.)
+ntnc = NTNC(maturity_date=datetime.date(2031, 1, 1))
+pu_ntnc = ntnc.present_value(base_date, FlatCurve(0.077739), vna=6765.022425)
 print(f"NTN-C 2031: PU = R$ {pu_ntnc:.6f}")
 
 # 6. Precificação Multi-Curva (Taxa Real + Projeção de Inflação Implícita)
@@ -358,7 +358,8 @@ base_date = datetime.date(2026, 10, 30)
 # Futuro de DI1 e Swap DI x Pré
 di1 = DI1Future("DI1F28", "2028-01-03")
 pu_di1 = di1.pu(base_date, 0.1385)
-swap = SwapDIxPRE("SWAP-PRE", "2028-01-03", fixed_rate=0.1350, notional=1_000_000.0)
+swap = SwapDIxPRE(notional=1_000_000.0, start_date="2026-10-30", maturity_date="2028-01-03", fixed_rate=0.1350)
+mtm_swap = swap.mtm(base_date, pre_rate_or_curve=0.1410, di_accrued_factor=1.0)
 
 # Opções e superfície SVI livre de arbitragem
 opt_am = EquityOption("PETRO38", "2027-01-04", 38.0, "PUT", "AMERICAN")

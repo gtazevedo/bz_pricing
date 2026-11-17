@@ -408,7 +408,7 @@ deb_user = Debenture.from_cashflows("DEB-CUSTOM", [(datetime.date(2027, 4, 30), 
 
 # 3. Securitização, Z-Spread com gross-up tributário e avaliação em lote
 cri = CRI.from_schedule("CRI-01", "2026-01-02", "2028-01-03", indexador="IPCA", coupon_rate=0.075, coupon_freq="mensal")
-z_sprd = cri.z_spread(base_date, market_pu=1015.0, ettj_pre_rate_or_curve=0.065, vna=1035.0, incentivada=True)
+z_sprd = cri.z_spread(base_date, discount_rate=0.082, risk_free_rate=0.065, vna=1035.0, incentivada=True)
 df_carteira = price_credit_portfolio([{"instrument": deb_user, "discount_rate": 0.13, "quantity": 10}], base_date)
 ```
 
@@ -427,8 +427,9 @@ di1 = DI1Future("DI1F28", "2028-01-03")
 pu_di1 = di1.pu(base_date, 0.1385)
 dv01_di1 = di1.dv01(base_date, 0.1385)
 
-swap = SwapDIxPRE("SWAP-PRE", "2028-01-03", fixed_rate=0.1350, notional=1_000_000.0)
-ndf = NDFContract("NDF-USD", "2027-01-29", forward_rate=5.65, notional_usd=100_000.0)
+swap = SwapDIxPRE(notional=1_000_000.0, start_date="2026-10-30", maturity_date="2028-01-03", fixed_rate=0.1350)
+ndf = NDFContract(notional_usd=100_000.0, maturity_date="2027-01-29", strike_brl=5.65)
+mtm_ndf = ndf.mtm(base_date, spot_ptax=5.55, pre_rate_or_curve=0.1480, cupom_rate_or_curve=0.0520)
 ```
 
 ---

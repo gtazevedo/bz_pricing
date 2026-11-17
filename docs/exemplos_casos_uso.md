@@ -111,7 +111,7 @@ vna_cri = cri.calculate_vna(
     allow_download=False,
 )
 pu_cri = cri.present_value(base_date, 0.0820, vna=vna_cri)
-z_sprd = cri.z_spread(base_date, market_pu=pu_cri, ettj_pre_rate_or_curve=0.0720, vna=vna_cri, incentivada=True)
+z_sprd = cri.z_spread(base_date, discount_rate=0.0820, risk_free_rate=0.0720, vna=vna_cri, incentivada=True)
 
 # 3.3 Letra Financeira DI+ e avaliação de carteira em lote
 lf = LetraFinanceira.from_bullet("LF-EXEMPLO", "2026-01-02", "2028-01-03", indexador="DI", coupon_rate=0.006, nominal_value=50000.0)
@@ -123,7 +123,7 @@ df_port = price_credit_portfolio(
     ],
     base_date=base_date,
 )
-print(df_port[["ticker", "classe", "pu", "mtm", "duration_du", "dv01"]])
+print(df_port[["ticker", "classe", "pu", "valor_financeiro", "duration_du", "dv01"]])
 
 # 3.4 Curva de Hazard Rate, PV com risco de crédito (CVA) e Credit DV01 (modo offline)
 from bz_pricing.instruments import HazardRateCurve
@@ -153,18 +153,18 @@ print(f"DI1F28 PU: R$ {di1.pu(base_date, 0.1385):.2f} | DV01: R$ {di1.dv01(base_
 
 df_di1 = price_di1_portfolio(
     [
-        {"instrument": DI1Future("DI1F27", "2027-01-04"), "rate": 0.1490, "quantity": 50},
-        {"instrument": di1, "rate": 0.1385, "quantity": -30},
+        {"instrument": DI1Future("DI1F27", "2027-01-04"), "rate": 0.1490, "contracts": 50},
+        {"instrument": di1, "rate": 0.1385, "contracts": -30},
     ],
     base_date=base_date,
 )
 
 # 4.2 Swap DI x Pré e NDF USD/BRL
-swap_pre = SwapDIxPRE("SWAP-PRE-28", "2028-01-03", fixed_rate=0.1350, notional=1_000_000.0)
-mtm_swap = swap_pre.mtm(base_date, pre_curve=0.1410, cdi_accrued_factor=1.025)
+swap_pre = SwapDIxPRE(notional=1_000_000.0, start_date="2026-01-02", maturity_date="2028-01-03", fixed_rate=0.1350)
+mtm_swap = swap_pre.mtm(base_date, pre_rate_or_curve=0.1410, di_accrued_factor=1.025)
 
-ndf = NDFContract("NDF-USD", "2027-01-29", forward_rate=5.62, notional_usd=250_000.0)
-mtm_ndf = ndf.mtm(base_date, spot_ptax=5.55, pre_rate_or_curve=0.1480, cupom_limpo_or_curve=0.0520)
+ndf = NDFContract(notional_usd=250_000.0, maturity_date="2027-01-29", strike_brl=5.62)
+mtm_ndf = ndf.mtm(base_date, spot_ptax=5.55, pre_rate_or_curve=0.1480, cupom_rate_or_curve=0.0520)
 print(f"MtM Swap: R$ {mtm_swap:,.2f} | MtM NDF: R$ {mtm_ndf:,.2f}")
 ```
 

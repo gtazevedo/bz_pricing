@@ -219,10 +219,12 @@ cdef double _crr_american_core(
     cdef double d_sq = d * d
     cdef double disc = exp(-r * dt)
     cdef double p = (exp((r - q) * dt) - d) / (u - d)
-    if p < 0.0:
-        p = 0.0
-    elif p > 1.0:
-        p = 1.0
+    if p < 0.0 or p > 1.0:
+        free(values)
+        out_delta[0] = NAN
+        out_gamma[0] = NAN
+        out_theta[0] = NAN
+        return NAN
     cdef double one_minus_p = 1.0 - p
 
     cdef int i, j
@@ -912,13 +914,18 @@ cpdef double asian_arithmetic_tw_price(
     else:
         if fabs(b) < 1e-8:
             m1 = 1.0
+            if sig2 * T > 1e-8:
+                m2 = (2.0 * exp(sig2 * T) - 2.0 * (1.0 + sig2 * T)) / (sig2 * sig2 * T * T)
+            else:
+                m2 = 1.0
+        elif fabs(b + sig2) < 1e-8:
+            m1 = (exp(b * T) - 1.0) / (b * T)
+            m2 = (2.0 * (exp(b * T) * (b * T - 1.0) + 1.0)) / (b * b * T * T)
+        elif fabs(2.0 * b + sig2) < 1e-8:
+            m1 = (exp(b * T) - 1.0) / (b * T)
+            m2 = (2.0 / ((b + sig2) * T * T)) * (T - (exp(b * T) - 1.0) / b)
         else:
             m1 = (exp(b * T) - 1.0) / (b * T)
-
-        if fabs(b + sig2) < 1e-8 or fabs(2.0 * b + sig2) < 1e-8 or fabs(b) < 1e-8:
-            # Expansão segura perto de b == 0
-            m2 = (2.0 * exp(sig2 * T) - 2.0 * (1.0 + sig2 * T)) / (sig2 * sig2 * T * T) if sig2 * T > 1e-8 else 1.0
-        else:
             m2 = (
                 (2.0 * exp((2.0 * b + sig2) * T)) / ((b + sig2) * (2.0 * b + sig2) * T * T)
                 + (2.0 / (b * T * T)) * ((1.0 / (2.0 * b + sig2)) - (exp(b * T) / (b + sig2)))

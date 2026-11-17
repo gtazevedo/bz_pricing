@@ -43,10 +43,18 @@ class _BaseFuture:
     ASSET_CODE = ""
     MULTIPLIER = 1.0
 
-    def __init__(self, ticker: str, maturity_date: Union[datetime.date, str], calendar_name: str = "B3"):
+    def __init__(
+        self,
+        ticker: str,
+        maturity_date: Union[datetime.date, str],
+        calendar_name: str = "B3",
+        contract_multiplier: Optional[float] = None,
+    ):
         self.ticker = ticker.strip().upper()
         self.maturity_date = _to_date(maturity_date)
         self.calendar = get_calendar(calendar_name)
+        if contract_multiplier is not None:
+            self.MULTIPLIER = float(contract_multiplier)
 
     def _du(self, base_date: Union[datetime.date, str]) -> int:
         return max(0, int(self.calendar.bizdays(_to_date(base_date), self.maturity_date)))
@@ -157,16 +165,34 @@ class DAPFuture(_BaseFuture):
         rate = _resolve_rate(rate_or_curve, du)
         return float(dv01_dap(rate, du) * float(contracts))
 
+    def daily_settlement(
+        self,
+        pu_atual: float,
+        pu_anterior: float,
+        contracts: float = 1.0,
+        direction: int = 1,
+        vna_ntnb: float = 1.0,
+    ) -> float:
+        """Ajuste diário do DAP (em R$ quando `vna_ntnb` é informado, ou em pontos de VNA se `vna_ntnb=1.0`)."""
+        return float(super().daily_settlement(pu_atual, pu_anterior, contracts=contracts, direction=direction) * float(vna_ntnb))
+
 
 class DOLFuture(_BaseFuture):
     """Contrato Futuro de Taxa de Câmbio USD/BRL (DOL cheio: USD 50k; WDO mini: USD 10k)."""
 
     ASSET_CODE = "DOL"
 
-    def __init__(self, ticker: str, maturity_date: Union[datetime.date, str], calendar_name: str = "B3", mini: Optional[bool] = None):
+    def __init__(
+        self,
+        ticker: str,
+        maturity_date: Union[datetime.date, str],
+        calendar_name: str = "B3",
+        mini: Optional[bool] = None,
+        contract_multiplier: Optional[float] = None,
+    ):
         super().__init__(ticker, maturity_date, calendar_name=calendar_name)
         is_mini = (self.ticker.startswith("WDO")) if mini is None else bool(mini)
-        self.MULTIPLIER = 10.0 if is_mini else 50.0
+        self.MULTIPLIER = float(contract_multiplier) if contract_multiplier is not None else (10.0 if is_mini else 50.0)
 
     def fair_price(
         self,
@@ -187,10 +213,17 @@ class INDFuture(_BaseFuture):
 
     ASSET_CODE = "IND"
 
-    def __init__(self, ticker: str, maturity_date: Union[datetime.date, str], calendar_name: str = "B3", mini: Optional[bool] = None):
+    def __init__(
+        self,
+        ticker: str,
+        maturity_date: Union[datetime.date, str],
+        calendar_name: str = "B3",
+        mini: Optional[bool] = None,
+        contract_multiplier: Optional[float] = None,
+    ):
         super().__init__(ticker, maturity_date, calendar_name=calendar_name)
         is_mini = (self.ticker.startswith("WIN")) if mini is None else bool(mini)
-        self.MULTIPLIER = 0.20 if is_mini else 1.00
+        self.MULTIPLIER = float(contract_multiplier) if contract_multiplier is not None else (0.20 if is_mini else 1.00)
 
     def fair_price(
         self,
@@ -238,14 +271,15 @@ class SwapDIxPRE:
         du_total = max(0, int(self.calendar.bizdays(self.start_date, self.maturity_date)))
         r_mkt = _resolve_rate(pre_rate_or_curve, du_rem)
 
-        df_rem = math.pow(1.0 + r_mkt, du_rem / 252.0) if du_rem > 0 else 1.0
-        fv_pre = self.notional * math.pow(1.0 + self.fixed_rate, du_total / 252.0) if du_total > 0 else self.notional
-        pv_pre = fv_pre / df_rem
-        pv_di = self.notional * float(di_accrued_factor)
-        mtm = float(self.fixed_direction) * (pv_pre - pv_di)
-
-        df_up = math.pow(1.0 + r_mkt + 0.0001, du_rem / 252.0) if du_rem > 0 else 1.0
-        dv01_pre = float(self.fixed_direction) * ((fv_pre / df_up) - pv_pre)
+        mtm, pv_pre, pv_di, dv01_pre = swap_pre_di_mtm(
+            self.notional,
+            self.fixed_rate,
+            r_mkt,
+            du_total,
+            float(di_accrued_factor),
+            float(self.fixed_direction),
+            du_rem,
+        )
 
         return {
             "mtm": float(mtm),
@@ -375,7 +409,7 @@ def price_di1_portfolio(
         tickers.append(inst.ticker)
         dus.append(du)
         rates.append(_resolve_rate(rc, du))
-        contracts.append(float(pos.get("contracts", 1.0)))
+        contracts.append(float(pos.get("contracts", pos.get("quantity", 1.0))))
 
     pus, dv01s = price_di1_batch(
         np.asarray(rates, dtype=np.float64),

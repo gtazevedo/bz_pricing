@@ -109,20 +109,24 @@ cpdef tuple swap_pre_di_mtm(
     int du,
     double di_accrued_factor=1.0,
     double fixed_direction=1.0,
+    int du_rem=-1,
 ):
     """
     Marcação a mercado de Swap DI x Pré (B3).
+    `du`: prazo total em DU entre início e vencimento do swap.
+    `du_rem`: prazo remanescente em DU da data-base até o vencimento (padrão = `du`).
     `fixed_direction = 1.0` -> ativo na ponta Pré (recebe Pré, paga DI).
     `fixed_direction = -1.0` -> ativo na ponta DI (recebe DI, paga Pré).
     Retorna (mtm, pv_pre, pv_di, dv01_pre).
     """
-    cdef double df = pow(1.0 + market_pre_rate, du / 252.0) if du > 0 else 1.0
+    cdef int eff_du_rem = du if du_rem < 0 else du_rem
+    cdef double df = pow(1.0 + market_pre_rate, eff_du_rem / 252.0) if eff_du_rem > 0 else 1.0
     cdef double fv_pre = notional * pow(1.0 + fixed_rate, du / 252.0) if du > 0 else notional
     cdef double pv_pre = fv_pre / df
     cdef double pv_di = notional * di_accrued_factor
     cdef double mtm = fixed_direction * (pv_pre - pv_di)
 
-    cdef double df_up = pow(1.0 + market_pre_rate + 0.0001, du / 252.0) if du > 0 else 1.0
+    cdef double df_up = pow(1.0 + market_pre_rate + 0.0001, eff_du_rem / 252.0) if eff_du_rem > 0 else 1.0
     cdef double pv_pre_up = fv_pre / df_up
     cdef double dv01_pre = fixed_direction * (pv_pre_up - pv_pre)
     return (mtm, pv_pre, pv_di, dv01_pre)

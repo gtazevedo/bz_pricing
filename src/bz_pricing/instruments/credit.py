@@ -1096,6 +1096,24 @@ class Debenture:
 
         flows_arr = np.asarray(adjusted_flows, dtype=np.float64)
         du_i32 = du_arr.astype(np.int32)
+        is_di = self._is_di_linked()
+        is_pct_di = self._is_pct_di()
+
+        if is_di and di_curve is not None:
+            r_di_arr = np.array([self._get_rate_for_du(di_curve, int(d)) for d in du_i32], dtype=np.float64)
+            f_di_arr = np.power(1.0 + r_di_arr, du_arr / 252.0)
+            di_daily_arr = np.power(1.0 + r_di_arr, 1.0 / 252.0) - 1.0
+
+            def _pv_diff(rate: float) -> float:
+                if is_pct_di:
+                    disc = np.power(1.0 + di_daily_arr * float(rate), du_arr)
+                else:
+                    disc = f_di_arr * np.power(1.0 + float(rate), du_arr / 252.0)
+                return float(np.sum(flows_arr / disc) - pu_target)
+
+            low = 1e-4 if is_pct_di else max(-0.90, float(discount_rate) - 0.05)
+            high = 5.0 if is_pct_di else (float(discount_rate) + 0.50)
+            return float(brentq(_pv_diff, low, high, xtol=1e-10))
 
         def _pv_diff(rate: float) -> float:
             if _cy_evaluate_gross_up_pv is not None:

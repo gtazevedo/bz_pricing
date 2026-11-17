@@ -125,37 +125,57 @@ class TituloPublico:
         for dt, tipo, val, is_cot in raw:
             if dt <= base_date:
                 continue
+            if is_cot and vna_val <= 0.0:
+                raise ValueError("Informe 'vna' positivo para avaliar custom_cashflows em base de cotação (`fluxo_cotação`).")
             du = int(self.calendar.bizdays(base_date, dt))
             rate = float(curve.get_rate(du)) if du > 0 else 0.0
-            df = (1.0 + rate) ** (-du / 252.0) if du > 0 else 1.0
-            fl_nom = (val * (vna_val / 100.0)) if (is_cot and vna_val > 0.0) else val
-            pv = fl_nom * df
-            rows.append({
-                "data_fluxo": dt,
-                "du": du,
-                "tipo": tipo,
-                "fluxo_nominal": fl_nom,
-                rate_col_name: rate,
-                "fator_desconto": df,
-                "valor_presente": pv,
-            })
+            df_comp = math.trunc(math.pow(1.0 + rate, du / 252.0) * 1e14) / 1e14 if du > 0 else 1.0
+            if is_cot:
+                pv_cot = round((val / df_comp) * 1e10) / 1e10
+                pv = math.trunc((vna_val * (pv_cot / 100.0)) * 1e6) / 1e6
+                rows.append({
+                    "data_fluxo": dt,
+                    "du": du,
+                    "tipo": tipo,
+                    "fluxo_cotação": val,
+                    rate_col_name: rate,
+                    "fator_desconto": df_comp,
+                    "cotação_descontada": pv_cot,
+                    "vna": vna_val,
+                    "valor_presente": pv,
+                })
+            else:
+                pv = round((val / df_comp) * 1e9) / 1e9
+                rows.append({
+                    "data_fluxo": dt,
+                    "du": du,
+                    "tipo": tipo,
+                    "fluxo_nominal": val,
+                    rate_col_name: rate,
+                    "fator_desconto": df_comp,
+                    "valor_presente": pv,
+                })
         return pd.DataFrame(rows)
 
     def _custom_metrics(self, base_date: datetime.date, curve: Curve, custom_cashflows: Any, vna: Optional[float] = None) -> dict:
         df = self._evaluate_custom_cashflows(base_date, curve, custom_cashflows, vna=vna)
         if df.empty:
             return {"df": df, "pu": 0.0, "duration": 0.0, "modified_duration": 0.0, "dv01": 0.0}
-        pu = float(df["valor_presente"].sum())
-        if pu <= 0.0:
+        vna_val = float(vna) if vna is not None else 0.0
+        if "cotação_descontada" in df.columns and vna_val > 0.0:
+            cot_total = math.trunc(float(df["cotação_descontada"].sum()) * 1e4) / 1e4
+            pu = math.trunc((vna_val * (cot_total / 100.0)) * 1e6) / 1e6
+            weights = df["cotação_descontada"]
+        else:
+            pu = math.trunc(float(df["valor_presente"].sum()) * 1e6) / 1e6
+            weights = df["valor_presente"]
+        w_sum = float(weights.sum())
+        if pu <= 0.0 or w_sum <= 0.0:
             return {"df": df, "pu": pu, "duration": 0.0, "modified_duration": 0.0, "dv01": 0.0}
-        dur = float((df["du"] * df["valor_presente"]).sum() / pu)
-        mod_dur = float(((df["du"] / 252.0) / (1.0 + df["taxa"]) * df["valor_presente"]).sum() / pu)
-        pu_up = 0.0
-        for _, r in df.iterrows():
-            du_i = int(r["du"])
-            r_up = float(r["taxa"]) + 1e-4
-            pu_up += float(r["fluxo_nominal"]) * ((1.0 + r_up) ** (-du_i / 252.0))
-        dv01 = abs(pu - pu_up)
+        rate_col = "taxa" if "taxa" in df.columns else "taxa_real"
+        dur = float((df["du"] * weights).sum() / w_sum)
+        mod_dur = float(((df["du"] / 252.0) / (1.0 + df[rate_col]) * weights).sum() / w_sum)
+        dv01 = float(mod_dur * pu * 1e-4)
         return {"df": df, "pu": pu, "duration": dur, "modified_duration": mod_dur, "dv01": dv01}
 
     def _resolve_ntnb_vna(
@@ -630,7 +650,7 @@ class NTNB(TituloPublico):
         base_date = self._normalize_date(base_date)
         cf = custom_cashflows if custom_cashflows is not None else self.custom_cashflows
         if cf is not None:
-            return self._custom_metrics(base_date, real_curve, cf)["duration"]
+            return self._custom_metrics(base_date, real_curve, cf, vna=100.0)["duration"]
         if base_date >= self.maturity_date:
             return 0.0
         coupon_dates = self.get_coupon_dates(base_date)
@@ -642,7 +662,7 @@ class NTNB(TituloPublico):
         base_date = self._normalize_date(base_date)
         cf = custom_cashflows if custom_cashflows is not None else self.custom_cashflows
         if cf is not None:
-            return self._custom_metrics(base_date, real_curve, cf)["modified_duration"]
+            return self._custom_metrics(base_date, real_curve, cf, vna=100.0)["modified_duration"]
         if base_date >= self.maturity_date:
             return 0.0
         coupon_dates = self.get_coupon_dates(base_date)
@@ -762,7 +782,7 @@ class NTNBPrincipal(TituloPublico):
         if cf is not None:
             if real_curve is None:
                 raise ValueError("Informe 'real_curve' para calcular duration de fluxos customizados.")
-            return self._custom_metrics(base_date, real_curve, cf)["duration"]
+            return self._custom_metrics(base_date, real_curve, cf, vna=100.0)["duration"]
         if base_date >= self.maturity_date:
             return 0.0
         return float(self.calendar.bizdays(base_date, self.maturity_date))
@@ -771,7 +791,7 @@ class NTNBPrincipal(TituloPublico):
         base_date = self._normalize_date(base_date)
         cf = custom_cashflows if custom_cashflows is not None else self.custom_cashflows
         if cf is not None:
-            return self._custom_metrics(base_date, real_curve, cf)["modified_duration"]
+            return self._custom_metrics(base_date, real_curve, cf, vna=100.0)["modified_duration"]
         du = self.calendar.bizdays(base_date, self.maturity_date)
         bond_c = _NTNBP_C(du)
         return bond_c.modified_duration(real_curve)
@@ -945,7 +965,7 @@ class NTNC(TituloPublico):
         base_date = self._normalize_date(base_date)
         cf = custom_cashflows if custom_cashflows is not None else self.custom_cashflows
         if cf is not None:
-            return self._custom_metrics(base_date, real_curve, cf)["duration"]
+            return self._custom_metrics(base_date, real_curve, cf, vna=100.0)["duration"]
         if base_date >= self.maturity_date:
             return 0.0
         coupon_dates = self.get_coupon_dates(base_date)
@@ -957,7 +977,7 @@ class NTNC(TituloPublico):
         base_date = self._normalize_date(base_date)
         cf = custom_cashflows if custom_cashflows is not None else self.custom_cashflows
         if cf is not None:
-            return self._custom_metrics(base_date, real_curve, cf)["modified_duration"]
+            return self._custom_metrics(base_date, real_curve, cf, vna=100.0)["modified_duration"]
         if base_date >= self.maturity_date:
             return 0.0
         coupon_dates = self.get_coupon_dates(base_date)

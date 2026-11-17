@@ -361,7 +361,7 @@ def test_tpf_custom_cashflows():
     ntnf_custom = NTNF(custom_cashflows=custom)
     pu_c, df_c = ntnf_custom.present_value(base_dt, curve, return_cashflows=True)
     assert len(df_c) == 2
-    assert abs(pu_c - df_c["valor_presente"].sum()) < 1e-9
+    assert abs(pu_c - df_c["valor_presente"].sum()) < 1e-6
     assert ntnf_custom.duration(base_dt, curve) > 0.0
     assert ntnf_custom.modified_duration(base_dt, curve) > 0.0
     assert ntnf_custom.dv01(base_dt, curve) > 0.0
