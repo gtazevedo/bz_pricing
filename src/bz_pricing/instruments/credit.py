@@ -1742,10 +1742,22 @@ def price_credit_portfolio(
     for pos in positions:
         inst: Debenture = pos["instrument"]
         qty = float(pos.get("quantity", 1.0))
+        vna_pos = pos.get("vna")
+        if vna_pos is None and (pos.get("vne") is not None or pos.get("proj") is not None or pos.get("vna_engine") is not None):
+            vna_pos = inst.calculate_vna(
+                base_date=base_date,
+                vne=pos.get("vne"),
+                base_vna_date=pos.get("base_vna_date"),
+                proj=pos.get("proj"),
+                history=pos.get("history"),
+                projections=pos.get("projections"),
+                vna_engine=pos.get("vna_engine"),
+                allow_download=bool(pos.get("allow_download", True)),
+            )
         metrics = inst.risk_metrics(
             base_date=base_date,
             discount_rate_or_curve=pos["discount_rate"],
-            vna=pos.get("vna"),
+            vna=vna_pos,
             last_coupon_date=pos.get("last_coupon_date"),
             di_curve=pos.get("di_curve", di_curve),
             pu_par_val=pos.get("pu_par_val"),

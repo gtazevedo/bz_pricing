@@ -61,7 +61,7 @@ class TPFBuilder:
             coupon_months = sorted([m1, m2])
             has_vna = True
             if vna_engine is None:
-                raise ValueError("VNAEngine é obrigatório para precificar NTN-B.")
+                vna_engine = VNAEngine.for_ntnb(ref_date=current_date)
         else:
             raise ValueError(f"Título não suportado para geração de fluxo: {titulo}")
             

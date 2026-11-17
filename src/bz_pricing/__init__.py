@@ -11,7 +11,14 @@ from bz_pricing.data.loaders import B3DataLoader
 from bz_pricing.curves.builder import B3CurveBuilder
 from bz_pricing.curves.exceptions import DataUnavailableError
 from bz_pricing.curves.manager import CurveManager
-from bz_pricing.instruments.tpf import LTN, NTNF
+from bz_pricing.instruments.tpf import LTN, NTNF, LFT, NTNB, NTNBPrincipal, NTNC
+from bz_pricing.core.vna_engine import (
+    VNAEngine,
+    calculate_vna_from_vne,
+    calculate_ntnb_vna,
+    calculate_lft_vna,
+    calculate_ntnc_vna,
+)
 
 __all__ = [
     "B3Scraper",
@@ -20,5 +27,14 @@ __all__ = [
     "CurveManager",
     "DataUnavailableError",
     "LTN",
-    "NTNF"
+    "NTNF",
+    "LFT",
+    "NTNB",
+    "NTNBPrincipal",
+    "NTNC",
+    "VNAEngine",
+    "calculate_vna_from_vne",
+    "calculate_ntnb_vna",
+    "calculate_lft_vna",
+    "calculate_ntnc_vna",
 ]
