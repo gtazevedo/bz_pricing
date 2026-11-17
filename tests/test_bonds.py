@@ -293,3 +293,82 @@ def test_all_anbima_bonds_20261030():
 
     assert tested_count == 50
 
+
+def test_ntnb_vna_calculation_offline_and_online():
+    from bz_pricing.core.vna_engine import VNAEngine, calculate_ntnb_vna, NTNB_BASE_DATE, NTNB_BASE_VALUE
+
+    # 1. Cálculo offline determinístico a partir de série de IPCA mensal (base 15/07/2000 = R$ 1.000,00)
+    ipca_hist = {
+        "2000-07-01": 0.0161,
+        "2000-08-01": 0.0131,
+        "2000-09-01": 0.0023,
+    }
+    eng = VNAEngine.for_ntnb(ipca_history=ipca_hist, allow_download=False)
+    vna_15oct = eng.calculate_vna(datetime.date(2000, 10, 15), truncate_monthly=False)
+    expected_15oct = math.trunc((NTNB_BASE_VALUE * 1.0161 * 1.0131 * 1.0023) * 1e6) / 1e6
+    assert abs(vna_15oct - expected_15oct) < 1e-6
+
+    # Pró-rata DU com ipca_proj explícito entre 15/09/2000 e 15/10/2000
+    vna_pro = calculate_ntnb_vna(
+        datetime.date(2000, 9, 29),
+        ipca_proj=0.0040,
+        ipca_history={"2000-07-01": 0.0161, "2000-08-01": 0.0131},
+        allow_download=False,
+    )
+    assert vna_pro > NTNB_BASE_VALUE * 1.0161 * 1.0131
+
+    # 2. NTNB calcula automaticamente o VNA sem exigir parâmetro vna manual (via vna_engine offline)
+    eng_2026 = VNAEngine(datetime.date(2026, 9, 15), 4750.0)
+    eng_2026.ipca_history = eng_2026.ipca_history.copy()
+    import pandas as _pd
+    eng_2026.ipca_history.loc[_pd.Timestamp("2026-09-01")] = 0.0044
+    ntnb = NTNB(datetime.date(2027, 5, 15), coupon_rate=0.06)
+    vna_ntnb = ntnb.calculate_vna(datetime.date(2026, 10, 30), ipca_proj=0.0020, vna_engine=eng_2026)
+    assert vna_ntnb > 4750.0
+
+    pu_auto, df_auto = ntnb.present_value(
+        datetime.date(2026, 10, 30),
+        FlatCurve(0.06),
+        ipca_proj=0.0020,
+        vna_engine=eng_2026,
+        return_cashflows=True,
+    )
+    assert pu_auto > 0.0
+    assert abs(df_auto["vna"].iloc[0] - vna_ntnb) < 1e-6
+
+    # 3. Cálculo online oficial (BCB SGS 433) na data-base 30/10/2026 com projeção de mercado ~0.20%
+    vna_2026 = calculate_ntnb_vna(datetime.date(2026, 10, 30), ipca_proj=0.001972)
+    assert abs(vna_2026 - 4771.575461) < 0.05
+
+
+def test_tpf_custom_cashflows():
+    import pandas as pd
+    base_dt = datetime.date(2026, 10, 30)
+    curve = FlatCurve(0.12)
+
+    # Fluxos customizados passados via lista de tuplas (data, valor, tipo)
+    custom = [
+        (datetime.date(2027, 1, 4), 50.0, "Cupom"),
+        (datetime.date(2027, 7, 1), 1050.0, "Cupom + Principal"),
+    ]
+    ntnf_custom = NTNF(custom_cashflows=custom)
+    pu_c, df_c = ntnf_custom.present_value(base_dt, curve, return_cashflows=True)
+    assert len(df_c) == 2
+    assert abs(pu_c - df_c["valor_presente"].sum()) < 1e-9
+    assert ntnf_custom.duration(base_dt, curve) > 0.0
+    assert ntnf_custom.modified_duration(base_dt, curve) > 0.0
+    assert ntnf_custom.dv01(base_dt, curve) > 0.0
+
+    # Mesmo suporte em LTN (dict) e NTNB (DataFrame com fluxo_cotação + VNA)
+    ltn_custom = LTN(custom_cashflows={datetime.date(2027, 7, 1): 1000.0})
+    assert abs(ltn_custom.present_value(base_dt, curve) - LTN(datetime.date(2027, 7, 1)).present_value(base_dt, curve)) < 1e-4
+
+    df_nb = pd.DataFrame({
+        "data_fluxo": [datetime.date(2027, 5, 15)],
+        "fluxo_cotação": [103.0],
+        "tipo": ["Principal"],
+    })
+    ntnb_custom = NTNB(datetime.date(2027, 5, 15), custom_cashflows=df_nb)
+    pu_nb = ntnb_custom.present_value(base_dt, FlatCurve(0.05), vna=4771.575461)
+    assert pu_nb > 4700.0
+

@@ -221,3 +221,37 @@ def test_credit_ytm_and_tir_all_indexers():
     assert 0.14 < tir_pct < 0.18
 
 
+def test_credit_custom_cashflows_and_debenture_schedule():
+    from bz_pricing.instruments.credit import Debenture
+
+    base_dt = datetime.date(2026, 10, 30)
+
+    # 1. Debenture construída diretamente com fluxos customizados do usuário
+    custom_flows = [
+        (datetime.date(2027, 4, 30), 60.0, "Juros"),
+        (datetime.date(2027, 10, 29), 560.0, "Amortização + Juros"),
+        (datetime.date(2028, 4, 28), 530.0, "Vencimento"),
+    ]
+    deb_cf = Debenture.from_cashflows("DEB-CUSTOM", custom_flows, indexador="PRE")
+    pu = deb_cf.present_value(base_dt, 0.13)
+    assert pu > 0.0
+    assert abs(deb_cf.ytm(base_dt, pu) - 0.13) < 1e-6
+    assert abs(deb_cf.tir(base_dt, pu) - 0.13) < 1e-6
+    assert deb_cf.duration(base_dt, 0.13) > 0.0
+    assert deb_cf.dv01(base_dt, 0.13) > 0.0
+
+    # 2. Debenture.from_schedule (sem necessidade de CSVs da ANBIMA)
+    deb_sch = Debenture.from_schedule(
+        ticker="DEB-SCH",
+        issue_date="2026-01-02",
+        maturity_date="2028-01-03",
+        indexador="PRE",
+        coupon_rate=0.12,
+        coupon_freq="semestral",
+        amort_type="bullet",
+    )
+    pu_sch = deb_sch.present_value(base_dt, 0.125)
+    assert pu_sch > 0.0
+    assert abs(deb_sch.ytm(base_dt, pu_sch) - 0.125) < 1e-6
+
+

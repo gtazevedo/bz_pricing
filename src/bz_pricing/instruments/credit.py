@@ -1,6 +1,6 @@
 import datetime
 import math
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 import numpy as np
 import pandas as pd
 
@@ -43,7 +43,8 @@ class Debenture:
                  defasagem_di: int = 0,
                  anniversary_day: Optional[int] = None,
                  vna_engine: Optional[VNAEngine] = None,
-                 is_pct_di: Optional[bool] = None):
+                 is_pct_di: Optional[bool] = None,
+                 custom_cashflows: Any = None):
         self.ticker = ticker.strip().upper()
         self.indexador = indexador.strip().upper()
         self.coupon_rate = 0.0 if (coupon_rate is None or (isinstance(coupon_rate, float) and math.isnan(coupon_rate))) else float(coupon_rate)
@@ -55,6 +56,7 @@ class Debenture:
         self.defasagem_di = int(defasagem_di)
         self.vna_engine = vna_engine
         self._is_pct_di_override = is_pct_di
+        self.custom_cashflows = custom_cashflows
 
         if maturity_date:
             self.nominal_maturity_date = self._normalize_date(maturity_date)
@@ -166,6 +168,75 @@ class Debenture:
         if isinstance(d, str):
             return pd.to_datetime(d, dayfirst="/" in d).date()
         return d
+
+    @classmethod
+    def from_cashflows(
+        cls,
+        ticker: str,
+        custom_cashflows: Any,
+        indexador: str = "PRE",
+        nominal_value: float = 1000.0,
+        calendar_name: str = "B3",
+    ) -> "Debenture":
+        """Constrói um ativo de renda fixa diretamente a partir de fluxos de caixa fornecidos pelo usuário."""
+        return cls(
+            ticker=ticker,
+            maturity_date=None,
+            indexador=indexador,
+            nominal_value=nominal_value,
+            calendar_name=calendar_name,
+            custom_cashflows=custom_cashflows,
+        )
+
+    @classmethod
+    def from_schedule(
+        cls,
+        ticker: str,
+        issue_date: Union[datetime.date, str],
+        maturity_date: Union[datetime.date, str],
+        indexador: str = "IPCA",
+        coupon_rate: float = 0.0,
+        coupon_freq: str = "semestral",
+        amort_type: str = "bullet",
+        amort_start_date: Optional[Union[datetime.date, str]] = None,
+        custom_amort_schedule: Optional[List[Tuple[Union[datetime.date, str], float]]] = None,
+        nominal_value: float = 1000.0,
+        calendar_name: str = "B3",
+        multiplicador_di: float = 1.0,
+        amortizacao_sobre_vne: bool = False,
+        coupon_day_count: str = "BUS/252",
+        defasagem_di: int = 0,
+        anniversary_day: Optional[int] = None,
+        vna_engine: Optional[VNAEngine] = None,
+        is_pct_di: Optional[bool] = None,
+    ) -> "Debenture":
+        """Constrói uma debênture gerando a agenda de eventos a partir de parâmetros contratuais ou cronograma de amortização."""
+        df_cf = CRICRAClient.build_schedule(
+            issue_date=issue_date,
+            maturity_date=maturity_date,
+            coupon_freq=coupon_freq,
+            amort_type=amort_type,
+            amort_start_date=amort_start_date,
+            custom_amort_schedule=custom_amort_schedule,
+            calendar_name=calendar_name,
+        )
+        return cls(
+            ticker=ticker,
+            maturity_date=maturity_date,
+            indexador=indexador,
+            coupon_rate=coupon_rate,
+            issue_date=issue_date,
+            cashflows_df=df_cf,
+            nominal_value=nominal_value,
+            calendar_name=calendar_name,
+            multiplicador_di=multiplicador_di,
+            amortizacao_sobre_vne=amortizacao_sobre_vne,
+            coupon_day_count=coupon_day_count,
+            defasagem_di=defasagem_di,
+            anniversary_day=anniversary_day,
+            vna_engine=vna_engine,
+            is_pct_di=is_pct_di,
+        )
 
     @classmethod
     def from_ticker(cls, ticker: str, client: Optional[DebenturesClient] = None,
@@ -351,19 +422,80 @@ class Debenture:
         juros_val = math.trunc((vna * f_juros) * self._value_scale) / self._value_scale
         return vna + juros_val
 
+    def _parse_custom_cashflows(self, custom_cashflows: Any) -> List[Tuple[datetime.date, str, float]]:
+        rows: List[Tuple[datetime.date, str, float]] = []
+        if isinstance(custom_cashflows, pd.DataFrame):
+            if custom_cashflows.empty:
+                return []
+            d_col = next(
+                (c for c in custom_cashflows.columns if str(c).lower() in ("data_pagamento", "data_fluxo", "date", "data", "vencimento")),
+                custom_cashflows.columns[0],
+            )
+            v_col = next(
+                (c for c in custom_cashflows.columns if str(c).lower() in ("fluxo_nominal", "cashflow", "fluxo", "valor", "amount")),
+                custom_cashflows.columns[-1],
+            )
+            t_col = next((c for c in custom_cashflows.columns if str(c).lower() in ("evento", "tipo", "type")), None)
+            for _, r in custom_cashflows.iterrows():
+                rows.append((self._normalize_date(r[d_col]), str(r[t_col]) if t_col else "Fluxo", float(r[v_col])))
+        elif isinstance(custom_cashflows, (pd.Series, dict)):
+            items = custom_cashflows.items()
+            for k, v in items:
+                rows.append((self._normalize_date(k), "Fluxo", float(v)))
+        elif isinstance(custom_cashflows, (list, tuple)):
+            for item in custom_cashflows:
+                if isinstance(item, dict):
+                    dt = self._normalize_date(item.get("data_pagamento", item.get("data_fluxo", item.get("date", item.get("data")))))
+                    val = float(item.get("fluxo_nominal", item.get("cashflow", item.get("fluxo", item.get("valor", item.get("amount", 0.0))))))
+                    tipo = str(item.get("evento", item.get("tipo", "Fluxo")))
+                    rows.append((dt, tipo, val))
+                else:
+                    dt = self._normalize_date(item[0])
+                    val = float(item[1])
+                    tipo = str(item[2]) if len(item) > 2 else "Fluxo"
+                    rows.append((dt, tipo, val))
+        else:
+            raise TypeError(f"Formato não suportado para custom_cashflows: {type(custom_cashflows)}")
+        return sorted(rows, key=lambda x: x[0])
+
     def cashflow_table(self, base_date: Union[datetime.date, str],
                        discount_rate_or_curve: Union[float, Curve],
                        vna: Optional[float] = None,
                        last_coupon_date: Union[datetime.date, str] = None,
                        di_curve: Optional[Union[float, Curve]] = None,
                        pu_par_val: Optional[float] = None,
-                       fator_di_acumulado: Optional[float] = None) -> pd.DataFrame:
+                       fator_di_acumulado: Optional[float] = None,
+                       custom_cashflows: Any = None) -> pd.DataFrame:
         """
         Retorna a decomposição analítica fluxo a fluxo dos eventos futuros de juros e amortização,
         com as respectivas taxas, fatores de desconto T-14 e valores presentes.
         Para debêntures indexadas ao DI (DI + Spread ou % do DI), exige o parâmetro 'di_curve'.
         """
         base_date = self._normalize_date(base_date)
+        cf = custom_cashflows if custom_cashflows is not None else self.custom_cashflows
+        if cf is not None:
+            parsed = self._parse_custom_cashflows(cf)
+            rows = []
+            for dt, tipo, fl_nom in parsed:
+                if dt <= base_date:
+                    continue
+                du_d = int(self.calendar.bizdays(base_date, dt))
+                r_desc = self._get_rate_for_du(discount_rate_or_curve, du_d)
+                df_d = (1.0 + r_desc) ** (-du_d / 252.0) if du_d > 0 else 1.0
+                rows.append({
+                    "data_evento": dt,
+                    "data_pagamento": dt,
+                    "du": du_d,
+                    "evento": tipo,
+                    "tipo": "Custom",
+                    "taxa_cupom": 0.0,
+                    "fluxo_nominal": fl_nom,
+                    "taxa_desconto": r_desc,
+                    "fator_desconto": df_d,
+                    "valor_presente": fl_nom * df_d,
+                })
+            return pd.DataFrame(rows)
+
         vna = self.resolve_vna(base_date, vna=vna)
         is_di = self._is_di_linked()
         is_pct_di = self._is_pct_di()
@@ -1129,7 +1261,8 @@ class CertificadoRecebiveis(Debenture):
                  emissao: str = "",
                  anniversary_day: Optional[int] = None,
                  vna_engine: Optional[VNAEngine] = None,
-                 is_pct_di: Optional[bool] = None):
+                 is_pct_di: Optional[bool] = None,
+                 custom_cashflows: Any = None):
         super().__init__(
             ticker=ticker,
             maturity_date=maturity_date,
@@ -1145,7 +1278,8 @@ class CertificadoRecebiveis(Debenture):
             defasagem_di=defasagem_di,
             anniversary_day=anniversary_day,
             vna_engine=vna_engine,
-            is_pct_di=is_pct_di
+            is_pct_di=is_pct_di,
+            custom_cashflows=custom_cashflows,
         )
         self.securitizadora = securitizadora.strip()
         self.lastro = (lastro or self.DEFAULT_LASTRO).strip()
@@ -1314,7 +1448,8 @@ class CotaFIDC(CertificadoRecebiveis):
                  custodiante: str = "",
                  anniversary_day: Optional[int] = None,
                  vna_engine: Optional[VNAEngine] = None,
-                 is_pct_di: Optional[bool] = None):
+                 is_pct_di: Optional[bool] = None,
+                 custom_cashflows: Any = None):
         vne = float(cota_emissao) if cota_emissao is not None else float(nominal_value)
         super().__init__(
             ticker=ticker,
@@ -1332,6 +1467,7 @@ class CotaFIDC(CertificadoRecebiveis):
             anniversary_day=anniversary_day,
             vna_engine=vna_engine,
             is_pct_di=is_pct_di,
+            custom_cashflows=custom_cashflows,
         )
         self.classe_cota = classe_cota.strip().upper()
         self.cnpj_fundo = cnpj_fundo.strip()
@@ -1426,7 +1562,8 @@ class LetraFinanceira(CertificadoRecebiveis):
                  call_date: Optional[Union[datetime.date, str]] = None,
                  anniversary_day: Optional[int] = None,
                  vna_engine: Optional[VNAEngine] = None,
-                 is_pct_di: Optional[bool] = None):
+                 is_pct_di: Optional[bool] = None,
+                 custom_cashflows: Any = None):
         self.classe = classe.strip().upper()
         self.emissor = emissor.strip()
         self.call_date = self._normalize_date(call_date) if call_date is not None else None
@@ -1451,6 +1588,7 @@ class LetraFinanceira(CertificadoRecebiveis):
             anniversary_day=anniversary_day,
             vna_engine=vna_engine,
             is_pct_di=is_pct_di,
+            custom_cashflows=custom_cashflows,
         )
 
     @classmethod

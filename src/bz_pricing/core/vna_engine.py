@@ -1,16 +1,46 @@
 import calendar
 import datetime
+import math
+from typing import Any, Optional, Union
+
 import numpy as np
 import pandas as pd
 
+
+NTNB_BASE_DATE = datetime.date(2000, 7, 15)
+NTNB_BASE_VALUE = 1000.0
+
+
+def _coerce_monthly_series(data: Any) -> pd.Series:
+    """Converte dict, Series ou DataFrame ('Date'/'Data', 'Value'/'Valor') em Series mensal em decimal."""
+    if data is None:
+        return pd.Series(dtype=float)
+    if isinstance(data, pd.Series):
+        s = data.copy()
+        s.index = pd.to_datetime(s.index).to_period("M").to_timestamp()
+        return s.astype(float).sort_index()
+    if isinstance(data, dict):
+        if not data:
+            return pd.Series(dtype=float)
+        idx = pd.to_datetime(list(data.keys())).to_period("M").to_timestamp()
+        return pd.Series(list(data.values()), index=idx, dtype=float).sort_index()
+    if isinstance(data, pd.DataFrame):
+        df = data.copy()
+        d_col = next((c for c in df.columns if str(c).lower() in ("date", "data", "ref", "mes")), df.columns[0])
+        v_col = next((c for c in df.columns if str(c).lower() in ("value", "valor", "ipca", "taxa")), df.columns[-1])
+        idx = pd.to_datetime(df[d_col]).dt.to_period("M").dt.to_timestamp()
+        return pd.Series(df[v_col].astype(float).values, index=idx).sort_index()
+    raise TypeError(f"Formato não suportado para série mensal de IPCA: {type(data)}")
+
+
 class VNAEngine:
     """
-    Engine para estimar e projetar o Valor Nominal Atualizado (VNA) da ANBIMA 
-    com base no IPCA histórico (SGS) e projeções (Focus).
+    Engine para estimar e projetar o Valor Nominal Atualizado (VNA) da ANBIMA / Tesouro Nacional
+    com base no IPCA/IGP-M histórico (SGS ou informado pelo usuário) e projeções (Focus ou explícita).
     """
     def __init__(self, base_vna_date: datetime.date, base_vna_value: float, data_dir: str = None):
         self.base_vna_date = pd.to_datetime(base_vna_date).date()
-        self.base_vna_value = base_vna_value
+        self.base_vna_value = float(base_vna_value)
         self.data_dir = data_dir
         self.ipca_history = pd.Series(dtype=float)
         self.ipca_projections = pd.Series(dtype=float)
@@ -21,7 +51,6 @@ class VNAEngine:
         O CSV deve ter pelo menos 'Date' e 'Value' (em %).
         """
         df = pd.read_csv(csv_path, parse_dates=['Date'])
-        # Ajuste para ser o índice de mês (1º dia do mês)
         df['Date'] = df['Date'].dt.to_period('M').dt.to_timestamp()
         df = df.set_index('Date').sort_index()
         if 'Value' in df.columns:
@@ -44,9 +73,9 @@ class VNAEngine:
         """
         target_ts = pd.to_datetime(target_month).replace(day=1)
         if target_ts in self.ipca_history.index and pd.notna(self.ipca_history.loc[target_ts]):
-            return self.ipca_history.loc[target_ts]
+            return float(self.ipca_history.loc[target_ts])
         elif target_ts in self.ipca_projections.index and pd.notna(self.ipca_projections.loc[target_ts]):
-            return self.ipca_projections.loc[target_ts]
+            return float(self.ipca_projections.loc[target_ts])
         else:
             raise ValueError(f"Faltam dados de IPCA (histórico ou projetado) para {target_ts.strftime('%Y-%m')}")
 
@@ -93,11 +122,58 @@ class VNAEngine:
 
         return engine
 
-    def calculate_vna(self, target_date: datetime.date, cal, anniversary_day: int = 15) -> float:
+    @classmethod
+    def for_ntnb(
+        cls,
+        ref_date: Optional[Union[datetime.date, str]] = None,
+        ipca_history: Any = None,
+        ipca_projections: Any = None,
+        allow_download: bool = True,
+    ) -> "VNAEngine":
         """
-        Calcula o VNA projetado para target_date, partindo de base_vna_date.
-        `cal` é a instância do bizdays.Calendar(B3).
+        Constrói um VNAEngine configurado para NTN-B (data-base 15/07/2000, VNA base R$ 1.000,00).
+        Aceita séries mensais offline de IPCA (`ipca_history` e `ipca_projections` em decimal)
+        ou baixa automaticamente do BCB/Focus quando `allow_download=True`.
         """
+        if ipca_history is not None:
+            engine = cls(base_vna_date=NTNB_BASE_DATE, base_vna_value=NTNB_BASE_VALUE)
+            engine.ipca_history = _coerce_monthly_series(ipca_history)
+            if ipca_projections is not None:
+                engine.ipca_projections = _coerce_monthly_series(ipca_projections)
+            return engine
+
+        if not allow_download:
+            raise ValueError(
+                "Informe 'ipca_history' para calcular o VNA da NTN-B offline (allow_download=False)."
+            )
+
+        engine = cls.from_bcb(
+            base_vna_date=NTNB_BASE_DATE,
+            base_vna_value=NTNB_BASE_VALUE,
+            indicator="IPCA",
+            ref_date=ref_date,
+        )
+        if ipca_projections is not None:
+            engine.ipca_projections = _coerce_monthly_series(ipca_projections)
+        return engine
+
+    def calculate_vna(
+        self,
+        target_date: Union[datetime.date, str],
+        cal: Any = None,
+        anniversary_day: int = 15,
+        ipca_proj: Optional[float] = None,
+        truncate_monthly: bool = True,
+    ) -> float:
+        """
+        Calcula o VNA projetado para `target_date`, partindo de `base_vna_date`.
+        Se `cal` for omitido, utiliza o calendário padrão B3/ANBIMA.
+        `ipca_proj` permite informar explicitamente a projeção mensal (decimal) para o período pró-rata aberto.
+        """
+        if cal is None:
+            from bz_pricing.core.calendars import get_calendar
+            cal = get_calendar("B3")
+
         target_date = pd.to_datetime(target_date).date()
         if target_date == self.base_vna_date:
             return self.base_vna_value
@@ -106,7 +182,7 @@ class VNAEngine:
             raise NotImplementedError("Cálculo retroativo de VNA não implementado ainda.")
 
         current_date = self.base_vna_date
-        current_vna = self.base_vna_value
+        current_vna = float(self.base_vna_value)
 
         while current_date < target_date:
             if current_date.day < anniversary_day:
@@ -117,27 +193,69 @@ class VNAEngine:
                 last_dom = calendar.monthrange(next_m.year, next_m.month)[1]
                 next_anniv = next_m.replace(day=min(anniversary_day, last_dom))
 
-            # Mês de referência do índice é sempre o mês anterior ao aniversário
             ref_month = (next_anniv.replace(day=1) - pd.DateOffset(months=1))
 
-            try:
-                ipca_rate = self.get_ipca_for_month(ref_month)
-            except ValueError:
-                if not self.ipca_projections.empty:
-                    ipca_rate = self.ipca_projections.iloc[-1]
-                else:
-                    raise
+            if target_date <= next_anniv and ipca_proj is not None:
+                ipca_rate = float(ipca_proj)
+            else:
+                try:
+                    ipca_rate = self.get_ipca_for_month(ref_month)
+                except ValueError:
+                    if not self.ipca_projections.empty:
+                        ipca_rate = float(self.ipca_projections.iloc[-1])
+                    else:
+                        raise
 
-            # Se target_date for antes ou igual ao próximo aniversário, aplica pró-rata DU
-            if target_date <= next_anniv:
-                du_calc = cal.bizdays(current_date, target_date)
-                du_total = cal.bizdays(current_date, next_anniv)
+            if target_date == next_anniv:
+                fator = 1.0 + ipca_rate
+                current_vna = current_vna * fator
+                if truncate_monthly:
+                    current_vna = math.trunc(current_vna * 1000000.0) / 1000000.0
+                break
+            elif target_date < next_anniv:
+                try:
+                    du_calc = cal.bizdays(current_date, target_date)
+                    du_total = cal.bizdays(current_date, next_anniv)
+                except Exception:
+                    du_calc = int(np.busday_count(current_date, target_date))
+                    du_total = int(np.busday_count(current_date, next_anniv))
                 fator = (1.0 + ipca_rate) ** (du_calc / du_total) if du_total > 0 else 1.0
-                current_vna = np.trunc((current_vna * fator) * 1000000.0) / 1000000.0
+                current_vna = math.trunc((current_vna * fator) * 1000000.0) / 1000000.0
                 break
             else:
                 fator = (1.0 + ipca_rate)
-                current_vna = np.trunc((current_vna * fator) * 1000000.0) / 1000000.0
+                current_vna = current_vna * fator
+                if truncate_monthly:
+                    current_vna = math.trunc(current_vna * 1000000.0) / 1000000.0
                 current_date = next_anniv
 
-        return float(current_vna)
+        return float(math.trunc(current_vna * 1000000.0) / 1000000.0)
+
+
+def calculate_ntnb_vna(
+    target_date: Union[datetime.date, str],
+    ipca_proj: Optional[float] = None,
+    ipca_history: Any = None,
+    ipca_projections: Any = None,
+    cal: Any = None,
+    allow_download: bool = True,
+    truncate_monthly: bool = False,
+) -> float:
+    """
+    Calcula o Valor Nominal Atualizado (VNA) da NTN-B na data `target_date`
+    (base R$ 1.000,00 em 15/07/2000), aceitando séries offline ou baixando do BCB/Focus.
+    """
+    target_dt = pd.to_datetime(target_date).date()
+    engine = VNAEngine.for_ntnb(
+        ref_date=target_dt,
+        ipca_history=ipca_history,
+        ipca_projections=ipca_projections,
+        allow_download=allow_download,
+    )
+    return engine.calculate_vna(
+        target_dt,
+        cal=cal,
+        anniversary_day=15,
+        ipca_proj=ipca_proj,
+        truncate_monthly=truncate_monthly,
+    )
