@@ -403,6 +403,31 @@ def calculate_lft_vna(
     )
 
 
+def infer_anbima_vna_and_projection(
+    pu_anbima: float,
+    cotacao_anbima: float,
+    vna_last_anniv: Optional[float] = None,
+    du_calc: Optional[int] = None,
+    du_total: Optional[int] = None,
+) -> dict:
+    """
+    Extrai de forma transparente o VNA implícito no par (PU, Cotação%) divulgado pela ANBIMA
+    e, opcionalmente, a projeção mensal implícita para o período pró-rata aberto entre aniversários.
+    """
+    if float(cotacao_anbima) <= 0.0:
+        raise ValueError("cotacao_anbima deve ser positiva.")
+    vna_oficial = math.trunc((float(pu_anbima) / (float(cotacao_anbima) / 100.0)) * 1e6 + 0.5) / 1e6
+    proj_impl: Optional[float] = None
+    if vna_last_anniv is not None and du_calc is not None and du_total is not None:
+        if float(vna_last_anniv) <= 0.0 or int(du_calc) <= 0 or int(du_total) <= 0:
+            raise ValueError("vna_last_anniv, du_calc e du_total devem ser positivos.")
+        proj_impl = float((vna_oficial / float(vna_last_anniv)) ** (int(du_total) / int(du_calc)) - 1.0)
+    return {
+        "vna_oficial": float(vna_oficial),
+        "proj_implicita": proj_impl,
+    }
+
+
 def calculate_ntnc_vna(
     target_date: Union[datetime.date, str],
     vne: float = NTNC_BASE_VALUE,
@@ -413,8 +438,30 @@ def calculate_ntnc_vna(
     cal: Any = None,
     allow_download: bool = True,
     truncate_monthly: bool = False,
+    base_index: Optional[float] = None,
+    current_index: Optional[float] = None,
 ) -> float:
-    """Calcula o VNA da NTN-C a partir do VNE/data-base pelo IGP-M (aniversário dia 1)."""
+    """
+    Calcula o VNA da NTN-C a partir do VNE/data-base pelo IGP-M (aniversário dia 1)
+    ou pela razão exata de Números-Índice da FGV/STN (`base_index`, `current_index`) com pró-rata DU.
+    """
+    if base_index is not None and current_index is not None:
+        if float(base_index) <= 0.0 or float(current_index) <= 0.0:
+            raise ValueError("base_index e current_index devem ser positivos.")
+        target_dt = pd.to_datetime(target_date).date()
+        vna_anniv = float(vne) * (float(current_index) / float(base_index))
+        if target_dt.day == 1 or igpm_proj is None:
+            return float(math.trunc(vna_anniv * 1e6) / 1e6)
+        if cal is None:
+            from bz_pricing.core.calendars import get_calendar
+            cal = get_calendar("B3")
+        last_anniv = target_dt.replace(day=1)
+        next_m = (last_anniv + pd.DateOffset(months=1)).date()
+        du_calc = cal.bizdays(last_anniv, target_dt)
+        du_total = cal.bizdays(last_anniv, next_m)
+        fator = (1.0 + float(igpm_proj)) ** (du_calc / du_total) if du_total > 0 else 1.0
+        return float(math.trunc((vna_anniv * fator) * 1e6) / 1e6)
+
     return calculate_vna_from_vne(
         vne=vne,
         base_date=base_date,

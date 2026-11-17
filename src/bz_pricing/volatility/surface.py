@@ -145,7 +145,12 @@ class SVISlice:
         k_np = np.asarray(k_arr, dtype=np.float64)
         vals = np.asarray(vols_or_w, dtype=np.float64)
         w_target = vals if input_is_total_var else (vals * vals * float(T))
-        wt = np.ones_like(k_np) if weights is None else np.sqrt(np.asarray(weights, dtype=np.float64))
+        if weights is None:
+            wt = np.ones_like(k_np)
+        else:
+            w_raw = np.maximum(0.0, np.asarray(weights, dtype=np.float64))
+            w_mean = float(np.mean(w_raw)) if len(w_raw) > 0 else 1.0
+            wt = np.sqrt(w_raw / w_mean) if w_mean > 0.0 else np.ones_like(k_np)
 
         w_min = float(np.min(w_target))
         x0 = np.array([max(1e-4, w_min * 0.8), 0.1, -0.3, 0.0, 0.1], dtype=np.float64)
@@ -192,10 +197,17 @@ class SABRSlice:
         vols: Sequence[float],
         T: float,
         beta: float = 0.5,
+        weights: Optional[Sequence[float]] = None,
     ) -> "SABRSlice":
         """Calibra (alpha, rho, nu) com beta fixo sobre um smile de volatilidades implícitas."""
         k_np = np.asarray(K_arr, dtype=np.float64)
         v_np = np.asarray(vols, dtype=np.float64)
+        if weights is None:
+            wt = np.ones_like(k_np)
+        else:
+            w_raw = np.maximum(0.0, np.asarray(weights, dtype=np.float64))
+            w_mean = float(np.mean(w_raw)) if len(w_raw) > 0 else 1.0
+            wt = np.sqrt(w_raw / w_mean) if w_mean > 0.0 else np.ones_like(k_np)
         atm_v = float(np.median(v_np))
         alpha0 = max(1e-4, atm_v * (float(F) ** (1.0 - float(beta))))
         ub_alpha = max(10.0, alpha0 * 20.0)
@@ -206,7 +218,7 @@ class SABRSlice:
         def _res(params):
             al, rh, nu = params
             pred = np.array([_cy_sabr_vol(float(F), float(k), float(T), float(al), float(beta), float(rh), float(nu)) for k in k_np])
-            return pred - v_np
+            return wt * (pred - v_np)
 
         res = least_squares(_res, x0, bounds=(lb, ub), max_nfev=1000)
         al, rh, nu = [float(v) for v in res.x]
@@ -620,6 +632,59 @@ class VolatilitySurface:
         }
 
 
+def infer_forward_from_put_call_parity(
+    df_slice,
+    discount_factor: float,
+    min_volume: float = 0.0,
+) -> float:
+    """
+    Infere o preço futuro/forward implícito pela paridade put-call em uma fatia de mesmo vencimento:
+        F_i = K_i + (C_i - P_i) / DF
+    Utiliza a mediana ponderada pela liquidez (ou simples, se indisponível) entre os pares call/put
+    de mesmo strike para eliminar dependência de proxy externo de spot.
+    """
+    import pandas as pd
+
+    if not isinstance(df_slice, pd.DataFrame) or df_slice.empty:
+        raise ValueError("df_slice deve ser um DataFrame não vazio.")
+    df = df_slice.copy()
+
+    k_col = next((c for c in ("ExrcPric", "strike", "Strike", "K") if c in df.columns), None)
+    t_col = next((c for c in ("option_type", "OptnTp", "type", "Type") if c in df.columns), None)
+    p_col = next((c for c in ("RefPric", "AdjstdQt", "price", "Price", "LastPric") if c in df.columns), None)
+    if k_col is None or t_col is None or p_col is None:
+        raise ValueError("df_slice deve conter colunas de strike, tipo de opção e prêmio.")
+
+    v_col = next((c for c in ("RglrTxsQty", "TOTNEG", "OpnIntrst", "volume", "Volume") if c in df.columns), None)
+    df["_k"] = pd.to_numeric(df[k_col], errors="coerce")
+    df["_p"] = pd.to_numeric(df[p_col], errors="coerce")
+    df["_is_call"] = df[t_col].astype(str).str.lower().str.startswith("c")
+    df["_vol"] = pd.to_numeric(df[v_col], errors="coerce").fillna(1.0) if v_col else 1.0
+
+    df = df[df["_k"].notna() & df["_p"].notna() & (df["_p"] > 0.0)]
+    if min_volume > 0.0 and v_col is not None:
+        df = df[df["_vol"] >= float(min_volume)]
+
+    calls = df[df["_is_call"]].groupby("_k", as_index=True).agg(c_p=("_p", "mean"), c_v=("_vol", "sum"))
+    puts = df[~df["_is_call"]].groupby("_k", as_index=True).agg(p_p=("_p", "mean"), p_v=("_vol", "sum"))
+    paired = calls.join(puts, how="inner")
+    if paired.empty:
+        raise ValueError("Não há pares call/put no mesmo strike para inferir o forward via paridade.")
+
+    df_eff = max(1e-12, float(discount_factor))
+    fwds = paired.index.to_numpy(dtype=np.float64) + (paired["c_p"].to_numpy(dtype=np.float64) - paired["p_p"].to_numpy(dtype=np.float64)) / df_eff
+    wts = np.minimum(paired["c_v"].to_numpy(dtype=np.float64), paired["p_v"].to_numpy(dtype=np.float64))
+    wts = np.where(np.isfinite(wts) & (wts > 0.0), wts, 1.0)
+
+    order = np.argsort(fwds)
+    fwds_s = fwds[order]
+    wts_s = wts[order]
+    cum_w = np.cumsum(wts_s)
+    idx_med = int(np.searchsorted(cum_w, 0.5 * cum_w[-1]))
+    idx_med = min(len(fwds_s) - 1, max(0, idx_med))
+    return float(fwds_s[idx_med])
+
+
 def validate_slice_out_of_sample(
     strikes: Sequence[float],
     market_prices: Sequence[float],
@@ -630,10 +695,15 @@ def validate_slice_out_of_sample(
     train_mask: Optional[Sequence[bool]] = None,
     model: str = "svi",
     sabr_beta: float = 0.5,
+    otm_only: bool = True,
+    vega_weighted: bool = False,
+    split_mode: str = "alternating",
 ) -> Dict[str, object]:
     """
     Calibra uma fatia (SVI ou SABR) no conjunto de treino e avalia o re-apreçamento
     fora da amostra (out-of-sample) em bps de volatilidade implícita e em prêmio.
+    Suporta filtro OTM (`otm_only`), ponderação por vega (`vega_weighted`) e partições
+    `split_mode` em {'alternating', 'interpolation', 'wings'}.
     """
     k_arr = np.asarray(strikes, dtype=np.float64)
     p_arr = np.asarray(market_prices, dtype=np.float64)
@@ -648,29 +718,74 @@ def validate_slice_out_of_sample(
         dtype=np.float64,
     )
 
-    valid = np.isfinite(mkt_vols) & (mkt_vols > 0.0)
-    k_arr = k_arr[valid]
-    p_arr = p_arr[valid]
-    is_call_arr = is_call_arr[valid]
-    mkt_vols = mkt_vols[valid]
+    valid = np.isfinite(mkt_vols) & (mkt_vols > 1e-4)
+    if otm_only:
+        otm_mask = (is_call_arr & (k_arr >= float(forward) * (1.0 - 1e-12))) | (
+            (~is_call_arr) & (k_arr <= float(forward) * (1.0 + 1e-12))
+        )
+        keep = valid & otm_mask
+    else:
+        keep = valid
+
+    k_arr = k_arr[keep]
+    p_arr = p_arr[keep]
+    is_call_arr = is_call_arr[keep]
+    mkt_vols = mkt_vols[keep]
 
     if train_mask is None:
-        mask = np.zeros(len(k_arr), dtype=bool)
-        mask[::2] = True
-        if np.sum(~mask) == 0:
-            mask[-1] = False
+        order = np.argsort(k_arr)
+        k_arr = k_arr[order]
+        p_arr = p_arr[order]
+        is_call_arr = is_call_arr[order]
+        mkt_vols = mkt_vols[order]
+        n_pts = len(k_arr)
+        mode_norm = split_mode.strip().lower()
+        if mode_norm == "alternating":
+            mask = np.zeros(n_pts, dtype=bool)
+            mask[::2] = True
+            if np.sum(~mask) == 0 and n_pts > 0:
+                mask[-1] = False
+        elif mode_norm == "interpolation":
+            mask = np.ones(n_pts, dtype=bool)
+            if n_pts >= 5:
+                mask[2:-2:2] = False
+            elif n_pts >= 4:
+                mask[1] = False
+        elif mode_norm == "wings":
+            mask = np.ones(n_pts, dtype=bool)
+            if n_pts >= 6:
+                n_wing = max(1, (n_pts - max(3, int(round(0.65 * n_pts)))) // 2)
+                mask[:n_wing] = False
+                mask[-n_wing:] = False
+            elif n_pts >= 4:
+                mask[-1] = False
+        else:
+            raise ValueError(f"split_mode inválido: {split_mode}. Use 'alternating', 'interpolation' ou 'wings'.")
     else:
-        mask = np.asarray(train_mask, dtype=bool)[valid]
+        mask = np.asarray(train_mask, dtype=bool)[keep]
 
     if np.sum(mask) < 3 or np.sum(~mask) < 1:
         raise ValueError("São necessários ao menos 3 pontos de treino e 1 ponto de teste válidos.")
 
+    fit_weights = None
+    if vega_weighted:
+        vegas = np.array(
+            [
+                _cy_black76(float(forward), float(k), float(r_cont), t_val, float(v), bool(ic))[3]
+                for k, v, ic in zip(k_arr[mask], mkt_vols[mask], is_call_arr[mask])
+            ],
+            dtype=np.float64,
+        )
+        fit_weights = np.maximum(vegas, 1e-12)
+
     if model.lower() == "svi":
         k_log_train = np.log(k_arr[mask] / float(forward))
-        fitted_slice = SVISlice.fit(k_log_train, mkt_vols[mask], t_val)
+        fitted_slice = SVISlice.fit(k_log_train, mkt_vols[mask], t_val, weights=fit_weights)
         pred_vols_test = fitted_slice.implied_vol(np.log(k_arr[~mask] / float(forward)))
     elif model.lower() == "sabr":
-        fitted_slice = SABRSlice.fit(float(forward), k_arr[mask], mkt_vols[mask], t_val, beta=sabr_beta)
+        fitted_slice = SABRSlice.fit(
+            float(forward), k_arr[mask], mkt_vols[mask], t_val, beta=sabr_beta, weights=fit_weights
+        )
         pred_vols_test = fitted_slice.implied_vol(k_arr[~mask])
     else:
         raise ValueError(f"Modelo '{model}' não suportado; use 'svi' ou 'sabr'.")

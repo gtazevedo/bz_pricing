@@ -368,3 +368,67 @@ def test_b3_loader_equity_options_cotahist():
     assert "spot_price" in bova.columns and bova["spot_price"].iloc[0] > 100.0
     assert set(bova["option_type"].unique()).issubset({"call", "put"})
 
+
+def test_stage1_fx_surface_iv_bounds_and_parity():
+    import pandas as pd
+    from bz_pricing.core.options_core import implied_vol_bsm
+    from bz_pricing.volatility import infer_forward_from_put_call_parity, validate_slice_out_of_sample
+
+    base_dt = datetime.date(2026, 7, 1)
+    mat_dt = datetime.date(2026, 10, 1)
+    spot = 5.50
+    strike = 6.10  # bem fora do ATM para evidenciar efeito do skew
+    r_pre = 0.145
+    r_ddi = 0.055
+
+    fx = FXOption("DOLC610", mat_dt, strike, "CALL")
+    du_n = fx.du(base_dt)
+    t_n = du_n / 252.0
+    sl = SVISlice(a=0.008, b=0.08, rho=-0.65, m=0.0, sigma=0.10, T=t_n)
+    surf = VolatilitySurface.from_svi_slices({du_n: sl})
+
+    # A1: Chamada individual FXOption deve coincidir com o lote e refletir o smile
+    rm = fx.risk_metrics(base_dt, spot, r_pre, r_ddi, surf)
+    p_single = fx.price(base_dt, spot, r_pre, r_ddi, surf)
+    p_batch = price_options_portfolio(
+        [{"instrument": fx, "spot_ptax": spot, "pre_rate_or_curve": r_pre, "cupom_limpo_or_curve": r_ddi, "vol": surf}],
+        base_dt,
+    )["price"].iloc[0]
+    fwd_true = spot * math.exp((rm["r_cont"] - rm["q_cont"]) * t_n)
+    assert abs(rm["vol_eff"] - surf.get_vol(du_n, strike=strike, forward=fwd_true)) < 1e-12
+    assert abs(rm["vol_eff"] - surf.get_vol(du_n, strike=strike, forward=strike)) > 1e-3
+    assert abs(p_single - p_batch) < 1e-10
+
+    # A2: Preço <= intrínseco deve retornar NaN (nunca 1e-6)
+    intrinsic = max(spot * math.exp(-0.02 * 0.5) - 5.0 * math.exp(-0.10 * 0.5), 0.0)
+    assert math.isnan(implied_vol_bsm(intrinsic - 0.05, spot, 5.0, 0.10, 0.02, 0.5, True))
+    assert math.isnan(implied_vol_bsm(intrinsic, spot, 5.0, 0.10, 0.02, 0.5, True))
+
+    # A3: Forward por paridade put-call e modos out-of-sample (interpolation / wings / vega_weighted)
+    df_syn = pd.DataFrame({
+        "ExrcPric": [95.0, 95.0, 100.0, 100.0, 105.0, 105.0],
+        "option_type": ["call", "put", "call", "put", "call", "put"],
+        "RefPric": [11.4, 2.0, 7.6, 3.0, 4.7, 4.9],  # (C-P) ≈ 9.4, 4.6, -0.2 => F ≈ 105? (C-P)/0.96 ≈ 9.79 -> ~104.8
+        "TOTNEG": [10, 10, 50, 50, 8, 8],
+    })
+    df_disc = 0.96
+    f_inf = infer_forward_from_put_call_parity(df_syn, df_disc)
+    assert abs(f_inf - (100.0 + (7.6 - 3.0) / df_disc)) < 1e-9
+
+    from bz_pricing.core.options_core import black76_price_greeks
+    strikes = np.linspace(85.0, 115.0, 13)
+    fwd = 100.0
+    r_c = 0.12
+    t_v = 63 / 252.0
+    sl_syn = SVISlice(a=0.012, b=0.05, rho=-0.35, m=0.0, sigma=0.10, T=t_v)
+    otypes = ["put" if k < fwd else "call" for k in strikes]
+    vols = sl_syn.implied_vol(np.log(strikes / fwd))
+    px = [black76_price_greeks(fwd, float(k), r_c, t_v, float(v), ot == "call")[0] for k, v, ot in zip(strikes, vols, otypes)]
+
+    for smode in ("alternating", "interpolation", "wings"):
+        res_oos = validate_slice_out_of_sample(
+            strikes, px, otypes, fwd, r_c, 63, model="svi", otm_only=True, vega_weighted=True, split_mode=smode
+        )
+        assert res_oos["rmse_vol_bps"] < 15.0
+
+

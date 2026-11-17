@@ -225,8 +225,9 @@ class FXOption(_BaseOption):
         base_date: Union[datetime.date, str],
         pre_rate_or_curve: Union[float, Curve],
         cupom_limpo_or_curve: Union[float, Curve],
-        vol: float,
+        vol: Any,
         fixing_vol_adjust: bool = False,
+        spot_ptax: Optional[float] = None,
     ):
         du_n = self.du(base_date)
         dc_n = self.dc(base_date)
@@ -238,10 +239,8 @@ class FXOption(_BaseOption):
             q_cont = (252.0 / du_n) * math.log(max(1e-8, 1.0 + r_ddi * (dc_n / 360.0)))
         else:
             q_cont = 0.0
-        vol_val = self._resolve_vol(vol, du_n, 1.0) if not hasattr(vol, "get_vol") else None
-        if vol_val is None:
-            # Resolve com forward implícito aproximado via strike ou paridade unitária se spot não foi passado
-            vol_val = float(vol.get_vol(max(1, int(du_n)), strike=self.strike, forward=self.strike))
+        fwd_est = float(spot_ptax) * math.exp((r_cont - q_cont) * t_n) if spot_ptax is not None else self.strike
+        vol_val = self._resolve_vol(vol, du_n, fwd_est)
         if du_n > 0:
             sigma_eff = vol_val * math.sqrt(du_n / (du_n + 1.0)) if fixing_vol_adjust else vol_val
         else:
@@ -254,11 +253,16 @@ class FXOption(_BaseOption):
         spot_ptax: float,
         pre_rate_or_curve: Union[float, Curve],
         cupom_limpo_or_curve: Union[float, Curve],
-        vol: float,
+        vol: Any,
         fixing_vol_adjust: bool = False,
     ) -> Dict[str, float]:
         du_n, dc_n, t_n, r_cont, q_cont, sigma_eff = self._resolve_fx_params(
-            base_date, pre_rate_or_curve, cupom_limpo_or_curve, vol, fixing_vol_adjust
+            base_date,
+            pre_rate_or_curve,
+            cupom_limpo_or_curve,
+            vol,
+            fixing_vol_adjust=fixing_vol_adjust,
+            spot_ptax=spot_ptax,
         )
         is_call = self.option_type == "CALL"
         price, delta, gamma, vega, theta, rho, vanna, volga = _cy_bsm(
@@ -306,7 +310,12 @@ class FXOption(_BaseOption):
         fixing_vol_adjust: bool = False,
     ) -> float:
         du_n, _, t_n, r_cont, q_cont, _ = self._resolve_fx_params(
-            base_date, pre_rate_or_curve, cupom_limpo_or_curve, 0.15, False
+            base_date,
+            pre_rate_or_curve,
+            cupom_limpo_or_curve,
+            0.15,
+            fixing_vol_adjust=False,
+            spot_ptax=spot_ptax,
         )
         iv_eff = float(
             _cy_iv_bsm(
@@ -581,12 +590,9 @@ def price_options_portfolio(
                 pos["pre_rate_or_curve"],
                 pos["cupom_limpo_or_curve"],
                 pos["vol"],
-                bool(pos.get("fixing_vol_adjust", False)),
+                fixing_vol_adjust=bool(pos.get("fixing_vol_adjust", False)),
+                spot_ptax=spot_ptax,
             )
-            if hasattr(pos["vol"], "get_vol"):
-                fwd_est = spot_ptax * math.exp((r_c - q_c) * t_n)
-                sig_val = float(pos["vol"].get_vol(max(1, du_n), strike=opt.strike, forward=fwd_est))
-                sig_eff = sig_val * math.sqrt(du_n / (du_n + 1.0)) if (du_n > 0 and pos.get("fixing_vol_adjust", False)) else sig_val
             bsm_idx.append(i)
             bsm_params.append((1 if opt.option_type == "CALL" else 0, 0, spot_ptax, opt.strike, r_c, q_c, t_n, sig_eff))
         elif isinstance(opt, IDIOption):

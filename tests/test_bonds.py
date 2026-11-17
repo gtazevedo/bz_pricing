@@ -120,8 +120,15 @@ def test_ntnc_pricing():
     maturity_date = datetime.date(2031, 1, 1)
 
     curve_real = FlatCurve(0.077739)
-    ntnc = NTNC(maturity_date, coupon_rate=0.06)
+    # Série 2031 possui cupom editalício de 12% a.a. quando coupon_rate é omitido
+    ntnc_12 = NTNC(maturity_date)
+    assert ntnc_12.coupon_rate == 0.12
+    assert ntnc_12.cotacao(base_date, curve_real) == 118.2632
+    pu_12 = ntnc_12.present_value(base_date, curve_real, vna=6765.022425)
+    assert abs(pu_12 - 8000.532000) < 1e-5
 
+    # Sobrescrita explícita de cupom (ex.: séries antigas de 6% a.a.) continua suportada
+    ntnc = NTNC(maturity_date, coupon_rate=0.06)
     cotacao = ntnc.cotacao(base_date, curve_real)
     assert cotacao == 96.1378
 
@@ -130,9 +137,9 @@ def test_ntnc_pricing():
     pu_oficial = 8000.532000
     assert abs(pu - pu_oficial) < 1e-5
 
-    dur = ntnc.duration(base_date, curve_real)
-    mod_dur = ntnc.modified_duration(base_date, curve_real)
-    dv01 = ntnc.dv01(base_date, curve_real, vna=vna_oficial)
+    dur = ntnc_12.duration(base_date, curve_real)
+    mod_dur = ntnc_12.modified_duration(base_date, curve_real)
+    dv01 = ntnc_12.dv01(base_date, curve_real, vna=6765.022425)
     assert dur > 0.0
     assert mod_dur > 0.0
     assert dv01 > 0.0
@@ -252,7 +259,7 @@ def test_all_anbima_bonds_20261030():
     # VNAs oficiais vigentes em 30/10/2026
     vna_lft = 20201.049997
     vna_ntnb = 4771.575461
-    vna_ntnc = 8321.942046
+    vna_ntnc = 6765.022425
 
     tested_count = 0
     for _, row in df.iterrows():
@@ -281,7 +288,7 @@ def test_all_anbima_bonds_20261030():
             bond = NTNB(dt_vcto, coupon_rate=0.06)
             pu_calc, cf_df = bond.present_value(base_date, curve, vna=vna_ntnb, return_cashflows=True)
         elif tit == "NTN-C":
-            bond = NTNC(dt_vcto, coupon_rate=0.06)
+            bond = NTNC(dt_vcto)
             pu_calc, cf_df = bond.present_value(base_date, curve, vna=vna_ntnc, return_cashflows=True)
         else:
             continue
@@ -408,4 +415,31 @@ def test_vna_from_vne_all_titles():
         allow_download=False,
     )
     assert abs(vna_deb - math.trunc((1000.0 * 1.003 * 1.002) * 1e6) / 1e6) < 1e-6
+
+
+def test_infer_anbima_vna_and_ntnc_index_ratio():
+    from bz_pricing.core.vna_engine import calculate_ntnc_vna, infer_anbima_vna_and_projection
+
+    # Extrai VNA oficial e projeção implícita da NTN-C 2031 (12%) em 30/10/2026
+    res_ntnc = infer_anbima_vna_and_projection(
+        pu_anbima=8000.532,
+        cotacao_anbima=118.2632,
+        vna_last_anniv=6671.488370,
+        du_calc=20,
+        du_total=20,
+    )
+    assert abs(res_ntnc["vna_oficial"] - 6765.022425) < 1e-6
+    assert abs(res_ntnc["proj_implicita"] - 0.014020) < 1e-5
+
+    # Fórmula por razão de Números-Índice FGV offline (com pró-rata)
+    vna_idx = calculate_ntnc_vna(
+        datetime.date(2026, 10, 15),
+        vne=1000.0,
+        igpm_proj=0.014,
+        base_index=100.0,
+        current_index=667.148837,
+        allow_download=False,
+    )
+    assert vna_idx > 6671.488370 and vna_idx < 6765.0
+
 

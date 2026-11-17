@@ -389,7 +389,7 @@ cpdef double implied_vol_bsm(
     cdef double intrinsic = fmax(S * df_q - K * df_r, 0.0) if is_call else fmax(K * df_r - S * df_q, 0.0)
     cdef double upper_bound = (S * df_q) if is_call else (K * df_r)
     if target_price <= intrinsic + 1e-12:
-        return 1e-6
+        return NAN
     if target_price >= upper_bound - 1e-12:
         return NAN
 

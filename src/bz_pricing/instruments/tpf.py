@@ -792,12 +792,18 @@ class NTNBPrincipal(TituloPublico):
 class NTNC(TituloPublico):
     """
     Nota do Tesouro Nacional - Série C (título indexado ao IGP-M com cupons semestrais).
-    Taxa de cupom editalícia de 6,00% ou 12,00% a.a. aplicada sobre o VNA do IGP-M.
+    Taxa de cupom editalícia de 6,00% ou 12,00% a.a. (padrão 12% para série 2031) aplicada sobre o VNA do IGP-M.
     """
-    def __init__(self, maturity_date: Optional[Union[datetime.date, str]] = None, coupon_rate: float = 0.06,
+    def __init__(self, maturity_date: Optional[Union[datetime.date, str]] = None, coupon_rate: Optional[float] = None,
                  calendar_name: str = 'B3', custom_cashflows: Any = None):
         super().__init__(maturity_date, calendar_name, custom_cashflows=custom_cashflows)
-        self.coupon_rate = coupon_rate
+        if coupon_rate is None:
+            if self.nominal_maturity_date is not None and self.nominal_maturity_date.year == 2031:
+                self.coupon_rate = 0.12
+            else:
+                self.coupon_rate = 0.06
+        else:
+            self.coupon_rate = float(coupon_rate)
 
     def get_coupon_dates(self, base_date: Union[datetime.date, str]) -> List[datetime.date]:
         base_date = self._normalize_date(base_date)

@@ -24870,7 +24870,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
  *     cdef double intrinsic = fmax(S * df_q - K * df_r, 0.0) if is_call else fmax(K * df_r - S * df_q, 0.0)
  *     cdef double upper_bound = (S * df_q) if is_call else (K * df_r)             # <<<<<<<<<<<<<<
  *     if target_price <= intrinsic + 1e-12:
- *         return 1e-6
+ *         return NAN
 */
   if (__pyx_v_is_call) {
 
@@ -24885,7 +24885,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
  *     cdef double intrinsic = fmax(S * df_q - K * df_r, 0.0) if is_call else fmax(K * df_r - S * df_q, 0.0)
  *     cdef double upper_bound = (S * df_q) if is_call else (K * df_r)
  *     if target_price <= intrinsic + 1e-12:             # <<<<<<<<<<<<<<
- *         return 1e-6
+ *         return NAN
  *     if target_price >= upper_bound - 1e-12:
 */
   __pyx_t_1 = (__pyx_v_target_price <= (__pyx_v_intrinsic + 1e-12));
@@ -24896,13 +24896,13 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
     /* "bz_pricing/core/options_core.pyx":392
  *     cdef double upper_bound = (S * df_q) if is_call else (K * df_r)
  *     if target_price <= intrinsic + 1e-12:
- *         return 1e-6             # <<<<<<<<<<<<<<
+ *         return NAN             # <<<<<<<<<<<<<<
  *     if target_price >= upper_bound - 1e-12:
  *         return NAN
 */
     {
 
-      __pyx_r = 1e-6;
+      __pyx_r = NAN;
     }
     goto __pyx_L0;
 
@@ -24910,14 +24910,14 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
  *     cdef double intrinsic = fmax(S * df_q - K * df_r, 0.0) if is_call else fmax(K * df_r - S * df_q, 0.0)
  *     cdef double upper_bound = (S * df_q) if is_call else (K * df_r)
  *     if target_price <= intrinsic + 1e-12:             # <<<<<<<<<<<<<<
- *         return 1e-6
+ *         return NAN
  *     if target_price >= upper_bound - 1e-12:
 */
   }
 
   /* "bz_pricing/core/options_core.pyx":393
  *     if target_price <= intrinsic + 1e-12:
- *         return 1e-6
+ *         return NAN
  *     if target_price >= upper_bound - 1e-12:             # <<<<<<<<<<<<<<
  *         return NAN
  * 
@@ -24928,7 +24928,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
 
 
     /* "bz_pricing/core/options_core.pyx":394
- *         return 1e-6
+ *         return NAN
  *     if target_price >= upper_bound - 1e-12:
  *         return NAN             # <<<<<<<<<<<<<<
  * 
@@ -24942,7 +24942,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
 
     /* "bz_pricing/core/options_core.pyx":393
  *     if target_price <= intrinsic + 1e-12:
- *         return 1e-6
+ *         return NAN
  *     if target_price >= upper_bound - 1e-12:             # <<<<<<<<<<<<<<
  *         return NAN
  * 
