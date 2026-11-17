@@ -198,9 +198,10 @@ class SABRSlice:
         v_np = np.asarray(vols, dtype=np.float64)
         atm_v = float(np.median(v_np))
         alpha0 = max(1e-4, atm_v * (float(F) ** (1.0 - float(beta))))
-        x0 = np.array([alpha0, -0.2, 0.4], dtype=np.float64)
+        ub_alpha = max(10.0, alpha0 * 20.0)
+        x0 = np.array([min(ub_alpha * 0.95, alpha0), -0.2, 0.4], dtype=np.float64)
         lb = np.array([1e-5, -0.999, 1e-4], dtype=np.float64)
-        ub = np.array([5.0, 0.999, 5.0], dtype=np.float64)
+        ub = np.array([ub_alpha, 0.999, 5.0], dtype=np.float64)
 
         def _res(params):
             al, rh, nu = params

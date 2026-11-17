@@ -353,3 +353,18 @@ def test_batch_portfolios_for_fx_idi_di1_and_mixed():
     assert len(price_idi_options_portfolio([{"instrument": idi, "idi_spot": 560000.0, "pre_rate_or_curve": 0.14, "vol": 0.025}], base_dt)) == 1
     assert len(price_di1_options_portfolio([{"instrument": di1, "pu_c": 93500.0, "pu_l": 81500.0, "vol": 0.15}], base_dt)) == 1
 
+
+def test_b3_loader_equity_options_cotahist():
+    import os
+    from bz_pricing.data.loaders import B3DataLoader
+
+    if not os.path.exists("dados/b3/COTAHIST_D20261030.csv"):
+        return
+
+    loader = B3DataLoader(data_dir="dados/b3")
+    ref_dt = datetime.date(2026, 10, 30)
+    bova = loader.load_equity_options(ref_dt, underlying="BOVA11", only_priced=True, auto_download=False)
+    assert len(bova) > 100
+    assert "spot_price" in bova.columns and bova["spot_price"].iloc[0] > 100.0
+    assert set(bova["option_type"].unique()).issubset({"call", "put"})
+

@@ -117,6 +117,10 @@ df_ltn = loader.get_anbima_bonds(base_date, bond_type="LTN")
 
 # Tabelas referenciais para validação empírica
 df_pre_ref = loader.load_taxas_referenciais("PRE", base_date)
+
+# Séries de opções de derivativos (BVBG_IN + BVBG_SPRD) e opções de ações/ETFs (COTAHIST)
+df_dol_opts = loader.load_options(base_date, asst="DOL", only_priced=True)
+df_bova_opts = loader.load_equity_options(base_date, underlying="BOVA11", only_priced=True)
 ```
 
 ### 2.2 Coleta Automatizada (`B3Scraper`)
