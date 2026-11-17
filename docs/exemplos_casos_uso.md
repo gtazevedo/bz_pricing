@@ -200,4 +200,24 @@ preco_fx = fx_call.price(
     fixing_vol_adjust=True,
 )
 print(f"FX Call (com superfície e fixing adjust): R$ {preco_fx:.4f}")
+
+# 5.4 Swaption (Black-76 e Bachelier), CapFloor, BarrierOption e AsianOption
+from bz_pricing.instruments import Swaption, CapFloor, BarrierOption, AsianOption
+
+swp = Swaption("SWP-DI-28", "2027-04-30", "2028-04-28", strike_rate=0.138, option_type="PAYER", notional=1_000_000.0)
+preco_swp = swp.price(base_date, pre_rate_or_curve=0.140, vol=0.0150, model="bachelier")
+
+cap = CapFloor(
+    "CAP-DI",
+    fixing_dates=[datetime.date(2027, 1, 4), datetime.date(2027, 4, 1)],
+    payment_dates=[datetime.date(2027, 4, 1), datetime.date(2027, 7, 1)],
+    strike_rate=0.135,
+    option_type="CAP",
+    notional=1_000_000.0,
+)
+preco_cap = cap.price(base_date, pre_rate_or_curve=0.142, vol=0.20, model="black76")
+
+bar_do = BarrierOption("VALE-DO", "2027-04-30", strike=60.0, barrier=52.0, option_type="CALL", barrier_type="down-and-out")
+asian_ar = AsianOption("PETR-AA", "2027-04-30", strike=40.0, option_type="CALL", average_type="arithmetic")
+print(f"Swaption: R$ {preco_swp:,.2f} | Cap: R$ {preco_cap:,.2f} | Barreira DO: R$ {bar_do.price(base_date, 62.0, 0.14, 0.30):.4f} | Asiática: R$ {asian_ar.price(base_date, 40.0, 0.14, 0.30):.4f}")
 ```

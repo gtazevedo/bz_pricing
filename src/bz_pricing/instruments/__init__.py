@@ -26,6 +26,10 @@ from .options import (
     IDIOption,
     DI1Option,
     CorradoSuOption,
+    Swaption,
+    CapFloor,
+    BarrierOption,
+    AsianOption,
     price_options_portfolio,
 )
 
@@ -59,5 +63,9 @@ __all__ = [
     "IDIOption",
     "DI1Option",
     "CorradoSuOption",
+    "Swaption",
+    "CapFloor",
+    "BarrierOption",
+    "AsianOption",
     "price_options_portfolio",
 ]

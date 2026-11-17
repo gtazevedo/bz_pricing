@@ -10,11 +10,16 @@ from bz_pricing.core.curves import Curve
 
 try:
     from bz_pricing.core.options_core import (
+        asian_arithmetic_tw_price as _cy_asian_arith,
+        asian_geometric_price as _cy_asian_geom,
+        bachelier_price_greeks as _cy_bachelier,
+        barrier_bsm_price as _cy_barrier_bsm,
         black76_price_greeks as _cy_black76,
         bsm_price_greeks as _cy_bsm,
         corrado_su_price as _cy_corrado_su,
         crr_american_price as _cy_crr_american,
         crr_american_price_greeks as _cy_crr_american_greeks,
+        implied_vol_bachelier as _cy_iv_bachelier,
         implied_vol_black76 as _cy_iv_black76,
         implied_vol_bsm as _cy_iv_bsm,
         price_options_batch as _cy_price_batch,
@@ -22,11 +27,16 @@ try:
 except ImportError:
     _cy_bsm = None
     _cy_black76 = None
+    _cy_bachelier = None
+    _cy_barrier_bsm = None
+    _cy_asian_geom = None
+    _cy_asian_arith = None
     _cy_crr_american = None
     _cy_crr_american_greeks = None
     _cy_corrado_su = None
     _cy_iv_bsm = None
     _cy_iv_black76 = None
+    _cy_iv_bachelier = None
     _cy_price_batch = None
 
 
@@ -583,4 +593,397 @@ def price_options_portfolio(
         "theta_du": t_arr / 252.0,
         "rho": rho_arr,
     })
+
+
+class Swaption(_BaseOption):
+    """
+    Swaption europeia sobre taxa de swap DI x Pré (modelos Black-76 lognormal ou Normal de Bachelier).
+    Aceita agenda de pagamentos do swap ou parâmetros diretos (`forward_swap_rate`, `annuity`) em modo offline.
+    """
+
+    def __init__(
+        self,
+        ticker: str,
+        expiry_date: Union[datetime.date, str],
+        swap_maturity_date: Optional[Union[datetime.date, str]] = None,
+        strike_rate: float = 0.13,
+        option_type: str = "PAYER",
+        notional: float = 1_000_000.0,
+        payment_dates: Optional[List[Union[datetime.date, str]]] = None,
+        calendar_name: str = "B3",
+    ):
+        opt_norm = option_type.strip().upper()
+        if opt_norm in ("PAYER", "CALL"):
+            mapped = "CALL"
+        elif opt_norm in ("RECEIVER", "PUT"):
+            mapped = "PUT"
+        else:
+            raise ValueError(f"option_type inválido para Swaption: {option_type}. Use 'PAYER'/'CALL' ou 'RECEIVER'/'PUT'.")
+        super().__init__(
+            ticker=ticker,
+            maturity_date=expiry_date,
+            strike=strike_rate,
+            option_type=mapped,
+            exercise="EUROPEAN",
+            calendar_name=calendar_name,
+        )
+        self.swaption_side = "PAYER" if mapped == "CALL" else "RECEIVER"
+        self.swap_maturity_date = self._normalize_date(swap_maturity_date) if swap_maturity_date else None
+        self.notional = float(notional)
+        self.payment_dates = [self._normalize_date(d) for d in payment_dates] if payment_dates else None
+
+    def _resolve_swap_params(
+        self,
+        base_date: Union[datetime.date, str],
+        pre_rate_or_curve: Union[float, Curve],
+        forward_swap_rate: Optional[float] = None,
+        annuity: Optional[float] = None,
+    ):
+        base_dt = self._normalize_date(base_date)
+        du_exp = self.du(base_dt)
+        t_exp = du_exp / 252.0
+
+        if forward_swap_rate is not None and annuity is not None:
+            return du_exp, t_exp, float(forward_swap_rate), float(annuity)
+
+        if self.payment_dates:
+            pay_dates = sorted(d for d in self.payment_dates if d > self.maturity_date)
+        elif self.swap_maturity_date is not None:
+            pay_dates = [self.swap_maturity_date]
+        else:
+            raise ValueError("Informe 'swap_maturity_date', 'payment_dates' ou ('forward_swap_rate', 'annuity').")
+
+        if not pay_dates:
+            raise ValueError("Não há datas de pagamento do swap posteriores ao vencimento da swaption.")
+
+        prev_du = du_exp
+        ann_val = 0.0
+        for pdt in pay_dates:
+            du_i = max(prev_du + 1, int(self.calendar.bizdays(base_dt, pdt)))
+            tau_i = (du_i - prev_du) / 252.0
+            r_i = self._get_rate_for_du(pre_rate_or_curve, du_i)
+            df_i = (1.0 + r_i) ** (-du_i / 252.0)
+            ann_val += tau_i * df_i
+            prev_du = du_i
+
+        r_exp = self._get_rate_for_du(pre_rate_or_curve, max(1, du_exp))
+        df_exp = (1.0 + r_exp) ** (-du_exp / 252.0) if du_exp > 0 else 1.0
+        r_end = self._get_rate_for_du(pre_rate_or_curve, prev_du)
+        df_end = (1.0 + r_end) ** (-prev_du / 252.0)
+
+        fwd_rate = float(forward_swap_rate) if forward_swap_rate is not None else ((df_exp - df_end) / max(1e-12, ann_val))
+        ann_eff = float(annuity) if annuity is not None else ann_val
+        return du_exp, t_exp, fwd_rate, ann_eff
+
+    def risk_metrics(
+        self,
+        base_date: Union[datetime.date, str],
+        pre_rate_or_curve: Union[float, Curve],
+        vol: Any,
+        model: str = "black76",
+        forward_swap_rate: Optional[float] = None,
+        annuity: Optional[float] = None,
+    ) -> Dict[str, float]:
+        du_exp, t_exp, fwd_rate, ann_eff = self._resolve_swap_params(
+            base_date, pre_rate_or_curve, forward_swap_rate=forward_swap_rate, annuity=annuity
+        )
+        vol_val = self._resolve_vol(vol, du_exp, fwd_rate)
+        is_call = self.option_type == "CALL"
+        scale = self.notional * ann_eff
+        mdl = model.strip().lower()
+
+        if mdl == "bachelier":
+            p_u, d_u, g_u, v_u, th_u = _cy_bachelier(fwd_rate, self.strike, 1.0, t_exp, vol_val, is_call)
+            return {
+                "du": float(du_exp),
+                "T": t_exp,
+                "forward_swap_rate": fwd_rate,
+                "annuity": ann_eff,
+                "price": float(scale * p_u),
+                "delta": float(scale * d_u),
+                "gamma": float(scale * g_u),
+                "vega": float(scale * v_u),
+                "vega_1bp": float(scale * v_u * 1e-4),
+                "theta": float(scale * th_u),
+            }
+        if mdl == "black76":
+            p_u, d_u, g_u, v_u, th_u, _, _, _ = _cy_black76(fwd_rate, self.strike, 0.0, t_exp, vol_val, is_call)
+            return {
+                "du": float(du_exp),
+                "T": t_exp,
+                "forward_swap_rate": fwd_rate,
+                "annuity": ann_eff,
+                "price": float(scale * p_u),
+                "delta": float(scale * d_u),
+                "gamma": float(scale * g_u),
+                "vega": float(scale * v_u),
+                "vega_1pct": float(scale * v_u * 0.01),
+                "theta": float(scale * th_u),
+            }
+        raise ValueError(f"Modelo inválido para Swaption: {model}. Use 'black76' ou 'bachelier'.")
+
+    def price(
+        self,
+        base_date: Union[datetime.date, str],
+        pre_rate_or_curve: Union[float, Curve],
+        vol: Any,
+        model: str = "black76",
+        forward_swap_rate: Optional[float] = None,
+        annuity: Optional[float] = None,
+    ) -> float:
+        return self.risk_metrics(base_date, pre_rate_or_curve, vol, model, forward_swap_rate, annuity)["price"]
+
+    def implied_volatility(
+        self,
+        base_date: Union[datetime.date, str],
+        market_price: float,
+        pre_rate_or_curve: Union[float, Curve],
+        model: str = "black76",
+        forward_swap_rate: Optional[float] = None,
+        annuity: Optional[float] = None,
+    ) -> float:
+        _, t_exp, fwd_rate, ann_eff = self._resolve_swap_params(
+            base_date, pre_rate_or_curve, forward_swap_rate=forward_swap_rate, annuity=annuity
+        )
+        target_u = float(market_price) / max(1e-12, self.notional * ann_eff)
+        is_call = self.option_type == "CALL"
+        mdl = model.strip().lower()
+        if mdl == "bachelier":
+            return float(_cy_iv_bachelier(target_u, fwd_rate, self.strike, 1.0, t_exp, is_call))
+        if mdl == "black76":
+            return float(_cy_iv_black76(target_u, fwd_rate, self.strike, 0.0, t_exp, is_call))
+        raise ValueError(f"Modelo inválido para Swaption: {model}.")
+
+
+class CapFloor(_BaseOption):
+    """
+    Cap ou Floor de taxa de juros (cesta de caplets/floorlets sobre DI1 / FRA),
+    precificado pelos modelos Black-76 lognormal ou Normal de Bachelier.
+    """
+
+    def __init__(
+        self,
+        ticker: str,
+        fixing_dates: List[Union[datetime.date, str]],
+        payment_dates: List[Union[datetime.date, str]],
+        strike_rate: float,
+        option_type: str = "CAP",
+        notional: float = 1_000_000.0,
+        calendar_name: str = "B3",
+    ):
+        if len(fixing_dates) != len(payment_dates) or not fixing_dates:
+            raise ValueError("fixing_dates e payment_dates devem ser não vazios e de mesmo tamanho.")
+        opt_norm = option_type.strip().upper()
+        if opt_norm in ("CAP", "CALL"):
+            mapped = "CALL"
+        elif opt_norm in ("FLOOR", "PUT"):
+            mapped = "PUT"
+        else:
+            raise ValueError(f"option_type inválido para CapFloor: {option_type}. Use 'CAP' ou 'FLOOR'.")
+        self.fixing_dates = [self._normalize_date(d) for d in fixing_dates]
+        self.payment_dates = [self._normalize_date(d) for d in payment_dates]
+        super().__init__(
+            ticker=ticker,
+            maturity_date=max(self.payment_dates),
+            strike=strike_rate,
+            option_type=mapped,
+            exercise="EUROPEAN",
+            calendar_name=calendar_name,
+        )
+        self.capfloor_type = "CAP" if mapped == "CALL" else "FLOOR"
+        self.notional = float(notional)
+
+    def cashflow_table(
+        self,
+        base_date: Union[datetime.date, str],
+        pre_rate_or_curve: Union[float, Curve],
+        vol: Any,
+        model: str = "black76",
+        forward_rates: Optional[List[float]] = None,
+    ) -> pd.DataFrame:
+        base_dt = self._normalize_date(base_date)
+        is_call = self.option_type == "CALL"
+        mdl = model.strip().lower()
+        rows = []
+        for idx, (f_dt, p_dt) in enumerate(zip(self.fixing_dates, self.payment_dates)):
+            if p_dt <= base_dt:
+                continue
+            du_fix = max(0, int(self.calendar.bizdays(base_dt, f_dt)))
+            du_pay = max(du_fix + 1, int(self.calendar.bizdays(base_dt, p_dt)))
+            t_fix = du_fix / 252.0
+            tau = (du_pay - du_fix) / 252.0
+
+            r_fix = self._get_rate_for_du(pre_rate_or_curve, max(1, du_fix))
+            df_fix = (1.0 + r_fix) ** (-du_fix / 252.0) if du_fix > 0 else 1.0
+            r_pay = self._get_rate_for_du(pre_rate_or_curve, du_pay)
+            df_pay = (1.0 + r_pay) ** (-du_pay / 252.0)
+
+            fwd_i = float(forward_rates[idx]) if forward_rates is not None else (((df_fix / df_pay) - 1.0) / max(1e-12, tau))
+            vol_i = self._resolve_vol(vol, max(1, du_fix), fwd_i)
+
+            if mdl == "bachelier":
+                p_u, d_u, _, v_u, _ = _cy_bachelier(fwd_i, self.strike, df_pay, t_fix, vol_i, is_call)
+            elif mdl == "black76":
+                p_u, d_u, _, v_u, _, _, _, _ = _cy_black76(fwd_i, self.strike, 0.0, t_fix, vol_i, is_call)
+                p_u *= df_pay
+                d_u *= df_pay
+                v_u *= df_pay
+            else:
+                raise ValueError(f"Modelo inválido para CapFloor: {model}. Use 'black76' ou 'bachelier'.")
+
+            scale = self.notional * tau
+            rows.append({
+                "fixing_date": f_dt,
+                "payment_date": p_dt,
+                "du_fix": du_fix,
+                "du_pay": du_pay,
+                "tau": tau,
+                "forward_rate": fwd_i,
+                "df_pay": df_pay,
+                "vol": vol_i,
+                "caplet_pv": float(scale * p_u),
+                "delta": float(scale * d_u),
+                "vega": float(scale * v_u),
+            })
+        return pd.DataFrame(rows)
+
+    def risk_metrics(
+        self,
+        base_date: Union[datetime.date, str],
+        pre_rate_or_curve: Union[float, Curve],
+        vol: Any,
+        model: str = "black76",
+        forward_rates: Optional[List[float]] = None,
+    ) -> Dict[str, float]:
+        df = self.cashflow_table(base_date, pre_rate_or_curve, vol, model=model, forward_rates=forward_rates)
+        if df.empty:
+            return {"price": 0.0, "delta": 0.0, "vega": 0.0, "caplets": 0}
+        return {
+            "price": float(df["caplet_pv"].sum()),
+            "delta": float(df["delta"].sum()),
+            "vega": float(df["vega"].sum()),
+            "caplets": int(len(df)),
+        }
+
+    def price(
+        self,
+        base_date: Union[datetime.date, str],
+        pre_rate_or_curve: Union[float, Curve],
+        vol: Any,
+        model: str = "black76",
+        forward_rates: Optional[List[float]] = None,
+    ) -> float:
+        return self.risk_metrics(base_date, pre_rate_or_curve, vol, model=model, forward_rates=forward_rates)["price"]
+
+
+class BarrierOption(_BaseOption):
+    """
+    Opção europeia com barreira contínua (Reiner & Rubinstein, 1991):
+    `down-and-out`, `down-and-in`, `up-and-out` e `up-and-in`.
+    """
+
+    def __init__(
+        self,
+        ticker: str,
+        maturity_date: Union[datetime.date, str],
+        strike: float,
+        barrier: float,
+        option_type: str = "CALL",
+        barrier_type: str = "down-and-out",
+        rebate: float = 0.0,
+        calendar_name: str = "B3",
+    ):
+        super().__init__(
+            ticker=ticker,
+            maturity_date=maturity_date,
+            strike=strike,
+            option_type=option_type,
+            exercise="EUROPEAN",
+            calendar_name=calendar_name,
+        )
+        bt = barrier_type.strip().lower()
+        if bt not in ("down-and-out", "down-and-in", "up-and-out", "up-and-in"):
+            raise ValueError(f"barrier_type inválido: {barrier_type}")
+        self.barrier = float(barrier)
+        self.barrier_type = bt
+        self.is_up = bt.startswith("up")
+        self.is_out = bt.endswith("out")
+        self.rebate = float(rebate)
+
+    def price(
+        self,
+        base_date: Union[datetime.date, str],
+        spot: float,
+        pre_rate_or_curve: Union[float, Curve],
+        vol: Any,
+        carry_or_div_yield: Union[float, Curve] = 0.0,
+    ) -> float:
+        du_n = self.du(base_date)
+        t_n = du_n / 252.0
+        r_cont = math.log(1.0 + max(-0.99, self._get_rate_for_du(pre_rate_or_curve, du_n)))
+        q_cont = math.log(1.0 + max(-0.99, self._get_rate_for_du(carry_or_div_yield, du_n)))
+        fwd_est = float(spot) * math.exp((r_cont - q_cont) * t_n)
+        vol_val = self._resolve_vol(vol, du_n, fwd_est)
+        return float(
+            _cy_barrier_bsm(
+                float(spot),
+                self.strike,
+                self.barrier,
+                r_cont,
+                q_cont,
+                t_n,
+                vol_val,
+                self.option_type == "CALL",
+                self.is_up,
+                self.is_out,
+                self.rebate,
+            )
+        )
+
+
+class AsianOption(_BaseOption):
+    """
+    Opção asiática europeia de média contínua:
+    - `average_type='geometric'`: fórmula fechada de Kemna & Vorst (1990).
+    - `average_type='arithmetic'`: aproximação de momentos de Turnbull & Wakeman (1991).
+    """
+
+    def __init__(
+        self,
+        ticker: str,
+        maturity_date: Union[datetime.date, str],
+        strike: float,
+        option_type: str = "CALL",
+        average_type: str = "arithmetic",
+        calendar_name: str = "B3",
+    ):
+        super().__init__(
+            ticker=ticker,
+            maturity_date=maturity_date,
+            strike=strike,
+            option_type=option_type,
+            exercise="EUROPEAN",
+            calendar_name=calendar_name,
+        )
+        avg = average_type.strip().lower()
+        if avg not in ("arithmetic", "geometric"):
+            raise ValueError("average_type deve ser 'arithmetic' ou 'geometric'.")
+        self.average_type = avg
+
+    def price(
+        self,
+        base_date: Union[datetime.date, str],
+        spot: float,
+        pre_rate_or_curve: Union[float, Curve],
+        vol: Any,
+        carry_or_div_yield: Union[float, Curve] = 0.0,
+    ) -> float:
+        du_n = self.du(base_date)
+        t_n = du_n / 252.0
+        r_cont = math.log(1.0 + max(-0.99, self._get_rate_for_du(pre_rate_or_curve, du_n)))
+        q_cont = math.log(1.0 + max(-0.99, self._get_rate_for_du(carry_or_div_yield, du_n)))
+        fwd_est = float(spot) * math.exp((r_cont - q_cont) * t_n)
+        vol_val = self._resolve_vol(vol, du_n, fwd_est)
+        fn = _cy_asian_geom if self.average_type == "geometric" else _cy_asian_arith
+        return float(fn(float(spot), self.strike, r_cont, q_cont, t_n, vol_val, self.option_type == "CALL"))
 

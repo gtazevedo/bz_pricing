@@ -272,3 +272,47 @@ def test_options_and_surface_edge_case_fixes():
     p_surf = eq_c.price(base_dt, 39.0, 0.14, surf)
     assert math.isfinite(p_surf) and p_surf > 0.0
 
+
+def test_swaption_capfloor_barrier_and_asian():
+    from bz_pricing.instruments import Swaption, CapFloor, BarrierOption, AsianOption
+
+    base_dt = datetime.date(2026, 10, 30)
+    exp_dt = datetime.date(2027, 4, 30)
+    swap_mat = datetime.date(2028, 4, 28)
+
+    # 1. Swaption (Black-76 e Bachelier Normal + inversão de vol implícita)
+    swp = Swaption("SWP-DI-28", exp_dt, swap_mat, strike_rate=0.138, option_type="PAYER", notional=1_000_000.0)
+    p_b76 = swp.price(base_dt, 0.140, 0.18, model="black76")
+    iv_b76 = swp.implied_volatility(base_dt, p_b76, 0.140, model="black76")
+    assert p_b76 > 0.0 and abs(iv_b76 - 0.18) < 1e-6
+
+    p_bach = swp.price(base_dt, 0.140, 0.0150, model="bachelier")
+    iv_bach = swp.implied_volatility(base_dt, p_bach, 0.140, model="bachelier")
+    assert p_bach > 0.0 and abs(iv_bach - 0.0150) < 1e-6
+
+    # 2. CapFloor (Cap = soma dos caplets; Black-76 e Bachelier)
+    fix_dates = [datetime.date(2027, 1, 4), datetime.date(2027, 4, 1)]
+    pay_dates = [datetime.date(2027, 4, 1), datetime.date(2027, 7, 1)]
+    cap = CapFloor("CAP-DI", fix_dates, pay_dates, strike_rate=0.135, option_type="CAP", notional=1_000_000.0)
+    df_cap = cap.cashflow_table(base_dt, 0.142, 0.20, model="black76")
+    assert len(df_cap) == 2
+    assert abs(cap.price(base_dt, 0.142, 0.20, model="black76") - df_cap["caplet_pv"].sum()) < 1e-8
+    assert cap.price(base_dt, 0.142, 0.015, model="bachelier") > 0.0
+
+    # 3. Paridade In-Out em BarrierOption (down-and-in + down-and-out == vanilla; up-and-in + up-and-out == vanilla)
+    van_c = EquityOption("VALE-C", exp_dt, 60.0, "CALL", "EUROPEAN").price(base_dt, 62.0, 0.14, 0.30, 0.02)
+    do_c = BarrierOption("VALE-DO", exp_dt, 60.0, 52.0, "CALL", "down-and-out").price(base_dt, 62.0, 0.14, 0.30, 0.02)
+    di_c = BarrierOption("VALE-DI", exp_dt, 60.0, 52.0, "CALL", "down-and-in").price(base_dt, 62.0, 0.14, 0.30, 0.02)
+    assert abs((do_c + di_c) - van_c) < 1e-8
+
+    van_p = EquityOption("VALE-P", exp_dt, 60.0, "PUT", "EUROPEAN").price(base_dt, 62.0, 0.14, 0.30, 0.02)
+    uo_p = BarrierOption("VALE-UO", exp_dt, 60.0, 72.0, "PUT", "up-and-out").price(base_dt, 62.0, 0.14, 0.30, 0.02)
+    ui_p = BarrierOption("VALE-UI", exp_dt, 60.0, 72.0, "PUT", "up-and-in").price(base_dt, 62.0, 0.14, 0.30, 0.02)
+    assert abs((uo_p + ui_p) - van_p) < 1e-8
+
+    # 4. AsianOption: média geométrica <= média aritmética (para call ATM) <= europeia vanilla
+    ag_c = AsianOption("PETR-AG", exp_dt, 40.0, "CALL", "geometric").price(base_dt, 40.0, 0.14, 0.30, 0.0)
+    aa_c = AsianOption("PETR-AA", exp_dt, 40.0, "CALL", "arithmetic").price(base_dt, 40.0, 0.14, 0.30, 0.0)
+    ev_c = EquityOption("PETR-EV", exp_dt, 40.0, "CALL", "EUROPEAN").price(base_dt, 40.0, 0.14, 0.30, 0.0)
+    assert 0.0 < ag_c <= aa_c <= ev_c
+

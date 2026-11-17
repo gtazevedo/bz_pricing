@@ -593,3 +593,264 @@ cpdef tuple price_options_batch(
 
     return (out_price, out_delta, out_gamma, out_vega, out_theta, out_rho)
 
+
+cdef void _bachelier_core(
+    double F,
+    double K,
+    double df_r,
+    double T,
+    double sigma_n,
+    bint is_call,
+    double* out_price,
+    double* out_delta,
+    double* out_gamma,
+    double* out_vega,
+    double* out_theta,
+) noexcept nogil:
+    if T <= 0.0 or sigma_n <= 0.0:
+        if is_call:
+            out_price[0] = df_r * fmax(F - K, 0.0)
+            out_delta[0] = df_r if F > K else 0.0
+        else:
+            out_price[0] = df_r * fmax(K - F, 0.0)
+            out_delta[0] = -df_r if K > F else 0.0
+        out_gamma[0] = 0.0
+        out_vega[0] = 0.0
+        out_theta[0] = 0.0
+        return
+
+    cdef double sqrt_T = sqrt(T)
+    cdef double std_dev = sigma_n * sqrt_T
+    cdef double d = (F - K) / std_dev
+    cdef double pdf_d = _norm_pdf(d)
+    cdef double cdf_d = _norm_cdf(d)
+
+    if is_call:
+        out_price[0] = df_r * ((F - K) * cdf_d + std_dev * pdf_d)
+        out_delta[0] = df_r * cdf_d
+    else:
+        out_price[0] = df_r * ((K - F) * (1.0 - cdf_d) + std_dev * pdf_d)
+        out_delta[0] = -df_r * (1.0 - cdf_d)
+
+    out_gamma[0] = df_r * pdf_d / std_dev
+    out_vega[0] = df_r * sqrt_T * pdf_d
+    out_theta[0] = -df_r * sigma_n * pdf_d / (2.0 * sqrt_T)
+
+
+cpdef tuple bachelier_price_greeks(
+    double F,
+    double K,
+    double df_r,
+    double T,
+    double sigma_n,
+    bint is_call=True,
+):
+    """Modelo Normal de Bachelier para taxas/swaptions/caplets."""
+    cdef double price, delta, gamma, vega, theta
+    with nogil:
+        _bachelier_core(F, K, df_r, T, sigma_n, is_call, &price, &delta, &gamma, &vega, &theta)
+    return (price, delta, gamma, vega, theta)
+
+
+cpdef double implied_vol_bachelier(
+    double target_price,
+    double F,
+    double K,
+    double df_r,
+    double T,
+    bint is_call=True,
+    double tol=1e-9,
+    int max_iter=100,
+) noexcept nogil:
+    """Inversão de volatilidade normal (Bachelier) via Newton-Raphson com fallback por bisseção."""
+    if T <= 0.0 or df_r <= 0.0:
+        return 0.0
+    cdef double intrinsic = df_r * (fmax(F - K, 0.0) if is_call else fmax(K - F, 0.0))
+    if target_price <= intrinsic + 1e-12:
+        return 1e-8
+
+    cdef double low = 1e-7
+    cdef double high = 1.0
+    cdef double sigma_n = 0.01
+    cdef double price, delta, gamma, vega, theta, diff
+    cdef int it
+
+    for it in range(max_iter):
+        _bachelier_core(F, K, df_r, T, sigma_n, is_call, &price, &delta, &gamma, &vega, &theta)
+        diff = price - target_price
+        if fabs(diff) < tol:
+            return sigma_n
+        if diff < 0.0 and sigma_n > low:
+            low = sigma_n
+        elif diff > 0.0 and sigma_n < high:
+            high = sigma_n
+        if vega > 1e-12:
+            sigma_n = sigma_n - diff / vega
+            if sigma_n <= low or sigma_n >= high:
+                sigma_n = 0.5 * (low + high)
+        else:
+            sigma_n = 0.5 * (low + high)
+
+    for it in range(60):
+        sigma_n = 0.5 * (low + high)
+        _bachelier_core(F, K, df_r, T, sigma_n, is_call, &price, &delta, &gamma, &vega, &theta)
+        diff = price - target_price
+        if fabs(diff) < tol or (high - low) < tol:
+            return sigma_n
+        if diff < 0.0:
+            low = sigma_n
+        else:
+            high = sigma_n
+    return 0.5 * (low + high)
+
+
+cpdef double barrier_bsm_price(
+    double S,
+    double K,
+    double H,
+    double r,
+    double q,
+    double T,
+    double sigma,
+    bint is_call=True,
+    bint is_up=False,
+    bint is_out=True,
+    double rebate=0.0,
+) noexcept nogil:
+    """
+    Precificação analítica de opções europeias com barreira contínua (Reiner & Rubinstein, 1991).
+    Suporta down-and-out, down-and-in, up-and-out e up-and-in (call e put) com rebate opcional.
+    """
+    if T <= 0.0 or sigma <= 0.0 or S <= 0.0 or K <= 0.0 or H <= 0.0:
+        return 0.0
+
+    cdef double df_r = exp(-r * T)
+    cdef double df_q = exp(-q * T)
+    cdef double p_bsm, d_tmp, g_tmp, v_tmp, th_tmp, rh_tmp, va_tmp, vo_tmp
+
+    # Verifica violação imediata da barreira na data-base
+    if (is_up and S >= H) or ((not is_up) and S <= H):
+        if is_out:
+            return rebate
+        _bsm_core(S, K, r, q, T, sigma, is_call, &p_bsm, &d_tmp, &g_tmp, &v_tmp, &th_tmp, &rh_tmp, &va_tmp, &vo_tmp)
+        return p_bsm
+
+    cdef double b = r - q
+    cdef double sig2 = sigma * sigma
+    cdef double sig_sqrt_T = sigma * sqrt(T)
+    cdef double mu = (b - 0.5 * sig2) / sig2
+    cdef double lam = sqrt(mu * mu + 2.0 * r / sig2)
+
+    cdef double x1 = log(S / K) / sig_sqrt_T + (1.0 + mu) * sig_sqrt_T
+    cdef double x2 = log(S / H) / sig_sqrt_T + (1.0 + mu) * sig_sqrt_T
+    cdef double y1 = log((H * H) / (S * K)) / sig_sqrt_T + (1.0 + mu) * sig_sqrt_T
+    cdef double y2 = log(H / S) / sig_sqrt_T + (1.0 + mu) * sig_sqrt_T
+    cdef double z = log(H / S) / sig_sqrt_T + lam * sig_sqrt_T
+
+    cdef double phi = 1.0 if is_call else -1.0
+    cdef double eta = -1.0 if is_up else 1.0
+
+    cdef double A = phi * (S * df_q * _norm_cdf(phi * x1) - K * df_r * _norm_cdf(phi * (x1 - sig_sqrt_T)))
+    cdef double B = phi * (S * df_q * _norm_cdf(phi * x2) - K * df_r * _norm_cdf(phi * (x2 - sig_sqrt_T)))
+    cdef double C = phi * (
+        S * df_q * pow(H / S, 2.0 * (mu + 1.0)) * _norm_cdf(eta * y1)
+        - K * df_r * pow(H / S, 2.0 * mu) * _norm_cdf(eta * (y1 - sig_sqrt_T))
+    )
+    cdef double D = phi * (
+        S * df_q * pow(H / S, 2.0 * (mu + 1.0)) * _norm_cdf(eta * y2)
+        - K * df_r * pow(H / S, 2.0 * mu) * _norm_cdf(eta * (y2 - sig_sqrt_T))
+    )
+    cdef double E = rebate * df_r * (
+        _norm_cdf(eta * (x2 - sig_sqrt_T)) - pow(H / S, 2.0 * mu) * _norm_cdf(eta * (y2 - sig_sqrt_T))
+    )
+    cdef double F = rebate * (
+        pow(H / S, mu + lam) * _norm_cdf(eta * z)
+        + pow(H / S, mu - lam) * _norm_cdf(eta * (z - 2.0 * lam * sig_sqrt_T))
+    )
+
+    cdef double val = 0.0
+    if is_call and (not is_up):  # Down Call
+        if is_out:
+            val = (A - C + F) if K >= H else (B - D + F)
+        else:
+            val = (C + E) if K >= H else (A - B + D + E)
+    elif is_call and is_up:  # Up Call
+        if is_out:
+            val = F if K >= H else (A - B + C - D + F)
+        else:
+            val = (A + E) if K >= H else (B - C + D + E)
+    elif (not is_call) and (not is_up):  # Down Put
+        if is_out:
+            val = (A - B + C - D + F) if K >= H else F
+        else:
+            val = (B - C + D + E) if K >= H else (A + E)
+    else:  # Up Put
+        if is_out:
+            val = (B - D + F) if K >= H else (A - C + F)
+        else:
+            val = (A - B + D + E) if K >= H else (C + E)
+
+    return val if val > 0.0 else 0.0
+
+
+cpdef double asian_geometric_price(
+    double S,
+    double K,
+    double r,
+    double q,
+    double T,
+    double sigma,
+    bint is_call=True,
+) noexcept nogil:
+    """Opção asiática de média geométrica contínua (Kemna & Vorst, 1990)."""
+    if T <= 0.0 or sigma <= 0.0 or S <= 0.0 or K <= 0.0:
+        return fmax(S - K, 0.0) if is_call else fmax(K - S, 0.0)
+    cdef double b = r - q
+    cdef double sig_g = sigma / sqrt(3.0)
+    cdef double b_g = 0.5 * (b - (sigma * sigma) / 6.0)
+    cdef double q_g = r - b_g
+    cdef double price, d_tmp, g_tmp, v_tmp, th_tmp, rh_tmp, va_tmp, vo_tmp
+    _bsm_core(S, K, r, q_g, T, sig_g, is_call, &price, &d_tmp, &g_tmp, &v_tmp, &th_tmp, &rh_tmp, &va_tmp, &vo_tmp)
+    return price
+
+
+cpdef double asian_arithmetic_tw_price(
+    double S,
+    double K,
+    double r,
+    double q,
+    double T,
+    double sigma,
+    bint is_call=True,
+) noexcept nogil:
+    """Opção asiática de média aritmética contínua via aproximação de momentos (Turnbull & Wakeman, 1991)."""
+    if T <= 0.0 or sigma <= 0.0 or S <= 0.0 or K <= 0.0:
+        return fmax(S - K, 0.0) if is_call else fmax(K - S, 0.0)
+
+    cdef double b = r - q
+    cdef double sig2 = sigma * sigma
+    cdef double m1, m2
+
+    if fabs(b) < 1e-8:
+        m1 = 1.0
+    else:
+        m1 = (exp(b * T) - 1.0) / (b * T)
+
+    if fabs(b + sig2) < 1e-8 or fabs(2.0 * b + sig2) < 1e-8 or fabs(b) < 1e-8:
+        # Expansão segura perto de b == 0
+        m2 = (2.0 * exp(sig2 * T) - 2.0 * (1.0 + sig2 * T)) / (sig2 * sig2 * T * T) if sig2 * T > 1e-8 else 1.0
+    else:
+        m2 = (
+            (2.0 * exp((2.0 * b + sig2) * T)) / ((b + sig2) * (2.0 * b + sig2) * T * T)
+            + (2.0 / (b * T * T)) * ((1.0 / (2.0 * b + sig2)) - (exp(b * T) / (b + sig2)))
+        )
+
+    cdef double b_eff = log(fmax(1e-12, m1)) / T
+    cdef double var_eff = log(fmax(1.0 + 1e-12, m2 / (m1 * m1)))
+    cdef double sig_eff = sqrt(var_eff / T)
+    cdef double q_eff = r - b_eff
+
+    cdef double price, d_tmp, g_tmp, v_tmp, th_tmp, rh_tmp, va_tmp, vo_tmp
+    _bsm_core(S, K, r, q_eff, T, sig_eff, is_call, &price, &d_tmp, &g_tmp, &v_tmp, &th_tmp, &rh_tmp, &va_tmp, &vo_tmp)
+    return price
+
