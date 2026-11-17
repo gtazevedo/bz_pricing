@@ -124,6 +124,15 @@ df_port = price_credit_portfolio(
     base_date=base_date,
 )
 print(df_port[["ticker", "classe", "pu", "mtm", "duration_du", "dv01"]])
+
+# 3.4 Curva de Hazard Rate, PV com risco de crédito (CVA) e Credit DV01 (modo offline)
+from bz_pricing.instruments import HazardRateCurve
+
+hz = HazardRateCurve.from_credit_spreads([252, 504], [0.015, 0.020], recovery_rate=0.40)
+res_risky = deb_cf.risky_present_value(base_date, risk_free_rate_or_curve=0.12, hazard_curve=hz)
+lam_imp = deb_cf.implied_hazard_rate(base_date, market_pu=res_risky["pv_risky"], risk_free_rate_or_curve=0.12, recovery_rate=0.40)
+cdv01 = deb_cf.credit_dv01(base_date, risk_free_rate_or_curve=0.12, hazard_curve=hz)
+print(f"PV Risky: R$ {res_risky['pv_risky']:.2f} | CVA: R$ {res_risky['cva']:.2f} | Hazard implícito: {lam_imp*100:.2f}% | Credit DV01: R$ {cdv01:.4f}")
 ```
 
 ---

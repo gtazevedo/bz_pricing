@@ -377,7 +377,7 @@ print(df_fluxos[["data_pagamento", "du", "evento", "fluxo_nominal", "fator_desco
 
 ### 5.3 Fluxos Customizados, Securitização (`CRI`/`CRA`/`FIDC`), `LetraFinanceira` e `Z-Spread`
 
-Todos os instrumentos de renda fixa (`LTN`, `NTNF`, `LFT`, `NTNB`, `NTNBPrincipal`, `NTNC`, `Debenture`, `CRI`, `CRA`, `CotaFIDC`, `LetraFinanceira`) aceitam fluxos próprios via `custom_cashflows` (ou `Debenture.from_cashflows` / `from_schedule`), e o módulo [`bz_pricing.core.vna_engine`](../src/bz_pricing/core/vna_engine.py) calcula o VNA a partir do VNE para qualquer indexador compatível:
+Todos os instrumentos de renda fixa (`LTN`, `NTNF`, `LFT`, `NTNB`, `NTNBPrincipal`, `NTNC`, `Debenture`, `CRI`, `CRA`, `CotaFIDC`, `LetraFinanceira`) aceitam fluxos próprios via `custom_cashflows` (ou `Debenture.from_cashflows` / `from_schedule`), possuem modelagem de risco de crédito por *hazard rate* (`HazardRateCurve`, `risky_present_value`, `implied_hazard_rate`, `credit_dv01`), e o módulo [`bz_pricing.core.vna_engine`](../src/bz_pricing/core/vna_engine.py) calcula o VNA a partir do VNE para qualquer indexador compatível:
 
 ```python
 import datetime

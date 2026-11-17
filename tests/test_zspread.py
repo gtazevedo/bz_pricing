@@ -255,3 +255,30 @@ def test_credit_custom_cashflows_and_debenture_schedule():
     assert abs(deb_sch.ytm(base_dt, pu_sch) - 0.125) < 1e-6
 
 
+def test_hazard_rate_curve_and_risky_credit_pricing():
+    from bz_pricing.instruments import Debenture, HazardRateCurve
+
+    base_dt = datetime.date(2026, 10, 30)
+    hz = HazardRateCurve.from_credit_spreads([252, 504], [0.015, 0.020], recovery_rate=0.40)
+    assert abs(hz.survival_prob(0) - 1.0) < 1e-12
+    assert 0.90 < hz.survival_prob(252) < 1.0
+    assert hz.default_prob(504) > hz.default_prob(252)
+
+    deb = Debenture.from_cashflows(
+        "DEB-HZ",
+        [(datetime.date(2027, 4, 30), 60.0, "Juros"), (datetime.date(2027, 10, 29), 1060.0, "Vencimento")],
+        indexador="PRE",
+    )
+    res = deb.risky_present_value(base_dt, 0.12, hazard_curve=hz)
+    assert 0.0 < res["pv_risky"] < res["pv_risk_free"]
+    assert abs(res["cva"] - (res["pv_risk_free"] - res["pv_risky"])) < 1e-8
+
+    # Inversão de hazard rate implícito a partir de pv_risky com lambda constante
+    res_flat = deb.risky_present_value(base_dt, 0.12, hazard_rate=0.03, recovery_rate=0.40)
+    lam_imp = deb.implied_hazard_rate(base_dt, res_flat["pv_risky"], 0.12, recovery_rate=0.40)
+    assert abs(lam_imp - 0.03) < 1e-6
+
+    cdv01 = deb.credit_dv01(base_dt, 0.12, hazard_curve=hz)
+    assert cdv01 > 0.0
+
+

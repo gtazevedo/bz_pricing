@@ -13,9 +13,76 @@ from bz_pricing.data.debentures import DebenturesClient
 try:
     from bz_pricing.core.credit_core import compute_credit_cashflows as _cy_compute_credit_cashflows
     from bz_pricing.core.credit_core import evaluate_gross_up_pv as _cy_evaluate_gross_up_pv
+    from bz_pricing.core.credit_core import risky_bond_pv as _cy_risky_bond_pv
+    from bz_pricing.core.credit_core import survival_probability_piecewise as _cy_survival_prob
 except ImportError:
     _cy_compute_credit_cashflows = None
     _cy_evaluate_gross_up_pv = None
+    _cy_risky_bond_pv = None
+    _cy_survival_prob = None
+
+
+class HazardRateCurve:
+    """
+    Curva de intensidade de default (hazard rate) constante por partes em base 252 dias úteis,
+    calculada de forma integralmente offline a partir de vértices informados pelo usuário.
+    """
+
+    def __init__(
+        self,
+        tenors_du: List[int],
+        hazard_rates: List[float],
+        recovery_rate: float = 0.40,
+    ):
+        if len(tenors_du) != len(hazard_rates) or not tenors_du:
+            raise ValueError("tenors_du e hazard_rates devem ser não vazios e ter o mesmo comprimento.")
+        pairs = sorted(zip([float(d) / 252.0 for d in tenors_du], [max(0.0, float(h)) for h in hazard_rates]), key=lambda x: x[0])
+        self.t_nodes = np.array([p[0] for p in pairs], dtype=np.float64)
+        self.lambda_nodes = np.array([p[1] for p in pairs], dtype=np.float64)
+        self.tenors_du = np.array(sorted(int(d) for d in tenors_du), dtype=np.int32)
+        self.recovery_rate = float(recovery_rate)
+
+    @classmethod
+    def from_credit_spreads(
+        cls,
+        tenors_du: List[int],
+        spreads: List[float],
+        recovery_rate: float = 0.40,
+    ) -> "HazardRateCurve":
+        """Constrói a curva de hazard rate a partir de spreads de crédito via relação lambda = s / (1 - R)."""
+        lgd = max(1e-6, 1.0 - float(recovery_rate))
+        lambdas = [max(0.0, float(s)) / lgd for s in spreads]
+        return cls(tenors_du=tenors_du, hazard_rates=lambdas, recovery_rate=recovery_rate)
+
+    def hazard_rate(self, du: int) -> float:
+        t = max(0.0, float(du) / 252.0)
+        idx = int(np.searchsorted(self.t_nodes, t, side="left"))
+        idx = min(idx, len(self.lambda_nodes) - 1)
+        return float(self.lambda_nodes[idx])
+
+    def survival_prob(self, du: int) -> float:
+        t = max(0.0, float(du) / 252.0)
+        if _cy_survival_prob is not None:
+            return float(_cy_survival_prob(t, self.t_nodes, self.lambda_nodes))
+        if t <= 0.0:
+            return 1.0
+        integral = 0.0
+        t_prev = 0.0
+        for tk, lam in zip(self.t_nodes, self.lambda_nodes):
+            if t <= tk:
+                integral += lam * (t - t_prev)
+                return math.exp(-integral)
+            integral += lam * (tk - t_prev)
+            t_prev = tk
+        integral += self.lambda_nodes[-1] * (t - t_prev)
+        return math.exp(-integral)
+
+    def default_prob(self, du: int) -> float:
+        return 1.0 - self.survival_prob(du)
+
+    def shifted(self, delta_lambda: float) -> "HazardRateCurve":
+        shifted_lam = [max(0.0, float(h) + float(delta_lambda)) for h in self.lambda_nodes]
+        return HazardRateCurve(self.tenors_du.tolist(), shifted_lam, recovery_rate=self.recovery_rate)
 
 
 class Debenture:
@@ -1268,6 +1335,145 @@ class Debenture:
         if f_low * f_high > 0.0:
             raise ValueError(f"Não foi possível isolar a raiz de TIR para {self.ticker} com target_pu={pu_obj}.")
         return float(brentq(_obj, low, high, xtol=xtol))
+
+    def risky_present_value(
+        self,
+        base_date: Union[datetime.date, str],
+        risk_free_rate_or_curve: Union[float, Curve],
+        hazard_curve: Optional[HazardRateCurve] = None,
+        hazard_rate: Optional[float] = None,
+        recovery_rate: float = 0.40,
+        vna: Optional[float] = None,
+        last_coupon_date: Union[datetime.date, str] = None,
+        di_curve: Optional[Union[float, Curve]] = None,
+        pu_par_val: Optional[float] = None,
+        fator_di_acumulado: Optional[float] = None,
+        custom_cashflows: Any = None,
+    ) -> Dict[str, float]:
+        """
+        Calcula o Valor Presente ajustado ao risco de crédito (Duffie-Singleton / Jarrow-Turnbull),
+        retornando `pv_risky`, `pv_risk_free`, `cva`, `expected_loss_pct` e `survival_at_maturity`.
+        """
+        base_dt = self._normalize_date(base_date)
+        df_flows = self.cashflow_table(
+            base_dt,
+            risk_free_rate_or_curve,
+            vna=vna,
+            last_coupon_date=last_coupon_date,
+            di_curve=di_curve,
+            pu_par_val=pu_par_val,
+            fator_di_acumulado=fator_di_acumulado,
+            custom_cashflows=custom_cashflows,
+        )
+        if df_flows.empty:
+            return {"pv_risky": 0.0, "pv_risk_free": 0.0, "cva": 0.0, "expected_loss_pct": 0.0, "survival_at_maturity": 1.0}
+
+        if hazard_curve is None:
+            lam = 0.0 if hazard_rate is None else max(0.0, float(hazard_rate))
+            hz = HazardRateCurve([int(df_flows["du"].max())], [lam], recovery_rate=recovery_rate)
+        else:
+            hz = hazard_curve
+            recovery_rate = hz.recovery_rate
+
+        cf_arr = df_flows["fluxo_nominal"].to_numpy(dtype=np.float64)
+        df_arr = df_flows["fator_desconto"].to_numpy(dtype=np.float64)
+        du_arr = df_flows["du"].to_numpy(dtype=np.int32)
+        q_arr = np.array([hz.survival_prob(int(d)) for d in du_arr], dtype=np.float64)
+        principal_ref = float(vna) if vna is not None else float(self.nominal_value)
+
+        if _cy_risky_bond_pv is not None:
+            pv_r, pv_rf, cva = _cy_risky_bond_pv(cf_arr, df_arr, q_arr, float(recovery_rate), principal_ref)
+        else:
+            pv_rf = float(np.sum(cf_arr * df_arr))
+            q_prev = np.concatenate([[1.0], q_arr[:-1]])
+            pv_r = float(np.sum(cf_arr * df_arr * q_arr) + float(recovery_rate) * principal_ref * np.sum(df_arr * np.maximum(0.0, q_prev - q_arr)))
+            cva = pv_rf - pv_r
+
+        return {
+            "pv_risky": float(pv_r),
+            "pv_risk_free": float(pv_rf),
+            "cva": float(cva),
+            "expected_loss_pct": float((cva / pv_rf) * 100.0) if pv_rf > 0.0 else 0.0,
+            "survival_at_maturity": float(q_arr[-1]),
+        }
+
+    def implied_hazard_rate(
+        self,
+        base_date: Union[datetime.date, str],
+        market_pu: float,
+        risk_free_rate_or_curve: Union[float, Curve],
+        recovery_rate: float = 0.40,
+        vna: Optional[float] = None,
+        last_coupon_date: Union[datetime.date, str] = None,
+        di_curve: Optional[Union[float, Curve]] = None,
+        pu_par_val: Optional[float] = None,
+        fator_di_acumulado: Optional[float] = None,
+        custom_cashflows: Any = None,
+        xtol: float = 1e-8,
+    ) -> float:
+        """Inverte a intensidade constante de default (hazard rate anualizado) implícita no PU de mercado."""
+        from scipy.optimize import brentq
+
+        def _obj(lam: float) -> float:
+            return self.risky_present_value(
+                base_date=base_date,
+                risk_free_rate_or_curve=risk_free_rate_or_curve,
+                hazard_rate=lam,
+                recovery_rate=recovery_rate,
+                vna=vna,
+                last_coupon_date=last_coupon_date,
+                di_curve=di_curve,
+                pu_par_val=pu_par_val,
+                fator_di_acumulado=fator_di_acumulado,
+                custom_cashflows=custom_cashflows,
+            )["pv_risky"] - float(market_pu)
+
+        f0 = _obj(0.0)
+        if f0 <= 0.0:
+            return 0.0
+        high = 2.0
+        while _obj(high) > 0.0 and high < 20.0:
+            high *= 2.0
+        return float(brentq(_obj, 0.0, high, xtol=xtol))
+
+    def credit_dv01(
+        self,
+        base_date: Union[datetime.date, str],
+        risk_free_rate_or_curve: Union[float, Curve],
+        hazard_curve: Optional[HazardRateCurve] = None,
+        hazard_rate: float = 0.01,
+        recovery_rate: float = 0.40,
+        vna: Optional[float] = None,
+        last_coupon_date: Union[datetime.date, str] = None,
+        di_curve: Optional[Union[float, Curve]] = None,
+        pu_par_val: Optional[float] = None,
+        fator_di_acumulado: Optional[float] = None,
+        custom_cashflows: Any = None,
+    ) -> float:
+        """Sensibilidade do PV com risco a um choque paralelo de +1 bp (0,0001) na curva de hazard rate."""
+        if hazard_curve is None:
+            p0 = self.risky_present_value(
+                base_date, risk_free_rate_or_curve, hazard_rate=hazard_rate, recovery_rate=recovery_rate,
+                vna=vna, last_coupon_date=last_coupon_date, di_curve=di_curve,
+                pu_par_val=pu_par_val, fator_di_acumulado=fator_di_acumulado, custom_cashflows=custom_cashflows,
+            )["pv_risky"]
+            p1 = self.risky_present_value(
+                base_date, risk_free_rate_or_curve, hazard_rate=hazard_rate + 1e-4, recovery_rate=recovery_rate,
+                vna=vna, last_coupon_date=last_coupon_date, di_curve=di_curve,
+                pu_par_val=pu_par_val, fator_di_acumulado=fator_di_acumulado, custom_cashflows=custom_cashflows,
+            )["pv_risky"]
+        else:
+            p0 = self.risky_present_value(
+                base_date, risk_free_rate_or_curve, hazard_curve=hazard_curve,
+                vna=vna, last_coupon_date=last_coupon_date, di_curve=di_curve,
+                pu_par_val=pu_par_val, fator_di_acumulado=fator_di_acumulado, custom_cashflows=custom_cashflows,
+            )["pv_risky"]
+            p1 = self.risky_present_value(
+                base_date, risk_free_rate_or_curve, hazard_curve=hazard_curve.shifted(1e-4),
+                vna=vna, last_coupon_date=last_coupon_date, di_curve=di_curve,
+                pu_par_val=pu_par_val, fator_di_acumulado=fator_di_acumulado, custom_cashflows=custom_cashflows,
+            )["pv_risky"]
+        return float(abs(p0 - p1))
 
 
 class CertificadoRecebiveis(Debenture):

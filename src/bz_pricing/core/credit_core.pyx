@@ -3,7 +3,7 @@
 # cython: wraparound=False
 # cython: cdivision=True
 
-from libc.math cimport pow, trunc, round
+from libc.math cimport pow, trunc, round, exp
 import numpy as np
 cimport numpy as np
 
@@ -169,4 +169,77 @@ cpdef double evaluate_gross_up_pv(
     for i in range(n):
         pv += flows_arr[i] / pow(1.0 + rate, du_arr[i] / 252.0)
     return pv
+
+
+cpdef double survival_probability_piecewise(
+    double t,
+    double[:] t_nodes,
+    double[:] lambda_nodes,
+) noexcept nogil:
+    """
+    Probabilidade de sobrevivência Q(t) = exp(-integral_0^t lambda(u) du)
+    sob intensidade de default constante por partes (piecewise-constant hazard rate).
+    """
+    if t <= 0.0:
+        return 1.0
+    cdef Py_ssize_t n = t_nodes.shape[0]
+    if n == 0:
+        return 1.0
+
+    cdef double integral = 0.0
+    cdef double t_prev = 0.0
+    cdef double dt, lam
+    cdef Py_ssize_t i
+
+    for i in range(n):
+        lam = lambda_nodes[i]
+        if lam < 0.0:
+            lam = 0.0
+        if t <= t_nodes[i]:
+            integral += lam * (t - t_prev)
+            return exp(-integral)
+        dt = t_nodes[i] - t_prev
+        if dt > 0.0:
+            integral += lam * dt
+        t_prev = t_nodes[i]
+
+    lam = lambda_nodes[n - 1]
+    if lam < 0.0:
+        lam = 0.0
+    integral += lam * (t - t_prev)
+    return exp(-integral)
+
+
+cpdef tuple risky_bond_pv(
+    double[:] cf_vals,
+    double[:] df_rf,
+    double[:] q_cf,
+    double recovery_rate=0.40,
+    double principal=1000.0,
+):
+    """
+    Calcula o Valor Presente com risco de crédito (Duffie-Singleton / Jarrow-Turnbull):
+      PV_risky = sum(CF_i * DF_i * Q_i) + R * Principal * sum(DF_i * (Q_{i-1} - Q_i))
+    Retorna (pv_risky, pv_risk_free, cva).
+    """
+    cdef Py_ssize_t n = cf_vals.shape[0]
+    cdef Py_ssize_t i
+    cdef double pv_rf = 0.0
+    cdef double pv_surv = 0.0
+    cdef double pv_rec = 0.0
+    cdef double q_prev = 1.0
+    cdef double q_curr, d_prob
+
+    with nogil:
+        for i in range(n):
+            q_curr = q_cf[i]
+            pv_rf += cf_vals[i] * df_rf[i]
+            pv_surv += cf_vals[i] * df_rf[i] * q_curr
+            d_prob = q_prev - q_curr
+            if d_prob > 0.0:
+                pv_rec += recovery_rate * principal * df_rf[i] * d_prob
+            q_prev = q_curr
+
+    cdef double pv_r = pv_surv + pv_rec
+    return (pv_r, pv_rf, pv_rf - pv_r)
 

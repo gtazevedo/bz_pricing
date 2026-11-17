@@ -1,5 +1,6 @@
 from .tpf import TituloPublico, LTN, NTNF, LFT, NTNB, NTNBPrincipal, NTNC
 from .credit import (
+    HazardRateCurve,
     Debenture,
     CertificadoRecebiveis,
     CRI,
@@ -44,6 +45,7 @@ __all__ = [
     "NTNB",
     "NTNBPrincipal",
     "NTNC",
+    "HazardRateCurve",
     "Debenture",
     "CertificadoRecebiveis",
     "CRI",
