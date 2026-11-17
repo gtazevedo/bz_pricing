@@ -443,3 +443,28 @@ def test_infer_anbima_vna_and_ntnc_index_ratio():
     assert vna_idx > 6671.488370 and vna_idx < 6765.0
 
 
+def test_tpf_modified_duration_sloped_curve():
+    base_date = datetime.date(2026, 10, 30)
+    # Estrutura inclinada acentuada para testar ponderação fluxo a fluxo em M5
+    t_nodes = np.array([21.0, 252.0, 504.0, 1260.0], dtype=np.float64)
+    y_nodes = np.array([0.08, 0.11, 0.14, 0.17], dtype=np.float64)
+    curve_slope = SimpleCurve(t_nodes, y_nodes, FlatForward252Interpolator(0, 0))
+
+    ntnf = NTNF(datetime.date(2031, 1, 1), coupon_rate=0.10)
+    mod_dur = ntnf.modified_duration(base_date, curve_slope)
+    # Valor de referência fluxo a fluxo (sem usar taxa do último vértice como aproximação)
+    cf = ntnf.cashflow_table(base_date, curve_slope)
+    expected_md = float(((cf["du"] / 252.0) / (1.0 + cf["taxa"]) * cf["valor_presente"]).sum() / cf["valor_presente"].sum())
+    assert abs(mod_dur - expected_md) < 1e-6
+
+    # Em NTN-B inclinada também deve coincidir com o fluxo a fluxo exato
+    t_r = np.array([21.0, 252.0, 1008.0], dtype=np.float64)
+    y_r = np.array([0.04, 0.06, 0.09], dtype=np.float64)
+    curve_real = SimpleCurve(t_r, y_r, FlatForward252Interpolator(0, 0))
+    ntnb = NTNB(datetime.date(2030, 8, 15), coupon_rate=0.06)
+    cf_b = ntnb.cashflow_table(base_date, curve_real, vna=4771.575461)
+    expected_md_b = float(((cf_b["du"] / 252.0) / (1.0 + cf_b["taxa_real"]) * cf_b["valor_presente"]).sum() / cf_b["valor_presente"].sum())
+    assert abs(ntnb.modified_duration(base_date, curve_real) - expected_md_b) < 1e-6
+
+
+

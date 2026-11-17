@@ -6,7 +6,7 @@
         "depends": [],
         "name": "bz_pricing.core.bonds",
         "sources": [
-            "src/bz_pricing/core/bonds.pyx"
+            "src\\bz_pricing\\core\\bonds.pyx"
         ]
     },
     "module_name": "bz_pricing.core.bonds"
@@ -2554,7 +2554,7 @@ struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNF {
 static struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNF *__pyx_vtabptr_10bz_pricing_4core_5bonds_NTNF;
 
 
-/* "bz_pricing/core/bonds.pyx":223
+/* "bz_pricing/core/bonds.pyx":246
  *         return flows
  * 
  * cdef class LFT(Bond):             # <<<<<<<<<<<<<<
@@ -2573,7 +2573,7 @@ struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_LFT {
 static struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_LFT *__pyx_vtabptr_10bz_pricing_4core_5bonds_LFT;
 
 
-/* "bz_pricing/core/bonds.pyx":270
+/* "bz_pricing/core/bonds.pyx":293
  *         return [(self._du, 100.0, rate, discount_factor, cot, vna, pu)]
  * 
  * cdef class NTNB(Bond):             # <<<<<<<<<<<<<<
@@ -2593,7 +2593,7 @@ struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNB {
 static struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNB *__pyx_vtabptr_10bz_pricing_4core_5bonds_NTNB;
 
 
-/* "bz_pricing/core/bonds.pyx":386
+/* "bz_pricing/core/bonds.pyx":431
  *         return flows
  * 
  * cdef class NTNBP(Bond):             # <<<<<<<<<<<<<<
@@ -2613,7 +2613,7 @@ struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNBP {
 static struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNBP *__pyx_vtabptr_10bz_pricing_4core_5bonds_NTNBP;
 
 
-/* "bz_pricing/core/bonds.pyx":435
+/* "bz_pricing/core/bonds.pyx":480
  *         return [(self._du, 100.0, rate, discount_factor, cot, vna, pu)]
  * 
  * cdef class NTNC(Bond):             # <<<<<<<<<<<<<<
@@ -4953,13 +4953,13 @@ static __pyx_mstatetype * const __pyx_mstate_global = &__pyx_mstate_global_stati
 #define __pyx_kp_b_iso88591_A_5_a_t5_D_1A_xr_Ba __pyx_string_tab[215]
 #define __pyx_kp_b_iso88591_A_Yat1_E_7_T_1 __pyx_string_tab[216]
 #define __pyx_kp_b_iso88591_A_Yat1_1L_t5_D_xr_Ba __pyx_string_tab[217]
-#define __pyx_kp_b_iso88591_A_T_1_4_1D_Ba_Yaq_r_4r __pyx_string_tab[218]
-#define __pyx_kp_b_iso88591_A_T_1_4_1D_Ba_1A_r_4r __pyx_string_tab[219]
-#define __pyx_kp_b_iso88591_A_d_4AQ_1A_xr_Ba __pyx_string_tab[220]
-#define __pyx_kp_b_iso88591_A_q_D_S_1D_oUZZ_U_Rq_E_at1_s_Q_5 __pyx_string_tab[221]
-#define __pyx_kp_b_iso88591_A_q_E_at1_U_1_s_Q_5_as_4r_s_G25H __pyx_string_tab[222]
-#define __pyx_kp_b_iso88591_A_E_3at2T_RuTVV_iikkl_E_at1_s_Q __pyx_string_tab[223]
-#define __pyx_kp_b_iso88591_A_Q_q_D_S_1D_oUZZ_U_Rq_E_at1_s_Q __pyx_string_tab[224]
+#define __pyx_kp_b_iso88591_A_d_4AQ_1A_xr_Ba __pyx_string_tab[218]
+#define __pyx_kp_b_iso88591_A_q_D_S_1D_oUZZ_U_Rq_E_at1_s_Q_5 __pyx_string_tab[219]
+#define __pyx_kp_b_iso88591_A_q_E_at1_U_1_s_Q_5_as_4r_s_G25H __pyx_string_tab[220]
+#define __pyx_kp_b_iso88591_A_E_3at2T_RuTVV_iikkl_E_at1_s_Q __pyx_string_tab[221]
+#define __pyx_kp_b_iso88591_A_Q_q_D_S_1D_oUZZ_U_Rq_E_at1_s_Q_2 __pyx_string_tab[222]
+#define __pyx_kp_b_iso88591_A_Q_q_D_S_1D_oUZZ_U_Rq_E_at1_s_Q __pyx_string_tab[223]
+#define __pyx_kp_b_iso88591_A_Q_E_3at2T_RuTVV_iikkl_E_at1_s_2 __pyx_string_tab[224]
 #define __pyx_kp_b_iso88591_A_Q_E_3at2T_RuTVV_iikkl_E_at1_s __pyx_string_tab[225]
 #define __pyx_kp_b_iso88591_A_q_E_at1_U_1_s_Q_5_as_4r_s_G25H_2 __pyx_string_tab[226]
 #define __pyx_kp_b_iso88591_9_d_4AQ_1_A_xr_Ba __pyx_string_tab[227]
@@ -25160,8 +25160,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_4NTNF_4duration(struct __pyx
  *         return total_weighted / total_pv
  * 
  *     cpdef double modified_duration(self, Curve curve) except *:             # <<<<<<<<<<<<<<
- *         cdef double dur_du = self.duration(curve)
- *         cdef int last_du = self._coupon_dus[self._n_coupons - 1]
+ *         cdef double total_weighted = 0.0
+ *         cdef double total_pv = 0.0
 */
 
 static PyObject *__pyx_pw_10bz_pricing_4core_5bonds_4NTNF_7modified_duration(PyObject *__pyx_v_self, 
@@ -25172,9 +25172,15 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static double __pyx_f_10bz_pricing_4core_5bonds_4NTNF_modified_duration(struct __pyx_obj_10bz_pricing_4core_5bonds_NTNF *__pyx_v_self, struct __pyx_obj_10bz_pricing_4core_6curves_Curve *__pyx_v_curve, int __pyx_skip_dispatch) {
-  double __pyx_v_dur_du;
-  int __pyx_v_last_du;
-  double __pyx_v_last_rate;
+  double __pyx_v_total_weighted;
+  double __pyx_v_total_pv;
+  int __pyx_v_i;
+  int __pyx_v_du;
+  double __pyx_v_rate;
+  double __pyx_v_discount_factor;
+  double __pyx_v_pv_fluxo;
+  double __pyx_v_coupon_amount;
+  double __pyx_v_rounded_coupon;
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -25183,7 +25189,11 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNF_modified_duration(struct _
   PyObject *__pyx_t_4 = NULL;
   size_t __pyx_t_5;
   double __pyx_t_6;
-  Py_ssize_t __pyx_t_7;
+  int __pyx_t_7;
+  int __pyx_t_8;
+  int __pyx_t_9;
+  Py_ssize_t __pyx_t_10;
+  int __pyx_t_11;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -25254,44 +25264,230 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNF_modified_duration(struct _
   /* "bz_pricing/core/bonds.pyx":187
  * 
  *     cpdef double modified_duration(self, Curve curve) except *:
- *         cdef double dur_du = self.duration(curve)             # <<<<<<<<<<<<<<
- *         cdef int last_du = self._coupon_dus[self._n_coupons - 1]
- *         cdef double last_rate = curve.get_rate(last_du)
+ *         cdef double total_weighted = 0.0             # <<<<<<<<<<<<<<
+ *         cdef double total_pv = 0.0
+ *         cdef int i, du
 */
-  __pyx_t_6 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNF *)__pyx_v_self->__pyx_base.__pyx_vtab)->duration(__pyx_v_self, __pyx_v_curve, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 187, __pyx_L1_error)
-  __pyx_v_dur_du = __pyx_t_6;
+  __pyx_v_total_weighted = 0.0;
 
   /* "bz_pricing/core/bonds.pyx":188
  *     cpdef double modified_duration(self, Curve curve) except *:
- *         cdef double dur_du = self.duration(curve)
- *         cdef int last_du = self._coupon_dus[self._n_coupons - 1]             # <<<<<<<<<<<<<<
- *         cdef double last_rate = curve.get_rate(last_du)
- *         return (dur_du / 252.0) / (1.0 + last_rate)
+ *         cdef double total_weighted = 0.0
+ *         cdef double total_pv = 0.0             # <<<<<<<<<<<<<<
+ *         cdef int i, du
+ *         cdef double rate, discount_factor, pv_fluxo
 */
-  if (unlikely(!__pyx_v_self->_coupon_dus.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 188, __pyx_L1_error)}
-  __pyx_t_7 = (__pyx_v_self->_n_coupons - 1);
-  __pyx_v_last_du = (*((int *) ( /* dim=0 */ (__pyx_v_self->_coupon_dus.data + __pyx_t_7 * __pyx_v_self->_coupon_dus.strides[0]) )));
+  __pyx_v_total_pv = 0.0;
 
-  /* "bz_pricing/core/bonds.pyx":189
- *         cdef double dur_du = self.duration(curve)
- *         cdef int last_du = self._coupon_dus[self._n_coupons - 1]
- *         cdef double last_rate = curve.get_rate(last_du)             # <<<<<<<<<<<<<<
- *         return (dur_du / 252.0) / (1.0 + last_rate)
+  /* "bz_pricing/core/bonds.pyx":191
+ *         cdef int i, du
+ *         cdef double rate, discount_factor, pv_fluxo
+ *         cdef double coupon_amount = self._face_value * (pow(1.0 + self._coupon_rate, 0.5) - 1.0)             # <<<<<<<<<<<<<<
+ *         cdef double rounded_coupon = round(coupon_amount * 100000.0) / 100000.0
  * 
 */
-  __pyx_t_6 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_curve->__pyx_vtab)->get_rate(__pyx_v_curve, __pyx_v_last_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 189, __pyx_L1_error)
-  __pyx_v_last_rate = __pyx_t_6;
+  __pyx_v_coupon_amount = (__pyx_v_self->_face_value * (pow((1.0 + __pyx_v_self->_coupon_rate), 0.5) - 1.0));
 
-  /* "bz_pricing/core/bonds.pyx":190
- *         cdef int last_du = self._coupon_dus[self._n_coupons - 1]
- *         cdef double last_rate = curve.get_rate(last_du)
- *         return (dur_du / 252.0) / (1.0 + last_rate)             # <<<<<<<<<<<<<<
+  /* "bz_pricing/core/bonds.pyx":192
+ *         cdef double rate, discount_factor, pv_fluxo
+ *         cdef double coupon_amount = self._face_value * (pow(1.0 + self._coupon_rate, 0.5) - 1.0)
+ *         cdef double rounded_coupon = round(coupon_amount * 100000.0) / 100000.0             # <<<<<<<<<<<<<<
+ * 
+ *         for i in range(self._n_coupons):
+*/
+  __pyx_v_rounded_coupon = (round((__pyx_v_coupon_amount * 100000.0)) / 100000.0);
+
+  /* "bz_pricing/core/bonds.pyx":194
+ *         cdef double rounded_coupon = round(coupon_amount * 100000.0) / 100000.0
+ * 
+ *         for i in range(self._n_coupons):             # <<<<<<<<<<<<<<
+ *             du = self._coupon_dus[i]
+ *             if du <= 0:
+*/
+
+  __pyx_t_7 = __pyx_v_self->_n_coupons;
+  __pyx_t_8 = __pyx_t_7;
+
+  for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_8; __pyx_t_9+=1) {
+    __pyx_v_i = __pyx_t_9;
+
+    /* "bz_pricing/core/bonds.pyx":195
+ * 
+ *         for i in range(self._n_coupons):
+ *             du = self._coupon_dus[i]             # <<<<<<<<<<<<<<
+ *             if du <= 0:
+ *                 continue
+*/
+    if (unlikely(!__pyx_v_self->_coupon_dus.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 195, __pyx_L1_error)}
+    __pyx_t_10 = __pyx_v_i;
+    __pyx_v_du = (*((int *) ( /* dim=0 */ (__pyx_v_self->_coupon_dus.data + __pyx_t_10 * __pyx_v_self->_coupon_dus.strides[0]) )));
+
+    /* "bz_pricing/core/bonds.pyx":196
+ *         for i in range(self._n_coupons):
+ *             du = self._coupon_dus[i]
+ *             if du <= 0:             # <<<<<<<<<<<<<<
+ *                 continue
+ * 
+*/
+    __pyx_t_11 = (__pyx_v_du <= 0);
+
+    if (__pyx_t_11) {
+
+
+      /* "bz_pricing/core/bonds.pyx":197
+ *             du = self._coupon_dus[i]
+ *             if du <= 0:
+ *                 continue             # <<<<<<<<<<<<<<
+ * 
+ *             rate = curve.get_rate(du)
+*/
+      goto __pyx_L3_continue;
+
+      /* "bz_pricing/core/bonds.pyx":196
+ *         for i in range(self._n_coupons):
+ *             du = self._coupon_dus[i]
+ *             if du <= 0:             # <<<<<<<<<<<<<<
+ *                 continue
+ * 
+*/
+    }
+
+    /* "bz_pricing/core/bonds.pyx":199
+ *                 continue
+ * 
+ *             rate = curve.get_rate(du)             # <<<<<<<<<<<<<<
+ *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
+ * 
+*/
+    __pyx_t_6 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_curve->__pyx_vtab)->get_rate(__pyx_v_curve, __pyx_v_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 199, __pyx_L1_error)
+    __pyx_v_rate = __pyx_t_6;
+
+    /* "bz_pricing/core/bonds.pyx":200
+ * 
+ *             rate = curve.get_rate(du)
+ *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0             # <<<<<<<<<<<<<<
+ * 
+ *             if i == self._n_coupons - 1:
+*/
+    __pyx_v_discount_factor = (trunc((pow((1.0 + __pyx_v_rate), (((double)__pyx_v_du) / 252.0)) * 100000000000000.0)) / 100000000000000.0);
+
+    /* "bz_pricing/core/bonds.pyx":202
+ *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
+ * 
+ *             if i == self._n_coupons - 1:             # <<<<<<<<<<<<<<
+ *                 pv_fluxo = (rounded_coupon + self._face_value) / discount_factor
+ *             else:
+*/
+    __pyx_t_11 = (__pyx_v_i == (__pyx_v_self->_n_coupons - 1));
+
+    if (__pyx_t_11) {
+
+
+      /* "bz_pricing/core/bonds.pyx":203
+ * 
+ *             if i == self._n_coupons - 1:
+ *                 pv_fluxo = (rounded_coupon + self._face_value) / discount_factor             # <<<<<<<<<<<<<<
+ *             else:
+ *                 pv_fluxo = rounded_coupon / discount_factor
+*/
+      __pyx_v_pv_fluxo = ((__pyx_v_rounded_coupon + __pyx_v_self->_face_value) / __pyx_v_discount_factor);
+
+      /* "bz_pricing/core/bonds.pyx":202
+ *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
+ * 
+ *             if i == self._n_coupons - 1:             # <<<<<<<<<<<<<<
+ *                 pv_fluxo = (rounded_coupon + self._face_value) / discount_factor
+ *             else:
+*/
+      goto __pyx_L6;
+    }
+
+    /* "bz_pricing/core/bonds.pyx":205
+ *                 pv_fluxo = (rounded_coupon + self._face_value) / discount_factor
+ *             else:
+ *                 pv_fluxo = rounded_coupon / discount_factor             # <<<<<<<<<<<<<<
+ * 
+ *             pv_fluxo = round(pv_fluxo * 1000000000.0) / 1000000000.0
+*/
+    /*else*/ {
+      __pyx_v_pv_fluxo = (__pyx_v_rounded_coupon / __pyx_v_discount_factor);
+    }
+    __pyx_L6:;
+
+    /* "bz_pricing/core/bonds.pyx":207
+ *                 pv_fluxo = rounded_coupon / discount_factor
+ * 
+ *             pv_fluxo = round(pv_fluxo * 1000000000.0) / 1000000000.0             # <<<<<<<<<<<<<<
+ *             total_weighted += ((du / 252.0) / (1.0 + rate)) * pv_fluxo
+ *             total_pv += pv_fluxo
+*/
+    __pyx_v_pv_fluxo = (round((__pyx_v_pv_fluxo * 1000000000.0)) / 1000000000.0);
+
+    /* "bz_pricing/core/bonds.pyx":208
+ * 
+ *             pv_fluxo = round(pv_fluxo * 1000000000.0) / 1000000000.0
+ *             total_weighted += ((du / 252.0) / (1.0 + rate)) * pv_fluxo             # <<<<<<<<<<<<<<
+ *             total_pv += pv_fluxo
+ * 
+*/
+    __pyx_v_total_weighted = (__pyx_v_total_weighted + (((((double)__pyx_v_du) / 252.0) / (1.0 + __pyx_v_rate)) * __pyx_v_pv_fluxo));
+
+    /* "bz_pricing/core/bonds.pyx":209
+ *             pv_fluxo = round(pv_fluxo * 1000000000.0) / 1000000000.0
+ *             total_weighted += ((du / 252.0) / (1.0 + rate)) * pv_fluxo
+ *             total_pv += pv_fluxo             # <<<<<<<<<<<<<<
+ * 
+ *         if total_pv <= 0.0:
+*/
+    __pyx_v_total_pv = (__pyx_v_total_pv + __pyx_v_pv_fluxo);
+    __pyx_L3_continue:;
+  }
+
+
+  /* "bz_pricing/core/bonds.pyx":211
+ *             total_pv += pv_fluxo
+ * 
+ *         if total_pv <= 0.0:             # <<<<<<<<<<<<<<
+ *             return 0.0
+ *         return total_weighted / total_pv
+*/
+  __pyx_t_11 = (__pyx_v_total_pv <= 0.0);
+
+  if (__pyx_t_11) {
+
+
+    /* "bz_pricing/core/bonds.pyx":212
+ * 
+ *         if total_pv <= 0.0:
+ *             return 0.0             # <<<<<<<<<<<<<<
+ *         return total_weighted / total_pv
+ * 
+*/
+    {
+
+      __pyx_r = 0.0;
+    }
+    goto __pyx_L0;
+
+    /* "bz_pricing/core/bonds.pyx":211
+ *             total_pv += pv_fluxo
+ * 
+ *         if total_pv <= 0.0:             # <<<<<<<<<<<<<<
+ *             return 0.0
+ *         return total_weighted / total_pv
+*/
+  }
+
+  /* "bz_pricing/core/bonds.pyx":213
+ *         if total_pv <= 0.0:
+ *             return 0.0
+ *         return total_weighted / total_pv             # <<<<<<<<<<<<<<
  * 
  *     cpdef double dv01(self, Curve curve) except *:
 */
   {
 
-    __pyx_r = ((__pyx_v_dur_du / 252.0) / (1.0 + __pyx_v_last_rate));
+    __pyx_r = (__pyx_v_total_weighted / __pyx_v_total_pv);
   }
   goto __pyx_L0;
 
@@ -25299,8 +25495,8 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNF_modified_duration(struct _
  *         return total_weighted / total_pv
  * 
  *     cpdef double modified_duration(self, Curve curve) except *:             # <<<<<<<<<<<<<<
- *         cdef double dur_du = self.duration(curve)
- *         cdef int last_du = self._coupon_dus[self._n_coupons - 1]
+ *         cdef double total_weighted = 0.0
+ *         cdef double total_pv = 0.0
 */
 
   /* function exit code */
@@ -25312,6 +25508,12 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNF_modified_duration(struct _
   __Pyx_AddTraceback("bz_pricing.core.bonds.NTNF.modified_duration", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
+
+
+
+
+
+
 
 
 
@@ -25450,8 +25652,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_4NTNF_6modified_duration(str
   return __pyx_r;
 }
 
-/* "bz_pricing/core/bonds.pyx":192
- *         return (dur_du / 252.0) / (1.0 + last_rate)
+/* "bz_pricing/core/bonds.pyx":215
+ *         return total_weighted / total_pv
  * 
  *     cpdef double dv01(self, Curve curve) except *:             # <<<<<<<<<<<<<<
  *         cdef double mod_dur = self.modified_duration(curve)
@@ -25496,7 +25698,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNF_dv01(struct __pyx_obj_10bz
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_dv01); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 192, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_dv01); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 215, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_5bonds_4NTNF_9dv01)) {
         __pyx_t_3 = NULL;
@@ -25519,10 +25721,10 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNF_dv01(struct __pyx_obj_10bz
           __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 192, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 215, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_6 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 192, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 215, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_6;
@@ -25543,27 +25745,27 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNF_dv01(struct __pyx_obj_10bz
     #endif
   }
 
-  /* "bz_pricing/core/bonds.pyx":193
+  /* "bz_pricing/core/bonds.pyx":216
  * 
  *     cpdef double dv01(self, Curve curve) except *:
  *         cdef double mod_dur = self.modified_duration(curve)             # <<<<<<<<<<<<<<
  *         cdef double pu = self.present_value(curve)
  *         return mod_dur * pu * 0.0001
 */
-  __pyx_t_6 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNF *)__pyx_v_self->__pyx_base.__pyx_vtab)->modified_duration(__pyx_v_self, __pyx_v_curve, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 193, __pyx_L1_error)
+  __pyx_t_6 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNF *)__pyx_v_self->__pyx_base.__pyx_vtab)->modified_duration(__pyx_v_self, __pyx_v_curve, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 216, __pyx_L1_error)
   __pyx_v_mod_dur = __pyx_t_6;
 
-  /* "bz_pricing/core/bonds.pyx":194
+  /* "bz_pricing/core/bonds.pyx":217
  *     cpdef double dv01(self, Curve curve) except *:
  *         cdef double mod_dur = self.modified_duration(curve)
  *         cdef double pu = self.present_value(curve)             # <<<<<<<<<<<<<<
  *         return mod_dur * pu * 0.0001
  * 
 */
-  __pyx_t_6 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNF *)__pyx_v_self->__pyx_base.__pyx_vtab)->__pyx_base.present_value(((struct __pyx_obj_10bz_pricing_4core_5bonds_Bond *)__pyx_v_self), __pyx_v_curve, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 194, __pyx_L1_error)
+  __pyx_t_6 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNF *)__pyx_v_self->__pyx_base.__pyx_vtab)->__pyx_base.present_value(((struct __pyx_obj_10bz_pricing_4core_5bonds_Bond *)__pyx_v_self), __pyx_v_curve, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 217, __pyx_L1_error)
   __pyx_v_pu = __pyx_t_6;
 
-  /* "bz_pricing/core/bonds.pyx":195
+  /* "bz_pricing/core/bonds.pyx":218
  *         cdef double mod_dur = self.modified_duration(curve)
  *         cdef double pu = self.present_value(curve)
  *         return mod_dur * pu * 0.0001             # <<<<<<<<<<<<<<
@@ -25576,8 +25778,8 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNF_dv01(struct __pyx_obj_10bz
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/bonds.pyx":192
- *         return (dur_du / 252.0) / (1.0 + last_rate)
+  /* "bz_pricing/core/bonds.pyx":215
+ *         return total_weighted / total_pv
  * 
  *     cpdef double dv01(self, Curve curve) except *:             # <<<<<<<<<<<<<<
  *         cdef double mod_dur = self.modified_duration(curve)
@@ -25639,32 +25841,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_curve,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 192, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 215, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 192, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 215, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "dv01", 0) < (0)) __PYX_ERR(0, 192, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "dv01", 0) < (0)) __PYX_ERR(0, 215, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("dv01", 1, 1, 1, i); __PYX_ERR(0, 192, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("dv01", 1, 1, 1, i); __PYX_ERR(0, 215, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 192, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 215, __pyx_L3_error)
     }
     __pyx_v_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("dv01", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 192, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("dv01", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 215, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -25675,7 +25877,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "curve", 0))) __PYX_ERR(0, 192, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "curve", 0))) __PYX_ERR(0, 215, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_5bonds_4NTNF_8dv01(((struct __pyx_obj_10bz_pricing_4core_5bonds_NTNF *)__pyx_v_self), __pyx_v_curve);
 
   /* function exit code */
@@ -25704,8 +25906,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_4NTNF_8dv01(struct __pyx_obj
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("dv01", 0);
-  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_4NTNF_dv01(__pyx_v_self, __pyx_v_curve, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 192, __pyx_L1_error)
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 192, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_4NTNF_dv01(__pyx_v_self, __pyx_v_curve, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 215, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 215, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
   {
@@ -25730,7 +25932,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_4NTNF_8dv01(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "bz_pricing/core/bonds.pyx":197
+/* "bz_pricing/core/bonds.pyx":220
  *         return mod_dur * pu * 0.0001
  * 
  *     cpdef list cashflow_details(self, Curve curve):             # <<<<<<<<<<<<<<
@@ -25791,7 +25993,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNF_cashflow_details(struct
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_cashflow_details); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 197, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_cashflow_details); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 220, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_5bonds_4NTNF_11cashflow_details)) {
         __pyx_t_3 = NULL;
@@ -25814,10 +26016,10 @@ static PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNF_cashflow_details(struct
           __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 197, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 220, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        if (!(likely(PyList_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None) || __Pyx_RaiseUnexpectedTypeError("list", __pyx_t_2))) __PYX_ERR(0, 197, __pyx_L1_error)
+        if (!(likely(PyList_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None) || __Pyx_RaiseUnexpectedTypeError("list", __pyx_t_2))) __PYX_ERR(0, 220, __pyx_L1_error)
         {
           PyObject *__pyx_temp;
           {
@@ -25843,19 +26045,19 @@ static PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNF_cashflow_details(struct
     #endif
   }
 
-  /* "bz_pricing/core/bonds.pyx":198
+  /* "bz_pricing/core/bonds.pyx":221
  * 
  *     cpdef list cashflow_details(self, Curve curve):
  *         cdef list flows = []             # <<<<<<<<<<<<<<
  *         cdef int i, du
  *         cdef double rate, discount_factor
 */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 198, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 221, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_flows = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":201
+  /* "bz_pricing/core/bonds.pyx":224
  *         cdef int i, du
  *         cdef double rate, discount_factor
  *         cdef double coupon_amount = self._face_value * (pow(1.0 + self._coupon_rate, 0.5) - 1.0)             # <<<<<<<<<<<<<<
@@ -25864,7 +26066,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNF_cashflow_details(struct
 */
   __pyx_v_coupon_amount = (__pyx_v_self->_face_value * (pow((1.0 + __pyx_v_self->_coupon_rate), 0.5) - 1.0));
 
-  /* "bz_pricing/core/bonds.pyx":202
+  /* "bz_pricing/core/bonds.pyx":225
  *         cdef double rate, discount_factor
  *         cdef double coupon_amount = self._face_value * (pow(1.0 + self._coupon_rate, 0.5) - 1.0)
  *         cdef double rounded_coupon = round(coupon_amount * 100000.0) / 100000.0             # <<<<<<<<<<<<<<
@@ -25873,7 +26075,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNF_cashflow_details(struct
 */
   __pyx_v_rounded_coupon = (round((__pyx_v_coupon_amount * 100000.0)) / 100000.0);
 
-  /* "bz_pricing/core/bonds.pyx":205
+  /* "bz_pricing/core/bonds.pyx":228
  *         cdef double fluxo, pv_fluxo
  * 
  *         for i in range(self._n_coupons):             # <<<<<<<<<<<<<<
@@ -25887,18 +26089,18 @@ static PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNF_cashflow_details(struct
   for (__pyx_t_8 = 0; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
     __pyx_v_i = __pyx_t_8;
 
-    /* "bz_pricing/core/bonds.pyx":206
+    /* "bz_pricing/core/bonds.pyx":229
  * 
  *         for i in range(self._n_coupons):
  *             du = self._coupon_dus[i]             # <<<<<<<<<<<<<<
  *             if du <= 0:
  *                 continue
 */
-    if (unlikely(!__pyx_v_self->_coupon_dus.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 206, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_coupon_dus.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 229, __pyx_L1_error)}
     __pyx_t_9 = __pyx_v_i;
     __pyx_v_du = (*((int *) ( /* dim=0 */ (__pyx_v_self->_coupon_dus.data + __pyx_t_9 * __pyx_v_self->_coupon_dus.strides[0]) )));
 
-    /* "bz_pricing/core/bonds.pyx":207
+    /* "bz_pricing/core/bonds.pyx":230
  *         for i in range(self._n_coupons):
  *             du = self._coupon_dus[i]
  *             if du <= 0:             # <<<<<<<<<<<<<<
@@ -25910,7 +26112,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNF_cashflow_details(struct
     if (__pyx_t_10) {
 
 
-      /* "bz_pricing/core/bonds.pyx":208
+      /* "bz_pricing/core/bonds.pyx":231
  *             du = self._coupon_dus[i]
  *             if du <= 0:
  *                 continue             # <<<<<<<<<<<<<<
@@ -25919,7 +26121,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNF_cashflow_details(struct
 */
       goto __pyx_L3_continue;
 
-      /* "bz_pricing/core/bonds.pyx":207
+      /* "bz_pricing/core/bonds.pyx":230
  *         for i in range(self._n_coupons):
  *             du = self._coupon_dus[i]
  *             if du <= 0:             # <<<<<<<<<<<<<<
@@ -25928,17 +26130,17 @@ static PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNF_cashflow_details(struct
 */
     }
 
-    /* "bz_pricing/core/bonds.pyx":210
+    /* "bz_pricing/core/bonds.pyx":233
  *                 continue
  * 
  *             rate = curve.get_rate(du)             # <<<<<<<<<<<<<<
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
  * 
 */
-    __pyx_t_11 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_curve->__pyx_vtab)->get_rate(__pyx_v_curve, __pyx_v_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 210, __pyx_L1_error)
+    __pyx_t_11 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_curve->__pyx_vtab)->get_rate(__pyx_v_curve, __pyx_v_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 233, __pyx_L1_error)
     __pyx_v_rate = __pyx_t_11;
 
-    /* "bz_pricing/core/bonds.pyx":211
+    /* "bz_pricing/core/bonds.pyx":234
  * 
  *             rate = curve.get_rate(du)
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0             # <<<<<<<<<<<<<<
@@ -25947,7 +26149,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNF_cashflow_details(struct
 */
     __pyx_v_discount_factor = (trunc((pow((1.0 + __pyx_v_rate), (((double)__pyx_v_du) / 252.0)) * 100000000000000.0)) / 100000000000000.0);
 
-    /* "bz_pricing/core/bonds.pyx":213
+    /* "bz_pricing/core/bonds.pyx":236
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
  * 
  *             if i == self._n_coupons - 1:             # <<<<<<<<<<<<<<
@@ -25959,7 +26161,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNF_cashflow_details(struct
     if (__pyx_t_10) {
 
 
-      /* "bz_pricing/core/bonds.pyx":214
+      /* "bz_pricing/core/bonds.pyx":237
  * 
  *             if i == self._n_coupons - 1:
  *                 fluxo = rounded_coupon + self._face_value             # <<<<<<<<<<<<<<
@@ -25968,7 +26170,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNF_cashflow_details(struct
 */
       __pyx_v_fluxo = (__pyx_v_rounded_coupon + __pyx_v_self->_face_value);
 
-      /* "bz_pricing/core/bonds.pyx":213
+      /* "bz_pricing/core/bonds.pyx":236
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
  * 
  *             if i == self._n_coupons - 1:             # <<<<<<<<<<<<<<
@@ -25978,7 +26180,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNF_cashflow_details(struct
       goto __pyx_L6;
     }
 
-    /* "bz_pricing/core/bonds.pyx":216
+    /* "bz_pricing/core/bonds.pyx":239
  *                 fluxo = rounded_coupon + self._face_value
  *             else:
  *                 fluxo = rounded_coupon             # <<<<<<<<<<<<<<
@@ -25990,7 +26192,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNF_cashflow_details(struct
     }
     __pyx_L6:;
 
-    /* "bz_pricing/core/bonds.pyx":218
+    /* "bz_pricing/core/bonds.pyx":241
  *                 fluxo = rounded_coupon
  * 
  *             pv_fluxo = round((fluxo / discount_factor) * 1000000000.0) / 1000000000.0             # <<<<<<<<<<<<<<
@@ -25999,48 +26201,48 @@ static PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNF_cashflow_details(struct
 */
     __pyx_v_pv_fluxo = (round(((__pyx_v_fluxo / __pyx_v_discount_factor) * 1000000000.0)) / 1000000000.0);
 
-    /* "bz_pricing/core/bonds.pyx":219
+    /* "bz_pricing/core/bonds.pyx":242
  * 
  *             pv_fluxo = round((fluxo / discount_factor) * 1000000000.0) / 1000000000.0
  *             flows.append((du, fluxo, rate, discount_factor, pv_fluxo))             # <<<<<<<<<<<<<<
  * 
  *         return flows
 */
-    __pyx_t_1 = __Pyx_PyLong_From_int(__pyx_v_du); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 219, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyLong_From_int(__pyx_v_du); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 242, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = PyFloat_FromDouble(__pyx_v_fluxo); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 219, __pyx_L1_error)
+    __pyx_t_2 = PyFloat_FromDouble(__pyx_v_fluxo); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 242, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_rate); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 219, __pyx_L1_error)
+    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_rate); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 242, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_3 = PyFloat_FromDouble(__pyx_v_discount_factor); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 219, __pyx_L1_error)
+    __pyx_t_3 = PyFloat_FromDouble(__pyx_v_discount_factor); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 242, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_12 = PyFloat_FromDouble(__pyx_v_pv_fluxo); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 219, __pyx_L1_error)
+    __pyx_t_12 = PyFloat_FromDouble(__pyx_v_pv_fluxo); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 242, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_12);
-    __pyx_t_13 = PyTuple_New(5); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 219, __pyx_L1_error)
+    __pyx_t_13 = PyTuple_New(5); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 242, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __Pyx_GIVEREF(__pyx_t_1);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 0, __pyx_t_1) != (0)) __PYX_ERR(0, 219, __pyx_L1_error);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 0, __pyx_t_1) != (0)) __PYX_ERR(0, 242, __pyx_L1_error);
     __Pyx_GIVEREF(__pyx_t_2);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 1, __pyx_t_2) != (0)) __PYX_ERR(0, 219, __pyx_L1_error);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 1, __pyx_t_2) != (0)) __PYX_ERR(0, 242, __pyx_L1_error);
     __Pyx_GIVEREF(__pyx_t_4);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 2, __pyx_t_4) != (0)) __PYX_ERR(0, 219, __pyx_L1_error);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 2, __pyx_t_4) != (0)) __PYX_ERR(0, 242, __pyx_L1_error);
     __Pyx_GIVEREF(__pyx_t_3);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 3, __pyx_t_3) != (0)) __PYX_ERR(0, 219, __pyx_L1_error);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 3, __pyx_t_3) != (0)) __PYX_ERR(0, 242, __pyx_L1_error);
     __Pyx_GIVEREF(__pyx_t_12);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 4, __pyx_t_12) != (0)) __PYX_ERR(0, 219, __pyx_L1_error);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 4, __pyx_t_12) != (0)) __PYX_ERR(0, 242, __pyx_L1_error);
     __pyx_t_1 = 0;
     __pyx_t_2 = 0;
     __pyx_t_4 = 0;
     __pyx_t_3 = 0;
     __pyx_t_12 = 0;
-    __pyx_t_14 = __Pyx_PyList_Append(__pyx_v_flows, __pyx_t_13); if (unlikely(__pyx_t_14 == ((int)-1))) __PYX_ERR(0, 219, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_PyList_Append(__pyx_v_flows, __pyx_t_13); if (unlikely(__pyx_t_14 == ((int)-1))) __PYX_ERR(0, 242, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
 
     __pyx_L3_continue:;
   }
 
 
-  /* "bz_pricing/core/bonds.pyx":221
+  /* "bz_pricing/core/bonds.pyx":244
  *             flows.append((du, fluxo, rate, discount_factor, pv_fluxo))
  * 
  *         return flows             # <<<<<<<<<<<<<<
@@ -26058,7 +26260,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNF_cashflow_details(struct
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/bonds.pyx":197
+  /* "bz_pricing/core/bonds.pyx":220
  *         return mod_dur * pu * 0.0001
  * 
  *     cpdef list cashflow_details(self, Curve curve):             # <<<<<<<<<<<<<<
@@ -26130,32 +26332,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_curve,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 197, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 220, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 197, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 220, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "cashflow_details", 0) < (0)) __PYX_ERR(0, 197, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "cashflow_details", 0) < (0)) __PYX_ERR(0, 220, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("cashflow_details", 1, 1, 1, i); __PYX_ERR(0, 197, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("cashflow_details", 1, 1, 1, i); __PYX_ERR(0, 220, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 197, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 220, __pyx_L3_error)
     }
     __pyx_v_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("cashflow_details", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 197, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("cashflow_details", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 220, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -26166,7 +26368,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "curve", 0))) __PYX_ERR(0, 197, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "curve", 0))) __PYX_ERR(0, 220, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_5bonds_4NTNF_10cashflow_details(((struct __pyx_obj_10bz_pricing_4core_5bonds_NTNF *)__pyx_v_self), __pyx_v_curve);
 
   /* function exit code */
@@ -26194,7 +26396,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_4NTNF_10cashflow_details(str
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("cashflow_details", 0);
-  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_4NTNF_cashflow_details(__pyx_v_self, __pyx_v_curve, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 197, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_4NTNF_cashflow_details(__pyx_v_self, __pyx_v_curve, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   {
     PyObject *__pyx_temp;
@@ -26705,7 +26907,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_4NTNF_14__setstate_cython__(
   return __pyx_r;
 }
 
-/* "bz_pricing/core/bonds.pyx":228
+/* "bz_pricing/core/bonds.pyx":251
  *     Precificada a partir da cotao de gio/desgio aplicada sobre o VNA.
  *     """
  *     def __init__(self, int du):             # <<<<<<<<<<<<<<
@@ -26751,32 +26953,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_du,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL_TPNEW(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 228, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 251, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 228, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 251, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 228, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 251, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 1, 1, 1, i); __PYX_ERR(0, 228, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 1, 1, 1, i); __PYX_ERR(0, 251, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 228, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 251, __pyx_L3_error)
     }
-    __pyx_v_du = __Pyx_PyLong_As_int(values[0]); if (unlikely((__pyx_v_du == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 228, __pyx_L3_error)
+    __pyx_v_du = __Pyx_PyLong_As_int(values[0]); if (unlikely((__pyx_v_du == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 251, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 228, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 251, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -26801,7 +27003,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 static int __pyx_pf_10bz_pricing_4core_5bonds_3LFT___init__(struct __pyx_obj_10bz_pricing_4core_5bonds_LFT *__pyx_v_self, int __pyx_v_du) {
   int __pyx_r;
 
-  /* "bz_pricing/core/bonds.pyx":229
+  /* "bz_pricing/core/bonds.pyx":252
  *     """
  *     def __init__(self, int du):
  *         self._du = du             # <<<<<<<<<<<<<<
@@ -26810,7 +27012,7 @@ static int __pyx_pf_10bz_pricing_4core_5bonds_3LFT___init__(struct __pyx_obj_10b
 */
   __pyx_v_self->_du = __pyx_v_du;
 
-  /* "bz_pricing/core/bonds.pyx":228
+  /* "bz_pricing/core/bonds.pyx":251
  *     Precificada a partir da cotao de gio/desgio aplicada sobre o VNA.
  *     """
  *     def __init__(self, int du):             # <<<<<<<<<<<<<<
@@ -26824,7 +27026,7 @@ static int __pyx_pf_10bz_pricing_4core_5bonds_3LFT___init__(struct __pyx_obj_10b
   return __pyx_r;
 }
 
-/* "bz_pricing/core/bonds.pyx":231
+/* "bz_pricing/core/bonds.pyx":254
  *         self._du = du
  * 
  *     cpdef double cotacao(self, Curve agio_curve) except *:             # <<<<<<<<<<<<<<
@@ -26872,7 +27074,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_3LFT_cotacao(struct __pyx_obj_10
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_cotacao); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 231, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_cotacao); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 254, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_5bonds_3LFT_3cotacao)) {
         __pyx_t_3 = NULL;
@@ -26895,10 +27097,10 @@ static double __pyx_f_10bz_pricing_4core_5bonds_3LFT_cotacao(struct __pyx_obj_10
           __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 231, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 254, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_6 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 231, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 254, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_6;
@@ -26919,7 +27121,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_3LFT_cotacao(struct __pyx_obj_10
     #endif
   }
 
-  /* "bz_pricing/core/bonds.pyx":232
+  /* "bz_pricing/core/bonds.pyx":255
  * 
  *     cpdef double cotacao(self, Curve agio_curve) except *:
  *         if self._du <= 0:             # <<<<<<<<<<<<<<
@@ -26931,7 +27133,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_3LFT_cotacao(struct __pyx_obj_10
   if (__pyx_t_7) {
 
 
-    /* "bz_pricing/core/bonds.pyx":233
+    /* "bz_pricing/core/bonds.pyx":256
  *     cpdef double cotacao(self, Curve agio_curve) except *:
  *         if self._du <= 0:
  *             return 100.0             # <<<<<<<<<<<<<<
@@ -26944,7 +27146,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_3LFT_cotacao(struct __pyx_obj_10
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/bonds.pyx":232
+    /* "bz_pricing/core/bonds.pyx":255
  * 
  *     cpdef double cotacao(self, Curve agio_curve) except *:
  *         if self._du <= 0:             # <<<<<<<<<<<<<<
@@ -26953,17 +27155,17 @@ static double __pyx_f_10bz_pricing_4core_5bonds_3LFT_cotacao(struct __pyx_obj_10
 */
   }
 
-  /* "bz_pricing/core/bonds.pyx":235
+  /* "bz_pricing/core/bonds.pyx":258
  *             return 100.0
  * 
  *         cdef double rate = agio_curve.get_rate(self._du)             # <<<<<<<<<<<<<<
  *         cdef double discount_factor = trunc(pow(1.0 + rate, self._du / 252.0) * 100000000000000.0) / 100000000000000.0
  *         cdef double cot = 100.0 / discount_factor
 */
-  __pyx_t_6 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_agio_curve->__pyx_vtab)->get_rate(__pyx_v_agio_curve, __pyx_v_self->_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 235, __pyx_L1_error)
+  __pyx_t_6 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_agio_curve->__pyx_vtab)->get_rate(__pyx_v_agio_curve, __pyx_v_self->_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 258, __pyx_L1_error)
   __pyx_v_rate = __pyx_t_6;
 
-  /* "bz_pricing/core/bonds.pyx":236
+  /* "bz_pricing/core/bonds.pyx":259
  * 
  *         cdef double rate = agio_curve.get_rate(self._du)
  *         cdef double discount_factor = trunc(pow(1.0 + rate, self._du / 252.0) * 100000000000000.0) / 100000000000000.0             # <<<<<<<<<<<<<<
@@ -26972,7 +27174,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_3LFT_cotacao(struct __pyx_obj_10
 */
   __pyx_v_discount_factor = (trunc((pow((1.0 + __pyx_v_rate), (((double)__pyx_v_self->_du) / 252.0)) * 100000000000000.0)) / 100000000000000.0);
 
-  /* "bz_pricing/core/bonds.pyx":237
+  /* "bz_pricing/core/bonds.pyx":260
  *         cdef double rate = agio_curve.get_rate(self._du)
  *         cdef double discount_factor = trunc(pow(1.0 + rate, self._du / 252.0) * 100000000000000.0) / 100000000000000.0
  *         cdef double cot = 100.0 / discount_factor             # <<<<<<<<<<<<<<
@@ -26981,7 +27183,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_3LFT_cotacao(struct __pyx_obj_10
 */
   __pyx_v_cot = (100.0 / __pyx_v_discount_factor);
 
-  /* "bz_pricing/core/bonds.pyx":238
+  /* "bz_pricing/core/bonds.pyx":261
  *         cdef double discount_factor = trunc(pow(1.0 + rate, self._du / 252.0) * 100000000000000.0) / 100000000000000.0
  *         cdef double cot = 100.0 / discount_factor
  *         return trunc(cot * 10000.0) / 10000.0             # <<<<<<<<<<<<<<
@@ -26994,7 +27196,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_3LFT_cotacao(struct __pyx_obj_10
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/bonds.pyx":231
+  /* "bz_pricing/core/bonds.pyx":254
  *         self._du = du
  * 
  *     cpdef double cotacao(self, Curve agio_curve) except *:             # <<<<<<<<<<<<<<
@@ -27058,32 +27260,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_agio_curve,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 231, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 254, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 231, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 254, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "cotacao", 0) < (0)) __PYX_ERR(0, 231, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "cotacao", 0) < (0)) __PYX_ERR(0, 254, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("cotacao", 1, 1, 1, i); __PYX_ERR(0, 231, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("cotacao", 1, 1, 1, i); __PYX_ERR(0, 254, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 231, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 254, __pyx_L3_error)
     }
     __pyx_v_agio_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("cotacao", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 231, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("cotacao", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 254, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -27094,7 +27296,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_agio_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "agio_curve", 0))) __PYX_ERR(0, 231, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_agio_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "agio_curve", 0))) __PYX_ERR(0, 254, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_5bonds_3LFT_2cotacao(((struct __pyx_obj_10bz_pricing_4core_5bonds_LFT *)__pyx_v_self), __pyx_v_agio_curve);
 
   /* function exit code */
@@ -27123,8 +27325,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_3LFT_2cotacao(struct __pyx_o
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("cotacao", 0);
-  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_3LFT_cotacao(__pyx_v_self, __pyx_v_agio_curve, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 231, __pyx_L1_error)
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 231, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_3LFT_cotacao(__pyx_v_self, __pyx_v_agio_curve, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 254, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
   {
@@ -27149,7 +27351,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_3LFT_2cotacao(struct __pyx_o
   return __pyx_r;
 }
 
-/* "bz_pricing/core/bonds.pyx":240
+/* "bz_pricing/core/bonds.pyx":263
  *         return trunc(cot * 10000.0) / 10000.0
  * 
  *     cpdef double present_value(self, Curve agio_curve, double vna=0.0, Curve selic_curve=None) except *:             # <<<<<<<<<<<<<<
@@ -27210,13 +27412,13 @@ double __pyx_f_10bz_pricing_4core_5bonds_3LFT_present_value(struct __pyx_obj_10b
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_present_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 240, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_present_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 263, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_5bonds_3LFT_5present_value)) {
         __pyx_t_3 = NULL;
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; 
-        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 240, __pyx_L1_error)
+        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 263, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __pyx_t_6 = 1;
         #if CYTHON_UNPACK_METHODS
@@ -27236,10 +27438,10 @@ double __pyx_f_10bz_pricing_4core_5bonds_3LFT_present_value(struct __pyx_obj_10b
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 240, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 263, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_7 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 240, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 263, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_7;
@@ -27260,17 +27462,17 @@ double __pyx_f_10bz_pricing_4core_5bonds_3LFT_present_value(struct __pyx_obj_10b
     #endif
   }
 
-  /* "bz_pricing/core/bonds.pyx":241
+  /* "bz_pricing/core/bonds.pyx":264
  * 
  *     cpdef double present_value(self, Curve agio_curve, double vna=0.0, Curve selic_curve=None) except *:
  *         cdef double cot = self.cotacao(agio_curve)             # <<<<<<<<<<<<<<
  *         cdef double selic_rate = 0.0
  *         cdef double selic_factor = 1.0
 */
-  __pyx_t_7 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_LFT *)__pyx_v_self->__pyx_base.__pyx_vtab)->cotacao(__pyx_v_self, __pyx_v_agio_curve, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 241, __pyx_L1_error)
+  __pyx_t_7 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_LFT *)__pyx_v_self->__pyx_base.__pyx_vtab)->cotacao(__pyx_v_self, __pyx_v_agio_curve, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 264, __pyx_L1_error)
   __pyx_v_cot = __pyx_t_7;
 
-  /* "bz_pricing/core/bonds.pyx":242
+  /* "bz_pricing/core/bonds.pyx":265
  *     cpdef double present_value(self, Curve agio_curve, double vna=0.0, Curve selic_curve=None) except *:
  *         cdef double cot = self.cotacao(agio_curve)
  *         cdef double selic_rate = 0.0             # <<<<<<<<<<<<<<
@@ -27279,7 +27481,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_3LFT_present_value(struct __pyx_obj_10b
 */
   __pyx_v_selic_rate = 0.0;
 
-  /* "bz_pricing/core/bonds.pyx":243
+  /* "bz_pricing/core/bonds.pyx":266
  *         cdef double cot = self.cotacao(agio_curve)
  *         cdef double selic_rate = 0.0
  *         cdef double selic_factor = 1.0             # <<<<<<<<<<<<<<
@@ -27288,7 +27490,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_3LFT_present_value(struct __pyx_obj_10b
 */
   __pyx_v_selic_factor = 1.0;
 
-  /* "bz_pricing/core/bonds.pyx":245
+  /* "bz_pricing/core/bonds.pyx":268
  *         cdef double selic_factor = 1.0
  * 
  *         if vna <= 0.0 and selic_curve is not None:             # <<<<<<<<<<<<<<
@@ -27313,17 +27515,17 @@ double __pyx_f_10bz_pricing_4core_5bonds_3LFT_present_value(struct __pyx_obj_10b
   if (__pyx_t_8) {
 
 
-    /* "bz_pricing/core/bonds.pyx":246
+    /* "bz_pricing/core/bonds.pyx":269
  * 
  *         if vna <= 0.0 and selic_curve is not None:
  *             selic_rate = selic_curve.get_rate(self._du)             # <<<<<<<<<<<<<<
  *             selic_factor = trunc(pow(1.0 + selic_rate, self._du / 252.0) * 100000000000000.0) / 100000000000000.0
  *             vna = trunc((1000.0 * selic_factor) * 1000000.0) / 1000000.0
 */
-    __pyx_t_7 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_selic_curve->__pyx_vtab)->get_rate(__pyx_v_selic_curve, __pyx_v_self->_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 246, __pyx_L1_error)
+    __pyx_t_7 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_selic_curve->__pyx_vtab)->get_rate(__pyx_v_selic_curve, __pyx_v_self->_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 269, __pyx_L1_error)
     __pyx_v_selic_rate = __pyx_t_7;
 
-    /* "bz_pricing/core/bonds.pyx":247
+    /* "bz_pricing/core/bonds.pyx":270
  *         if vna <= 0.0 and selic_curve is not None:
  *             selic_rate = selic_curve.get_rate(self._du)
  *             selic_factor = trunc(pow(1.0 + selic_rate, self._du / 252.0) * 100000000000000.0) / 100000000000000.0             # <<<<<<<<<<<<<<
@@ -27332,7 +27534,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_3LFT_present_value(struct __pyx_obj_10b
 */
     __pyx_v_selic_factor = (trunc((pow((1.0 + __pyx_v_selic_rate), (((double)__pyx_v_self->_du) / 252.0)) * 100000000000000.0)) / 100000000000000.0);
 
-    /* "bz_pricing/core/bonds.pyx":248
+    /* "bz_pricing/core/bonds.pyx":271
  *             selic_rate = selic_curve.get_rate(self._du)
  *             selic_factor = trunc(pow(1.0 + selic_rate, self._du / 252.0) * 100000000000000.0) / 100000000000000.0
  *             vna = trunc((1000.0 * selic_factor) * 1000000.0) / 1000000.0             # <<<<<<<<<<<<<<
@@ -27341,7 +27543,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_3LFT_present_value(struct __pyx_obj_10b
 */
     __pyx_v_vna = (trunc(((1000.0 * __pyx_v_selic_factor) * 1000000.0)) / 1000000.0);
 
-    /* "bz_pricing/core/bonds.pyx":245
+    /* "bz_pricing/core/bonds.pyx":268
  *         cdef double selic_factor = 1.0
  * 
  *         if vna <= 0.0 and selic_curve is not None:             # <<<<<<<<<<<<<<
@@ -27350,7 +27552,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_3LFT_present_value(struct __pyx_obj_10b
 */
   }
 
-  /* "bz_pricing/core/bonds.pyx":250
+  /* "bz_pricing/core/bonds.pyx":273
  *             vna = trunc((1000.0 * selic_factor) * 1000000.0) / 1000000.0
  * 
  *         return trunc((vna * (cot / 100.0)) * 1000000.0) / 1000000.0             # <<<<<<<<<<<<<<
@@ -27363,7 +27565,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_3LFT_present_value(struct __pyx_obj_10b
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/bonds.pyx":240
+  /* "bz_pricing/core/bonds.pyx":263
  *         return trunc(cot * 10000.0) / 10000.0
  * 
  *     cpdef double present_value(self, Curve agio_curve, double vna=0.0, Curve selic_curve=None) except *:             # <<<<<<<<<<<<<<
@@ -27431,43 +27633,43 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_agio_curve,&__pyx_mstate_global->__pyx_n_u_vna,&__pyx_mstate_global->__pyx_n_u_selic_curve,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 240, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 263, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 240, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 263, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 240, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 263, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 240, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 263, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "present_value", 0) < (0)) __PYX_ERR(0, 240, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "present_value", 0) < (0)) __PYX_ERR(0, 263, __pyx_L3_error)
       if (!values[2]) values[2] = __Pyx_NewRef((PyObject *)((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)Py_None));
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("present_value", 0, 1, 3, i); __PYX_ERR(0, 240, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("present_value", 0, 1, 3, i); __PYX_ERR(0, 263, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 240, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 263, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 240, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 263, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 240, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 263, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
@@ -27475,7 +27677,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
     }
     __pyx_v_agio_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
     if (values[1]) {
-      __pyx_v_vna = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 240, __pyx_L3_error)
+      __pyx_v_vna = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 263, __pyx_L3_error)
     } else {
       __pyx_v_vna = ((double)0.0);
     }
@@ -27483,7 +27685,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("present_value", 0, 1, 3, __pyx_nargs); __PYX_ERR(0, 240, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("present_value", 0, 1, 3, __pyx_nargs); __PYX_ERR(0, 263, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -27494,8 +27696,8 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_agio_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "agio_curve", 0))) __PYX_ERR(0, 240, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_selic_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "selic_curve", 0))) __PYX_ERR(0, 240, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_agio_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "agio_curve", 0))) __PYX_ERR(0, 263, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_selic_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "selic_curve", 0))) __PYX_ERR(0, 263, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_5bonds_3LFT_4present_value(((struct __pyx_obj_10bz_pricing_4core_5bonds_LFT *)__pyx_v_self), __pyx_v_agio_curve, __pyx_v_vna, __pyx_v_selic_curve);
 
   /* function exit code */
@@ -27529,8 +27731,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_3LFT_4present_value(struct _
   __pyx_t_2.__pyx_n = 2;
   __pyx_t_2.vna = __pyx_v_vna;
   __pyx_t_2.selic_curve = __pyx_v_selic_curve;
-  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_5bonds_LFT->present_value(__pyx_v_self, __pyx_v_agio_curve, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 240, __pyx_L1_error)
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 240, __pyx_L1_error)
+  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_5bonds_LFT->present_value(__pyx_v_self, __pyx_v_agio_curve, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 263, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 263, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
   {
@@ -27559,7 +27761,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_3LFT_present_value__pyx_wrap_1(struct _
   return __pyx_f_10bz_pricing_4core_5bonds_3LFT_present_value(__pyx_v_self, __pyx_v_agio_curve, __pyx_skip_dispatch, NULL);
 }
 
-/* "bz_pricing/core/bonds.pyx":252
+/* "bz_pricing/core/bonds.pyx":275
  *         return trunc((vna * (cot / 100.0)) * 1000000.0) / 1000000.0
  * 
  *     cpdef double duration(self, Curve agio_curve) except *:             # <<<<<<<<<<<<<<
@@ -27603,7 +27805,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_3LFT_duration(struct __pyx_obj_1
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_duration); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 252, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_duration); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 275, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_5bonds_3LFT_7duration)) {
         __pyx_t_3 = NULL;
@@ -27626,10 +27828,10 @@ static double __pyx_f_10bz_pricing_4core_5bonds_3LFT_duration(struct __pyx_obj_1
           __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 252, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 275, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_6 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 252, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 275, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_6;
@@ -27650,7 +27852,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_3LFT_duration(struct __pyx_obj_1
     #endif
   }
 
-  /* "bz_pricing/core/bonds.pyx":253
+  /* "bz_pricing/core/bonds.pyx":276
  * 
  *     cpdef double duration(self, Curve agio_curve) except *:
  *         return <double>self._du             # <<<<<<<<<<<<<<
@@ -27663,7 +27865,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_3LFT_duration(struct __pyx_obj_1
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/bonds.pyx":252
+  /* "bz_pricing/core/bonds.pyx":275
  *         return trunc((vna * (cot / 100.0)) * 1000000.0) / 1000000.0
  * 
  *     cpdef double duration(self, Curve agio_curve) except *:             # <<<<<<<<<<<<<<
@@ -27724,32 +27926,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_agio_curve,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 252, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 275, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 252, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 275, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "duration", 0) < (0)) __PYX_ERR(0, 252, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "duration", 0) < (0)) __PYX_ERR(0, 275, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("duration", 1, 1, 1, i); __PYX_ERR(0, 252, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("duration", 1, 1, 1, i); __PYX_ERR(0, 275, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 252, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 275, __pyx_L3_error)
     }
     __pyx_v_agio_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("duration", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 252, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("duration", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 275, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -27760,7 +27962,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_agio_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "agio_curve", 0))) __PYX_ERR(0, 252, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_agio_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "agio_curve", 0))) __PYX_ERR(0, 275, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_5bonds_3LFT_6duration(((struct __pyx_obj_10bz_pricing_4core_5bonds_LFT *)__pyx_v_self), __pyx_v_agio_curve);
 
   /* function exit code */
@@ -27789,8 +27991,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_3LFT_6duration(struct __pyx_
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("duration", 0);
-  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_3LFT_duration(__pyx_v_self, __pyx_v_agio_curve, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 252, __pyx_L1_error)
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 252, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_3LFT_duration(__pyx_v_self, __pyx_v_agio_curve, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 275, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
   {
@@ -27815,7 +28017,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_3LFT_6duration(struct __pyx_
   return __pyx_r;
 }
 
-/* "bz_pricing/core/bonds.pyx":255
+/* "bz_pricing/core/bonds.pyx":278
  *         return <double>self._du
  * 
  *     cpdef double dv01(self, Curve agio_curve, double vna) except *:             # <<<<<<<<<<<<<<
@@ -27864,13 +28066,13 @@ static double __pyx_f_10bz_pricing_4core_5bonds_3LFT_dv01(struct __pyx_obj_10bz_
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_dv01); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 255, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_dv01); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 278, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_5bonds_3LFT_9dv01)) {
         __pyx_t_3 = NULL;
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; 
-        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 255, __pyx_L1_error)
+        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 278, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __pyx_t_6 = 1;
         #if CYTHON_UNPACK_METHODS
@@ -27890,10 +28092,10 @@ static double __pyx_f_10bz_pricing_4core_5bonds_3LFT_dv01(struct __pyx_obj_10bz_
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 255, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 278, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_7 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 255, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 278, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_7;
@@ -27914,17 +28116,17 @@ static double __pyx_f_10bz_pricing_4core_5bonds_3LFT_dv01(struct __pyx_obj_10bz_
     #endif
   }
 
-  /* "bz_pricing/core/bonds.pyx":256
+  /* "bz_pricing/core/bonds.pyx":279
  * 
  *     cpdef double dv01(self, Curve agio_curve, double vna) except *:
  *         cdef double rate = agio_curve.get_rate(self._du)             # <<<<<<<<<<<<<<
  *         cdef double pu = self.present_value(agio_curve, vna)
  *         cdef double mod_dur = (self._du / 252.0) / (1.0 + rate)
 */
-  __pyx_t_7 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_agio_curve->__pyx_vtab)->get_rate(__pyx_v_agio_curve, __pyx_v_self->_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 256, __pyx_L1_error)
+  __pyx_t_7 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_agio_curve->__pyx_vtab)->get_rate(__pyx_v_agio_curve, __pyx_v_self->_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 279, __pyx_L1_error)
   __pyx_v_rate = __pyx_t_7;
 
-  /* "bz_pricing/core/bonds.pyx":257
+  /* "bz_pricing/core/bonds.pyx":280
  *     cpdef double dv01(self, Curve agio_curve, double vna) except *:
  *         cdef double rate = agio_curve.get_rate(self._du)
  *         cdef double pu = self.present_value(agio_curve, vna)             # <<<<<<<<<<<<<<
@@ -27933,10 +28135,10 @@ static double __pyx_f_10bz_pricing_4core_5bonds_3LFT_dv01(struct __pyx_obj_10bz_
 */
   __pyx_t_8.__pyx_n = 1;
   __pyx_t_8.vna = __pyx_v_vna;
-  __pyx_t_7 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_LFT *)__pyx_v_self->__pyx_base.__pyx_vtab)->present_value(__pyx_v_self, __pyx_v_agio_curve, 0, &__pyx_t_8); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 257, __pyx_L1_error)
+  __pyx_t_7 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_LFT *)__pyx_v_self->__pyx_base.__pyx_vtab)->present_value(__pyx_v_self, __pyx_v_agio_curve, 0, &__pyx_t_8); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 280, __pyx_L1_error)
   __pyx_v_pu = __pyx_t_7;
 
-  /* "bz_pricing/core/bonds.pyx":258
+  /* "bz_pricing/core/bonds.pyx":281
  *         cdef double rate = agio_curve.get_rate(self._du)
  *         cdef double pu = self.present_value(agio_curve, vna)
  *         cdef double mod_dur = (self._du / 252.0) / (1.0 + rate)             # <<<<<<<<<<<<<<
@@ -27945,7 +28147,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_3LFT_dv01(struct __pyx_obj_10bz_
 */
   __pyx_v_mod_dur = ((((double)__pyx_v_self->_du) / 252.0) / (1.0 + __pyx_v_rate));
 
-  /* "bz_pricing/core/bonds.pyx":259
+  /* "bz_pricing/core/bonds.pyx":282
  *         cdef double pu = self.present_value(agio_curve, vna)
  *         cdef double mod_dur = (self._du / 252.0) / (1.0 + rate)
  *         return mod_dur * pu * 0.0001             # <<<<<<<<<<<<<<
@@ -27958,7 +28160,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_3LFT_dv01(struct __pyx_obj_10bz_
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/bonds.pyx":255
+  /* "bz_pricing/core/bonds.pyx":278
  *         return <double>self._du
  * 
  *     cpdef double dv01(self, Curve agio_curve, double vna) except *:             # <<<<<<<<<<<<<<
@@ -28024,39 +28226,39 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_agio_curve,&__pyx_mstate_global->__pyx_n_u_vna,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 255, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 278, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 255, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 278, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 255, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 278, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "dv01", 0) < (0)) __PYX_ERR(0, 255, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "dv01", 0) < (0)) __PYX_ERR(0, 278, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 2; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("dv01", 1, 2, 2, i); __PYX_ERR(0, 255, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("dv01", 1, 2, 2, i); __PYX_ERR(0, 278, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 255, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 278, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 255, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 278, __pyx_L3_error)
     }
     __pyx_v_agio_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
-    __pyx_v_vna = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 255, __pyx_L3_error)
+    __pyx_v_vna = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 278, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("dv01", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 255, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("dv01", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 278, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -28067,7 +28269,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_agio_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "agio_curve", 0))) __PYX_ERR(0, 255, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_agio_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "agio_curve", 0))) __PYX_ERR(0, 278, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_5bonds_3LFT_8dv01(((struct __pyx_obj_10bz_pricing_4core_5bonds_LFT *)__pyx_v_self), __pyx_v_agio_curve, __pyx_v_vna);
 
   /* function exit code */
@@ -28097,8 +28299,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_3LFT_8dv01(struct __pyx_obj_
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("dv01", 0);
-  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_3LFT_dv01(__pyx_v_self, __pyx_v_agio_curve, __pyx_v_vna, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 255, __pyx_L1_error)
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 255, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_3LFT_dv01(__pyx_v_self, __pyx_v_agio_curve, __pyx_v_vna, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 278, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 278, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
   {
@@ -28123,7 +28325,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_3LFT_8dv01(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "bz_pricing/core/bonds.pyx":261
+/* "bz_pricing/core/bonds.pyx":284
  *         return mod_dur * pu * 0.0001
  * 
  *     cpdef list cashflow_details(self, Curve agio_curve, double vna=0.0):             # <<<<<<<<<<<<<<
@@ -28181,13 +28383,13 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_3LFT_cashflow_details(struct __pyx_o
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_cashflow_details); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 261, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_cashflow_details); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 284, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_5bonds_3LFT_11cashflow_details)) {
         __pyx_t_3 = NULL;
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; 
-        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 261, __pyx_L1_error)
+        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 284, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __pyx_t_6 = 1;
         #if CYTHON_UNPACK_METHODS
@@ -28207,10 +28409,10 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_3LFT_cashflow_details(struct __pyx_o
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 261, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 284, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        if (!(likely(PyList_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None) || __Pyx_RaiseUnexpectedTypeError("list", __pyx_t_2))) __PYX_ERR(0, 261, __pyx_L1_error)
+        if (!(likely(PyList_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None) || __Pyx_RaiseUnexpectedTypeError("list", __pyx_t_2))) __PYX_ERR(0, 284, __pyx_L1_error)
         {
           PyObject *__pyx_temp;
           {
@@ -28236,17 +28438,17 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_3LFT_cashflow_details(struct __pyx_o
     #endif
   }
 
-  /* "bz_pricing/core/bonds.pyx":262
+  /* "bz_pricing/core/bonds.pyx":285
  * 
  *     cpdef list cashflow_details(self, Curve agio_curve, double vna=0.0):
  *         cdef double rate = agio_curve.get_rate(self._du)             # <<<<<<<<<<<<<<
  *         cdef double discount_factor = trunc(pow(1.0 + rate, self._du / 252.0) * 100000000000000.0) / 100000000000000.0
  *         cdef double cot = trunc((100.0 / discount_factor) * 10000.0) / 10000.0
 */
-  __pyx_t_7 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_agio_curve->__pyx_vtab)->get_rate(__pyx_v_agio_curve, __pyx_v_self->_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 262, __pyx_L1_error)
+  __pyx_t_7 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_agio_curve->__pyx_vtab)->get_rate(__pyx_v_agio_curve, __pyx_v_self->_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 285, __pyx_L1_error)
   __pyx_v_rate = __pyx_t_7;
 
-  /* "bz_pricing/core/bonds.pyx":263
+  /* "bz_pricing/core/bonds.pyx":286
  *     cpdef list cashflow_details(self, Curve agio_curve, double vna=0.0):
  *         cdef double rate = agio_curve.get_rate(self._du)
  *         cdef double discount_factor = trunc(pow(1.0 + rate, self._du / 252.0) * 100000000000000.0) / 100000000000000.0             # <<<<<<<<<<<<<<
@@ -28255,7 +28457,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_3LFT_cashflow_details(struct __pyx_o
 */
   __pyx_v_discount_factor = (trunc((pow((1.0 + __pyx_v_rate), (((double)__pyx_v_self->_du) / 252.0)) * 100000000000000.0)) / 100000000000000.0);
 
-  /* "bz_pricing/core/bonds.pyx":264
+  /* "bz_pricing/core/bonds.pyx":287
  *         cdef double rate = agio_curve.get_rate(self._du)
  *         cdef double discount_factor = trunc(pow(1.0 + rate, self._du / 252.0) * 100000000000000.0) / 100000000000000.0
  *         cdef double cot = trunc((100.0 / discount_factor) * 10000.0) / 10000.0             # <<<<<<<<<<<<<<
@@ -28264,7 +28466,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_3LFT_cashflow_details(struct __pyx_o
 */
   __pyx_v_cot = (trunc(((100.0 / __pyx_v_discount_factor) * 10000.0)) / 10000.0);
 
-  /* "bz_pricing/core/bonds.pyx":265
+  /* "bz_pricing/core/bonds.pyx":288
  *         cdef double discount_factor = trunc(pow(1.0 + rate, self._du / 252.0) * 100000000000000.0) / 100000000000000.0
  *         cdef double cot = trunc((100.0 / discount_factor) * 10000.0) / 10000.0
  *         cdef double pu = 0.0             # <<<<<<<<<<<<<<
@@ -28273,7 +28475,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_3LFT_cashflow_details(struct __pyx_o
 */
   __pyx_v_pu = 0.0;
 
-  /* "bz_pricing/core/bonds.pyx":266
+  /* "bz_pricing/core/bonds.pyx":289
  *         cdef double cot = trunc((100.0 / discount_factor) * 10000.0) / 10000.0
  *         cdef double pu = 0.0
  *         if vna > 0.0:             # <<<<<<<<<<<<<<
@@ -28285,7 +28487,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_3LFT_cashflow_details(struct __pyx_o
   if (__pyx_t_8) {
 
 
-    /* "bz_pricing/core/bonds.pyx":267
+    /* "bz_pricing/core/bonds.pyx":290
  *         cdef double pu = 0.0
  *         if vna > 0.0:
  *             pu = trunc((vna * (cot / 100.0)) * 1000000.0) / 1000000.0             # <<<<<<<<<<<<<<
@@ -28294,7 +28496,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_3LFT_cashflow_details(struct __pyx_o
 */
     __pyx_v_pu = (trunc(((__pyx_v_vna * (__pyx_v_cot / 100.0)) * 1000000.0)) / 1000000.0);
 
-    /* "bz_pricing/core/bonds.pyx":266
+    /* "bz_pricing/core/bonds.pyx":289
  *         cdef double cot = trunc((100.0 / discount_factor) * 10000.0) / 10000.0
  *         cdef double pu = 0.0
  *         if vna > 0.0:             # <<<<<<<<<<<<<<
@@ -28303,52 +28505,52 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_3LFT_cashflow_details(struct __pyx_o
 */
   }
 
-  /* "bz_pricing/core/bonds.pyx":268
+  /* "bz_pricing/core/bonds.pyx":291
  *         if vna > 0.0:
  *             pu = trunc((vna * (cot / 100.0)) * 1000000.0) / 1000000.0
  *         return [(self._du, 100.0, rate, discount_factor, cot, vna, pu)]             # <<<<<<<<<<<<<<
  * 
  * cdef class NTNB(Bond):
 */
-  __pyx_t_1 = __Pyx_PyLong_From_int(__pyx_v_self->_du); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 268, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyLong_From_int(__pyx_v_self->_du); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 291, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_rate); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 268, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_rate); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 291, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_discount_factor); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 268, __pyx_L1_error)
+  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_discount_factor); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 291, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = PyFloat_FromDouble(__pyx_v_cot); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 268, __pyx_L1_error)
+  __pyx_t_5 = PyFloat_FromDouble(__pyx_v_cot); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 291, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 268, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 291, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_9 = PyFloat_FromDouble(__pyx_v_pu); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 268, __pyx_L1_error)
+  __pyx_t_9 = PyFloat_FromDouble(__pyx_v_pu); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 291, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  __pyx_t_10 = PyTuple_New(7); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 268, __pyx_L1_error)
+  __pyx_t_10 = PyTuple_New(7); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 291, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
   __Pyx_GIVEREF(__pyx_t_1);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_t_1) != (0)) __PYX_ERR(0, 268, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_t_1) != (0)) __PYX_ERR(0, 291, __pyx_L1_error);
   __Pyx_INCREF(__pyx_mstate_global->__pyx_float_100_0);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_float_100_0);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 1, __pyx_mstate_global->__pyx_float_100_0) != (0)) __PYX_ERR(0, 268, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 1, __pyx_mstate_global->__pyx_float_100_0) != (0)) __PYX_ERR(0, 291, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_2);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 2, __pyx_t_2) != (0)) __PYX_ERR(0, 268, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 2, __pyx_t_2) != (0)) __PYX_ERR(0, 291, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_4);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 3, __pyx_t_4) != (0)) __PYX_ERR(0, 268, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 3, __pyx_t_4) != (0)) __PYX_ERR(0, 291, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_5);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 4, __pyx_t_5) != (0)) __PYX_ERR(0, 268, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 4, __pyx_t_5) != (0)) __PYX_ERR(0, 291, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_3);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 5, __pyx_t_3) != (0)) __PYX_ERR(0, 268, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 5, __pyx_t_3) != (0)) __PYX_ERR(0, 291, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_9);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 6, __pyx_t_9) != (0)) __PYX_ERR(0, 268, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 6, __pyx_t_9) != (0)) __PYX_ERR(0, 291, __pyx_L1_error);
   __pyx_t_1 = 0;
   __pyx_t_2 = 0;
   __pyx_t_4 = 0;
   __pyx_t_5 = 0;
   __pyx_t_3 = 0;
   __pyx_t_9 = 0;
-  __pyx_t_9 = PyList_New(1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 268, __pyx_L1_error)
+  __pyx_t_9 = PyList_New(1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 291, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
   __Pyx_GIVEREF(__pyx_t_10);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_9, 0, __pyx_t_10) != (0)) __PYX_ERR(0, 268, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_9, 0, __pyx_t_10) != (0)) __PYX_ERR(0, 291, __pyx_L1_error);
   __pyx_t_10 = 0;
   {
     PyObject *__pyx_temp;
@@ -28361,7 +28563,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_3LFT_cashflow_details(struct __pyx_o
   __pyx_t_9 = 0;
   goto __pyx_L0;
 
-  /* "bz_pricing/core/bonds.pyx":261
+  /* "bz_pricing/core/bonds.pyx":284
  *         return mod_dur * pu * 0.0001
  * 
  *     cpdef list cashflow_details(self, Curve agio_curve, double vna=0.0):             # <<<<<<<<<<<<<<
@@ -28430,48 +28632,48 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_agio_curve,&__pyx_mstate_global->__pyx_n_u_vna,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 261, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 284, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 261, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 284, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 261, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 284, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "cashflow_details", 0) < (0)) __PYX_ERR(0, 261, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "cashflow_details", 0) < (0)) __PYX_ERR(0, 284, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("cashflow_details", 0, 1, 2, i); __PYX_ERR(0, 261, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("cashflow_details", 0, 1, 2, i); __PYX_ERR(0, 284, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 261, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 284, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 261, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 284, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
     __pyx_v_agio_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
     if (values[1]) {
-      __pyx_v_vna = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 261, __pyx_L3_error)
+      __pyx_v_vna = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 284, __pyx_L3_error)
     } else {
       __pyx_v_vna = ((double)0.0);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("cashflow_details", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 261, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("cashflow_details", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 284, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -28482,7 +28684,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_agio_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "agio_curve", 0))) __PYX_ERR(0, 261, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_agio_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "agio_curve", 0))) __PYX_ERR(0, 284, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_5bonds_3LFT_10cashflow_details(((struct __pyx_obj_10bz_pricing_4core_5bonds_LFT *)__pyx_v_self), __pyx_v_agio_curve, __pyx_v_vna);
 
   /* function exit code */
@@ -28514,7 +28716,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_3LFT_10cashflow_details(stru
   __Pyx_RefNannySetupContext("cashflow_details", 0);
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.vna = __pyx_v_vna;
-  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_5bonds_LFT->cashflow_details(__pyx_v_self, __pyx_v_agio_curve, 1, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 261, __pyx_L1_error)
+  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_5bonds_LFT->cashflow_details(__pyx_v_self, __pyx_v_agio_curve, 1, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 284, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   {
     PyObject *__pyx_temp;
@@ -29007,7 +29209,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_3LFT_14__setstate_cython__(s
   return __pyx_r;
 }
 
-/* "bz_pricing/core/bonds.pyx":275
+/* "bz_pricing/core/bonds.pyx":298
  *     Taxa de cupom editalcia de 6,00% a.a. aplicada sobre o Valor Nominal Atualizado (VNA).
  *     """
  *     def __init__(self, int[:] coupon_dus, double coupon_rate=0.06):             # <<<<<<<<<<<<<<
@@ -29054,48 +29256,48 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_coupon_dus,&__pyx_mstate_global->__pyx_n_u_coupon_rate,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL_TPNEW(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 275, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 298, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 275, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 298, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 275, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 298, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 275, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 298, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 0, 1, 2, i); __PYX_ERR(0, 275, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 0, 1, 2, i); __PYX_ERR(0, 298, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 275, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 298, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 275, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 298, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_coupon_dus = __Pyx_PyObject_to_MemoryviewSlice_ds_int(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_coupon_dus.memview)) __PYX_ERR(0, 275, __pyx_L3_error)
+    __pyx_v_coupon_dus = __Pyx_PyObject_to_MemoryviewSlice_ds_int(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_coupon_dus.memview)) __PYX_ERR(0, 298, __pyx_L3_error)
     if (values[1]) {
-      __pyx_v_coupon_rate = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_coupon_rate == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 275, __pyx_L3_error)
+      __pyx_v_coupon_rate = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_coupon_rate == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 298, __pyx_L3_error)
     } else {
       __pyx_v_coupon_rate = ((double)0.06);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 275, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 298, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -29122,7 +29324,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 static int __pyx_pf_10bz_pricing_4core_5bonds_4NTNB___init__(struct __pyx_obj_10bz_pricing_4core_5bonds_NTNB *__pyx_v_self, __Pyx_memviewslice __pyx_v_coupon_dus, double __pyx_v_coupon_rate) {
   int __pyx_r;
 
-  /* "bz_pricing/core/bonds.pyx":276
+  /* "bz_pricing/core/bonds.pyx":299
  *     """
  *     def __init__(self, int[:] coupon_dus, double coupon_rate=0.06):
  *         self._coupon_dus = coupon_dus             # <<<<<<<<<<<<<<
@@ -29133,7 +29335,7 @@ static int __pyx_pf_10bz_pricing_4core_5bonds_4NTNB___init__(struct __pyx_obj_10
   __PYX_INC_MEMVIEW(&__pyx_v_coupon_dus, 1);
   __pyx_v_self->_coupon_dus = __pyx_v_coupon_dus;
 
-  /* "bz_pricing/core/bonds.pyx":277
+  /* "bz_pricing/core/bonds.pyx":300
  *     def __init__(self, int[:] coupon_dus, double coupon_rate=0.06):
  *         self._coupon_dus = coupon_dus
  *         self._n_coupons = coupon_dus.shape[0]             # <<<<<<<<<<<<<<
@@ -29142,7 +29344,7 @@ static int __pyx_pf_10bz_pricing_4core_5bonds_4NTNB___init__(struct __pyx_obj_10
 */
   __pyx_v_self->_n_coupons = (__pyx_v_coupon_dus.shape[0]);
 
-  /* "bz_pricing/core/bonds.pyx":278
+  /* "bz_pricing/core/bonds.pyx":301
  *         self._coupon_dus = coupon_dus
  *         self._n_coupons = coupon_dus.shape[0]
  *         self._coupon_rate = coupon_rate             # <<<<<<<<<<<<<<
@@ -29151,7 +29353,7 @@ static int __pyx_pf_10bz_pricing_4core_5bonds_4NTNB___init__(struct __pyx_obj_10
 */
   __pyx_v_self->_coupon_rate = __pyx_v_coupon_rate;
 
-  /* "bz_pricing/core/bonds.pyx":275
+  /* "bz_pricing/core/bonds.pyx":298
  *     Taxa de cupom editalcia de 6,00% a.a. aplicada sobre o Valor Nominal Atualizado (VNA).
  *     """
  *     def __init__(self, int[:] coupon_dus, double coupon_rate=0.06):             # <<<<<<<<<<<<<<
@@ -29165,7 +29367,7 @@ static int __pyx_pf_10bz_pricing_4core_5bonds_4NTNB___init__(struct __pyx_obj_10
   return __pyx_r;
 }
 
-/* "bz_pricing/core/bonds.pyx":280
+/* "bz_pricing/core/bonds.pyx":303
  *         self._coupon_rate = coupon_rate
  * 
  *     cpdef double cotacao(self, Curve real_curve) except *:             # <<<<<<<<<<<<<<
@@ -29222,7 +29424,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_cotacao(struct __pyx_obj_1
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_cotacao); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 280, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_cotacao); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 303, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_5bonds_4NTNB_3cotacao)) {
         __pyx_t_3 = NULL;
@@ -29245,10 +29447,10 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_cotacao(struct __pyx_obj_1
           __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 280, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 303, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_6 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 280, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 303, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_6;
@@ -29269,7 +29471,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_cotacao(struct __pyx_obj_1
     #endif
   }
 
-  /* "bz_pricing/core/bonds.pyx":281
+  /* "bz_pricing/core/bonds.pyx":304
  * 
  *     cpdef double cotacao(self, Curve real_curve) except *:
  *         cdef double total_cot = 0.0             # <<<<<<<<<<<<<<
@@ -29278,7 +29480,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_cotacao(struct __pyx_obj_1
 */
   __pyx_v_total_cot = 0.0;
 
-  /* "bz_pricing/core/bonds.pyx":284
+  /* "bz_pricing/core/bonds.pyx":307
  *         cdef int i, du
  *         cdef double rate, discount_factor
  *         cdef double coupon_factor = round((pow(1.0 + self._coupon_rate, 0.5) - 1.0) * 100.0 * 1000000.0) / 1000000.0             # <<<<<<<<<<<<<<
@@ -29287,7 +29489,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_cotacao(struct __pyx_obj_1
 */
   __pyx_v_coupon_factor = (round((((pow((1.0 + __pyx_v_self->_coupon_rate), 0.5) - 1.0) * 100.0) * 1000000.0)) / 1000000.0);
 
-  /* "bz_pricing/core/bonds.pyx":287
+  /* "bz_pricing/core/bonds.pyx":310
  *         cdef double fluxo, pv_fluxo
  * 
  *         for i in range(self._n_coupons):             # <<<<<<<<<<<<<<
@@ -29301,18 +29503,18 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_cotacao(struct __pyx_obj_1
   for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_8; __pyx_t_9+=1) {
     __pyx_v_i = __pyx_t_9;
 
-    /* "bz_pricing/core/bonds.pyx":288
+    /* "bz_pricing/core/bonds.pyx":311
  * 
  *         for i in range(self._n_coupons):
  *             du = self._coupon_dus[i]             # <<<<<<<<<<<<<<
  *             if du <= 0:
  *                 continue
 */
-    if (unlikely(!__pyx_v_self->_coupon_dus.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 288, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_coupon_dus.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 311, __pyx_L1_error)}
     __pyx_t_10 = __pyx_v_i;
     __pyx_v_du = (*((int *) ( /* dim=0 */ (__pyx_v_self->_coupon_dus.data + __pyx_t_10 * __pyx_v_self->_coupon_dus.strides[0]) )));
 
-    /* "bz_pricing/core/bonds.pyx":289
+    /* "bz_pricing/core/bonds.pyx":312
  *         for i in range(self._n_coupons):
  *             du = self._coupon_dus[i]
  *             if du <= 0:             # <<<<<<<<<<<<<<
@@ -29324,7 +29526,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_cotacao(struct __pyx_obj_1
     if (__pyx_t_11) {
 
 
-      /* "bz_pricing/core/bonds.pyx":290
+      /* "bz_pricing/core/bonds.pyx":313
  *             du = self._coupon_dus[i]
  *             if du <= 0:
  *                 continue             # <<<<<<<<<<<<<<
@@ -29333,7 +29535,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_cotacao(struct __pyx_obj_1
 */
       goto __pyx_L3_continue;
 
-      /* "bz_pricing/core/bonds.pyx":289
+      /* "bz_pricing/core/bonds.pyx":312
  *         for i in range(self._n_coupons):
  *             du = self._coupon_dus[i]
  *             if du <= 0:             # <<<<<<<<<<<<<<
@@ -29342,17 +29544,17 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_cotacao(struct __pyx_obj_1
 */
     }
 
-    /* "bz_pricing/core/bonds.pyx":292
+    /* "bz_pricing/core/bonds.pyx":315
  *                 continue
  * 
  *             rate = real_curve.get_rate(du)             # <<<<<<<<<<<<<<
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
  * 
 */
-    __pyx_t_6 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_real_curve->__pyx_vtab)->get_rate(__pyx_v_real_curve, __pyx_v_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 292, __pyx_L1_error)
+    __pyx_t_6 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_real_curve->__pyx_vtab)->get_rate(__pyx_v_real_curve, __pyx_v_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 315, __pyx_L1_error)
     __pyx_v_rate = __pyx_t_6;
 
-    /* "bz_pricing/core/bonds.pyx":293
+    /* "bz_pricing/core/bonds.pyx":316
  * 
  *             rate = real_curve.get_rate(du)
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0             # <<<<<<<<<<<<<<
@@ -29361,7 +29563,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_cotacao(struct __pyx_obj_1
 */
     __pyx_v_discount_factor = (trunc((pow((1.0 + __pyx_v_rate), (((double)__pyx_v_du) / 252.0)) * 100000000000000.0)) / 100000000000000.0);
 
-    /* "bz_pricing/core/bonds.pyx":295
+    /* "bz_pricing/core/bonds.pyx":318
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
  * 
  *             if i == self._n_coupons - 1:             # <<<<<<<<<<<<<<
@@ -29373,7 +29575,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_cotacao(struct __pyx_obj_1
     if (__pyx_t_11) {
 
 
-      /* "bz_pricing/core/bonds.pyx":296
+      /* "bz_pricing/core/bonds.pyx":319
  * 
  *             if i == self._n_coupons - 1:
  *                 fluxo = 100.0 + coupon_factor             # <<<<<<<<<<<<<<
@@ -29382,7 +29584,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_cotacao(struct __pyx_obj_1
 */
       __pyx_v_fluxo = (100.0 + __pyx_v_coupon_factor);
 
-      /* "bz_pricing/core/bonds.pyx":295
+      /* "bz_pricing/core/bonds.pyx":318
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
  * 
  *             if i == self._n_coupons - 1:             # <<<<<<<<<<<<<<
@@ -29392,7 +29594,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_cotacao(struct __pyx_obj_1
       goto __pyx_L6;
     }
 
-    /* "bz_pricing/core/bonds.pyx":298
+    /* "bz_pricing/core/bonds.pyx":321
  *                 fluxo = 100.0 + coupon_factor
  *             else:
  *                 fluxo = coupon_factor             # <<<<<<<<<<<<<<
@@ -29404,7 +29606,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_cotacao(struct __pyx_obj_1
     }
     __pyx_L6:;
 
-    /* "bz_pricing/core/bonds.pyx":300
+    /* "bz_pricing/core/bonds.pyx":323
  *                 fluxo = coupon_factor
  * 
  *             pv_fluxo = round((fluxo / discount_factor) * 10000000000.0) / 10000000000.0             # <<<<<<<<<<<<<<
@@ -29413,7 +29615,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_cotacao(struct __pyx_obj_1
 */
     __pyx_v_pv_fluxo = (round(((__pyx_v_fluxo / __pyx_v_discount_factor) * 10000000000.0)) / 10000000000.0);
 
-    /* "bz_pricing/core/bonds.pyx":301
+    /* "bz_pricing/core/bonds.pyx":324
  * 
  *             pv_fluxo = round((fluxo / discount_factor) * 10000000000.0) / 10000000000.0
  *             total_cot += pv_fluxo             # <<<<<<<<<<<<<<
@@ -29425,7 +29627,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_cotacao(struct __pyx_obj_1
   }
 
 
-  /* "bz_pricing/core/bonds.pyx":303
+  /* "bz_pricing/core/bonds.pyx":326
  *             total_cot += pv_fluxo
  * 
  *         return trunc(total_cot * 10000.0) / 10000.0             # <<<<<<<<<<<<<<
@@ -29438,7 +29640,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_cotacao(struct __pyx_obj_1
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/bonds.pyx":280
+  /* "bz_pricing/core/bonds.pyx":303
  *         self._coupon_rate = coupon_rate
  * 
  *     cpdef double cotacao(self, Curve real_curve) except *:             # <<<<<<<<<<<<<<
@@ -29507,32 +29709,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_real_curve,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 280, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 303, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 280, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 303, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "cotacao", 0) < (0)) __PYX_ERR(0, 280, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "cotacao", 0) < (0)) __PYX_ERR(0, 303, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("cotacao", 1, 1, 1, i); __PYX_ERR(0, 280, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("cotacao", 1, 1, 1, i); __PYX_ERR(0, 303, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 280, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 303, __pyx_L3_error)
     }
     __pyx_v_real_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("cotacao", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 280, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("cotacao", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 303, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -29543,7 +29745,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 280, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 303, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_5bonds_4NTNB_2cotacao(((struct __pyx_obj_10bz_pricing_4core_5bonds_NTNB *)__pyx_v_self), __pyx_v_real_curve);
 
   /* function exit code */
@@ -29572,8 +29774,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_4NTNB_2cotacao(struct __pyx_
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("cotacao", 0);
-  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_4NTNB_cotacao(__pyx_v_self, __pyx_v_real_curve, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 280, __pyx_L1_error)
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 280, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_4NTNB_cotacao(__pyx_v_self, __pyx_v_real_curve, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 303, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 303, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
   {
@@ -29598,7 +29800,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_4NTNB_2cotacao(struct __pyx_
   return __pyx_r;
 }
 
-/* "bz_pricing/core/bonds.pyx":305
+/* "bz_pricing/core/bonds.pyx":328
  *         return trunc(total_cot * 10000.0) / 10000.0
  * 
  *     cpdef double present_value(self, Curve real_curve, double vna=0.0, Curve inflation_curve=None, double base_vna=0.0, int du_inflation=0) except *:             # <<<<<<<<<<<<<<
@@ -29669,17 +29871,17 @@ double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_present_value(struct __pyx_obj_10
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_present_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 305, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_present_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 328, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_5bonds_4NTNB_5present_value)) {
         __pyx_t_3 = NULL;
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; 
-        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 305, __pyx_L1_error)
+        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 328, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_base_vna); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 305, __pyx_L1_error)
+        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_base_vna); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 328, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_7 = __Pyx_PyLong_From_int(__pyx_v_du_inflation); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 305, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyLong_From_int(__pyx_v_du_inflation); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 328, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
         __pyx_t_8 = 1;
         #if CYTHON_UNPACK_METHODS
@@ -29701,10 +29903,10 @@ double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_present_value(struct __pyx_obj_10
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 305, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 328, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_9 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_9 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 305, __pyx_L1_error)
+        __pyx_t_9 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_9 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 328, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_9;
@@ -29725,17 +29927,17 @@ double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_present_value(struct __pyx_obj_10
     #endif
   }
 
-  /* "bz_pricing/core/bonds.pyx":306
+  /* "bz_pricing/core/bonds.pyx":329
  * 
  *     cpdef double present_value(self, Curve real_curve, double vna=0.0, Curve inflation_curve=None, double base_vna=0.0, int du_inflation=0) except *:
  *         cdef double cot = self.cotacao(real_curve)             # <<<<<<<<<<<<<<
  *         cdef double ipca_rate = 0.0
  *         cdef double ipca_factor = 1.0
 */
-  __pyx_t_9 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNB *)__pyx_v_self->__pyx_base.__pyx_vtab)->cotacao(__pyx_v_self, __pyx_v_real_curve, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 306, __pyx_L1_error)
+  __pyx_t_9 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNB *)__pyx_v_self->__pyx_base.__pyx_vtab)->cotacao(__pyx_v_self, __pyx_v_real_curve, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 329, __pyx_L1_error)
   __pyx_v_cot = __pyx_t_9;
 
-  /* "bz_pricing/core/bonds.pyx":307
+  /* "bz_pricing/core/bonds.pyx":330
  *     cpdef double present_value(self, Curve real_curve, double vna=0.0, Curve inflation_curve=None, double base_vna=0.0, int du_inflation=0) except *:
  *         cdef double cot = self.cotacao(real_curve)
  *         cdef double ipca_rate = 0.0             # <<<<<<<<<<<<<<
@@ -29744,7 +29946,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_present_value(struct __pyx_obj_10
 */
   __pyx_v_ipca_rate = 0.0;
 
-  /* "bz_pricing/core/bonds.pyx":308
+  /* "bz_pricing/core/bonds.pyx":331
  *         cdef double cot = self.cotacao(real_curve)
  *         cdef double ipca_rate = 0.0
  *         cdef double ipca_factor = 1.0             # <<<<<<<<<<<<<<
@@ -29753,7 +29955,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_present_value(struct __pyx_obj_10
 */
   __pyx_v_ipca_factor = 1.0;
 
-  /* "bz_pricing/core/bonds.pyx":310
+  /* "bz_pricing/core/bonds.pyx":333
  *         cdef double ipca_factor = 1.0
  * 
  *         if vna <= 0.0 and inflation_curve is not None and base_vna > 0.0 and du_inflation > 0:             # <<<<<<<<<<<<<<
@@ -29798,17 +30000,17 @@ double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_present_value(struct __pyx_obj_10
   if (__pyx_t_10) {
 
 
-    /* "bz_pricing/core/bonds.pyx":311
+    /* "bz_pricing/core/bonds.pyx":334
  * 
  *         if vna <= 0.0 and inflation_curve is not None and base_vna > 0.0 and du_inflation > 0:
  *             ipca_rate = inflation_curve.get_rate(du_inflation)             # <<<<<<<<<<<<<<
  *             ipca_factor = trunc(pow(1.0 + ipca_rate, du_inflation / 252.0) * 100000000000000.0) / 100000000000000.0
  *             vna = trunc((base_vna * ipca_factor) * 1000000.0) / 1000000.0
 */
-    __pyx_t_9 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_inflation_curve->__pyx_vtab)->get_rate(__pyx_v_inflation_curve, __pyx_v_du_inflation, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 311, __pyx_L1_error)
+    __pyx_t_9 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_inflation_curve->__pyx_vtab)->get_rate(__pyx_v_inflation_curve, __pyx_v_du_inflation, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 334, __pyx_L1_error)
     __pyx_v_ipca_rate = __pyx_t_9;
 
-    /* "bz_pricing/core/bonds.pyx":312
+    /* "bz_pricing/core/bonds.pyx":335
  *         if vna <= 0.0 and inflation_curve is not None and base_vna > 0.0 and du_inflation > 0:
  *             ipca_rate = inflation_curve.get_rate(du_inflation)
  *             ipca_factor = trunc(pow(1.0 + ipca_rate, du_inflation / 252.0) * 100000000000000.0) / 100000000000000.0             # <<<<<<<<<<<<<<
@@ -29817,7 +30019,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_present_value(struct __pyx_obj_10
 */
     __pyx_v_ipca_factor = (trunc((pow((1.0 + __pyx_v_ipca_rate), (((double)__pyx_v_du_inflation) / 252.0)) * 100000000000000.0)) / 100000000000000.0);
 
-    /* "bz_pricing/core/bonds.pyx":313
+    /* "bz_pricing/core/bonds.pyx":336
  *             ipca_rate = inflation_curve.get_rate(du_inflation)
  *             ipca_factor = trunc(pow(1.0 + ipca_rate, du_inflation / 252.0) * 100000000000000.0) / 100000000000000.0
  *             vna = trunc((base_vna * ipca_factor) * 1000000.0) / 1000000.0             # <<<<<<<<<<<<<<
@@ -29826,7 +30028,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_present_value(struct __pyx_obj_10
 */
     __pyx_v_vna = (trunc(((__pyx_v_base_vna * __pyx_v_ipca_factor) * 1000000.0)) / 1000000.0);
 
-    /* "bz_pricing/core/bonds.pyx":310
+    /* "bz_pricing/core/bonds.pyx":333
  *         cdef double ipca_factor = 1.0
  * 
  *         if vna <= 0.0 and inflation_curve is not None and base_vna > 0.0 and du_inflation > 0:             # <<<<<<<<<<<<<<
@@ -29835,7 +30037,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_present_value(struct __pyx_obj_10
 */
   }
 
-  /* "bz_pricing/core/bonds.pyx":315
+  /* "bz_pricing/core/bonds.pyx":338
  *             vna = trunc((base_vna * ipca_factor) * 1000000.0) / 1000000.0
  * 
  *         return trunc((vna * (cot / 100.0)) * 1000000.0) / 1000000.0             # <<<<<<<<<<<<<<
@@ -29848,7 +30050,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_present_value(struct __pyx_obj_10
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/bonds.pyx":305
+  /* "bz_pricing/core/bonds.pyx":328
  *         return trunc(total_cot * 10000.0) / 10000.0
  * 
  *     cpdef double present_value(self, Curve real_curve, double vna=0.0, Curve inflation_curve=None, double base_vna=0.0, int du_inflation=0) except *:             # <<<<<<<<<<<<<<
@@ -29920,59 +30122,59 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_real_curve,&__pyx_mstate_global->__pyx_n_u_vna,&__pyx_mstate_global->__pyx_n_u_inflation_curve,&__pyx_mstate_global->__pyx_n_u_base_vna,&__pyx_mstate_global->__pyx_n_u_du_inflation,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 305, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 328, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 305, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 328, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 305, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 328, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 305, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 328, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 305, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 328, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 305, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 328, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "present_value", 0) < (0)) __PYX_ERR(0, 305, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "present_value", 0) < (0)) __PYX_ERR(0, 328, __pyx_L3_error)
       if (!values[2]) values[2] = __Pyx_NewRef((PyObject *)((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)Py_None));
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("present_value", 0, 1, 5, i); __PYX_ERR(0, 305, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("present_value", 0, 1, 5, i); __PYX_ERR(0, 328, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 305, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 328, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 305, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 328, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 305, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 328, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 305, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 328, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 305, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 328, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
@@ -29980,25 +30182,25 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
     }
     __pyx_v_real_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
     if (values[1]) {
-      __pyx_v_vna = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 305, __pyx_L3_error)
+      __pyx_v_vna = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 328, __pyx_L3_error)
     } else {
       __pyx_v_vna = ((double)0.0);
     }
     __pyx_v_inflation_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[2]);
     if (values[3]) {
-      __pyx_v_base_vna = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_base_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 305, __pyx_L3_error)
+      __pyx_v_base_vna = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_base_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 328, __pyx_L3_error)
     } else {
       __pyx_v_base_vna = ((double)0.0);
     }
     if (values[4]) {
-      __pyx_v_du_inflation = __Pyx_PyLong_As_int(values[4]); if (unlikely((__pyx_v_du_inflation == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 305, __pyx_L3_error)
+      __pyx_v_du_inflation = __Pyx_PyLong_As_int(values[4]); if (unlikely((__pyx_v_du_inflation == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 328, __pyx_L3_error)
     } else {
       __pyx_v_du_inflation = ((int)0);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("present_value", 0, 1, 5, __pyx_nargs); __PYX_ERR(0, 305, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("present_value", 0, 1, 5, __pyx_nargs); __PYX_ERR(0, 328, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -30009,8 +30211,8 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 305, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_inflation_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "inflation_curve", 0))) __PYX_ERR(0, 305, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 328, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_inflation_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "inflation_curve", 0))) __PYX_ERR(0, 328, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_5bonds_4NTNB_4present_value(((struct __pyx_obj_10bz_pricing_4core_5bonds_NTNB *)__pyx_v_self), __pyx_v_real_curve, __pyx_v_vna, __pyx_v_inflation_curve, __pyx_v_base_vna, __pyx_v_du_inflation);
 
   /* function exit code */
@@ -30048,8 +30250,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_4NTNB_4present_value(struct 
   __pyx_t_2.inflation_curve = __pyx_v_inflation_curve;
   __pyx_t_2.base_vna = __pyx_v_base_vna;
   __pyx_t_2.du_inflation = __pyx_v_du_inflation;
-  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_5bonds_NTNB->present_value(__pyx_v_self, __pyx_v_real_curve, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 305, __pyx_L1_error)
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 305, __pyx_L1_error)
+  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_5bonds_NTNB->present_value(__pyx_v_self, __pyx_v_real_curve, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 328, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 328, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
   {
@@ -30078,7 +30280,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_present_value__pyx_wrap_1(struct 
   return __pyx_f_10bz_pricing_4core_5bonds_4NTNB_present_value(__pyx_v_self, __pyx_v_real_curve, __pyx_skip_dispatch, NULL);
 }
 
-/* "bz_pricing/core/bonds.pyx":317
+/* "bz_pricing/core/bonds.pyx":340
  *         return trunc((vna * (cot / 100.0)) * 1000000.0) / 1000000.0
  * 
  *     cpdef double duration(self, Curve real_curve) except *:             # <<<<<<<<<<<<<<
@@ -30136,7 +30338,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_duration(struct __pyx_obj_
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_duration); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 317, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_duration); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 340, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_5bonds_4NTNB_7duration)) {
         __pyx_t_3 = NULL;
@@ -30159,10 +30361,10 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_duration(struct __pyx_obj_
           __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 317, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 340, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_6 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 317, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 340, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_6;
@@ -30183,7 +30385,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_duration(struct __pyx_obj_
     #endif
   }
 
-  /* "bz_pricing/core/bonds.pyx":318
+  /* "bz_pricing/core/bonds.pyx":341
  * 
  *     cpdef double duration(self, Curve real_curve) except *:
  *         cdef double total_weighted = 0.0             # <<<<<<<<<<<<<<
@@ -30192,7 +30394,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_duration(struct __pyx_obj_
 */
   __pyx_v_total_weighted = 0.0;
 
-  /* "bz_pricing/core/bonds.pyx":319
+  /* "bz_pricing/core/bonds.pyx":342
  *     cpdef double duration(self, Curve real_curve) except *:
  *         cdef double total_weighted = 0.0
  *         cdef double total_cot = 0.0             # <<<<<<<<<<<<<<
@@ -30201,7 +30403,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_duration(struct __pyx_obj_
 */
   __pyx_v_total_cot = 0.0;
 
-  /* "bz_pricing/core/bonds.pyx":322
+  /* "bz_pricing/core/bonds.pyx":345
  *         cdef int i, du
  *         cdef double rate, discount_factor
  *         cdef double coupon_factor = round((pow(1.0 + self._coupon_rate, 0.5) - 1.0) * 100.0 * 1000000.0) / 1000000.0             # <<<<<<<<<<<<<<
@@ -30210,7 +30412,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_duration(struct __pyx_obj_
 */
   __pyx_v_coupon_factor = (round((((pow((1.0 + __pyx_v_self->_coupon_rate), 0.5) - 1.0) * 100.0) * 1000000.0)) / 1000000.0);
 
-  /* "bz_pricing/core/bonds.pyx":325
+  /* "bz_pricing/core/bonds.pyx":348
  *         cdef double fluxo, pv_fluxo
  * 
  *         for i in range(self._n_coupons):             # <<<<<<<<<<<<<<
@@ -30224,18 +30426,18 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_duration(struct __pyx_obj_
   for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_8; __pyx_t_9+=1) {
     __pyx_v_i = __pyx_t_9;
 
-    /* "bz_pricing/core/bonds.pyx":326
+    /* "bz_pricing/core/bonds.pyx":349
  * 
  *         for i in range(self._n_coupons):
  *             du = self._coupon_dus[i]             # <<<<<<<<<<<<<<
  *             if du <= 0:
  *                 continue
 */
-    if (unlikely(!__pyx_v_self->_coupon_dus.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 326, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_coupon_dus.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 349, __pyx_L1_error)}
     __pyx_t_10 = __pyx_v_i;
     __pyx_v_du = (*((int *) ( /* dim=0 */ (__pyx_v_self->_coupon_dus.data + __pyx_t_10 * __pyx_v_self->_coupon_dus.strides[0]) )));
 
-    /* "bz_pricing/core/bonds.pyx":327
+    /* "bz_pricing/core/bonds.pyx":350
  *         for i in range(self._n_coupons):
  *             du = self._coupon_dus[i]
  *             if du <= 0:             # <<<<<<<<<<<<<<
@@ -30247,7 +30449,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_duration(struct __pyx_obj_
     if (__pyx_t_11) {
 
 
-      /* "bz_pricing/core/bonds.pyx":328
+      /* "bz_pricing/core/bonds.pyx":351
  *             du = self._coupon_dus[i]
  *             if du <= 0:
  *                 continue             # <<<<<<<<<<<<<<
@@ -30256,7 +30458,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_duration(struct __pyx_obj_
 */
       goto __pyx_L3_continue;
 
-      /* "bz_pricing/core/bonds.pyx":327
+      /* "bz_pricing/core/bonds.pyx":350
  *         for i in range(self._n_coupons):
  *             du = self._coupon_dus[i]
  *             if du <= 0:             # <<<<<<<<<<<<<<
@@ -30265,17 +30467,17 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_duration(struct __pyx_obj_
 */
     }
 
-    /* "bz_pricing/core/bonds.pyx":330
+    /* "bz_pricing/core/bonds.pyx":353
  *                 continue
  * 
  *             rate = real_curve.get_rate(du)             # <<<<<<<<<<<<<<
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
  * 
 */
-    __pyx_t_6 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_real_curve->__pyx_vtab)->get_rate(__pyx_v_real_curve, __pyx_v_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 330, __pyx_L1_error)
+    __pyx_t_6 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_real_curve->__pyx_vtab)->get_rate(__pyx_v_real_curve, __pyx_v_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 353, __pyx_L1_error)
     __pyx_v_rate = __pyx_t_6;
 
-    /* "bz_pricing/core/bonds.pyx":331
+    /* "bz_pricing/core/bonds.pyx":354
  * 
  *             rate = real_curve.get_rate(du)
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0             # <<<<<<<<<<<<<<
@@ -30284,7 +30486,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_duration(struct __pyx_obj_
 */
     __pyx_v_discount_factor = (trunc((pow((1.0 + __pyx_v_rate), (((double)__pyx_v_du) / 252.0)) * 100000000000000.0)) / 100000000000000.0);
 
-    /* "bz_pricing/core/bonds.pyx":333
+    /* "bz_pricing/core/bonds.pyx":356
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
  * 
  *             if i == self._n_coupons - 1:             # <<<<<<<<<<<<<<
@@ -30296,7 +30498,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_duration(struct __pyx_obj_
     if (__pyx_t_11) {
 
 
-      /* "bz_pricing/core/bonds.pyx":334
+      /* "bz_pricing/core/bonds.pyx":357
  * 
  *             if i == self._n_coupons - 1:
  *                 fluxo = 100.0 + coupon_factor             # <<<<<<<<<<<<<<
@@ -30305,7 +30507,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_duration(struct __pyx_obj_
 */
       __pyx_v_fluxo = (100.0 + __pyx_v_coupon_factor);
 
-      /* "bz_pricing/core/bonds.pyx":333
+      /* "bz_pricing/core/bonds.pyx":356
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
  * 
  *             if i == self._n_coupons - 1:             # <<<<<<<<<<<<<<
@@ -30315,7 +30517,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_duration(struct __pyx_obj_
       goto __pyx_L6;
     }
 
-    /* "bz_pricing/core/bonds.pyx":336
+    /* "bz_pricing/core/bonds.pyx":359
  *                 fluxo = 100.0 + coupon_factor
  *             else:
  *                 fluxo = coupon_factor             # <<<<<<<<<<<<<<
@@ -30327,7 +30529,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_duration(struct __pyx_obj_
     }
     __pyx_L6:;
 
-    /* "bz_pricing/core/bonds.pyx":338
+    /* "bz_pricing/core/bonds.pyx":361
  *                 fluxo = coupon_factor
  * 
  *             pv_fluxo = round((fluxo / discount_factor) * 10000000000.0) / 10000000000.0             # <<<<<<<<<<<<<<
@@ -30336,7 +30538,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_duration(struct __pyx_obj_
 */
     __pyx_v_pv_fluxo = (round(((__pyx_v_fluxo / __pyx_v_discount_factor) * 10000000000.0)) / 10000000000.0);
 
-    /* "bz_pricing/core/bonds.pyx":339
+    /* "bz_pricing/core/bonds.pyx":362
  * 
  *             pv_fluxo = round((fluxo / discount_factor) * 10000000000.0) / 10000000000.0
  *             total_weighted += du * pv_fluxo             # <<<<<<<<<<<<<<
@@ -30345,7 +30547,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_duration(struct __pyx_obj_
 */
     __pyx_v_total_weighted = (__pyx_v_total_weighted + (__pyx_v_du * __pyx_v_pv_fluxo));
 
-    /* "bz_pricing/core/bonds.pyx":340
+    /* "bz_pricing/core/bonds.pyx":363
  *             pv_fluxo = round((fluxo / discount_factor) * 10000000000.0) / 10000000000.0
  *             total_weighted += du * pv_fluxo
  *             total_cot += pv_fluxo             # <<<<<<<<<<<<<<
@@ -30357,7 +30559,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_duration(struct __pyx_obj_
   }
 
 
-  /* "bz_pricing/core/bonds.pyx":342
+  /* "bz_pricing/core/bonds.pyx":365
  *             total_cot += pv_fluxo
  * 
  *         if total_cot <= 0.0:             # <<<<<<<<<<<<<<
@@ -30369,7 +30571,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_duration(struct __pyx_obj_
   if (__pyx_t_11) {
 
 
-    /* "bz_pricing/core/bonds.pyx":343
+    /* "bz_pricing/core/bonds.pyx":366
  * 
  *         if total_cot <= 0.0:
  *             return 0.0             # <<<<<<<<<<<<<<
@@ -30382,7 +30584,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_duration(struct __pyx_obj_
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/bonds.pyx":342
+    /* "bz_pricing/core/bonds.pyx":365
  *             total_cot += pv_fluxo
  * 
  *         if total_cot <= 0.0:             # <<<<<<<<<<<<<<
@@ -30391,7 +30593,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_duration(struct __pyx_obj_
 */
   }
 
-  /* "bz_pricing/core/bonds.pyx":344
+  /* "bz_pricing/core/bonds.pyx":367
  *         if total_cot <= 0.0:
  *             return 0.0
  *         return total_weighted / total_cot             # <<<<<<<<<<<<<<
@@ -30404,7 +30606,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_duration(struct __pyx_obj_
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/bonds.pyx":317
+  /* "bz_pricing/core/bonds.pyx":340
  *         return trunc((vna * (cot / 100.0)) * 1000000.0) / 1000000.0
  * 
  *     cpdef double duration(self, Curve real_curve) except *:             # <<<<<<<<<<<<<<
@@ -30474,32 +30676,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_real_curve,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 317, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 340, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 317, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 340, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "duration", 0) < (0)) __PYX_ERR(0, 317, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "duration", 0) < (0)) __PYX_ERR(0, 340, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("duration", 1, 1, 1, i); __PYX_ERR(0, 317, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("duration", 1, 1, 1, i); __PYX_ERR(0, 340, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 317, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 340, __pyx_L3_error)
     }
     __pyx_v_real_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("duration", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 317, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("duration", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 340, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -30510,7 +30712,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 317, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 340, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_5bonds_4NTNB_6duration(((struct __pyx_obj_10bz_pricing_4core_5bonds_NTNB *)__pyx_v_self), __pyx_v_real_curve);
 
   /* function exit code */
@@ -30539,8 +30741,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_4NTNB_6duration(struct __pyx
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("duration", 0);
-  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_4NTNB_duration(__pyx_v_self, __pyx_v_real_curve, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 317, __pyx_L1_error)
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 317, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_4NTNB_duration(__pyx_v_self, __pyx_v_real_curve, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 340, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 340, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
   {
@@ -30565,12 +30767,12 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_4NTNB_6duration(struct __pyx
   return __pyx_r;
 }
 
-/* "bz_pricing/core/bonds.pyx":346
+/* "bz_pricing/core/bonds.pyx":369
  *         return total_weighted / total_cot
  * 
  *     cpdef double modified_duration(self, Curve real_curve) except *:             # <<<<<<<<<<<<<<
- *         cdef double dur_du = self.duration(real_curve)
- *         cdef int last_du = self._coupon_dus[self._n_coupons - 1]
+ *         cdef double total_weighted = 0.0
+ *         cdef double total_cot = 0.0
 */
 
 static PyObject *__pyx_pw_10bz_pricing_4core_5bonds_4NTNB_9modified_duration(PyObject *__pyx_v_self, 
@@ -30581,9 +30783,15 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_modified_duration(struct __pyx_obj_10bz_pricing_4core_5bonds_NTNB *__pyx_v_self, struct __pyx_obj_10bz_pricing_4core_6curves_Curve *__pyx_v_real_curve, int __pyx_skip_dispatch) {
-  double __pyx_v_dur_du;
-  int __pyx_v_last_du;
-  double __pyx_v_last_rate;
+  double __pyx_v_total_weighted;
+  double __pyx_v_total_cot;
+  int __pyx_v_i;
+  int __pyx_v_du;
+  double __pyx_v_rate;
+  double __pyx_v_discount_factor;
+  double __pyx_v_fluxo;
+  double __pyx_v_pv_fluxo;
+  double __pyx_v_coupon_factor;
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -30592,7 +30800,11 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_modified_duration(struct _
   PyObject *__pyx_t_4 = NULL;
   size_t __pyx_t_5;
   double __pyx_t_6;
-  Py_ssize_t __pyx_t_7;
+  int __pyx_t_7;
+  int __pyx_t_8;
+  int __pyx_t_9;
+  Py_ssize_t __pyx_t_10;
+  int __pyx_t_11;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -30613,7 +30825,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_modified_duration(struct _
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_modified_duration); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 346, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_modified_duration); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 369, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_5bonds_4NTNB_9modified_duration)) {
         __pyx_t_3 = NULL;
@@ -30636,10 +30848,10 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_modified_duration(struct _
           __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 346, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 369, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_6 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 346, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 369, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_6;
@@ -30660,56 +30872,233 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_modified_duration(struct _
     #endif
   }
 
-  /* "bz_pricing/core/bonds.pyx":347
+  /* "bz_pricing/core/bonds.pyx":370
  * 
  *     cpdef double modified_duration(self, Curve real_curve) except *:
- *         cdef double dur_du = self.duration(real_curve)             # <<<<<<<<<<<<<<
- *         cdef int last_du = self._coupon_dus[self._n_coupons - 1]
- *         cdef double last_rate = real_curve.get_rate(last_du)
+ *         cdef double total_weighted = 0.0             # <<<<<<<<<<<<<<
+ *         cdef double total_cot = 0.0
+ *         cdef int i, du
 */
-  __pyx_t_6 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNB *)__pyx_v_self->__pyx_base.__pyx_vtab)->duration(__pyx_v_self, __pyx_v_real_curve, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 347, __pyx_L1_error)
-  __pyx_v_dur_du = __pyx_t_6;
+  __pyx_v_total_weighted = 0.0;
 
-  /* "bz_pricing/core/bonds.pyx":348
+  /* "bz_pricing/core/bonds.pyx":371
  *     cpdef double modified_duration(self, Curve real_curve) except *:
- *         cdef double dur_du = self.duration(real_curve)
- *         cdef int last_du = self._coupon_dus[self._n_coupons - 1]             # <<<<<<<<<<<<<<
- *         cdef double last_rate = real_curve.get_rate(last_du)
- *         return (dur_du / 252.0) / (1.0 + last_rate)
+ *         cdef double total_weighted = 0.0
+ *         cdef double total_cot = 0.0             # <<<<<<<<<<<<<<
+ *         cdef int i, du
+ *         cdef double rate, discount_factor, fluxo, pv_fluxo
 */
-  if (unlikely(!__pyx_v_self->_coupon_dus.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 348, __pyx_L1_error)}
-  __pyx_t_7 = (__pyx_v_self->_n_coupons - 1);
-  __pyx_v_last_du = (*((int *) ( /* dim=0 */ (__pyx_v_self->_coupon_dus.data + __pyx_t_7 * __pyx_v_self->_coupon_dus.strides[0]) )));
+  __pyx_v_total_cot = 0.0;
 
-  /* "bz_pricing/core/bonds.pyx":349
- *         cdef double dur_du = self.duration(real_curve)
- *         cdef int last_du = self._coupon_dus[self._n_coupons - 1]
- *         cdef double last_rate = real_curve.get_rate(last_du)             # <<<<<<<<<<<<<<
- *         return (dur_du / 252.0) / (1.0 + last_rate)
+  /* "bz_pricing/core/bonds.pyx":374
+ *         cdef int i, du
+ *         cdef double rate, discount_factor, fluxo, pv_fluxo
+ *         cdef double coupon_factor = round((pow(1.0 + self._coupon_rate, 0.5) - 1.0) * 100.0 * 1000000.0) / 1000000.0             # <<<<<<<<<<<<<<
+ * 
+ *         for i in range(self._n_coupons):
+*/
+  __pyx_v_coupon_factor = (round((((pow((1.0 + __pyx_v_self->_coupon_rate), 0.5) - 1.0) * 100.0) * 1000000.0)) / 1000000.0);
+
+  /* "bz_pricing/core/bonds.pyx":376
+ *         cdef double coupon_factor = round((pow(1.0 + self._coupon_rate, 0.5) - 1.0) * 100.0 * 1000000.0) / 1000000.0
+ * 
+ *         for i in range(self._n_coupons):             # <<<<<<<<<<<<<<
+ *             du = self._coupon_dus[i]
+ *             if du <= 0:
+*/
+
+  __pyx_t_7 = __pyx_v_self->_n_coupons;
+  __pyx_t_8 = __pyx_t_7;
+
+  for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_8; __pyx_t_9+=1) {
+    __pyx_v_i = __pyx_t_9;
+
+    /* "bz_pricing/core/bonds.pyx":377
+ * 
+ *         for i in range(self._n_coupons):
+ *             du = self._coupon_dus[i]             # <<<<<<<<<<<<<<
+ *             if du <= 0:
+ *                 continue
+*/
+    if (unlikely(!__pyx_v_self->_coupon_dus.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 377, __pyx_L1_error)}
+    __pyx_t_10 = __pyx_v_i;
+    __pyx_v_du = (*((int *) ( /* dim=0 */ (__pyx_v_self->_coupon_dus.data + __pyx_t_10 * __pyx_v_self->_coupon_dus.strides[0]) )));
+
+    /* "bz_pricing/core/bonds.pyx":378
+ *         for i in range(self._n_coupons):
+ *             du = self._coupon_dus[i]
+ *             if du <= 0:             # <<<<<<<<<<<<<<
+ *                 continue
  * 
 */
-  __pyx_t_6 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_real_curve->__pyx_vtab)->get_rate(__pyx_v_real_curve, __pyx_v_last_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 349, __pyx_L1_error)
-  __pyx_v_last_rate = __pyx_t_6;
+    __pyx_t_11 = (__pyx_v_du <= 0);
 
-  /* "bz_pricing/core/bonds.pyx":350
- *         cdef int last_du = self._coupon_dus[self._n_coupons - 1]
- *         cdef double last_rate = real_curve.get_rate(last_du)
- *         return (dur_du / 252.0) / (1.0 + last_rate)             # <<<<<<<<<<<<<<
+    if (__pyx_t_11) {
+
+
+      /* "bz_pricing/core/bonds.pyx":379
+ *             du = self._coupon_dus[i]
+ *             if du <= 0:
+ *                 continue             # <<<<<<<<<<<<<<
+ * 
+ *             rate = real_curve.get_rate(du)
+*/
+      goto __pyx_L3_continue;
+
+      /* "bz_pricing/core/bonds.pyx":378
+ *         for i in range(self._n_coupons):
+ *             du = self._coupon_dus[i]
+ *             if du <= 0:             # <<<<<<<<<<<<<<
+ *                 continue
+ * 
+*/
+    }
+
+    /* "bz_pricing/core/bonds.pyx":381
+ *                 continue
+ * 
+ *             rate = real_curve.get_rate(du)             # <<<<<<<<<<<<<<
+ *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
+ * 
+*/
+    __pyx_t_6 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_real_curve->__pyx_vtab)->get_rate(__pyx_v_real_curve, __pyx_v_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 381, __pyx_L1_error)
+    __pyx_v_rate = __pyx_t_6;
+
+    /* "bz_pricing/core/bonds.pyx":382
+ * 
+ *             rate = real_curve.get_rate(du)
+ *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0             # <<<<<<<<<<<<<<
+ * 
+ *             if i == self._n_coupons - 1:
+*/
+    __pyx_v_discount_factor = (trunc((pow((1.0 + __pyx_v_rate), (((double)__pyx_v_du) / 252.0)) * 100000000000000.0)) / 100000000000000.0);
+
+    /* "bz_pricing/core/bonds.pyx":384
+ *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
+ * 
+ *             if i == self._n_coupons - 1:             # <<<<<<<<<<<<<<
+ *                 fluxo = 100.0 + coupon_factor
+ *             else:
+*/
+    __pyx_t_11 = (__pyx_v_i == (__pyx_v_self->_n_coupons - 1));
+
+    if (__pyx_t_11) {
+
+
+      /* "bz_pricing/core/bonds.pyx":385
+ * 
+ *             if i == self._n_coupons - 1:
+ *                 fluxo = 100.0 + coupon_factor             # <<<<<<<<<<<<<<
+ *             else:
+ *                 fluxo = coupon_factor
+*/
+      __pyx_v_fluxo = (100.0 + __pyx_v_coupon_factor);
+
+      /* "bz_pricing/core/bonds.pyx":384
+ *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
+ * 
+ *             if i == self._n_coupons - 1:             # <<<<<<<<<<<<<<
+ *                 fluxo = 100.0 + coupon_factor
+ *             else:
+*/
+      goto __pyx_L6;
+    }
+
+    /* "bz_pricing/core/bonds.pyx":387
+ *                 fluxo = 100.0 + coupon_factor
+ *             else:
+ *                 fluxo = coupon_factor             # <<<<<<<<<<<<<<
+ * 
+ *             pv_fluxo = round((fluxo / discount_factor) * 10000000000.0) / 10000000000.0
+*/
+    /*else*/ {
+      __pyx_v_fluxo = __pyx_v_coupon_factor;
+    }
+    __pyx_L6:;
+
+    /* "bz_pricing/core/bonds.pyx":389
+ *                 fluxo = coupon_factor
+ * 
+ *             pv_fluxo = round((fluxo / discount_factor) * 10000000000.0) / 10000000000.0             # <<<<<<<<<<<<<<
+ *             total_weighted += ((du / 252.0) / (1.0 + rate)) * pv_fluxo
+ *             total_cot += pv_fluxo
+*/
+    __pyx_v_pv_fluxo = (round(((__pyx_v_fluxo / __pyx_v_discount_factor) * 10000000000.0)) / 10000000000.0);
+
+    /* "bz_pricing/core/bonds.pyx":390
+ * 
+ *             pv_fluxo = round((fluxo / discount_factor) * 10000000000.0) / 10000000000.0
+ *             total_weighted += ((du / 252.0) / (1.0 + rate)) * pv_fluxo             # <<<<<<<<<<<<<<
+ *             total_cot += pv_fluxo
+ * 
+*/
+    __pyx_v_total_weighted = (__pyx_v_total_weighted + (((((double)__pyx_v_du) / 252.0) / (1.0 + __pyx_v_rate)) * __pyx_v_pv_fluxo));
+
+    /* "bz_pricing/core/bonds.pyx":391
+ *             pv_fluxo = round((fluxo / discount_factor) * 10000000000.0) / 10000000000.0
+ *             total_weighted += ((du / 252.0) / (1.0 + rate)) * pv_fluxo
+ *             total_cot += pv_fluxo             # <<<<<<<<<<<<<<
+ * 
+ *         if total_cot <= 0.0:
+*/
+    __pyx_v_total_cot = (__pyx_v_total_cot + __pyx_v_pv_fluxo);
+    __pyx_L3_continue:;
+  }
+
+
+  /* "bz_pricing/core/bonds.pyx":393
+ *             total_cot += pv_fluxo
+ * 
+ *         if total_cot <= 0.0:             # <<<<<<<<<<<<<<
+ *             return 0.0
+ *         return total_weighted / total_cot
+*/
+  __pyx_t_11 = (__pyx_v_total_cot <= 0.0);
+
+  if (__pyx_t_11) {
+
+
+    /* "bz_pricing/core/bonds.pyx":394
+ * 
+ *         if total_cot <= 0.0:
+ *             return 0.0             # <<<<<<<<<<<<<<
+ *         return total_weighted / total_cot
+ * 
+*/
+    {
+
+      __pyx_r = 0.0;
+    }
+    goto __pyx_L0;
+
+    /* "bz_pricing/core/bonds.pyx":393
+ *             total_cot += pv_fluxo
+ * 
+ *         if total_cot <= 0.0:             # <<<<<<<<<<<<<<
+ *             return 0.0
+ *         return total_weighted / total_cot
+*/
+  }
+
+  /* "bz_pricing/core/bonds.pyx":395
+ *         if total_cot <= 0.0:
+ *             return 0.0
+ *         return total_weighted / total_cot             # <<<<<<<<<<<<<<
  * 
  *     cpdef double dv01(self, Curve real_curve, double vna=0.0) except *:
 */
   {
 
-    __pyx_r = ((__pyx_v_dur_du / 252.0) / (1.0 + __pyx_v_last_rate));
+    __pyx_r = (__pyx_v_total_weighted / __pyx_v_total_cot);
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/bonds.pyx":346
+  /* "bz_pricing/core/bonds.pyx":369
  *         return total_weighted / total_cot
  * 
  *     cpdef double modified_duration(self, Curve real_curve) except *:             # <<<<<<<<<<<<<<
- *         cdef double dur_du = self.duration(real_curve)
- *         cdef int last_du = self._coupon_dus[self._n_coupons - 1]
+ *         cdef double total_weighted = 0.0
+ *         cdef double total_cot = 0.0
 */
 
   /* function exit code */
@@ -30721,6 +31110,12 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_modified_duration(struct _
   __Pyx_AddTraceback("bz_pricing.core.bonds.NTNB.modified_duration", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
+
+
+
+
+
+
 
 
 
@@ -30768,32 +31163,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_real_curve,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 346, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 369, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 346, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 369, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "modified_duration", 0) < (0)) __PYX_ERR(0, 346, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "modified_duration", 0) < (0)) __PYX_ERR(0, 369, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("modified_duration", 1, 1, 1, i); __PYX_ERR(0, 346, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("modified_duration", 1, 1, 1, i); __PYX_ERR(0, 369, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 346, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 369, __pyx_L3_error)
     }
     __pyx_v_real_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("modified_duration", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 346, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("modified_duration", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 369, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -30804,7 +31199,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 346, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 369, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_5bonds_4NTNB_8modified_duration(((struct __pyx_obj_10bz_pricing_4core_5bonds_NTNB *)__pyx_v_self), __pyx_v_real_curve);
 
   /* function exit code */
@@ -30833,8 +31228,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_4NTNB_8modified_duration(str
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("modified_duration", 0);
-  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_4NTNB_modified_duration(__pyx_v_self, __pyx_v_real_curve, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 346, __pyx_L1_error)
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 346, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_4NTNB_modified_duration(__pyx_v_self, __pyx_v_real_curve, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 369, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 369, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
   {
@@ -30859,8 +31254,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_4NTNB_8modified_duration(str
   return __pyx_r;
 }
 
-/* "bz_pricing/core/bonds.pyx":352
- *         return (dur_du / 252.0) / (1.0 + last_rate)
+/* "bz_pricing/core/bonds.pyx":397
+ *         return total_weighted / total_cot
  * 
  *     cpdef double dv01(self, Curve real_curve, double vna=0.0) except *:             # <<<<<<<<<<<<<<
  *         cdef double mod_dur = self.modified_duration(real_curve)
@@ -30913,13 +31308,13 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_dv01(struct __pyx_obj_10bz
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_dv01); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 352, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_dv01); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 397, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_5bonds_4NTNB_11dv01)) {
         __pyx_t_3 = NULL;
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; 
-        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 352, __pyx_L1_error)
+        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 397, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __pyx_t_6 = 1;
         #if CYTHON_UNPACK_METHODS
@@ -30939,10 +31334,10 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_dv01(struct __pyx_obj_10bz
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 352, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 397, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_7 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 352, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 397, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_7;
@@ -30963,17 +31358,17 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_dv01(struct __pyx_obj_10bz
     #endif
   }
 
-  /* "bz_pricing/core/bonds.pyx":353
+  /* "bz_pricing/core/bonds.pyx":398
  * 
  *     cpdef double dv01(self, Curve real_curve, double vna=0.0) except *:
  *         cdef double mod_dur = self.modified_duration(real_curve)             # <<<<<<<<<<<<<<
  *         cdef double pu = self.present_value(real_curve, vna=vna)
  *         return mod_dur * pu * 0.0001
 */
-  __pyx_t_7 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNB *)__pyx_v_self->__pyx_base.__pyx_vtab)->modified_duration(__pyx_v_self, __pyx_v_real_curve, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 353, __pyx_L1_error)
+  __pyx_t_7 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNB *)__pyx_v_self->__pyx_base.__pyx_vtab)->modified_duration(__pyx_v_self, __pyx_v_real_curve, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 398, __pyx_L1_error)
   __pyx_v_mod_dur = __pyx_t_7;
 
-  /* "bz_pricing/core/bonds.pyx":354
+  /* "bz_pricing/core/bonds.pyx":399
  *     cpdef double dv01(self, Curve real_curve, double vna=0.0) except *:
  *         cdef double mod_dur = self.modified_duration(real_curve)
  *         cdef double pu = self.present_value(real_curve, vna=vna)             # <<<<<<<<<<<<<<
@@ -30982,10 +31377,10 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_dv01(struct __pyx_obj_10bz
 */
   __pyx_t_8.__pyx_n = 1;
   __pyx_t_8.vna = __pyx_v_vna;
-  __pyx_t_7 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNB *)__pyx_v_self->__pyx_base.__pyx_vtab)->present_value(__pyx_v_self, __pyx_v_real_curve, 0, &__pyx_t_8); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 354, __pyx_L1_error)
+  __pyx_t_7 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNB *)__pyx_v_self->__pyx_base.__pyx_vtab)->present_value(__pyx_v_self, __pyx_v_real_curve, 0, &__pyx_t_8); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 399, __pyx_L1_error)
   __pyx_v_pu = __pyx_t_7;
 
-  /* "bz_pricing/core/bonds.pyx":355
+  /* "bz_pricing/core/bonds.pyx":400
  *         cdef double mod_dur = self.modified_duration(real_curve)
  *         cdef double pu = self.present_value(real_curve, vna=vna)
  *         return mod_dur * pu * 0.0001             # <<<<<<<<<<<<<<
@@ -30998,8 +31393,8 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNB_dv01(struct __pyx_obj_10bz
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/bonds.pyx":352
- *         return (dur_du / 252.0) / (1.0 + last_rate)
+  /* "bz_pricing/core/bonds.pyx":397
+ *         return total_weighted / total_cot
  * 
  *     cpdef double dv01(self, Curve real_curve, double vna=0.0) except *:             # <<<<<<<<<<<<<<
  *         cdef double mod_dur = self.modified_duration(real_curve)
@@ -31063,48 +31458,48 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_real_curve,&__pyx_mstate_global->__pyx_n_u_vna,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 352, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 397, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 352, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 397, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 352, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 397, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "dv01", 0) < (0)) __PYX_ERR(0, 352, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "dv01", 0) < (0)) __PYX_ERR(0, 397, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("dv01", 0, 1, 2, i); __PYX_ERR(0, 352, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("dv01", 0, 1, 2, i); __PYX_ERR(0, 397, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 352, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 397, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 352, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 397, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
     __pyx_v_real_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
     if (values[1]) {
-      __pyx_v_vna = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 352, __pyx_L3_error)
+      __pyx_v_vna = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 397, __pyx_L3_error)
     } else {
       __pyx_v_vna = ((double)0.0);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("dv01", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 352, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("dv01", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 397, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -31115,7 +31510,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 352, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 397, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_5bonds_4NTNB_10dv01(((struct __pyx_obj_10bz_pricing_4core_5bonds_NTNB *)__pyx_v_self), __pyx_v_real_curve, __pyx_v_vna);
 
   /* function exit code */
@@ -31148,8 +31543,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_4NTNB_10dv01(struct __pyx_ob
   __Pyx_RefNannySetupContext("dv01", 0);
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.vna = __pyx_v_vna;
-  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_5bonds_NTNB->dv01(__pyx_v_self, __pyx_v_real_curve, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 352, __pyx_L1_error)
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 352, __pyx_L1_error)
+  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_5bonds_NTNB->dv01(__pyx_v_self, __pyx_v_real_curve, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 397, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 397, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
   {
@@ -31174,7 +31569,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_4NTNB_10dv01(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "bz_pricing/core/bonds.pyx":357
+/* "bz_pricing/core/bonds.pyx":402
  *         return mod_dur * pu * 0.0001
  * 
  *     cpdef list cashflow_details(self, Curve real_curve, double vna=0.0):             # <<<<<<<<<<<<<<
@@ -31242,13 +31637,13 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNB_cashflow_details(struct __pyx_
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_cashflow_details); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 357, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_cashflow_details); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 402, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_5bonds_4NTNB_13cashflow_details)) {
         __pyx_t_3 = NULL;
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; 
-        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 357, __pyx_L1_error)
+        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 402, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __pyx_t_6 = 1;
         #if CYTHON_UNPACK_METHODS
@@ -31268,10 +31663,10 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNB_cashflow_details(struct __pyx_
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 357, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 402, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        if (!(likely(PyList_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None) || __Pyx_RaiseUnexpectedTypeError("list", __pyx_t_2))) __PYX_ERR(0, 357, __pyx_L1_error)
+        if (!(likely(PyList_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None) || __Pyx_RaiseUnexpectedTypeError("list", __pyx_t_2))) __PYX_ERR(0, 402, __pyx_L1_error)
         {
           PyObject *__pyx_temp;
           {
@@ -31297,19 +31692,19 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNB_cashflow_details(struct __pyx_
     #endif
   }
 
-  /* "bz_pricing/core/bonds.pyx":358
+  /* "bz_pricing/core/bonds.pyx":403
  * 
  *     cpdef list cashflow_details(self, Curve real_curve, double vna=0.0):
  *         cdef list flows = []             # <<<<<<<<<<<<<<
  *         cdef int i, du
  *         cdef double rate, discount_factor
 */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 358, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 403, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_flows = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":361
+  /* "bz_pricing/core/bonds.pyx":406
  *         cdef int i, du
  *         cdef double rate, discount_factor
  *         cdef double coupon_factor = round((pow(1.0 + self._coupon_rate, 0.5) - 1.0) * 100.0 * 1000000.0) / 1000000.0             # <<<<<<<<<<<<<<
@@ -31318,7 +31713,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNB_cashflow_details(struct __pyx_
 */
   __pyx_v_coupon_factor = (round((((pow((1.0 + __pyx_v_self->_coupon_rate), 0.5) - 1.0) * 100.0) * 1000000.0)) / 1000000.0);
 
-  /* "bz_pricing/core/bonds.pyx":364
+  /* "bz_pricing/core/bonds.pyx":409
  *         cdef double fluxo_cot, pv_cot, pv_fin
  * 
  *         for i in range(self._n_coupons):             # <<<<<<<<<<<<<<
@@ -31332,18 +31727,18 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNB_cashflow_details(struct __pyx_
   for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_8; __pyx_t_9+=1) {
     __pyx_v_i = __pyx_t_9;
 
-    /* "bz_pricing/core/bonds.pyx":365
+    /* "bz_pricing/core/bonds.pyx":410
  * 
  *         for i in range(self._n_coupons):
  *             du = self._coupon_dus[i]             # <<<<<<<<<<<<<<
  *             if du <= 0:
  *                 continue
 */
-    if (unlikely(!__pyx_v_self->_coupon_dus.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 365, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_coupon_dus.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 410, __pyx_L1_error)}
     __pyx_t_10 = __pyx_v_i;
     __pyx_v_du = (*((int *) ( /* dim=0 */ (__pyx_v_self->_coupon_dus.data + __pyx_t_10 * __pyx_v_self->_coupon_dus.strides[0]) )));
 
-    /* "bz_pricing/core/bonds.pyx":366
+    /* "bz_pricing/core/bonds.pyx":411
  *         for i in range(self._n_coupons):
  *             du = self._coupon_dus[i]
  *             if du <= 0:             # <<<<<<<<<<<<<<
@@ -31355,7 +31750,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNB_cashflow_details(struct __pyx_
     if (__pyx_t_11) {
 
 
-      /* "bz_pricing/core/bonds.pyx":367
+      /* "bz_pricing/core/bonds.pyx":412
  *             du = self._coupon_dus[i]
  *             if du <= 0:
  *                 continue             # <<<<<<<<<<<<<<
@@ -31364,7 +31759,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNB_cashflow_details(struct __pyx_
 */
       goto __pyx_L3_continue;
 
-      /* "bz_pricing/core/bonds.pyx":366
+      /* "bz_pricing/core/bonds.pyx":411
  *         for i in range(self._n_coupons):
  *             du = self._coupon_dus[i]
  *             if du <= 0:             # <<<<<<<<<<<<<<
@@ -31373,17 +31768,17 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNB_cashflow_details(struct __pyx_
 */
     }
 
-    /* "bz_pricing/core/bonds.pyx":369
+    /* "bz_pricing/core/bonds.pyx":414
  *                 continue
  * 
  *             rate = real_curve.get_rate(du)             # <<<<<<<<<<<<<<
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
  * 
 */
-    __pyx_t_12 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_real_curve->__pyx_vtab)->get_rate(__pyx_v_real_curve, __pyx_v_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 369, __pyx_L1_error)
+    __pyx_t_12 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_real_curve->__pyx_vtab)->get_rate(__pyx_v_real_curve, __pyx_v_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 414, __pyx_L1_error)
     __pyx_v_rate = __pyx_t_12;
 
-    /* "bz_pricing/core/bonds.pyx":370
+    /* "bz_pricing/core/bonds.pyx":415
  * 
  *             rate = real_curve.get_rate(du)
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0             # <<<<<<<<<<<<<<
@@ -31392,7 +31787,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNB_cashflow_details(struct __pyx_
 */
     __pyx_v_discount_factor = (trunc((pow((1.0 + __pyx_v_rate), (((double)__pyx_v_du) / 252.0)) * 100000000000000.0)) / 100000000000000.0);
 
-    /* "bz_pricing/core/bonds.pyx":372
+    /* "bz_pricing/core/bonds.pyx":417
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
  * 
  *             if i == self._n_coupons - 1:             # <<<<<<<<<<<<<<
@@ -31404,7 +31799,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNB_cashflow_details(struct __pyx_
     if (__pyx_t_11) {
 
 
-      /* "bz_pricing/core/bonds.pyx":373
+      /* "bz_pricing/core/bonds.pyx":418
  * 
  *             if i == self._n_coupons - 1:
  *                 fluxo_cot = 100.0 + coupon_factor             # <<<<<<<<<<<<<<
@@ -31413,7 +31808,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNB_cashflow_details(struct __pyx_
 */
       __pyx_v_fluxo_cot = (100.0 + __pyx_v_coupon_factor);
 
-      /* "bz_pricing/core/bonds.pyx":372
+      /* "bz_pricing/core/bonds.pyx":417
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
  * 
  *             if i == self._n_coupons - 1:             # <<<<<<<<<<<<<<
@@ -31423,7 +31818,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNB_cashflow_details(struct __pyx_
       goto __pyx_L6;
     }
 
-    /* "bz_pricing/core/bonds.pyx":375
+    /* "bz_pricing/core/bonds.pyx":420
  *                 fluxo_cot = 100.0 + coupon_factor
  *             else:
  *                 fluxo_cot = coupon_factor             # <<<<<<<<<<<<<<
@@ -31435,7 +31830,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNB_cashflow_details(struct __pyx_
     }
     __pyx_L6:;
 
-    /* "bz_pricing/core/bonds.pyx":377
+    /* "bz_pricing/core/bonds.pyx":422
  *                 fluxo_cot = coupon_factor
  * 
  *             pv_cot = round((fluxo_cot / discount_factor) * 10000000000.0) / 10000000000.0             # <<<<<<<<<<<<<<
@@ -31444,7 +31839,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNB_cashflow_details(struct __pyx_
 */
     __pyx_v_pv_cot = (round(((__pyx_v_fluxo_cot / __pyx_v_discount_factor) * 10000000000.0)) / 10000000000.0);
 
-    /* "bz_pricing/core/bonds.pyx":378
+    /* "bz_pricing/core/bonds.pyx":423
  * 
  *             pv_cot = round((fluxo_cot / discount_factor) * 10000000000.0) / 10000000000.0
  *             pv_fin = 0.0             # <<<<<<<<<<<<<<
@@ -31453,7 +31848,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNB_cashflow_details(struct __pyx_
 */
     __pyx_v_pv_fin = 0.0;
 
-    /* "bz_pricing/core/bonds.pyx":379
+    /* "bz_pricing/core/bonds.pyx":424
  *             pv_cot = round((fluxo_cot / discount_factor) * 10000000000.0) / 10000000000.0
  *             pv_fin = 0.0
  *             if vna > 0.0:             # <<<<<<<<<<<<<<
@@ -31465,7 +31860,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNB_cashflow_details(struct __pyx_
     if (__pyx_t_11) {
 
 
-      /* "bz_pricing/core/bonds.pyx":380
+      /* "bz_pricing/core/bonds.pyx":425
  *             pv_fin = 0.0
  *             if vna > 0.0:
  *                 pv_fin = trunc((vna * (pv_cot / 100.0)) * 1000000.0) / 1000000.0             # <<<<<<<<<<<<<<
@@ -31474,7 +31869,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNB_cashflow_details(struct __pyx_
 */
       __pyx_v_pv_fin = (trunc(((__pyx_v_vna * (__pyx_v_pv_cot / 100.0)) * 1000000.0)) / 1000000.0);
 
-      /* "bz_pricing/core/bonds.pyx":379
+      /* "bz_pricing/core/bonds.pyx":424
  *             pv_cot = round((fluxo_cot / discount_factor) * 10000000000.0) / 10000000000.0
  *             pv_fin = 0.0
  *             if vna > 0.0:             # <<<<<<<<<<<<<<
@@ -31483,53 +31878,53 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNB_cashflow_details(struct __pyx_
 */
     }
 
-    /* "bz_pricing/core/bonds.pyx":382
+    /* "bz_pricing/core/bonds.pyx":427
  *                 pv_fin = trunc((vna * (pv_cot / 100.0)) * 1000000.0) / 1000000.0
  * 
  *             flows.append((du, fluxo_cot, rate, discount_factor, pv_cot, pv_fin))             # <<<<<<<<<<<<<<
  * 
  *         return flows
 */
-    __pyx_t_1 = __Pyx_PyLong_From_int(__pyx_v_du); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 382, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyLong_From_int(__pyx_v_du); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 427, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = PyFloat_FromDouble(__pyx_v_fluxo_cot); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 382, __pyx_L1_error)
+    __pyx_t_2 = PyFloat_FromDouble(__pyx_v_fluxo_cot); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 427, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_rate); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 382, __pyx_L1_error)
+    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_rate); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 427, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = PyFloat_FromDouble(__pyx_v_discount_factor); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 382, __pyx_L1_error)
+    __pyx_t_5 = PyFloat_FromDouble(__pyx_v_discount_factor); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 427, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_3 = PyFloat_FromDouble(__pyx_v_pv_cot); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 382, __pyx_L1_error)
+    __pyx_t_3 = PyFloat_FromDouble(__pyx_v_pv_cot); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 427, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_13 = PyFloat_FromDouble(__pyx_v_pv_fin); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 382, __pyx_L1_error)
+    __pyx_t_13 = PyFloat_FromDouble(__pyx_v_pv_fin); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 427, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
-    __pyx_t_14 = PyTuple_New(6); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 382, __pyx_L1_error)
+    __pyx_t_14 = PyTuple_New(6); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 427, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
     __Pyx_GIVEREF(__pyx_t_1);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_1) != (0)) __PYX_ERR(0, 382, __pyx_L1_error);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_1) != (0)) __PYX_ERR(0, 427, __pyx_L1_error);
     __Pyx_GIVEREF(__pyx_t_2);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 1, __pyx_t_2) != (0)) __PYX_ERR(0, 382, __pyx_L1_error);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 1, __pyx_t_2) != (0)) __PYX_ERR(0, 427, __pyx_L1_error);
     __Pyx_GIVEREF(__pyx_t_4);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 2, __pyx_t_4) != (0)) __PYX_ERR(0, 382, __pyx_L1_error);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 2, __pyx_t_4) != (0)) __PYX_ERR(0, 427, __pyx_L1_error);
     __Pyx_GIVEREF(__pyx_t_5);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 3, __pyx_t_5) != (0)) __PYX_ERR(0, 382, __pyx_L1_error);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 3, __pyx_t_5) != (0)) __PYX_ERR(0, 427, __pyx_L1_error);
     __Pyx_GIVEREF(__pyx_t_3);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 4, __pyx_t_3) != (0)) __PYX_ERR(0, 382, __pyx_L1_error);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 4, __pyx_t_3) != (0)) __PYX_ERR(0, 427, __pyx_L1_error);
     __Pyx_GIVEREF(__pyx_t_13);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 5, __pyx_t_13) != (0)) __PYX_ERR(0, 382, __pyx_L1_error);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 5, __pyx_t_13) != (0)) __PYX_ERR(0, 427, __pyx_L1_error);
     __pyx_t_1 = 0;
     __pyx_t_2 = 0;
     __pyx_t_4 = 0;
     __pyx_t_5 = 0;
     __pyx_t_3 = 0;
     __pyx_t_13 = 0;
-    __pyx_t_15 = __Pyx_PyList_Append(__pyx_v_flows, __pyx_t_14); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 382, __pyx_L1_error)
+    __pyx_t_15 = __Pyx_PyList_Append(__pyx_v_flows, __pyx_t_14); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 427, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
 
     __pyx_L3_continue:;
   }
 
 
-  /* "bz_pricing/core/bonds.pyx":384
+  /* "bz_pricing/core/bonds.pyx":429
  *             flows.append((du, fluxo_cot, rate, discount_factor, pv_cot, pv_fin))
  * 
  *         return flows             # <<<<<<<<<<<<<<
@@ -31547,7 +31942,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNB_cashflow_details(struct __pyx_
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/bonds.pyx":357
+  /* "bz_pricing/core/bonds.pyx":402
  *         return mod_dur * pu * 0.0001
  * 
  *     cpdef list cashflow_details(self, Curve real_curve, double vna=0.0):             # <<<<<<<<<<<<<<
@@ -31621,48 +32016,48 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_real_curve,&__pyx_mstate_global->__pyx_n_u_vna,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 357, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 402, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 357, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 402, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 357, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 402, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "cashflow_details", 0) < (0)) __PYX_ERR(0, 357, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "cashflow_details", 0) < (0)) __PYX_ERR(0, 402, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("cashflow_details", 0, 1, 2, i); __PYX_ERR(0, 357, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("cashflow_details", 0, 1, 2, i); __PYX_ERR(0, 402, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 357, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 402, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 357, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 402, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
     __pyx_v_real_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
     if (values[1]) {
-      __pyx_v_vna = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 357, __pyx_L3_error)
+      __pyx_v_vna = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 402, __pyx_L3_error)
     } else {
       __pyx_v_vna = ((double)0.0);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("cashflow_details", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 357, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("cashflow_details", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 402, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -31673,7 +32068,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 357, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 402, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_5bonds_4NTNB_12cashflow_details(((struct __pyx_obj_10bz_pricing_4core_5bonds_NTNB *)__pyx_v_self), __pyx_v_real_curve, __pyx_v_vna);
 
   /* function exit code */
@@ -31705,7 +32100,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_4NTNB_12cashflow_details(str
   __Pyx_RefNannySetupContext("cashflow_details", 0);
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.vna = __pyx_v_vna;
-  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_5bonds_NTNB->cashflow_details(__pyx_v_self, __pyx_v_real_curve, 1, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 357, __pyx_L1_error)
+  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_5bonds_NTNB->cashflow_details(__pyx_v_self, __pyx_v_real_curve, 1, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 402, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   {
     PyObject *__pyx_temp;
@@ -32213,7 +32608,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_4NTNB_16__setstate_cython__(
   return __pyx_r;
 }
 
-/* "bz_pricing/core/bonds.pyx":390
+/* "bz_pricing/core/bonds.pyx":435
  *     Nota do Tesouro Nacional - Srie B Principal (ttulo indexado ao IPCA sem cupons intermedirios).
  *     """
  *     def __init__(self, int du):             # <<<<<<<<<<<<<<
@@ -32259,32 +32654,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_du,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL_TPNEW(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 390, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 435, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 390, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 435, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 390, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 435, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 1, 1, 1, i); __PYX_ERR(0, 390, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 1, 1, 1, i); __PYX_ERR(0, 435, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 390, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 435, __pyx_L3_error)
     }
-    __pyx_v_du = __Pyx_PyLong_As_int(values[0]); if (unlikely((__pyx_v_du == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 390, __pyx_L3_error)
+    __pyx_v_du = __Pyx_PyLong_As_int(values[0]); if (unlikely((__pyx_v_du == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 435, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 390, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 435, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -32309,7 +32704,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 static int __pyx_pf_10bz_pricing_4core_5bonds_5NTNBP___init__(struct __pyx_obj_10bz_pricing_4core_5bonds_NTNBP *__pyx_v_self, int __pyx_v_du) {
   int __pyx_r;
 
-  /* "bz_pricing/core/bonds.pyx":391
+  /* "bz_pricing/core/bonds.pyx":436
  *     """
  *     def __init__(self, int du):
  *         self._du = du             # <<<<<<<<<<<<<<
@@ -32318,7 +32713,7 @@ static int __pyx_pf_10bz_pricing_4core_5bonds_5NTNBP___init__(struct __pyx_obj_1
 */
   __pyx_v_self->_du = __pyx_v_du;
 
-  /* "bz_pricing/core/bonds.pyx":390
+  /* "bz_pricing/core/bonds.pyx":435
  *     Nota do Tesouro Nacional - Srie B Principal (ttulo indexado ao IPCA sem cupons intermedirios).
  *     """
  *     def __init__(self, int du):             # <<<<<<<<<<<<<<
@@ -32332,7 +32727,7 @@ static int __pyx_pf_10bz_pricing_4core_5bonds_5NTNBP___init__(struct __pyx_obj_1
   return __pyx_r;
 }
 
-/* "bz_pricing/core/bonds.pyx":393
+/* "bz_pricing/core/bonds.pyx":438
  *         self._du = du
  * 
  *     cpdef double cotacao(self, Curve real_curve) except *:             # <<<<<<<<<<<<<<
@@ -32380,7 +32775,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_cotacao(struct __pyx_obj_
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_cotacao); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 393, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_cotacao); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 438, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_5bonds_5NTNBP_3cotacao)) {
         __pyx_t_3 = NULL;
@@ -32403,10 +32798,10 @@ static double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_cotacao(struct __pyx_obj_
           __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 393, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 438, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_6 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 393, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 438, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_6;
@@ -32427,7 +32822,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_cotacao(struct __pyx_obj_
     #endif
   }
 
-  /* "bz_pricing/core/bonds.pyx":394
+  /* "bz_pricing/core/bonds.pyx":439
  * 
  *     cpdef double cotacao(self, Curve real_curve) except *:
  *         if self._du <= 0:             # <<<<<<<<<<<<<<
@@ -32439,7 +32834,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_cotacao(struct __pyx_obj_
   if (__pyx_t_7) {
 
 
-    /* "bz_pricing/core/bonds.pyx":395
+    /* "bz_pricing/core/bonds.pyx":440
  *     cpdef double cotacao(self, Curve real_curve) except *:
  *         if self._du <= 0:
  *             return 100.0             # <<<<<<<<<<<<<<
@@ -32452,7 +32847,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_cotacao(struct __pyx_obj_
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/bonds.pyx":394
+    /* "bz_pricing/core/bonds.pyx":439
  * 
  *     cpdef double cotacao(self, Curve real_curve) except *:
  *         if self._du <= 0:             # <<<<<<<<<<<<<<
@@ -32461,17 +32856,17 @@ static double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_cotacao(struct __pyx_obj_
 */
   }
 
-  /* "bz_pricing/core/bonds.pyx":397
+  /* "bz_pricing/core/bonds.pyx":442
  *             return 100.0
  * 
  *         cdef double rate = real_curve.get_rate(self._du)             # <<<<<<<<<<<<<<
  *         cdef double discount_factor = trunc(pow(1.0 + rate, self._du / 252.0) * 100000000000000.0) / 100000000000000.0
  *         cdef double cot = 100.0 / discount_factor
 */
-  __pyx_t_6 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_real_curve->__pyx_vtab)->get_rate(__pyx_v_real_curve, __pyx_v_self->_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 397, __pyx_L1_error)
+  __pyx_t_6 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_real_curve->__pyx_vtab)->get_rate(__pyx_v_real_curve, __pyx_v_self->_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 442, __pyx_L1_error)
   __pyx_v_rate = __pyx_t_6;
 
-  /* "bz_pricing/core/bonds.pyx":398
+  /* "bz_pricing/core/bonds.pyx":443
  * 
  *         cdef double rate = real_curve.get_rate(self._du)
  *         cdef double discount_factor = trunc(pow(1.0 + rate, self._du / 252.0) * 100000000000000.0) / 100000000000000.0             # <<<<<<<<<<<<<<
@@ -32480,7 +32875,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_cotacao(struct __pyx_obj_
 */
   __pyx_v_discount_factor = (trunc((pow((1.0 + __pyx_v_rate), (((double)__pyx_v_self->_du) / 252.0)) * 100000000000000.0)) / 100000000000000.0);
 
-  /* "bz_pricing/core/bonds.pyx":399
+  /* "bz_pricing/core/bonds.pyx":444
  *         cdef double rate = real_curve.get_rate(self._du)
  *         cdef double discount_factor = trunc(pow(1.0 + rate, self._du / 252.0) * 100000000000000.0) / 100000000000000.0
  *         cdef double cot = 100.0 / discount_factor             # <<<<<<<<<<<<<<
@@ -32489,7 +32884,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_cotacao(struct __pyx_obj_
 */
   __pyx_v_cot = (100.0 / __pyx_v_discount_factor);
 
-  /* "bz_pricing/core/bonds.pyx":400
+  /* "bz_pricing/core/bonds.pyx":445
  *         cdef double discount_factor = trunc(pow(1.0 + rate, self._du / 252.0) * 100000000000000.0) / 100000000000000.0
  *         cdef double cot = 100.0 / discount_factor
  *         return trunc(cot * 10000.0) / 10000.0             # <<<<<<<<<<<<<<
@@ -32502,7 +32897,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_cotacao(struct __pyx_obj_
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/bonds.pyx":393
+  /* "bz_pricing/core/bonds.pyx":438
  *         self._du = du
  * 
  *     cpdef double cotacao(self, Curve real_curve) except *:             # <<<<<<<<<<<<<<
@@ -32566,32 +32961,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_real_curve,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 393, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 438, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 393, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 438, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "cotacao", 0) < (0)) __PYX_ERR(0, 393, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "cotacao", 0) < (0)) __PYX_ERR(0, 438, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("cotacao", 1, 1, 1, i); __PYX_ERR(0, 393, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("cotacao", 1, 1, 1, i); __PYX_ERR(0, 438, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 393, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 438, __pyx_L3_error)
     }
     __pyx_v_real_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("cotacao", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 393, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("cotacao", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 438, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -32602,7 +32997,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 393, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 438, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_5bonds_5NTNBP_2cotacao(((struct __pyx_obj_10bz_pricing_4core_5bonds_NTNBP *)__pyx_v_self), __pyx_v_real_curve);
 
   /* function exit code */
@@ -32631,8 +33026,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_5NTNBP_2cotacao(struct __pyx
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("cotacao", 0);
-  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_cotacao(__pyx_v_self, __pyx_v_real_curve, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 393, __pyx_L1_error)
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 393, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_cotacao(__pyx_v_self, __pyx_v_real_curve, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 438, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 438, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
   {
@@ -32657,7 +33052,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_5NTNBP_2cotacao(struct __pyx
   return __pyx_r;
 }
 
-/* "bz_pricing/core/bonds.pyx":402
+/* "bz_pricing/core/bonds.pyx":447
  *         return trunc(cot * 10000.0) / 10000.0
  * 
  *     cpdef double present_value(self, Curve real_curve, double vna=0.0, Curve inflation_curve=None, double base_vna=0.0, int du_inflation=0) except *:             # <<<<<<<<<<<<<<
@@ -32728,17 +33123,17 @@ double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_present_value(struct __pyx_obj_1
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_present_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 402, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_present_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 447, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_5bonds_5NTNBP_5present_value)) {
         __pyx_t_3 = NULL;
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; 
-        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 402, __pyx_L1_error)
+        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 447, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_base_vna); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 402, __pyx_L1_error)
+        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_base_vna); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 447, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_7 = __Pyx_PyLong_From_int(__pyx_v_du_inflation); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 402, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyLong_From_int(__pyx_v_du_inflation); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 447, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
         __pyx_t_8 = 1;
         #if CYTHON_UNPACK_METHODS
@@ -32760,10 +33155,10 @@ double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_present_value(struct __pyx_obj_1
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 402, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 447, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_9 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_9 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 402, __pyx_L1_error)
+        __pyx_t_9 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_9 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 447, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_9;
@@ -32784,17 +33179,17 @@ double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_present_value(struct __pyx_obj_1
     #endif
   }
 
-  /* "bz_pricing/core/bonds.pyx":403
+  /* "bz_pricing/core/bonds.pyx":448
  * 
  *     cpdef double present_value(self, Curve real_curve, double vna=0.0, Curve inflation_curve=None, double base_vna=0.0, int du_inflation=0) except *:
  *         cdef double cot = self.cotacao(real_curve)             # <<<<<<<<<<<<<<
  *         cdef double ipca_rate = 0.0
  *         cdef double ipca_factor = 1.0
 */
-  __pyx_t_9 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNBP *)__pyx_v_self->__pyx_base.__pyx_vtab)->cotacao(__pyx_v_self, __pyx_v_real_curve, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 403, __pyx_L1_error)
+  __pyx_t_9 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNBP *)__pyx_v_self->__pyx_base.__pyx_vtab)->cotacao(__pyx_v_self, __pyx_v_real_curve, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 448, __pyx_L1_error)
   __pyx_v_cot = __pyx_t_9;
 
-  /* "bz_pricing/core/bonds.pyx":404
+  /* "bz_pricing/core/bonds.pyx":449
  *     cpdef double present_value(self, Curve real_curve, double vna=0.0, Curve inflation_curve=None, double base_vna=0.0, int du_inflation=0) except *:
  *         cdef double cot = self.cotacao(real_curve)
  *         cdef double ipca_rate = 0.0             # <<<<<<<<<<<<<<
@@ -32803,7 +33198,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_present_value(struct __pyx_obj_1
 */
   __pyx_v_ipca_rate = 0.0;
 
-  /* "bz_pricing/core/bonds.pyx":405
+  /* "bz_pricing/core/bonds.pyx":450
  *         cdef double cot = self.cotacao(real_curve)
  *         cdef double ipca_rate = 0.0
  *         cdef double ipca_factor = 1.0             # <<<<<<<<<<<<<<
@@ -32812,7 +33207,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_present_value(struct __pyx_obj_1
 */
   __pyx_v_ipca_factor = 1.0;
 
-  /* "bz_pricing/core/bonds.pyx":407
+  /* "bz_pricing/core/bonds.pyx":452
  *         cdef double ipca_factor = 1.0
  * 
  *         if vna <= 0.0 and inflation_curve is not None and base_vna > 0.0 and du_inflation > 0:             # <<<<<<<<<<<<<<
@@ -32857,17 +33252,17 @@ double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_present_value(struct __pyx_obj_1
   if (__pyx_t_10) {
 
 
-    /* "bz_pricing/core/bonds.pyx":408
+    /* "bz_pricing/core/bonds.pyx":453
  * 
  *         if vna <= 0.0 and inflation_curve is not None and base_vna > 0.0 and du_inflation > 0:
  *             ipca_rate = inflation_curve.get_rate(du_inflation)             # <<<<<<<<<<<<<<
  *             ipca_factor = trunc(pow(1.0 + ipca_rate, du_inflation / 252.0) * 100000000000000.0) / 100000000000000.0
  *             vna = trunc((base_vna * ipca_factor) * 1000000.0) / 1000000.0
 */
-    __pyx_t_9 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_inflation_curve->__pyx_vtab)->get_rate(__pyx_v_inflation_curve, __pyx_v_du_inflation, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 408, __pyx_L1_error)
+    __pyx_t_9 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_inflation_curve->__pyx_vtab)->get_rate(__pyx_v_inflation_curve, __pyx_v_du_inflation, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 453, __pyx_L1_error)
     __pyx_v_ipca_rate = __pyx_t_9;
 
-    /* "bz_pricing/core/bonds.pyx":409
+    /* "bz_pricing/core/bonds.pyx":454
  *         if vna <= 0.0 and inflation_curve is not None and base_vna > 0.0 and du_inflation > 0:
  *             ipca_rate = inflation_curve.get_rate(du_inflation)
  *             ipca_factor = trunc(pow(1.0 + ipca_rate, du_inflation / 252.0) * 100000000000000.0) / 100000000000000.0             # <<<<<<<<<<<<<<
@@ -32876,7 +33271,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_present_value(struct __pyx_obj_1
 */
     __pyx_v_ipca_factor = (trunc((pow((1.0 + __pyx_v_ipca_rate), (((double)__pyx_v_du_inflation) / 252.0)) * 100000000000000.0)) / 100000000000000.0);
 
-    /* "bz_pricing/core/bonds.pyx":410
+    /* "bz_pricing/core/bonds.pyx":455
  *             ipca_rate = inflation_curve.get_rate(du_inflation)
  *             ipca_factor = trunc(pow(1.0 + ipca_rate, du_inflation / 252.0) * 100000000000000.0) / 100000000000000.0
  *             vna = trunc((base_vna * ipca_factor) * 1000000.0) / 1000000.0             # <<<<<<<<<<<<<<
@@ -32885,7 +33280,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_present_value(struct __pyx_obj_1
 */
     __pyx_v_vna = (trunc(((__pyx_v_base_vna * __pyx_v_ipca_factor) * 1000000.0)) / 1000000.0);
 
-    /* "bz_pricing/core/bonds.pyx":407
+    /* "bz_pricing/core/bonds.pyx":452
  *         cdef double ipca_factor = 1.0
  * 
  *         if vna <= 0.0 and inflation_curve is not None and base_vna > 0.0 and du_inflation > 0:             # <<<<<<<<<<<<<<
@@ -32894,7 +33289,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_present_value(struct __pyx_obj_1
 */
   }
 
-  /* "bz_pricing/core/bonds.pyx":412
+  /* "bz_pricing/core/bonds.pyx":457
  *             vna = trunc((base_vna * ipca_factor) * 1000000.0) / 1000000.0
  * 
  *         return trunc((vna * (cot / 100.0)) * 1000000.0) / 1000000.0             # <<<<<<<<<<<<<<
@@ -32907,7 +33302,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_present_value(struct __pyx_obj_1
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/bonds.pyx":402
+  /* "bz_pricing/core/bonds.pyx":447
  *         return trunc(cot * 10000.0) / 10000.0
  * 
  *     cpdef double present_value(self, Curve real_curve, double vna=0.0, Curve inflation_curve=None, double base_vna=0.0, int du_inflation=0) except *:             # <<<<<<<<<<<<<<
@@ -32979,59 +33374,59 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_real_curve,&__pyx_mstate_global->__pyx_n_u_vna,&__pyx_mstate_global->__pyx_n_u_inflation_curve,&__pyx_mstate_global->__pyx_n_u_base_vna,&__pyx_mstate_global->__pyx_n_u_du_inflation,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 402, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 447, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 402, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 447, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 402, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 447, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 402, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 447, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 402, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 447, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 402, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 447, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "present_value", 0) < (0)) __PYX_ERR(0, 402, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "present_value", 0) < (0)) __PYX_ERR(0, 447, __pyx_L3_error)
       if (!values[2]) values[2] = __Pyx_NewRef((PyObject *)((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)Py_None));
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("present_value", 0, 1, 5, i); __PYX_ERR(0, 402, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("present_value", 0, 1, 5, i); __PYX_ERR(0, 447, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 402, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 447, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 402, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 447, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 402, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 447, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 402, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 447, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 402, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 447, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
@@ -33039,25 +33434,25 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
     }
     __pyx_v_real_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
     if (values[1]) {
-      __pyx_v_vna = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 402, __pyx_L3_error)
+      __pyx_v_vna = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 447, __pyx_L3_error)
     } else {
       __pyx_v_vna = ((double)0.0);
     }
     __pyx_v_inflation_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[2]);
     if (values[3]) {
-      __pyx_v_base_vna = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_base_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 402, __pyx_L3_error)
+      __pyx_v_base_vna = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_base_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 447, __pyx_L3_error)
     } else {
       __pyx_v_base_vna = ((double)0.0);
     }
     if (values[4]) {
-      __pyx_v_du_inflation = __Pyx_PyLong_As_int(values[4]); if (unlikely((__pyx_v_du_inflation == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 402, __pyx_L3_error)
+      __pyx_v_du_inflation = __Pyx_PyLong_As_int(values[4]); if (unlikely((__pyx_v_du_inflation == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 447, __pyx_L3_error)
     } else {
       __pyx_v_du_inflation = ((int)0);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("present_value", 0, 1, 5, __pyx_nargs); __PYX_ERR(0, 402, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("present_value", 0, 1, 5, __pyx_nargs); __PYX_ERR(0, 447, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -33068,8 +33463,8 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 402, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_inflation_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "inflation_curve", 0))) __PYX_ERR(0, 402, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 447, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_inflation_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "inflation_curve", 0))) __PYX_ERR(0, 447, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_5bonds_5NTNBP_4present_value(((struct __pyx_obj_10bz_pricing_4core_5bonds_NTNBP *)__pyx_v_self), __pyx_v_real_curve, __pyx_v_vna, __pyx_v_inflation_curve, __pyx_v_base_vna, __pyx_v_du_inflation);
 
   /* function exit code */
@@ -33107,8 +33502,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_5NTNBP_4present_value(struct
   __pyx_t_2.inflation_curve = __pyx_v_inflation_curve;
   __pyx_t_2.base_vna = __pyx_v_base_vna;
   __pyx_t_2.du_inflation = __pyx_v_du_inflation;
-  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_5bonds_NTNBP->present_value(__pyx_v_self, __pyx_v_real_curve, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 402, __pyx_L1_error)
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 402, __pyx_L1_error)
+  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_5bonds_NTNBP->present_value(__pyx_v_self, __pyx_v_real_curve, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 447, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 447, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
   {
@@ -33137,7 +33532,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_present_value__pyx_wrap_1(struct
   return __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_present_value(__pyx_v_self, __pyx_v_real_curve, __pyx_skip_dispatch, NULL);
 }
 
-/* "bz_pricing/core/bonds.pyx":414
+/* "bz_pricing/core/bonds.pyx":459
  *         return trunc((vna * (cot / 100.0)) * 1000000.0) / 1000000.0
  * 
  *     cpdef double duration(self, Curve real_curve) except *:             # <<<<<<<<<<<<<<
@@ -33181,7 +33576,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_duration(struct __pyx_obj
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_duration); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 414, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_duration); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 459, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_5bonds_5NTNBP_7duration)) {
         __pyx_t_3 = NULL;
@@ -33204,10 +33599,10 @@ static double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_duration(struct __pyx_obj
           __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 414, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 459, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_6 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 414, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 459, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_6;
@@ -33228,7 +33623,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_duration(struct __pyx_obj
     #endif
   }
 
-  /* "bz_pricing/core/bonds.pyx":415
+  /* "bz_pricing/core/bonds.pyx":460
  * 
  *     cpdef double duration(self, Curve real_curve) except *:
  *         return <double>self._du             # <<<<<<<<<<<<<<
@@ -33241,7 +33636,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_duration(struct __pyx_obj
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/bonds.pyx":414
+  /* "bz_pricing/core/bonds.pyx":459
  *         return trunc((vna * (cot / 100.0)) * 1000000.0) / 1000000.0
  * 
  *     cpdef double duration(self, Curve real_curve) except *:             # <<<<<<<<<<<<<<
@@ -33302,32 +33697,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_real_curve,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 414, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 459, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 414, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 459, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "duration", 0) < (0)) __PYX_ERR(0, 414, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "duration", 0) < (0)) __PYX_ERR(0, 459, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("duration", 1, 1, 1, i); __PYX_ERR(0, 414, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("duration", 1, 1, 1, i); __PYX_ERR(0, 459, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 414, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 459, __pyx_L3_error)
     }
     __pyx_v_real_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("duration", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 414, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("duration", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 459, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -33338,7 +33733,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 414, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 459, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_5bonds_5NTNBP_6duration(((struct __pyx_obj_10bz_pricing_4core_5bonds_NTNBP *)__pyx_v_self), __pyx_v_real_curve);
 
   /* function exit code */
@@ -33367,8 +33762,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_5NTNBP_6duration(struct __py
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("duration", 0);
-  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_duration(__pyx_v_self, __pyx_v_real_curve, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 414, __pyx_L1_error)
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 414, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_duration(__pyx_v_self, __pyx_v_real_curve, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 459, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 459, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
   {
@@ -33393,7 +33788,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_5NTNBP_6duration(struct __py
   return __pyx_r;
 }
 
-/* "bz_pricing/core/bonds.pyx":417
+/* "bz_pricing/core/bonds.pyx":462
  *         return <double>self._du
  * 
  *     cpdef double modified_duration(self, Curve real_curve) except *:             # <<<<<<<<<<<<<<
@@ -33438,7 +33833,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_modified_duration(struct 
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_modified_duration); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 417, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_modified_duration); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 462, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_5bonds_5NTNBP_9modified_duration)) {
         __pyx_t_3 = NULL;
@@ -33461,10 +33856,10 @@ static double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_modified_duration(struct 
           __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 417, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 462, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_6 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 417, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 462, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_6;
@@ -33485,17 +33880,17 @@ static double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_modified_duration(struct 
     #endif
   }
 
-  /* "bz_pricing/core/bonds.pyx":418
+  /* "bz_pricing/core/bonds.pyx":463
  * 
  *     cpdef double modified_duration(self, Curve real_curve) except *:
  *         cdef double rate = real_curve.get_rate(self._du)             # <<<<<<<<<<<<<<
  *         return (self._du / 252.0) / (1.0 + rate)
  * 
 */
-  __pyx_t_6 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_real_curve->__pyx_vtab)->get_rate(__pyx_v_real_curve, __pyx_v_self->_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 418, __pyx_L1_error)
+  __pyx_t_6 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_real_curve->__pyx_vtab)->get_rate(__pyx_v_real_curve, __pyx_v_self->_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 463, __pyx_L1_error)
   __pyx_v_rate = __pyx_t_6;
 
-  /* "bz_pricing/core/bonds.pyx":419
+  /* "bz_pricing/core/bonds.pyx":464
  *     cpdef double modified_duration(self, Curve real_curve) except *:
  *         cdef double rate = real_curve.get_rate(self._du)
  *         return (self._du / 252.0) / (1.0 + rate)             # <<<<<<<<<<<<<<
@@ -33508,7 +33903,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_modified_duration(struct 
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/bonds.pyx":417
+  /* "bz_pricing/core/bonds.pyx":462
  *         return <double>self._du
  * 
  *     cpdef double modified_duration(self, Curve real_curve) except *:             # <<<<<<<<<<<<<<
@@ -33570,32 +33965,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_real_curve,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 417, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 462, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 417, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 462, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "modified_duration", 0) < (0)) __PYX_ERR(0, 417, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "modified_duration", 0) < (0)) __PYX_ERR(0, 462, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("modified_duration", 1, 1, 1, i); __PYX_ERR(0, 417, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("modified_duration", 1, 1, 1, i); __PYX_ERR(0, 462, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 417, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 462, __pyx_L3_error)
     }
     __pyx_v_real_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("modified_duration", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 417, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("modified_duration", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 462, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -33606,7 +34001,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 417, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 462, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_5bonds_5NTNBP_8modified_duration(((struct __pyx_obj_10bz_pricing_4core_5bonds_NTNBP *)__pyx_v_self), __pyx_v_real_curve);
 
   /* function exit code */
@@ -33635,8 +34030,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_5NTNBP_8modified_duration(st
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("modified_duration", 0);
-  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_modified_duration(__pyx_v_self, __pyx_v_real_curve, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 417, __pyx_L1_error)
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 417, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_modified_duration(__pyx_v_self, __pyx_v_real_curve, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 462, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 462, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
   {
@@ -33661,7 +34056,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_5NTNBP_8modified_duration(st
   return __pyx_r;
 }
 
-/* "bz_pricing/core/bonds.pyx":421
+/* "bz_pricing/core/bonds.pyx":466
  *         return (self._du / 252.0) / (1.0 + rate)
  * 
  *     cpdef double dv01(self, Curve real_curve, double vna=0.0) except *:             # <<<<<<<<<<<<<<
@@ -33715,13 +34110,13 @@ static double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_dv01(struct __pyx_obj_10b
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_dv01); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 421, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_dv01); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 466, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_5bonds_5NTNBP_11dv01)) {
         __pyx_t_3 = NULL;
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; 
-        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 421, __pyx_L1_error)
+        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 466, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __pyx_t_6 = 1;
         #if CYTHON_UNPACK_METHODS
@@ -33741,10 +34136,10 @@ static double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_dv01(struct __pyx_obj_10b
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 421, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 466, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_7 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 421, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 466, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_7;
@@ -33765,17 +34160,17 @@ static double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_dv01(struct __pyx_obj_10b
     #endif
   }
 
-  /* "bz_pricing/core/bonds.pyx":422
+  /* "bz_pricing/core/bonds.pyx":467
  * 
  *     cpdef double dv01(self, Curve real_curve, double vna=0.0) except *:
  *         cdef double mod_dur = self.modified_duration(real_curve)             # <<<<<<<<<<<<<<
  *         cdef double pu = self.present_value(real_curve, vna=vna)
  *         return mod_dur * pu * 0.0001
 */
-  __pyx_t_7 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNBP *)__pyx_v_self->__pyx_base.__pyx_vtab)->modified_duration(__pyx_v_self, __pyx_v_real_curve, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 422, __pyx_L1_error)
+  __pyx_t_7 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNBP *)__pyx_v_self->__pyx_base.__pyx_vtab)->modified_duration(__pyx_v_self, __pyx_v_real_curve, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 467, __pyx_L1_error)
   __pyx_v_mod_dur = __pyx_t_7;
 
-  /* "bz_pricing/core/bonds.pyx":423
+  /* "bz_pricing/core/bonds.pyx":468
  *     cpdef double dv01(self, Curve real_curve, double vna=0.0) except *:
  *         cdef double mod_dur = self.modified_duration(real_curve)
  *         cdef double pu = self.present_value(real_curve, vna=vna)             # <<<<<<<<<<<<<<
@@ -33784,10 +34179,10 @@ static double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_dv01(struct __pyx_obj_10b
 */
   __pyx_t_8.__pyx_n = 1;
   __pyx_t_8.vna = __pyx_v_vna;
-  __pyx_t_7 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNBP *)__pyx_v_self->__pyx_base.__pyx_vtab)->present_value(__pyx_v_self, __pyx_v_real_curve, 0, &__pyx_t_8); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 423, __pyx_L1_error)
+  __pyx_t_7 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNBP *)__pyx_v_self->__pyx_base.__pyx_vtab)->present_value(__pyx_v_self, __pyx_v_real_curve, 0, &__pyx_t_8); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 468, __pyx_L1_error)
   __pyx_v_pu = __pyx_t_7;
 
-  /* "bz_pricing/core/bonds.pyx":424
+  /* "bz_pricing/core/bonds.pyx":469
  *         cdef double mod_dur = self.modified_duration(real_curve)
  *         cdef double pu = self.present_value(real_curve, vna=vna)
  *         return mod_dur * pu * 0.0001             # <<<<<<<<<<<<<<
@@ -33800,7 +34195,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_5NTNBP_dv01(struct __pyx_obj_10b
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/bonds.pyx":421
+  /* "bz_pricing/core/bonds.pyx":466
  *         return (self._du / 252.0) / (1.0 + rate)
  * 
  *     cpdef double dv01(self, Curve real_curve, double vna=0.0) except *:             # <<<<<<<<<<<<<<
@@ -33865,48 +34260,48 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_real_curve,&__pyx_mstate_global->__pyx_n_u_vna,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 421, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 466, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 421, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 466, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 421, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 466, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "dv01", 0) < (0)) __PYX_ERR(0, 421, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "dv01", 0) < (0)) __PYX_ERR(0, 466, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("dv01", 0, 1, 2, i); __PYX_ERR(0, 421, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("dv01", 0, 1, 2, i); __PYX_ERR(0, 466, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 421, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 466, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 421, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 466, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
     __pyx_v_real_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
     if (values[1]) {
-      __pyx_v_vna = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 421, __pyx_L3_error)
+      __pyx_v_vna = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 466, __pyx_L3_error)
     } else {
       __pyx_v_vna = ((double)0.0);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("dv01", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 421, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("dv01", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 466, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -33917,7 +34312,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 421, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 466, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_5bonds_5NTNBP_10dv01(((struct __pyx_obj_10bz_pricing_4core_5bonds_NTNBP *)__pyx_v_self), __pyx_v_real_curve, __pyx_v_vna);
 
   /* function exit code */
@@ -33950,8 +34345,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_5NTNBP_10dv01(struct __pyx_o
   __Pyx_RefNannySetupContext("dv01", 0);
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.vna = __pyx_v_vna;
-  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_5bonds_NTNBP->dv01(__pyx_v_self, __pyx_v_real_curve, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 421, __pyx_L1_error)
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 421, __pyx_L1_error)
+  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_5bonds_NTNBP->dv01(__pyx_v_self, __pyx_v_real_curve, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 466, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 466, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
   {
@@ -33976,7 +34371,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_5NTNBP_10dv01(struct __pyx_o
   return __pyx_r;
 }
 
-/* "bz_pricing/core/bonds.pyx":426
+/* "bz_pricing/core/bonds.pyx":471
  *         return mod_dur * pu * 0.0001
  * 
  *     cpdef list cashflow_details(self, Curve real_curve, double vna=0.0):             # <<<<<<<<<<<<<<
@@ -34034,13 +34429,13 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_5NTNBP_cashflow_details(struct __pyx
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_cashflow_details); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 426, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_cashflow_details); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 471, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_5bonds_5NTNBP_13cashflow_details)) {
         __pyx_t_3 = NULL;
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; 
-        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 426, __pyx_L1_error)
+        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 471, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __pyx_t_6 = 1;
         #if CYTHON_UNPACK_METHODS
@@ -34060,10 +34455,10 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_5NTNBP_cashflow_details(struct __pyx
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 426, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 471, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        if (!(likely(PyList_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None) || __Pyx_RaiseUnexpectedTypeError("list", __pyx_t_2))) __PYX_ERR(0, 426, __pyx_L1_error)
+        if (!(likely(PyList_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None) || __Pyx_RaiseUnexpectedTypeError("list", __pyx_t_2))) __PYX_ERR(0, 471, __pyx_L1_error)
         {
           PyObject *__pyx_temp;
           {
@@ -34089,17 +34484,17 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_5NTNBP_cashflow_details(struct __pyx
     #endif
   }
 
-  /* "bz_pricing/core/bonds.pyx":427
+  /* "bz_pricing/core/bonds.pyx":472
  * 
  *     cpdef list cashflow_details(self, Curve real_curve, double vna=0.0):
  *         cdef double rate = real_curve.get_rate(self._du)             # <<<<<<<<<<<<<<
  *         cdef double discount_factor = trunc(pow(1.0 + rate, self._du / 252.0) * 100000000000000.0) / 100000000000000.0
  *         cdef double cot = trunc((100.0 / discount_factor) * 10000.0) / 10000.0
 */
-  __pyx_t_7 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_real_curve->__pyx_vtab)->get_rate(__pyx_v_real_curve, __pyx_v_self->_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 427, __pyx_L1_error)
+  __pyx_t_7 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_real_curve->__pyx_vtab)->get_rate(__pyx_v_real_curve, __pyx_v_self->_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 472, __pyx_L1_error)
   __pyx_v_rate = __pyx_t_7;
 
-  /* "bz_pricing/core/bonds.pyx":428
+  /* "bz_pricing/core/bonds.pyx":473
  *     cpdef list cashflow_details(self, Curve real_curve, double vna=0.0):
  *         cdef double rate = real_curve.get_rate(self._du)
  *         cdef double discount_factor = trunc(pow(1.0 + rate, self._du / 252.0) * 100000000000000.0) / 100000000000000.0             # <<<<<<<<<<<<<<
@@ -34108,7 +34503,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_5NTNBP_cashflow_details(struct __pyx
 */
   __pyx_v_discount_factor = (trunc((pow((1.0 + __pyx_v_rate), (((double)__pyx_v_self->_du) / 252.0)) * 100000000000000.0)) / 100000000000000.0);
 
-  /* "bz_pricing/core/bonds.pyx":429
+  /* "bz_pricing/core/bonds.pyx":474
  *         cdef double rate = real_curve.get_rate(self._du)
  *         cdef double discount_factor = trunc(pow(1.0 + rate, self._du / 252.0) * 100000000000000.0) / 100000000000000.0
  *         cdef double cot = trunc((100.0 / discount_factor) * 10000.0) / 10000.0             # <<<<<<<<<<<<<<
@@ -34117,7 +34512,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_5NTNBP_cashflow_details(struct __pyx
 */
   __pyx_v_cot = (trunc(((100.0 / __pyx_v_discount_factor) * 10000.0)) / 10000.0);
 
-  /* "bz_pricing/core/bonds.pyx":430
+  /* "bz_pricing/core/bonds.pyx":475
  *         cdef double discount_factor = trunc(pow(1.0 + rate, self._du / 252.0) * 100000000000000.0) / 100000000000000.0
  *         cdef double cot = trunc((100.0 / discount_factor) * 10000.0) / 10000.0
  *         cdef double pu = 0.0             # <<<<<<<<<<<<<<
@@ -34126,7 +34521,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_5NTNBP_cashflow_details(struct __pyx
 */
   __pyx_v_pu = 0.0;
 
-  /* "bz_pricing/core/bonds.pyx":431
+  /* "bz_pricing/core/bonds.pyx":476
  *         cdef double cot = trunc((100.0 / discount_factor) * 10000.0) / 10000.0
  *         cdef double pu = 0.0
  *         if vna > 0.0:             # <<<<<<<<<<<<<<
@@ -34138,7 +34533,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_5NTNBP_cashflow_details(struct __pyx
   if (__pyx_t_8) {
 
 
-    /* "bz_pricing/core/bonds.pyx":432
+    /* "bz_pricing/core/bonds.pyx":477
  *         cdef double pu = 0.0
  *         if vna > 0.0:
  *             pu = trunc((vna * (cot / 100.0)) * 1000000.0) / 1000000.0             # <<<<<<<<<<<<<<
@@ -34147,7 +34542,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_5NTNBP_cashflow_details(struct __pyx
 */
     __pyx_v_pu = (trunc(((__pyx_v_vna * (__pyx_v_cot / 100.0)) * 1000000.0)) / 1000000.0);
 
-    /* "bz_pricing/core/bonds.pyx":431
+    /* "bz_pricing/core/bonds.pyx":476
  *         cdef double cot = trunc((100.0 / discount_factor) * 10000.0) / 10000.0
  *         cdef double pu = 0.0
  *         if vna > 0.0:             # <<<<<<<<<<<<<<
@@ -34156,52 +34551,52 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_5NTNBP_cashflow_details(struct __pyx
 */
   }
 
-  /* "bz_pricing/core/bonds.pyx":433
+  /* "bz_pricing/core/bonds.pyx":478
  *         if vna > 0.0:
  *             pu = trunc((vna * (cot / 100.0)) * 1000000.0) / 1000000.0
  *         return [(self._du, 100.0, rate, discount_factor, cot, vna, pu)]             # <<<<<<<<<<<<<<
  * 
  * cdef class NTNC(Bond):
 */
-  __pyx_t_1 = __Pyx_PyLong_From_int(__pyx_v_self->_du); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 433, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyLong_From_int(__pyx_v_self->_du); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 478, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_rate); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 433, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_rate); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 478, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_discount_factor); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 433, __pyx_L1_error)
+  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_discount_factor); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 478, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = PyFloat_FromDouble(__pyx_v_cot); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 433, __pyx_L1_error)
+  __pyx_t_5 = PyFloat_FromDouble(__pyx_v_cot); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 478, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 433, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 478, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_9 = PyFloat_FromDouble(__pyx_v_pu); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 433, __pyx_L1_error)
+  __pyx_t_9 = PyFloat_FromDouble(__pyx_v_pu); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 478, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  __pyx_t_10 = PyTuple_New(7); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 433, __pyx_L1_error)
+  __pyx_t_10 = PyTuple_New(7); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 478, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
   __Pyx_GIVEREF(__pyx_t_1);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_t_1) != (0)) __PYX_ERR(0, 433, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_t_1) != (0)) __PYX_ERR(0, 478, __pyx_L1_error);
   __Pyx_INCREF(__pyx_mstate_global->__pyx_float_100_0);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_float_100_0);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 1, __pyx_mstate_global->__pyx_float_100_0) != (0)) __PYX_ERR(0, 433, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 1, __pyx_mstate_global->__pyx_float_100_0) != (0)) __PYX_ERR(0, 478, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_2);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 2, __pyx_t_2) != (0)) __PYX_ERR(0, 433, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 2, __pyx_t_2) != (0)) __PYX_ERR(0, 478, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_4);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 3, __pyx_t_4) != (0)) __PYX_ERR(0, 433, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 3, __pyx_t_4) != (0)) __PYX_ERR(0, 478, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_5);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 4, __pyx_t_5) != (0)) __PYX_ERR(0, 433, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 4, __pyx_t_5) != (0)) __PYX_ERR(0, 478, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_3);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 5, __pyx_t_3) != (0)) __PYX_ERR(0, 433, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 5, __pyx_t_3) != (0)) __PYX_ERR(0, 478, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_9);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 6, __pyx_t_9) != (0)) __PYX_ERR(0, 433, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 6, __pyx_t_9) != (0)) __PYX_ERR(0, 478, __pyx_L1_error);
   __pyx_t_1 = 0;
   __pyx_t_2 = 0;
   __pyx_t_4 = 0;
   __pyx_t_5 = 0;
   __pyx_t_3 = 0;
   __pyx_t_9 = 0;
-  __pyx_t_9 = PyList_New(1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 433, __pyx_L1_error)
+  __pyx_t_9 = PyList_New(1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 478, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
   __Pyx_GIVEREF(__pyx_t_10);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_9, 0, __pyx_t_10) != (0)) __PYX_ERR(0, 433, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_9, 0, __pyx_t_10) != (0)) __PYX_ERR(0, 478, __pyx_L1_error);
   __pyx_t_10 = 0;
   {
     PyObject *__pyx_temp;
@@ -34214,7 +34609,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_5NTNBP_cashflow_details(struct __pyx
   __pyx_t_9 = 0;
   goto __pyx_L0;
 
-  /* "bz_pricing/core/bonds.pyx":426
+  /* "bz_pricing/core/bonds.pyx":471
  *         return mod_dur * pu * 0.0001
  * 
  *     cpdef list cashflow_details(self, Curve real_curve, double vna=0.0):             # <<<<<<<<<<<<<<
@@ -34283,48 +34678,48 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_real_curve,&__pyx_mstate_global->__pyx_n_u_vna,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 426, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 471, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 426, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 471, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 426, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 471, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "cashflow_details", 0) < (0)) __PYX_ERR(0, 426, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "cashflow_details", 0) < (0)) __PYX_ERR(0, 471, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("cashflow_details", 0, 1, 2, i); __PYX_ERR(0, 426, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("cashflow_details", 0, 1, 2, i); __PYX_ERR(0, 471, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 426, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 471, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 426, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 471, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
     __pyx_v_real_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
     if (values[1]) {
-      __pyx_v_vna = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 426, __pyx_L3_error)
+      __pyx_v_vna = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 471, __pyx_L3_error)
     } else {
       __pyx_v_vna = ((double)0.0);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("cashflow_details", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 426, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("cashflow_details", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 471, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -34335,7 +34730,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 426, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 471, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_5bonds_5NTNBP_12cashflow_details(((struct __pyx_obj_10bz_pricing_4core_5bonds_NTNBP *)__pyx_v_self), __pyx_v_real_curve, __pyx_v_vna);
 
   /* function exit code */
@@ -34367,7 +34762,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_5NTNBP_12cashflow_details(st
   __Pyx_RefNannySetupContext("cashflow_details", 0);
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.vna = __pyx_v_vna;
-  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_5bonds_NTNBP->cashflow_details(__pyx_v_self, __pyx_v_real_curve, 1, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 426, __pyx_L1_error)
+  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_5bonds_NTNBP->cashflow_details(__pyx_v_self, __pyx_v_real_curve, 1, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 471, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   {
     PyObject *__pyx_temp;
@@ -34860,7 +35255,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_5NTNBP_16__setstate_cython__
   return __pyx_r;
 }
 
-/* "bz_pricing/core/bonds.pyx":440
+/* "bz_pricing/core/bonds.pyx":485
  *     Taxa de cupom editalcia de 6,00% ou 12,00% a.a. aplicada sobre o VNA do IGP-M.
  *     """
  *     def __init__(self, int[:] coupon_dus, double coupon_rate=0.06):             # <<<<<<<<<<<<<<
@@ -34907,48 +35302,48 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_coupon_dus,&__pyx_mstate_global->__pyx_n_u_coupon_rate,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL_TPNEW(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 440, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 485, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 440, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 485, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 440, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 485, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 440, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "__init__", 0) < (0)) __PYX_ERR(0, 485, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 0, 1, 2, i); __PYX_ERR(0, 440, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("__init__", 0, 1, 2, i); __PYX_ERR(0, 485, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 440, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 485, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL_TPNEW(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 440, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 485, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_coupon_dus = __Pyx_PyObject_to_MemoryviewSlice_ds_int(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_coupon_dus.memview)) __PYX_ERR(0, 440, __pyx_L3_error)
+    __pyx_v_coupon_dus = __Pyx_PyObject_to_MemoryviewSlice_ds_int(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_coupon_dus.memview)) __PYX_ERR(0, 485, __pyx_L3_error)
     if (values[1]) {
-      __pyx_v_coupon_rate = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_coupon_rate == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 440, __pyx_L3_error)
+      __pyx_v_coupon_rate = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_coupon_rate == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 485, __pyx_L3_error)
     } else {
       __pyx_v_coupon_rate = ((double)0.06);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 440, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 485, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -34975,7 +35370,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 static int __pyx_pf_10bz_pricing_4core_5bonds_4NTNC___init__(struct __pyx_obj_10bz_pricing_4core_5bonds_NTNC *__pyx_v_self, __Pyx_memviewslice __pyx_v_coupon_dus, double __pyx_v_coupon_rate) {
   int __pyx_r;
 
-  /* "bz_pricing/core/bonds.pyx":441
+  /* "bz_pricing/core/bonds.pyx":486
  *     """
  *     def __init__(self, int[:] coupon_dus, double coupon_rate=0.06):
  *         self._coupon_dus = coupon_dus             # <<<<<<<<<<<<<<
@@ -34986,7 +35381,7 @@ static int __pyx_pf_10bz_pricing_4core_5bonds_4NTNC___init__(struct __pyx_obj_10
   __PYX_INC_MEMVIEW(&__pyx_v_coupon_dus, 1);
   __pyx_v_self->_coupon_dus = __pyx_v_coupon_dus;
 
-  /* "bz_pricing/core/bonds.pyx":442
+  /* "bz_pricing/core/bonds.pyx":487
  *     def __init__(self, int[:] coupon_dus, double coupon_rate=0.06):
  *         self._coupon_dus = coupon_dus
  *         self._n_coupons = coupon_dus.shape[0]             # <<<<<<<<<<<<<<
@@ -34995,7 +35390,7 @@ static int __pyx_pf_10bz_pricing_4core_5bonds_4NTNC___init__(struct __pyx_obj_10
 */
   __pyx_v_self->_n_coupons = (__pyx_v_coupon_dus.shape[0]);
 
-  /* "bz_pricing/core/bonds.pyx":443
+  /* "bz_pricing/core/bonds.pyx":488
  *         self._coupon_dus = coupon_dus
  *         self._n_coupons = coupon_dus.shape[0]
  *         self._coupon_rate = coupon_rate             # <<<<<<<<<<<<<<
@@ -35004,7 +35399,7 @@ static int __pyx_pf_10bz_pricing_4core_5bonds_4NTNC___init__(struct __pyx_obj_10
 */
   __pyx_v_self->_coupon_rate = __pyx_v_coupon_rate;
 
-  /* "bz_pricing/core/bonds.pyx":440
+  /* "bz_pricing/core/bonds.pyx":485
  *     Taxa de cupom editalcia de 6,00% ou 12,00% a.a. aplicada sobre o VNA do IGP-M.
  *     """
  *     def __init__(self, int[:] coupon_dus, double coupon_rate=0.06):             # <<<<<<<<<<<<<<
@@ -35018,7 +35413,7 @@ static int __pyx_pf_10bz_pricing_4core_5bonds_4NTNC___init__(struct __pyx_obj_10
   return __pyx_r;
 }
 
-/* "bz_pricing/core/bonds.pyx":445
+/* "bz_pricing/core/bonds.pyx":490
  *         self._coupon_rate = coupon_rate
  * 
  *     cpdef double cotacao(self, Curve real_curve) except *:             # <<<<<<<<<<<<<<
@@ -35075,7 +35470,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_cotacao(struct __pyx_obj_1
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_cotacao); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 445, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_cotacao); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 490, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_5bonds_4NTNC_3cotacao)) {
         __pyx_t_3 = NULL;
@@ -35098,10 +35493,10 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_cotacao(struct __pyx_obj_1
           __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 445, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 490, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_6 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 445, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 490, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_6;
@@ -35122,7 +35517,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_cotacao(struct __pyx_obj_1
     #endif
   }
 
-  /* "bz_pricing/core/bonds.pyx":446
+  /* "bz_pricing/core/bonds.pyx":491
  * 
  *     cpdef double cotacao(self, Curve real_curve) except *:
  *         cdef double total_cot = 0.0             # <<<<<<<<<<<<<<
@@ -35131,7 +35526,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_cotacao(struct __pyx_obj_1
 */
   __pyx_v_total_cot = 0.0;
 
-  /* "bz_pricing/core/bonds.pyx":449
+  /* "bz_pricing/core/bonds.pyx":494
  *         cdef int i, du
  *         cdef double rate, discount_factor
  *         cdef double coupon_factor = round((pow(1.0 + self._coupon_rate, 0.5) - 1.0) * 100.0 * 1000000.0) / 1000000.0             # <<<<<<<<<<<<<<
@@ -35140,7 +35535,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_cotacao(struct __pyx_obj_1
 */
   __pyx_v_coupon_factor = (round((((pow((1.0 + __pyx_v_self->_coupon_rate), 0.5) - 1.0) * 100.0) * 1000000.0)) / 1000000.0);
 
-  /* "bz_pricing/core/bonds.pyx":452
+  /* "bz_pricing/core/bonds.pyx":497
  *         cdef double fluxo, pv_fluxo
  * 
  *         for i in range(self._n_coupons):             # <<<<<<<<<<<<<<
@@ -35154,18 +35549,18 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_cotacao(struct __pyx_obj_1
   for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_8; __pyx_t_9+=1) {
     __pyx_v_i = __pyx_t_9;
 
-    /* "bz_pricing/core/bonds.pyx":453
+    /* "bz_pricing/core/bonds.pyx":498
  * 
  *         for i in range(self._n_coupons):
  *             du = self._coupon_dus[i]             # <<<<<<<<<<<<<<
  *             if du <= 0:
  *                 continue
 */
-    if (unlikely(!__pyx_v_self->_coupon_dus.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 453, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_coupon_dus.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 498, __pyx_L1_error)}
     __pyx_t_10 = __pyx_v_i;
     __pyx_v_du = (*((int *) ( /* dim=0 */ (__pyx_v_self->_coupon_dus.data + __pyx_t_10 * __pyx_v_self->_coupon_dus.strides[0]) )));
 
-    /* "bz_pricing/core/bonds.pyx":454
+    /* "bz_pricing/core/bonds.pyx":499
  *         for i in range(self._n_coupons):
  *             du = self._coupon_dus[i]
  *             if du <= 0:             # <<<<<<<<<<<<<<
@@ -35177,7 +35572,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_cotacao(struct __pyx_obj_1
     if (__pyx_t_11) {
 
 
-      /* "bz_pricing/core/bonds.pyx":455
+      /* "bz_pricing/core/bonds.pyx":500
  *             du = self._coupon_dus[i]
  *             if du <= 0:
  *                 continue             # <<<<<<<<<<<<<<
@@ -35186,7 +35581,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_cotacao(struct __pyx_obj_1
 */
       goto __pyx_L3_continue;
 
-      /* "bz_pricing/core/bonds.pyx":454
+      /* "bz_pricing/core/bonds.pyx":499
  *         for i in range(self._n_coupons):
  *             du = self._coupon_dus[i]
  *             if du <= 0:             # <<<<<<<<<<<<<<
@@ -35195,17 +35590,17 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_cotacao(struct __pyx_obj_1
 */
     }
 
-    /* "bz_pricing/core/bonds.pyx":457
+    /* "bz_pricing/core/bonds.pyx":502
  *                 continue
  * 
  *             rate = real_curve.get_rate(du)             # <<<<<<<<<<<<<<
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
  * 
 */
-    __pyx_t_6 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_real_curve->__pyx_vtab)->get_rate(__pyx_v_real_curve, __pyx_v_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 457, __pyx_L1_error)
+    __pyx_t_6 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_real_curve->__pyx_vtab)->get_rate(__pyx_v_real_curve, __pyx_v_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 502, __pyx_L1_error)
     __pyx_v_rate = __pyx_t_6;
 
-    /* "bz_pricing/core/bonds.pyx":458
+    /* "bz_pricing/core/bonds.pyx":503
  * 
  *             rate = real_curve.get_rate(du)
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0             # <<<<<<<<<<<<<<
@@ -35214,7 +35609,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_cotacao(struct __pyx_obj_1
 */
     __pyx_v_discount_factor = (trunc((pow((1.0 + __pyx_v_rate), (((double)__pyx_v_du) / 252.0)) * 100000000000000.0)) / 100000000000000.0);
 
-    /* "bz_pricing/core/bonds.pyx":460
+    /* "bz_pricing/core/bonds.pyx":505
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
  * 
  *             if i == self._n_coupons - 1:             # <<<<<<<<<<<<<<
@@ -35226,7 +35621,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_cotacao(struct __pyx_obj_1
     if (__pyx_t_11) {
 
 
-      /* "bz_pricing/core/bonds.pyx":461
+      /* "bz_pricing/core/bonds.pyx":506
  * 
  *             if i == self._n_coupons - 1:
  *                 fluxo = 100.0 + coupon_factor             # <<<<<<<<<<<<<<
@@ -35235,7 +35630,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_cotacao(struct __pyx_obj_1
 */
       __pyx_v_fluxo = (100.0 + __pyx_v_coupon_factor);
 
-      /* "bz_pricing/core/bonds.pyx":460
+      /* "bz_pricing/core/bonds.pyx":505
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
  * 
  *             if i == self._n_coupons - 1:             # <<<<<<<<<<<<<<
@@ -35245,7 +35640,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_cotacao(struct __pyx_obj_1
       goto __pyx_L6;
     }
 
-    /* "bz_pricing/core/bonds.pyx":463
+    /* "bz_pricing/core/bonds.pyx":508
  *                 fluxo = 100.0 + coupon_factor
  *             else:
  *                 fluxo = coupon_factor             # <<<<<<<<<<<<<<
@@ -35257,7 +35652,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_cotacao(struct __pyx_obj_1
     }
     __pyx_L6:;
 
-    /* "bz_pricing/core/bonds.pyx":465
+    /* "bz_pricing/core/bonds.pyx":510
  *                 fluxo = coupon_factor
  * 
  *             pv_fluxo = round((fluxo / discount_factor) * 10000000000.0) / 10000000000.0             # <<<<<<<<<<<<<<
@@ -35266,7 +35661,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_cotacao(struct __pyx_obj_1
 */
     __pyx_v_pv_fluxo = (round(((__pyx_v_fluxo / __pyx_v_discount_factor) * 10000000000.0)) / 10000000000.0);
 
-    /* "bz_pricing/core/bonds.pyx":466
+    /* "bz_pricing/core/bonds.pyx":511
  * 
  *             pv_fluxo = round((fluxo / discount_factor) * 10000000000.0) / 10000000000.0
  *             total_cot += pv_fluxo             # <<<<<<<<<<<<<<
@@ -35278,7 +35673,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_cotacao(struct __pyx_obj_1
   }
 
 
-  /* "bz_pricing/core/bonds.pyx":468
+  /* "bz_pricing/core/bonds.pyx":513
  *             total_cot += pv_fluxo
  * 
  *         return trunc(total_cot * 10000.0) / 10000.0             # <<<<<<<<<<<<<<
@@ -35291,7 +35686,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_cotacao(struct __pyx_obj_1
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/bonds.pyx":445
+  /* "bz_pricing/core/bonds.pyx":490
  *         self._coupon_rate = coupon_rate
  * 
  *     cpdef double cotacao(self, Curve real_curve) except *:             # <<<<<<<<<<<<<<
@@ -35360,32 +35755,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_real_curve,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 445, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 490, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 445, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 490, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "cotacao", 0) < (0)) __PYX_ERR(0, 445, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "cotacao", 0) < (0)) __PYX_ERR(0, 490, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("cotacao", 1, 1, 1, i); __PYX_ERR(0, 445, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("cotacao", 1, 1, 1, i); __PYX_ERR(0, 490, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 445, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 490, __pyx_L3_error)
     }
     __pyx_v_real_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("cotacao", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 445, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("cotacao", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 490, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -35396,7 +35791,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 445, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 490, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_5bonds_4NTNC_2cotacao(((struct __pyx_obj_10bz_pricing_4core_5bonds_NTNC *)__pyx_v_self), __pyx_v_real_curve);
 
   /* function exit code */
@@ -35425,8 +35820,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_4NTNC_2cotacao(struct __pyx_
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("cotacao", 0);
-  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_4NTNC_cotacao(__pyx_v_self, __pyx_v_real_curve, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 445, __pyx_L1_error)
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 445, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_4NTNC_cotacao(__pyx_v_self, __pyx_v_real_curve, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 490, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 490, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
   {
@@ -35451,7 +35846,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_4NTNC_2cotacao(struct __pyx_
   return __pyx_r;
 }
 
-/* "bz_pricing/core/bonds.pyx":470
+/* "bz_pricing/core/bonds.pyx":515
  *         return trunc(total_cot * 10000.0) / 10000.0
  * 
  *     cpdef double present_value(self, Curve real_curve, double vna=0.0, Curve inflation_curve=None, double base_vna=0.0, int du_inflation=0) except *:             # <<<<<<<<<<<<<<
@@ -35522,17 +35917,17 @@ double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_present_value(struct __pyx_obj_10
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_present_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 470, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_present_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 515, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_5bonds_4NTNC_5present_value)) {
         __pyx_t_3 = NULL;
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; 
-        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 470, __pyx_L1_error)
+        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 515, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_base_vna); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 470, __pyx_L1_error)
+        __pyx_t_6 = PyFloat_FromDouble(__pyx_v_base_vna); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 515, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_7 = __Pyx_PyLong_From_int(__pyx_v_du_inflation); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 470, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyLong_From_int(__pyx_v_du_inflation); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 515, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
         __pyx_t_8 = 1;
         #if CYTHON_UNPACK_METHODS
@@ -35554,10 +35949,10 @@ double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_present_value(struct __pyx_obj_10
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 470, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 515, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_9 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_9 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 470, __pyx_L1_error)
+        __pyx_t_9 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_9 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 515, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_9;
@@ -35578,17 +35973,17 @@ double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_present_value(struct __pyx_obj_10
     #endif
   }
 
-  /* "bz_pricing/core/bonds.pyx":471
+  /* "bz_pricing/core/bonds.pyx":516
  * 
  *     cpdef double present_value(self, Curve real_curve, double vna=0.0, Curve inflation_curve=None, double base_vna=0.0, int du_inflation=0) except *:
  *         cdef double cot = self.cotacao(real_curve)             # <<<<<<<<<<<<<<
  *         cdef double igpm_rate = 0.0
  *         cdef double igpm_factor = 1.0
 */
-  __pyx_t_9 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNC *)__pyx_v_self->__pyx_base.__pyx_vtab)->cotacao(__pyx_v_self, __pyx_v_real_curve, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 471, __pyx_L1_error)
+  __pyx_t_9 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNC *)__pyx_v_self->__pyx_base.__pyx_vtab)->cotacao(__pyx_v_self, __pyx_v_real_curve, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 516, __pyx_L1_error)
   __pyx_v_cot = __pyx_t_9;
 
-  /* "bz_pricing/core/bonds.pyx":472
+  /* "bz_pricing/core/bonds.pyx":517
  *     cpdef double present_value(self, Curve real_curve, double vna=0.0, Curve inflation_curve=None, double base_vna=0.0, int du_inflation=0) except *:
  *         cdef double cot = self.cotacao(real_curve)
  *         cdef double igpm_rate = 0.0             # <<<<<<<<<<<<<<
@@ -35597,7 +35992,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_present_value(struct __pyx_obj_10
 */
   __pyx_v_igpm_rate = 0.0;
 
-  /* "bz_pricing/core/bonds.pyx":473
+  /* "bz_pricing/core/bonds.pyx":518
  *         cdef double cot = self.cotacao(real_curve)
  *         cdef double igpm_rate = 0.0
  *         cdef double igpm_factor = 1.0             # <<<<<<<<<<<<<<
@@ -35606,7 +36001,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_present_value(struct __pyx_obj_10
 */
   __pyx_v_igpm_factor = 1.0;
 
-  /* "bz_pricing/core/bonds.pyx":475
+  /* "bz_pricing/core/bonds.pyx":520
  *         cdef double igpm_factor = 1.0
  * 
  *         if vna <= 0.0 and inflation_curve is not None and base_vna > 0.0 and du_inflation > 0:             # <<<<<<<<<<<<<<
@@ -35651,17 +36046,17 @@ double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_present_value(struct __pyx_obj_10
   if (__pyx_t_10) {
 
 
-    /* "bz_pricing/core/bonds.pyx":476
+    /* "bz_pricing/core/bonds.pyx":521
  * 
  *         if vna <= 0.0 and inflation_curve is not None and base_vna > 0.0 and du_inflation > 0:
  *             igpm_rate = inflation_curve.get_rate(du_inflation)             # <<<<<<<<<<<<<<
  *             igpm_factor = trunc(pow(1.0 + igpm_rate, du_inflation / 252.0) * 100000000000000.0) / 100000000000000.0
  *             vna = trunc((base_vna * igpm_factor) * 1000000.0) / 1000000.0
 */
-    __pyx_t_9 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_inflation_curve->__pyx_vtab)->get_rate(__pyx_v_inflation_curve, __pyx_v_du_inflation, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 476, __pyx_L1_error)
+    __pyx_t_9 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_inflation_curve->__pyx_vtab)->get_rate(__pyx_v_inflation_curve, __pyx_v_du_inflation, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 521, __pyx_L1_error)
     __pyx_v_igpm_rate = __pyx_t_9;
 
-    /* "bz_pricing/core/bonds.pyx":477
+    /* "bz_pricing/core/bonds.pyx":522
  *         if vna <= 0.0 and inflation_curve is not None and base_vna > 0.0 and du_inflation > 0:
  *             igpm_rate = inflation_curve.get_rate(du_inflation)
  *             igpm_factor = trunc(pow(1.0 + igpm_rate, du_inflation / 252.0) * 100000000000000.0) / 100000000000000.0             # <<<<<<<<<<<<<<
@@ -35670,7 +36065,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_present_value(struct __pyx_obj_10
 */
     __pyx_v_igpm_factor = (trunc((pow((1.0 + __pyx_v_igpm_rate), (((double)__pyx_v_du_inflation) / 252.0)) * 100000000000000.0)) / 100000000000000.0);
 
-    /* "bz_pricing/core/bonds.pyx":478
+    /* "bz_pricing/core/bonds.pyx":523
  *             igpm_rate = inflation_curve.get_rate(du_inflation)
  *             igpm_factor = trunc(pow(1.0 + igpm_rate, du_inflation / 252.0) * 100000000000000.0) / 100000000000000.0
  *             vna = trunc((base_vna * igpm_factor) * 1000000.0) / 1000000.0             # <<<<<<<<<<<<<<
@@ -35679,7 +36074,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_present_value(struct __pyx_obj_10
 */
     __pyx_v_vna = (trunc(((__pyx_v_base_vna * __pyx_v_igpm_factor) * 1000000.0)) / 1000000.0);
 
-    /* "bz_pricing/core/bonds.pyx":475
+    /* "bz_pricing/core/bonds.pyx":520
  *         cdef double igpm_factor = 1.0
  * 
  *         if vna <= 0.0 and inflation_curve is not None and base_vna > 0.0 and du_inflation > 0:             # <<<<<<<<<<<<<<
@@ -35688,7 +36083,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_present_value(struct __pyx_obj_10
 */
   }
 
-  /* "bz_pricing/core/bonds.pyx":480
+  /* "bz_pricing/core/bonds.pyx":525
  *             vna = trunc((base_vna * igpm_factor) * 1000000.0) / 1000000.0
  * 
  *         return trunc((vna * (cot / 100.0)) * 1000000.0) / 1000000.0             # <<<<<<<<<<<<<<
@@ -35701,7 +36096,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_present_value(struct __pyx_obj_10
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/bonds.pyx":470
+  /* "bz_pricing/core/bonds.pyx":515
  *         return trunc(total_cot * 10000.0) / 10000.0
  * 
  *     cpdef double present_value(self, Curve real_curve, double vna=0.0, Curve inflation_curve=None, double base_vna=0.0, int du_inflation=0) except *:             # <<<<<<<<<<<<<<
@@ -35773,59 +36168,59 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_real_curve,&__pyx_mstate_global->__pyx_n_u_vna,&__pyx_mstate_global->__pyx_n_u_inflation_curve,&__pyx_mstate_global->__pyx_n_u_base_vna,&__pyx_mstate_global->__pyx_n_u_du_inflation,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 470, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 515, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 470, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 515, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 470, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 515, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 470, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 515, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 470, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 515, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 470, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 515, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "present_value", 0) < (0)) __PYX_ERR(0, 470, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "present_value", 0) < (0)) __PYX_ERR(0, 515, __pyx_L3_error)
       if (!values[2]) values[2] = __Pyx_NewRef((PyObject *)((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)Py_None));
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("present_value", 0, 1, 5, i); __PYX_ERR(0, 470, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("present_value", 0, 1, 5, i); __PYX_ERR(0, 515, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 470, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 515, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 470, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 515, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 470, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 515, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 470, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 515, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 470, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 515, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
@@ -35833,25 +36228,25 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
     }
     __pyx_v_real_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
     if (values[1]) {
-      __pyx_v_vna = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 470, __pyx_L3_error)
+      __pyx_v_vna = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 515, __pyx_L3_error)
     } else {
       __pyx_v_vna = ((double)0.0);
     }
     __pyx_v_inflation_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[2]);
     if (values[3]) {
-      __pyx_v_base_vna = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_base_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 470, __pyx_L3_error)
+      __pyx_v_base_vna = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_base_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 515, __pyx_L3_error)
     } else {
       __pyx_v_base_vna = ((double)0.0);
     }
     if (values[4]) {
-      __pyx_v_du_inflation = __Pyx_PyLong_As_int(values[4]); if (unlikely((__pyx_v_du_inflation == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 470, __pyx_L3_error)
+      __pyx_v_du_inflation = __Pyx_PyLong_As_int(values[4]); if (unlikely((__pyx_v_du_inflation == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 515, __pyx_L3_error)
     } else {
       __pyx_v_du_inflation = ((int)0);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("present_value", 0, 1, 5, __pyx_nargs); __PYX_ERR(0, 470, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("present_value", 0, 1, 5, __pyx_nargs); __PYX_ERR(0, 515, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -35862,8 +36257,8 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 470, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_inflation_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "inflation_curve", 0))) __PYX_ERR(0, 470, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 515, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_inflation_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "inflation_curve", 0))) __PYX_ERR(0, 515, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_5bonds_4NTNC_4present_value(((struct __pyx_obj_10bz_pricing_4core_5bonds_NTNC *)__pyx_v_self), __pyx_v_real_curve, __pyx_v_vna, __pyx_v_inflation_curve, __pyx_v_base_vna, __pyx_v_du_inflation);
 
   /* function exit code */
@@ -35901,8 +36296,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_4NTNC_4present_value(struct 
   __pyx_t_2.inflation_curve = __pyx_v_inflation_curve;
   __pyx_t_2.base_vna = __pyx_v_base_vna;
   __pyx_t_2.du_inflation = __pyx_v_du_inflation;
-  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_5bonds_NTNC->present_value(__pyx_v_self, __pyx_v_real_curve, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 470, __pyx_L1_error)
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 470, __pyx_L1_error)
+  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_5bonds_NTNC->present_value(__pyx_v_self, __pyx_v_real_curve, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 515, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 515, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
   {
@@ -35931,7 +36326,7 @@ double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_present_value__pyx_wrap_1(struct 
   return __pyx_f_10bz_pricing_4core_5bonds_4NTNC_present_value(__pyx_v_self, __pyx_v_real_curve, __pyx_skip_dispatch, NULL);
 }
 
-/* "bz_pricing/core/bonds.pyx":482
+/* "bz_pricing/core/bonds.pyx":527
  *         return trunc((vna * (cot / 100.0)) * 1000000.0) / 1000000.0
  * 
  *     cpdef double duration(self, Curve real_curve) except *:             # <<<<<<<<<<<<<<
@@ -35989,7 +36384,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_duration(struct __pyx_obj_
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_duration); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 482, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_duration); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 527, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_5bonds_4NTNC_7duration)) {
         __pyx_t_3 = NULL;
@@ -36012,10 +36407,10 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_duration(struct __pyx_obj_
           __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 482, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 527, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_6 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 482, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 527, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_6;
@@ -36036,7 +36431,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_duration(struct __pyx_obj_
     #endif
   }
 
-  /* "bz_pricing/core/bonds.pyx":483
+  /* "bz_pricing/core/bonds.pyx":528
  * 
  *     cpdef double duration(self, Curve real_curve) except *:
  *         cdef double total_weighted = 0.0             # <<<<<<<<<<<<<<
@@ -36045,7 +36440,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_duration(struct __pyx_obj_
 */
   __pyx_v_total_weighted = 0.0;
 
-  /* "bz_pricing/core/bonds.pyx":484
+  /* "bz_pricing/core/bonds.pyx":529
  *     cpdef double duration(self, Curve real_curve) except *:
  *         cdef double total_weighted = 0.0
  *         cdef double total_cot = 0.0             # <<<<<<<<<<<<<<
@@ -36054,7 +36449,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_duration(struct __pyx_obj_
 */
   __pyx_v_total_cot = 0.0;
 
-  /* "bz_pricing/core/bonds.pyx":487
+  /* "bz_pricing/core/bonds.pyx":532
  *         cdef int i, du
  *         cdef double rate, discount_factor
  *         cdef double coupon_factor = round((pow(1.0 + self._coupon_rate, 0.5) - 1.0) * 100.0 * 1000000.0) / 1000000.0             # <<<<<<<<<<<<<<
@@ -36063,7 +36458,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_duration(struct __pyx_obj_
 */
   __pyx_v_coupon_factor = (round((((pow((1.0 + __pyx_v_self->_coupon_rate), 0.5) - 1.0) * 100.0) * 1000000.0)) / 1000000.0);
 
-  /* "bz_pricing/core/bonds.pyx":490
+  /* "bz_pricing/core/bonds.pyx":535
  *         cdef double fluxo, pv_fluxo
  * 
  *         for i in range(self._n_coupons):             # <<<<<<<<<<<<<<
@@ -36077,18 +36472,18 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_duration(struct __pyx_obj_
   for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_8; __pyx_t_9+=1) {
     __pyx_v_i = __pyx_t_9;
 
-    /* "bz_pricing/core/bonds.pyx":491
+    /* "bz_pricing/core/bonds.pyx":536
  * 
  *         for i in range(self._n_coupons):
  *             du = self._coupon_dus[i]             # <<<<<<<<<<<<<<
  *             if du <= 0:
  *                 continue
 */
-    if (unlikely(!__pyx_v_self->_coupon_dus.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 491, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_coupon_dus.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 536, __pyx_L1_error)}
     __pyx_t_10 = __pyx_v_i;
     __pyx_v_du = (*((int *) ( /* dim=0 */ (__pyx_v_self->_coupon_dus.data + __pyx_t_10 * __pyx_v_self->_coupon_dus.strides[0]) )));
 
-    /* "bz_pricing/core/bonds.pyx":492
+    /* "bz_pricing/core/bonds.pyx":537
  *         for i in range(self._n_coupons):
  *             du = self._coupon_dus[i]
  *             if du <= 0:             # <<<<<<<<<<<<<<
@@ -36100,7 +36495,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_duration(struct __pyx_obj_
     if (__pyx_t_11) {
 
 
-      /* "bz_pricing/core/bonds.pyx":493
+      /* "bz_pricing/core/bonds.pyx":538
  *             du = self._coupon_dus[i]
  *             if du <= 0:
  *                 continue             # <<<<<<<<<<<<<<
@@ -36109,7 +36504,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_duration(struct __pyx_obj_
 */
       goto __pyx_L3_continue;
 
-      /* "bz_pricing/core/bonds.pyx":492
+      /* "bz_pricing/core/bonds.pyx":537
  *         for i in range(self._n_coupons):
  *             du = self._coupon_dus[i]
  *             if du <= 0:             # <<<<<<<<<<<<<<
@@ -36118,17 +36513,17 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_duration(struct __pyx_obj_
 */
     }
 
-    /* "bz_pricing/core/bonds.pyx":495
+    /* "bz_pricing/core/bonds.pyx":540
  *                 continue
  * 
  *             rate = real_curve.get_rate(du)             # <<<<<<<<<<<<<<
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
  * 
 */
-    __pyx_t_6 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_real_curve->__pyx_vtab)->get_rate(__pyx_v_real_curve, __pyx_v_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 495, __pyx_L1_error)
+    __pyx_t_6 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_real_curve->__pyx_vtab)->get_rate(__pyx_v_real_curve, __pyx_v_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 540, __pyx_L1_error)
     __pyx_v_rate = __pyx_t_6;
 
-    /* "bz_pricing/core/bonds.pyx":496
+    /* "bz_pricing/core/bonds.pyx":541
  * 
  *             rate = real_curve.get_rate(du)
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0             # <<<<<<<<<<<<<<
@@ -36137,7 +36532,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_duration(struct __pyx_obj_
 */
     __pyx_v_discount_factor = (trunc((pow((1.0 + __pyx_v_rate), (((double)__pyx_v_du) / 252.0)) * 100000000000000.0)) / 100000000000000.0);
 
-    /* "bz_pricing/core/bonds.pyx":498
+    /* "bz_pricing/core/bonds.pyx":543
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
  * 
  *             if i == self._n_coupons - 1:             # <<<<<<<<<<<<<<
@@ -36149,7 +36544,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_duration(struct __pyx_obj_
     if (__pyx_t_11) {
 
 
-      /* "bz_pricing/core/bonds.pyx":499
+      /* "bz_pricing/core/bonds.pyx":544
  * 
  *             if i == self._n_coupons - 1:
  *                 fluxo = 100.0 + coupon_factor             # <<<<<<<<<<<<<<
@@ -36158,7 +36553,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_duration(struct __pyx_obj_
 */
       __pyx_v_fluxo = (100.0 + __pyx_v_coupon_factor);
 
-      /* "bz_pricing/core/bonds.pyx":498
+      /* "bz_pricing/core/bonds.pyx":543
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
  * 
  *             if i == self._n_coupons - 1:             # <<<<<<<<<<<<<<
@@ -36168,7 +36563,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_duration(struct __pyx_obj_
       goto __pyx_L6;
     }
 
-    /* "bz_pricing/core/bonds.pyx":501
+    /* "bz_pricing/core/bonds.pyx":546
  *                 fluxo = 100.0 + coupon_factor
  *             else:
  *                 fluxo = coupon_factor             # <<<<<<<<<<<<<<
@@ -36180,7 +36575,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_duration(struct __pyx_obj_
     }
     __pyx_L6:;
 
-    /* "bz_pricing/core/bonds.pyx":503
+    /* "bz_pricing/core/bonds.pyx":548
  *                 fluxo = coupon_factor
  * 
  *             pv_fluxo = round((fluxo / discount_factor) * 10000000000.0) / 10000000000.0             # <<<<<<<<<<<<<<
@@ -36189,7 +36584,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_duration(struct __pyx_obj_
 */
     __pyx_v_pv_fluxo = (round(((__pyx_v_fluxo / __pyx_v_discount_factor) * 10000000000.0)) / 10000000000.0);
 
-    /* "bz_pricing/core/bonds.pyx":504
+    /* "bz_pricing/core/bonds.pyx":549
  * 
  *             pv_fluxo = round((fluxo / discount_factor) * 10000000000.0) / 10000000000.0
  *             total_weighted += du * pv_fluxo             # <<<<<<<<<<<<<<
@@ -36198,7 +36593,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_duration(struct __pyx_obj_
 */
     __pyx_v_total_weighted = (__pyx_v_total_weighted + (__pyx_v_du * __pyx_v_pv_fluxo));
 
-    /* "bz_pricing/core/bonds.pyx":505
+    /* "bz_pricing/core/bonds.pyx":550
  *             pv_fluxo = round((fluxo / discount_factor) * 10000000000.0) / 10000000000.0
  *             total_weighted += du * pv_fluxo
  *             total_cot += pv_fluxo             # <<<<<<<<<<<<<<
@@ -36210,7 +36605,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_duration(struct __pyx_obj_
   }
 
 
-  /* "bz_pricing/core/bonds.pyx":507
+  /* "bz_pricing/core/bonds.pyx":552
  *             total_cot += pv_fluxo
  * 
  *         if total_cot <= 0.0:             # <<<<<<<<<<<<<<
@@ -36222,7 +36617,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_duration(struct __pyx_obj_
   if (__pyx_t_11) {
 
 
-    /* "bz_pricing/core/bonds.pyx":508
+    /* "bz_pricing/core/bonds.pyx":553
  * 
  *         if total_cot <= 0.0:
  *             return 0.0             # <<<<<<<<<<<<<<
@@ -36235,7 +36630,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_duration(struct __pyx_obj_
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/bonds.pyx":507
+    /* "bz_pricing/core/bonds.pyx":552
  *             total_cot += pv_fluxo
  * 
  *         if total_cot <= 0.0:             # <<<<<<<<<<<<<<
@@ -36244,7 +36639,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_duration(struct __pyx_obj_
 */
   }
 
-  /* "bz_pricing/core/bonds.pyx":509
+  /* "bz_pricing/core/bonds.pyx":554
  *         if total_cot <= 0.0:
  *             return 0.0
  *         return total_weighted / total_cot             # <<<<<<<<<<<<<<
@@ -36257,7 +36652,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_duration(struct __pyx_obj_
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/bonds.pyx":482
+  /* "bz_pricing/core/bonds.pyx":527
  *         return trunc((vna * (cot / 100.0)) * 1000000.0) / 1000000.0
  * 
  *     cpdef double duration(self, Curve real_curve) except *:             # <<<<<<<<<<<<<<
@@ -36327,32 +36722,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_real_curve,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 482, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 527, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 482, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 527, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "duration", 0) < (0)) __PYX_ERR(0, 482, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "duration", 0) < (0)) __PYX_ERR(0, 527, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("duration", 1, 1, 1, i); __PYX_ERR(0, 482, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("duration", 1, 1, 1, i); __PYX_ERR(0, 527, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 482, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 527, __pyx_L3_error)
     }
     __pyx_v_real_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("duration", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 482, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("duration", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 527, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -36363,7 +36758,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 482, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 527, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_5bonds_4NTNC_6duration(((struct __pyx_obj_10bz_pricing_4core_5bonds_NTNC *)__pyx_v_self), __pyx_v_real_curve);
 
   /* function exit code */
@@ -36392,8 +36787,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_4NTNC_6duration(struct __pyx
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("duration", 0);
-  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_4NTNC_duration(__pyx_v_self, __pyx_v_real_curve, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 482, __pyx_L1_error)
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 482, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_4NTNC_duration(__pyx_v_self, __pyx_v_real_curve, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 527, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 527, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
   {
@@ -36418,12 +36813,12 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_4NTNC_6duration(struct __pyx
   return __pyx_r;
 }
 
-/* "bz_pricing/core/bonds.pyx":511
+/* "bz_pricing/core/bonds.pyx":556
  *         return total_weighted / total_cot
  * 
  *     cpdef double modified_duration(self, Curve real_curve) except *:             # <<<<<<<<<<<<<<
- *         cdef double dur_du = self.duration(real_curve)
- *         cdef int last_du = self._coupon_dus[self._n_coupons - 1]
+ *         cdef double total_weighted = 0.0
+ *         cdef double total_cot = 0.0
 */
 
 static PyObject *__pyx_pw_10bz_pricing_4core_5bonds_4NTNC_9modified_duration(PyObject *__pyx_v_self, 
@@ -36434,9 +36829,15 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
 static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_modified_duration(struct __pyx_obj_10bz_pricing_4core_5bonds_NTNC *__pyx_v_self, struct __pyx_obj_10bz_pricing_4core_6curves_Curve *__pyx_v_real_curve, int __pyx_skip_dispatch) {
-  double __pyx_v_dur_du;
-  int __pyx_v_last_du;
-  double __pyx_v_last_rate;
+  double __pyx_v_total_weighted;
+  double __pyx_v_total_cot;
+  int __pyx_v_i;
+  int __pyx_v_du;
+  double __pyx_v_rate;
+  double __pyx_v_discount_factor;
+  double __pyx_v_fluxo;
+  double __pyx_v_pv_fluxo;
+  double __pyx_v_coupon_factor;
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -36445,7 +36846,11 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_modified_duration(struct _
   PyObject *__pyx_t_4 = NULL;
   size_t __pyx_t_5;
   double __pyx_t_6;
-  Py_ssize_t __pyx_t_7;
+  int __pyx_t_7;
+  int __pyx_t_8;
+  int __pyx_t_9;
+  Py_ssize_t __pyx_t_10;
+  int __pyx_t_11;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -36466,7 +36871,7 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_modified_duration(struct _
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_modified_duration); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 511, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_modified_duration); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 556, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_5bonds_4NTNC_9modified_duration)) {
         __pyx_t_3 = NULL;
@@ -36489,10 +36894,10 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_modified_duration(struct _
           __pyx_t_2 = __Pyx_PyObject_FastCall((PyObject*)__pyx_t_4, __pyx_callargs+__pyx_t_5, (2-__pyx_t_5) | (__pyx_t_5*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 511, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 556, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_6 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 511, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 556, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_6;
@@ -36513,56 +36918,233 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_modified_duration(struct _
     #endif
   }
 
-  /* "bz_pricing/core/bonds.pyx":512
+  /* "bz_pricing/core/bonds.pyx":557
  * 
  *     cpdef double modified_duration(self, Curve real_curve) except *:
- *         cdef double dur_du = self.duration(real_curve)             # <<<<<<<<<<<<<<
- *         cdef int last_du = self._coupon_dus[self._n_coupons - 1]
- *         cdef double last_rate = real_curve.get_rate(last_du)
+ *         cdef double total_weighted = 0.0             # <<<<<<<<<<<<<<
+ *         cdef double total_cot = 0.0
+ *         cdef int i, du
 */
-  __pyx_t_6 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNC *)__pyx_v_self->__pyx_base.__pyx_vtab)->duration(__pyx_v_self, __pyx_v_real_curve, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 512, __pyx_L1_error)
-  __pyx_v_dur_du = __pyx_t_6;
+  __pyx_v_total_weighted = 0.0;
 
-  /* "bz_pricing/core/bonds.pyx":513
+  /* "bz_pricing/core/bonds.pyx":558
  *     cpdef double modified_duration(self, Curve real_curve) except *:
- *         cdef double dur_du = self.duration(real_curve)
- *         cdef int last_du = self._coupon_dus[self._n_coupons - 1]             # <<<<<<<<<<<<<<
- *         cdef double last_rate = real_curve.get_rate(last_du)
- *         return (dur_du / 252.0) / (1.0 + last_rate)
+ *         cdef double total_weighted = 0.0
+ *         cdef double total_cot = 0.0             # <<<<<<<<<<<<<<
+ *         cdef int i, du
+ *         cdef double rate, discount_factor, fluxo, pv_fluxo
 */
-  if (unlikely(!__pyx_v_self->_coupon_dus.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 513, __pyx_L1_error)}
-  __pyx_t_7 = (__pyx_v_self->_n_coupons - 1);
-  __pyx_v_last_du = (*((int *) ( /* dim=0 */ (__pyx_v_self->_coupon_dus.data + __pyx_t_7 * __pyx_v_self->_coupon_dus.strides[0]) )));
+  __pyx_v_total_cot = 0.0;
 
-  /* "bz_pricing/core/bonds.pyx":514
- *         cdef double dur_du = self.duration(real_curve)
- *         cdef int last_du = self._coupon_dus[self._n_coupons - 1]
- *         cdef double last_rate = real_curve.get_rate(last_du)             # <<<<<<<<<<<<<<
- *         return (dur_du / 252.0) / (1.0 + last_rate)
+  /* "bz_pricing/core/bonds.pyx":561
+ *         cdef int i, du
+ *         cdef double rate, discount_factor, fluxo, pv_fluxo
+ *         cdef double coupon_factor = round((pow(1.0 + self._coupon_rate, 0.5) - 1.0) * 100.0 * 1000000.0) / 1000000.0             # <<<<<<<<<<<<<<
+ * 
+ *         for i in range(self._n_coupons):
+*/
+  __pyx_v_coupon_factor = (round((((pow((1.0 + __pyx_v_self->_coupon_rate), 0.5) - 1.0) * 100.0) * 1000000.0)) / 1000000.0);
+
+  /* "bz_pricing/core/bonds.pyx":563
+ *         cdef double coupon_factor = round((pow(1.0 + self._coupon_rate, 0.5) - 1.0) * 100.0 * 1000000.0) / 1000000.0
+ * 
+ *         for i in range(self._n_coupons):             # <<<<<<<<<<<<<<
+ *             du = self._coupon_dus[i]
+ *             if du <= 0:
+*/
+
+  __pyx_t_7 = __pyx_v_self->_n_coupons;
+  __pyx_t_8 = __pyx_t_7;
+
+  for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_8; __pyx_t_9+=1) {
+    __pyx_v_i = __pyx_t_9;
+
+    /* "bz_pricing/core/bonds.pyx":564
+ * 
+ *         for i in range(self._n_coupons):
+ *             du = self._coupon_dus[i]             # <<<<<<<<<<<<<<
+ *             if du <= 0:
+ *                 continue
+*/
+    if (unlikely(!__pyx_v_self->_coupon_dus.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 564, __pyx_L1_error)}
+    __pyx_t_10 = __pyx_v_i;
+    __pyx_v_du = (*((int *) ( /* dim=0 */ (__pyx_v_self->_coupon_dus.data + __pyx_t_10 * __pyx_v_self->_coupon_dus.strides[0]) )));
+
+    /* "bz_pricing/core/bonds.pyx":565
+ *         for i in range(self._n_coupons):
+ *             du = self._coupon_dus[i]
+ *             if du <= 0:             # <<<<<<<<<<<<<<
+ *                 continue
  * 
 */
-  __pyx_t_6 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_real_curve->__pyx_vtab)->get_rate(__pyx_v_real_curve, __pyx_v_last_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 514, __pyx_L1_error)
-  __pyx_v_last_rate = __pyx_t_6;
+    __pyx_t_11 = (__pyx_v_du <= 0);
 
-  /* "bz_pricing/core/bonds.pyx":515
- *         cdef int last_du = self._coupon_dus[self._n_coupons - 1]
- *         cdef double last_rate = real_curve.get_rate(last_du)
- *         return (dur_du / 252.0) / (1.0 + last_rate)             # <<<<<<<<<<<<<<
+    if (__pyx_t_11) {
+
+
+      /* "bz_pricing/core/bonds.pyx":566
+ *             du = self._coupon_dus[i]
+ *             if du <= 0:
+ *                 continue             # <<<<<<<<<<<<<<
+ * 
+ *             rate = real_curve.get_rate(du)
+*/
+      goto __pyx_L3_continue;
+
+      /* "bz_pricing/core/bonds.pyx":565
+ *         for i in range(self._n_coupons):
+ *             du = self._coupon_dus[i]
+ *             if du <= 0:             # <<<<<<<<<<<<<<
+ *                 continue
+ * 
+*/
+    }
+
+    /* "bz_pricing/core/bonds.pyx":568
+ *                 continue
+ * 
+ *             rate = real_curve.get_rate(du)             # <<<<<<<<<<<<<<
+ *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
+ * 
+*/
+    __pyx_t_6 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_real_curve->__pyx_vtab)->get_rate(__pyx_v_real_curve, __pyx_v_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 568, __pyx_L1_error)
+    __pyx_v_rate = __pyx_t_6;
+
+    /* "bz_pricing/core/bonds.pyx":569
+ * 
+ *             rate = real_curve.get_rate(du)
+ *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0             # <<<<<<<<<<<<<<
+ * 
+ *             if i == self._n_coupons - 1:
+*/
+    __pyx_v_discount_factor = (trunc((pow((1.0 + __pyx_v_rate), (((double)__pyx_v_du) / 252.0)) * 100000000000000.0)) / 100000000000000.0);
+
+    /* "bz_pricing/core/bonds.pyx":571
+ *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
+ * 
+ *             if i == self._n_coupons - 1:             # <<<<<<<<<<<<<<
+ *                 fluxo = 100.0 + coupon_factor
+ *             else:
+*/
+    __pyx_t_11 = (__pyx_v_i == (__pyx_v_self->_n_coupons - 1));
+
+    if (__pyx_t_11) {
+
+
+      /* "bz_pricing/core/bonds.pyx":572
+ * 
+ *             if i == self._n_coupons - 1:
+ *                 fluxo = 100.0 + coupon_factor             # <<<<<<<<<<<<<<
+ *             else:
+ *                 fluxo = coupon_factor
+*/
+      __pyx_v_fluxo = (100.0 + __pyx_v_coupon_factor);
+
+      /* "bz_pricing/core/bonds.pyx":571
+ *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
+ * 
+ *             if i == self._n_coupons - 1:             # <<<<<<<<<<<<<<
+ *                 fluxo = 100.0 + coupon_factor
+ *             else:
+*/
+      goto __pyx_L6;
+    }
+
+    /* "bz_pricing/core/bonds.pyx":574
+ *                 fluxo = 100.0 + coupon_factor
+ *             else:
+ *                 fluxo = coupon_factor             # <<<<<<<<<<<<<<
+ * 
+ *             pv_fluxo = round((fluxo / discount_factor) * 10000000000.0) / 10000000000.0
+*/
+    /*else*/ {
+      __pyx_v_fluxo = __pyx_v_coupon_factor;
+    }
+    __pyx_L6:;
+
+    /* "bz_pricing/core/bonds.pyx":576
+ *                 fluxo = coupon_factor
+ * 
+ *             pv_fluxo = round((fluxo / discount_factor) * 10000000000.0) / 10000000000.0             # <<<<<<<<<<<<<<
+ *             total_weighted += ((du / 252.0) / (1.0 + rate)) * pv_fluxo
+ *             total_cot += pv_fluxo
+*/
+    __pyx_v_pv_fluxo = (round(((__pyx_v_fluxo / __pyx_v_discount_factor) * 10000000000.0)) / 10000000000.0);
+
+    /* "bz_pricing/core/bonds.pyx":577
+ * 
+ *             pv_fluxo = round((fluxo / discount_factor) * 10000000000.0) / 10000000000.0
+ *             total_weighted += ((du / 252.0) / (1.0 + rate)) * pv_fluxo             # <<<<<<<<<<<<<<
+ *             total_cot += pv_fluxo
+ * 
+*/
+    __pyx_v_total_weighted = (__pyx_v_total_weighted + (((((double)__pyx_v_du) / 252.0) / (1.0 + __pyx_v_rate)) * __pyx_v_pv_fluxo));
+
+    /* "bz_pricing/core/bonds.pyx":578
+ *             pv_fluxo = round((fluxo / discount_factor) * 10000000000.0) / 10000000000.0
+ *             total_weighted += ((du / 252.0) / (1.0 + rate)) * pv_fluxo
+ *             total_cot += pv_fluxo             # <<<<<<<<<<<<<<
+ * 
+ *         if total_cot <= 0.0:
+*/
+    __pyx_v_total_cot = (__pyx_v_total_cot + __pyx_v_pv_fluxo);
+    __pyx_L3_continue:;
+  }
+
+
+  /* "bz_pricing/core/bonds.pyx":580
+ *             total_cot += pv_fluxo
+ * 
+ *         if total_cot <= 0.0:             # <<<<<<<<<<<<<<
+ *             return 0.0
+ *         return total_weighted / total_cot
+*/
+  __pyx_t_11 = (__pyx_v_total_cot <= 0.0);
+
+  if (__pyx_t_11) {
+
+
+    /* "bz_pricing/core/bonds.pyx":581
+ * 
+ *         if total_cot <= 0.0:
+ *             return 0.0             # <<<<<<<<<<<<<<
+ *         return total_weighted / total_cot
+ * 
+*/
+    {
+
+      __pyx_r = 0.0;
+    }
+    goto __pyx_L0;
+
+    /* "bz_pricing/core/bonds.pyx":580
+ *             total_cot += pv_fluxo
+ * 
+ *         if total_cot <= 0.0:             # <<<<<<<<<<<<<<
+ *             return 0.0
+ *         return total_weighted / total_cot
+*/
+  }
+
+  /* "bz_pricing/core/bonds.pyx":582
+ *         if total_cot <= 0.0:
+ *             return 0.0
+ *         return total_weighted / total_cot             # <<<<<<<<<<<<<<
  * 
  *     cpdef double dv01(self, Curve real_curve, double vna=0.0) except *:
 */
   {
 
-    __pyx_r = ((__pyx_v_dur_du / 252.0) / (1.0 + __pyx_v_last_rate));
+    __pyx_r = (__pyx_v_total_weighted / __pyx_v_total_cot);
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/bonds.pyx":511
+  /* "bz_pricing/core/bonds.pyx":556
  *         return total_weighted / total_cot
  * 
  *     cpdef double modified_duration(self, Curve real_curve) except *:             # <<<<<<<<<<<<<<
- *         cdef double dur_du = self.duration(real_curve)
- *         cdef int last_du = self._coupon_dus[self._n_coupons - 1]
+ *         cdef double total_weighted = 0.0
+ *         cdef double total_cot = 0.0
 */
 
   /* function exit code */
@@ -36574,6 +37156,12 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_modified_duration(struct _
   __Pyx_AddTraceback("bz_pricing.core.bonds.NTNC.modified_duration", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
+
+
+
+
+
+
 
 
 
@@ -36621,32 +37209,32 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_real_curve,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 511, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 556, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 511, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 556, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "modified_duration", 0) < (0)) __PYX_ERR(0, 511, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "modified_duration", 0) < (0)) __PYX_ERR(0, 556, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("modified_duration", 1, 1, 1, i); __PYX_ERR(0, 511, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("modified_duration", 1, 1, 1, i); __PYX_ERR(0, 556, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 511, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 556, __pyx_L3_error)
     }
     __pyx_v_real_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("modified_duration", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 511, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("modified_duration", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 556, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -36657,7 +37245,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 511, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 556, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_5bonds_4NTNC_8modified_duration(((struct __pyx_obj_10bz_pricing_4core_5bonds_NTNC *)__pyx_v_self), __pyx_v_real_curve);
 
   /* function exit code */
@@ -36686,8 +37274,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_4NTNC_8modified_duration(str
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("modified_duration", 0);
-  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_4NTNC_modified_duration(__pyx_v_self, __pyx_v_real_curve, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 511, __pyx_L1_error)
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 511, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_10bz_pricing_4core_5bonds_4NTNC_modified_duration(__pyx_v_self, __pyx_v_real_curve, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 556, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 556, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
   {
@@ -36712,8 +37300,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_4NTNC_8modified_duration(str
   return __pyx_r;
 }
 
-/* "bz_pricing/core/bonds.pyx":517
- *         return (dur_du / 252.0) / (1.0 + last_rate)
+/* "bz_pricing/core/bonds.pyx":584
+ *         return total_weighted / total_cot
  * 
  *     cpdef double dv01(self, Curve real_curve, double vna=0.0) except *:             # <<<<<<<<<<<<<<
  *         cdef double mod_dur = self.modified_duration(real_curve)
@@ -36766,13 +37354,13 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_dv01(struct __pyx_obj_10bz
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_dv01); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 517, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_dv01); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 584, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_5bonds_4NTNC_11dv01)) {
         __pyx_t_3 = NULL;
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; 
-        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 517, __pyx_L1_error)
+        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 584, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __pyx_t_6 = 1;
         #if CYTHON_UNPACK_METHODS
@@ -36792,10 +37380,10 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_dv01(struct __pyx_obj_10bz
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 517, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 584, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        __pyx_t_7 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 517, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 584, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         {
           __pyx_r = __pyx_t_7;
@@ -36816,17 +37404,17 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_dv01(struct __pyx_obj_10bz
     #endif
   }
 
-  /* "bz_pricing/core/bonds.pyx":518
+  /* "bz_pricing/core/bonds.pyx":585
  * 
  *     cpdef double dv01(self, Curve real_curve, double vna=0.0) except *:
  *         cdef double mod_dur = self.modified_duration(real_curve)             # <<<<<<<<<<<<<<
  *         cdef double pu = self.present_value(real_curve, vna=vna)
  *         return mod_dur * pu * 0.0001
 */
-  __pyx_t_7 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNC *)__pyx_v_self->__pyx_base.__pyx_vtab)->modified_duration(__pyx_v_self, __pyx_v_real_curve, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 518, __pyx_L1_error)
+  __pyx_t_7 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNC *)__pyx_v_self->__pyx_base.__pyx_vtab)->modified_duration(__pyx_v_self, __pyx_v_real_curve, 0); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 585, __pyx_L1_error)
   __pyx_v_mod_dur = __pyx_t_7;
 
-  /* "bz_pricing/core/bonds.pyx":519
+  /* "bz_pricing/core/bonds.pyx":586
  *     cpdef double dv01(self, Curve real_curve, double vna=0.0) except *:
  *         cdef double mod_dur = self.modified_duration(real_curve)
  *         cdef double pu = self.present_value(real_curve, vna=vna)             # <<<<<<<<<<<<<<
@@ -36835,10 +37423,10 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_dv01(struct __pyx_obj_10bz
 */
   __pyx_t_8.__pyx_n = 1;
   __pyx_t_8.vna = __pyx_v_vna;
-  __pyx_t_7 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNC *)__pyx_v_self->__pyx_base.__pyx_vtab)->present_value(__pyx_v_self, __pyx_v_real_curve, 0, &__pyx_t_8); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 519, __pyx_L1_error)
+  __pyx_t_7 = ((struct __pyx_vtabstruct_10bz_pricing_4core_5bonds_NTNC *)__pyx_v_self->__pyx_base.__pyx_vtab)->present_value(__pyx_v_self, __pyx_v_real_curve, 0, &__pyx_t_8); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 586, __pyx_L1_error)
   __pyx_v_pu = __pyx_t_7;
 
-  /* "bz_pricing/core/bonds.pyx":520
+  /* "bz_pricing/core/bonds.pyx":587
  *         cdef double mod_dur = self.modified_duration(real_curve)
  *         cdef double pu = self.present_value(real_curve, vna=vna)
  *         return mod_dur * pu * 0.0001             # <<<<<<<<<<<<<<
@@ -36851,8 +37439,8 @@ static double __pyx_f_10bz_pricing_4core_5bonds_4NTNC_dv01(struct __pyx_obj_10bz
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/bonds.pyx":517
- *         return (dur_du / 252.0) / (1.0 + last_rate)
+  /* "bz_pricing/core/bonds.pyx":584
+ *         return total_weighted / total_cot
  * 
  *     cpdef double dv01(self, Curve real_curve, double vna=0.0) except *:             # <<<<<<<<<<<<<<
  *         cdef double mod_dur = self.modified_duration(real_curve)
@@ -36916,48 +37504,48 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_real_curve,&__pyx_mstate_global->__pyx_n_u_vna,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 517, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 584, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 517, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 584, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 517, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 584, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "dv01", 0) < (0)) __PYX_ERR(0, 517, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "dv01", 0) < (0)) __PYX_ERR(0, 584, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("dv01", 0, 1, 2, i); __PYX_ERR(0, 517, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("dv01", 0, 1, 2, i); __PYX_ERR(0, 584, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 517, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 584, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 517, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 584, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
     __pyx_v_real_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
     if (values[1]) {
-      __pyx_v_vna = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 517, __pyx_L3_error)
+      __pyx_v_vna = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 584, __pyx_L3_error)
     } else {
       __pyx_v_vna = ((double)0.0);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("dv01", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 517, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("dv01", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 584, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -36968,7 +37556,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 517, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 584, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_5bonds_4NTNC_10dv01(((struct __pyx_obj_10bz_pricing_4core_5bonds_NTNC *)__pyx_v_self), __pyx_v_real_curve, __pyx_v_vna);
 
   /* function exit code */
@@ -37001,8 +37589,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_4NTNC_10dv01(struct __pyx_ob
   __Pyx_RefNannySetupContext("dv01", 0);
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.vna = __pyx_v_vna;
-  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_5bonds_NTNC->dv01(__pyx_v_self, __pyx_v_real_curve, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 517, __pyx_L1_error)
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 517, __pyx_L1_error)
+  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_5bonds_NTNC->dv01(__pyx_v_self, __pyx_v_real_curve, 1, &__pyx_t_2); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 584, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 584, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
   {
@@ -37027,7 +37615,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_4NTNC_10dv01(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "bz_pricing/core/bonds.pyx":522
+/* "bz_pricing/core/bonds.pyx":589
  *         return mod_dur * pu * 0.0001
  * 
  *     cpdef list cashflow_details(self, Curve real_curve, double vna=0.0):             # <<<<<<<<<<<<<<
@@ -37095,13 +37683,13 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNC_cashflow_details(struct __pyx_
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_cashflow_details); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 522, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_mstate_global->__pyx_n_u_cashflow_details); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 589, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void(*)(void)) __pyx_pw_10bz_pricing_4core_5bonds_4NTNC_13cashflow_details)) {
         __pyx_t_3 = NULL;
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; 
-        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 522, __pyx_L1_error)
+        __pyx_t_5 = PyFloat_FromDouble(__pyx_v_vna); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 589, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __pyx_t_6 = 1;
         #if CYTHON_UNPACK_METHODS
@@ -37121,10 +37709,10 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNC_cashflow_details(struct __pyx_
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 522, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 589, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
         }
-        if (!(likely(PyList_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None) || __Pyx_RaiseUnexpectedTypeError("list", __pyx_t_2))) __PYX_ERR(0, 522, __pyx_L1_error)
+        if (!(likely(PyList_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None) || __Pyx_RaiseUnexpectedTypeError("list", __pyx_t_2))) __PYX_ERR(0, 589, __pyx_L1_error)
         {
           PyObject *__pyx_temp;
           {
@@ -37150,19 +37738,19 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNC_cashflow_details(struct __pyx_
     #endif
   }
 
-  /* "bz_pricing/core/bonds.pyx":523
+  /* "bz_pricing/core/bonds.pyx":590
  * 
  *     cpdef list cashflow_details(self, Curve real_curve, double vna=0.0):
  *         cdef list flows = []             # <<<<<<<<<<<<<<
  *         cdef int i, du
  *         cdef double rate, discount_factor
 */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 523, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 590, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_flows = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":526
+  /* "bz_pricing/core/bonds.pyx":593
  *         cdef int i, du
  *         cdef double rate, discount_factor
  *         cdef double coupon_factor = round((pow(1.0 + self._coupon_rate, 0.5) - 1.0) * 100.0 * 1000000.0) / 1000000.0             # <<<<<<<<<<<<<<
@@ -37171,7 +37759,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNC_cashflow_details(struct __pyx_
 */
   __pyx_v_coupon_factor = (round((((pow((1.0 + __pyx_v_self->_coupon_rate), 0.5) - 1.0) * 100.0) * 1000000.0)) / 1000000.0);
 
-  /* "bz_pricing/core/bonds.pyx":529
+  /* "bz_pricing/core/bonds.pyx":596
  *         cdef double fluxo_cot, pv_cot, pv_fin
  * 
  *         for i in range(self._n_coupons):             # <<<<<<<<<<<<<<
@@ -37185,18 +37773,18 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNC_cashflow_details(struct __pyx_
   for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_8; __pyx_t_9+=1) {
     __pyx_v_i = __pyx_t_9;
 
-    /* "bz_pricing/core/bonds.pyx":530
+    /* "bz_pricing/core/bonds.pyx":597
  * 
  *         for i in range(self._n_coupons):
  *             du = self._coupon_dus[i]             # <<<<<<<<<<<<<<
  *             if du <= 0:
  *                 continue
 */
-    if (unlikely(!__pyx_v_self->_coupon_dus.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 530, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_coupon_dus.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 597, __pyx_L1_error)}
     __pyx_t_10 = __pyx_v_i;
     __pyx_v_du = (*((int *) ( /* dim=0 */ (__pyx_v_self->_coupon_dus.data + __pyx_t_10 * __pyx_v_self->_coupon_dus.strides[0]) )));
 
-    /* "bz_pricing/core/bonds.pyx":531
+    /* "bz_pricing/core/bonds.pyx":598
  *         for i in range(self._n_coupons):
  *             du = self._coupon_dus[i]
  *             if du <= 0:             # <<<<<<<<<<<<<<
@@ -37208,7 +37796,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNC_cashflow_details(struct __pyx_
     if (__pyx_t_11) {
 
 
-      /* "bz_pricing/core/bonds.pyx":532
+      /* "bz_pricing/core/bonds.pyx":599
  *             du = self._coupon_dus[i]
  *             if du <= 0:
  *                 continue             # <<<<<<<<<<<<<<
@@ -37217,7 +37805,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNC_cashflow_details(struct __pyx_
 */
       goto __pyx_L3_continue;
 
-      /* "bz_pricing/core/bonds.pyx":531
+      /* "bz_pricing/core/bonds.pyx":598
  *         for i in range(self._n_coupons):
  *             du = self._coupon_dus[i]
  *             if du <= 0:             # <<<<<<<<<<<<<<
@@ -37226,17 +37814,17 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNC_cashflow_details(struct __pyx_
 */
     }
 
-    /* "bz_pricing/core/bonds.pyx":534
+    /* "bz_pricing/core/bonds.pyx":601
  *                 continue
  * 
  *             rate = real_curve.get_rate(du)             # <<<<<<<<<<<<<<
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
  * 
 */
-    __pyx_t_12 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_real_curve->__pyx_vtab)->get_rate(__pyx_v_real_curve, __pyx_v_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 534, __pyx_L1_error)
+    __pyx_t_12 = ((struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve *)__pyx_v_real_curve->__pyx_vtab)->get_rate(__pyx_v_real_curve, __pyx_v_du, 0, NULL); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 601, __pyx_L1_error)
     __pyx_v_rate = __pyx_t_12;
 
-    /* "bz_pricing/core/bonds.pyx":535
+    /* "bz_pricing/core/bonds.pyx":602
  * 
  *             rate = real_curve.get_rate(du)
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0             # <<<<<<<<<<<<<<
@@ -37245,7 +37833,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNC_cashflow_details(struct __pyx_
 */
     __pyx_v_discount_factor = (trunc((pow((1.0 + __pyx_v_rate), (((double)__pyx_v_du) / 252.0)) * 100000000000000.0)) / 100000000000000.0);
 
-    /* "bz_pricing/core/bonds.pyx":537
+    /* "bz_pricing/core/bonds.pyx":604
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
  * 
  *             if i == self._n_coupons - 1:             # <<<<<<<<<<<<<<
@@ -37257,7 +37845,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNC_cashflow_details(struct __pyx_
     if (__pyx_t_11) {
 
 
-      /* "bz_pricing/core/bonds.pyx":538
+      /* "bz_pricing/core/bonds.pyx":605
  * 
  *             if i == self._n_coupons - 1:
  *                 fluxo_cot = 100.0 + coupon_factor             # <<<<<<<<<<<<<<
@@ -37266,7 +37854,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNC_cashflow_details(struct __pyx_
 */
       __pyx_v_fluxo_cot = (100.0 + __pyx_v_coupon_factor);
 
-      /* "bz_pricing/core/bonds.pyx":537
+      /* "bz_pricing/core/bonds.pyx":604
  *             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
  * 
  *             if i == self._n_coupons - 1:             # <<<<<<<<<<<<<<
@@ -37276,7 +37864,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNC_cashflow_details(struct __pyx_
       goto __pyx_L6;
     }
 
-    /* "bz_pricing/core/bonds.pyx":540
+    /* "bz_pricing/core/bonds.pyx":607
  *                 fluxo_cot = 100.0 + coupon_factor
  *             else:
  *                 fluxo_cot = coupon_factor             # <<<<<<<<<<<<<<
@@ -37288,7 +37876,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNC_cashflow_details(struct __pyx_
     }
     __pyx_L6:;
 
-    /* "bz_pricing/core/bonds.pyx":542
+    /* "bz_pricing/core/bonds.pyx":609
  *                 fluxo_cot = coupon_factor
  * 
  *             pv_cot = round((fluxo_cot / discount_factor) * 10000000000.0) / 10000000000.0             # <<<<<<<<<<<<<<
@@ -37297,7 +37885,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNC_cashflow_details(struct __pyx_
 */
     __pyx_v_pv_cot = (round(((__pyx_v_fluxo_cot / __pyx_v_discount_factor) * 10000000000.0)) / 10000000000.0);
 
-    /* "bz_pricing/core/bonds.pyx":543
+    /* "bz_pricing/core/bonds.pyx":610
  * 
  *             pv_cot = round((fluxo_cot / discount_factor) * 10000000000.0) / 10000000000.0
  *             pv_fin = 0.0             # <<<<<<<<<<<<<<
@@ -37306,7 +37894,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNC_cashflow_details(struct __pyx_
 */
     __pyx_v_pv_fin = 0.0;
 
-    /* "bz_pricing/core/bonds.pyx":544
+    /* "bz_pricing/core/bonds.pyx":611
  *             pv_cot = round((fluxo_cot / discount_factor) * 10000000000.0) / 10000000000.0
  *             pv_fin = 0.0
  *             if vna > 0.0:             # <<<<<<<<<<<<<<
@@ -37318,7 +37906,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNC_cashflow_details(struct __pyx_
     if (__pyx_t_11) {
 
 
-      /* "bz_pricing/core/bonds.pyx":545
+      /* "bz_pricing/core/bonds.pyx":612
  *             pv_fin = 0.0
  *             if vna > 0.0:
  *                 pv_fin = trunc((vna * (pv_cot / 100.0)) * 1000000.0) / 1000000.0             # <<<<<<<<<<<<<<
@@ -37327,7 +37915,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNC_cashflow_details(struct __pyx_
 */
       __pyx_v_pv_fin = (trunc(((__pyx_v_vna * (__pyx_v_pv_cot / 100.0)) * 1000000.0)) / 1000000.0);
 
-      /* "bz_pricing/core/bonds.pyx":544
+      /* "bz_pricing/core/bonds.pyx":611
  *             pv_cot = round((fluxo_cot / discount_factor) * 10000000000.0) / 10000000000.0
  *             pv_fin = 0.0
  *             if vna > 0.0:             # <<<<<<<<<<<<<<
@@ -37336,53 +37924,53 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNC_cashflow_details(struct __pyx_
 */
     }
 
-    /* "bz_pricing/core/bonds.pyx":547
+    /* "bz_pricing/core/bonds.pyx":614
  *                 pv_fin = trunc((vna * (pv_cot / 100.0)) * 1000000.0) / 1000000.0
  * 
  *             flows.append((du, fluxo_cot, rate, discount_factor, pv_cot, pv_fin))             # <<<<<<<<<<<<<<
  * 
  *         return flows
 */
-    __pyx_t_1 = __Pyx_PyLong_From_int(__pyx_v_du); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 547, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyLong_From_int(__pyx_v_du); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 614, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = PyFloat_FromDouble(__pyx_v_fluxo_cot); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 547, __pyx_L1_error)
+    __pyx_t_2 = PyFloat_FromDouble(__pyx_v_fluxo_cot); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 614, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_rate); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 547, __pyx_L1_error)
+    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_rate); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 614, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = PyFloat_FromDouble(__pyx_v_discount_factor); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 547, __pyx_L1_error)
+    __pyx_t_5 = PyFloat_FromDouble(__pyx_v_discount_factor); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 614, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_3 = PyFloat_FromDouble(__pyx_v_pv_cot); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 547, __pyx_L1_error)
+    __pyx_t_3 = PyFloat_FromDouble(__pyx_v_pv_cot); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 614, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_13 = PyFloat_FromDouble(__pyx_v_pv_fin); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 547, __pyx_L1_error)
+    __pyx_t_13 = PyFloat_FromDouble(__pyx_v_pv_fin); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 614, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
-    __pyx_t_14 = PyTuple_New(6); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 547, __pyx_L1_error)
+    __pyx_t_14 = PyTuple_New(6); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 614, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
     __Pyx_GIVEREF(__pyx_t_1);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_1) != (0)) __PYX_ERR(0, 547, __pyx_L1_error);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_1) != (0)) __PYX_ERR(0, 614, __pyx_L1_error);
     __Pyx_GIVEREF(__pyx_t_2);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 1, __pyx_t_2) != (0)) __PYX_ERR(0, 547, __pyx_L1_error);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 1, __pyx_t_2) != (0)) __PYX_ERR(0, 614, __pyx_L1_error);
     __Pyx_GIVEREF(__pyx_t_4);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 2, __pyx_t_4) != (0)) __PYX_ERR(0, 547, __pyx_L1_error);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 2, __pyx_t_4) != (0)) __PYX_ERR(0, 614, __pyx_L1_error);
     __Pyx_GIVEREF(__pyx_t_5);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 3, __pyx_t_5) != (0)) __PYX_ERR(0, 547, __pyx_L1_error);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 3, __pyx_t_5) != (0)) __PYX_ERR(0, 614, __pyx_L1_error);
     __Pyx_GIVEREF(__pyx_t_3);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 4, __pyx_t_3) != (0)) __PYX_ERR(0, 547, __pyx_L1_error);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 4, __pyx_t_3) != (0)) __PYX_ERR(0, 614, __pyx_L1_error);
     __Pyx_GIVEREF(__pyx_t_13);
-    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 5, __pyx_t_13) != (0)) __PYX_ERR(0, 547, __pyx_L1_error);
+    if (__Pyx_PyTuple_SET_ITEM(__pyx_t_14, 5, __pyx_t_13) != (0)) __PYX_ERR(0, 614, __pyx_L1_error);
     __pyx_t_1 = 0;
     __pyx_t_2 = 0;
     __pyx_t_4 = 0;
     __pyx_t_5 = 0;
     __pyx_t_3 = 0;
     __pyx_t_13 = 0;
-    __pyx_t_15 = __Pyx_PyList_Append(__pyx_v_flows, __pyx_t_14); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 547, __pyx_L1_error)
+    __pyx_t_15 = __Pyx_PyList_Append(__pyx_v_flows, __pyx_t_14); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 614, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
 
     __pyx_L3_continue:;
   }
 
 
-  /* "bz_pricing/core/bonds.pyx":549
+  /* "bz_pricing/core/bonds.pyx":616
  *             flows.append((du, fluxo_cot, rate, discount_factor, pv_cot, pv_fin))
  * 
  *         return flows             # <<<<<<<<<<<<<<
@@ -37398,7 +37986,7 @@ PyObject *__pyx_f_10bz_pricing_4core_5bonds_4NTNC_cashflow_details(struct __pyx_
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/bonds.pyx":522
+  /* "bz_pricing/core/bonds.pyx":589
  *         return mod_dur * pu * 0.0001
  * 
  *     cpdef list cashflow_details(self, Curve real_curve, double vna=0.0):             # <<<<<<<<<<<<<<
@@ -37472,48 +38060,48 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_real_curve,&__pyx_mstate_global->__pyx_n_u_vna,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 522, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 589, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 522, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 589, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 522, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 589, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "cashflow_details", 0) < (0)) __PYX_ERR(0, 522, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "cashflow_details", 0) < (0)) __PYX_ERR(0, 589, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 1; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("cashflow_details", 0, 1, 2, i); __PYX_ERR(0, 522, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("cashflow_details", 0, 1, 2, i); __PYX_ERR(0, 589, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 522, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 589, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 522, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 589, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
     __pyx_v_real_curve = ((struct __pyx_obj_10bz_pricing_4core_6curves_Curve *)values[0]);
     if (values[1]) {
-      __pyx_v_vna = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 522, __pyx_L3_error)
+      __pyx_v_vna = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_vna == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 589, __pyx_L3_error)
     } else {
       __pyx_v_vna = ((double)0.0);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("cashflow_details", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 522, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("cashflow_details", 0, 1, 2, __pyx_nargs); __PYX_ERR(0, 589, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -37524,7 +38112,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 522, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_real_curve), __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_6curves_Curve, 1, "real_curve", 0))) __PYX_ERR(0, 589, __pyx_L1_error)
   __pyx_r = __pyx_pf_10bz_pricing_4core_5bonds_4NTNC_12cashflow_details(((struct __pyx_obj_10bz_pricing_4core_5bonds_NTNC *)__pyx_v_self), __pyx_v_real_curve, __pyx_v_vna);
 
   /* function exit code */
@@ -37556,7 +38144,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_5bonds_4NTNC_12cashflow_details(str
   __Pyx_RefNannySetupContext("cashflow_details", 0);
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.vna = __pyx_v_vna;
-  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_5bonds_NTNC->cashflow_details(__pyx_v_self, __pyx_v_real_curve, 1, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 522, __pyx_L1_error)
+  __pyx_t_1 = __pyx_vtabptr_10bz_pricing_4core_5bonds_NTNC->cashflow_details(__pyx_v_self, __pyx_v_real_curve, 1, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 589, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   {
     PyObject *__pyx_temp;
@@ -43247,11 +43835,11 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_5bonds_LFT(__pyx_m
   __pyx_vtable_10bz_pricing_4core_5bonds_LFT.dv01 = (double (*)(struct __pyx_obj_10bz_pricing_4core_5bonds_LFT *, struct __pyx_obj_10bz_pricing_4core_6curves_Curve *, double, int __pyx_skip_dispatch))__pyx_f_10bz_pricing_4core_5bonds_3LFT_dv01;
   __pyx_vtable_10bz_pricing_4core_5bonds_LFT.cashflow_details = (PyObject *(*)(struct __pyx_obj_10bz_pricing_4core_5bonds_LFT *, struct __pyx_obj_10bz_pricing_4core_6curves_Curve *, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_5bonds_3LFT_cashflow_details *__pyx_optional_args))__pyx_f_10bz_pricing_4core_5bonds_3LFT_cashflow_details;
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_Bond); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 223, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_Bond); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 246, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_LFT = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10bz_pricing_4core_5bonds_LFT_spec, __pyx_t_1);
   __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_LFT)) __PYX_ERR(0, 223, __pyx_L1_error)
+  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_LFT)) __PYX_ERR(0, 246, __pyx_L1_error)
   #else
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_LFT = &__pyx_type_10bz_pricing_4core_5bonds_LFT;
   #endif
@@ -43259,7 +43847,7 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_5bonds_LFT(__pyx_m
   __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_LFT->tp_base = __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_Bond;
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_LFT) < (0)) __PYX_ERR(0, 223, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_LFT) < (0)) __PYX_ERR(0, 246, __pyx_L1_error)
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount((PyObject*)__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_LFT);
@@ -43269,9 +43857,9 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_5bonds_LFT(__pyx_m
     __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_LFT->tp_getattro = PyObject_GenericGetAttr;
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_LFT, __pyx_vtabptr_10bz_pricing_4core_5bonds_LFT) < (0)) __PYX_ERR(0, 223, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_LFT, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_LFT) < (0)) __PYX_ERR(0, 223, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_LFT) < (0)) __PYX_ERR(0, 223, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_LFT, __pyx_vtabptr_10bz_pricing_4core_5bonds_LFT) < (0)) __PYX_ERR(0, 246, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_LFT, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_LFT) < (0)) __PYX_ERR(0, 246, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_LFT) < (0)) __PYX_ERR(0, 246, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -43300,11 +43888,11 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_5bonds_NTNB(__pyx_
   __pyx_vtable_10bz_pricing_4core_5bonds_NTNB.dv01 = (double (*)(struct __pyx_obj_10bz_pricing_4core_5bonds_NTNB *, struct __pyx_obj_10bz_pricing_4core_6curves_Curve *, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_5bonds_4NTNB_dv01 *__pyx_optional_args))__pyx_f_10bz_pricing_4core_5bonds_4NTNB_dv01;
   __pyx_vtable_10bz_pricing_4core_5bonds_NTNB.cashflow_details = (PyObject *(*)(struct __pyx_obj_10bz_pricing_4core_5bonds_NTNB *, struct __pyx_obj_10bz_pricing_4core_6curves_Curve *, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_5bonds_4NTNB_cashflow_details *__pyx_optional_args))__pyx_f_10bz_pricing_4core_5bonds_4NTNB_cashflow_details;
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_Bond); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 270, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_Bond); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 293, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10bz_pricing_4core_5bonds_NTNB_spec, __pyx_t_1);
   __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB)) __PYX_ERR(0, 270, __pyx_L1_error)
+  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB)) __PYX_ERR(0, 293, __pyx_L1_error)
   #else
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB = &__pyx_type_10bz_pricing_4core_5bonds_NTNB;
   #endif
@@ -43312,7 +43900,7 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_5bonds_NTNB(__pyx_
   __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB->tp_base = __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_Bond;
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB) < (0)) __PYX_ERR(0, 270, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB) < (0)) __PYX_ERR(0, 293, __pyx_L1_error)
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount((PyObject*)__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB);
@@ -43322,9 +43910,9 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_5bonds_NTNB(__pyx_
     __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB->tp_getattro = PyObject_GenericGetAttr;
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB, __pyx_vtabptr_10bz_pricing_4core_5bonds_NTNB) < (0)) __PYX_ERR(0, 270, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_NTNB, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB) < (0)) __PYX_ERR(0, 270, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB) < (0)) __PYX_ERR(0, 270, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB, __pyx_vtabptr_10bz_pricing_4core_5bonds_NTNB) < (0)) __PYX_ERR(0, 293, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_NTNB, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB) < (0)) __PYX_ERR(0, 293, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB) < (0)) __PYX_ERR(0, 293, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -43353,11 +43941,11 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_5bonds_NTNBP(__pyx
   __pyx_vtable_10bz_pricing_4core_5bonds_NTNBP.dv01 = (double (*)(struct __pyx_obj_10bz_pricing_4core_5bonds_NTNBP *, struct __pyx_obj_10bz_pricing_4core_6curves_Curve *, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_5bonds_5NTNBP_dv01 *__pyx_optional_args))__pyx_f_10bz_pricing_4core_5bonds_5NTNBP_dv01;
   __pyx_vtable_10bz_pricing_4core_5bonds_NTNBP.cashflow_details = (PyObject *(*)(struct __pyx_obj_10bz_pricing_4core_5bonds_NTNBP *, struct __pyx_obj_10bz_pricing_4core_6curves_Curve *, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_5bonds_5NTNBP_cashflow_details *__pyx_optional_args))__pyx_f_10bz_pricing_4core_5bonds_5NTNBP_cashflow_details;
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_Bond); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 386, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_Bond); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 431, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10bz_pricing_4core_5bonds_NTNBP_spec, __pyx_t_1);
   __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP)) __PYX_ERR(0, 386, __pyx_L1_error)
+  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP)) __PYX_ERR(0, 431, __pyx_L1_error)
   #else
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP = &__pyx_type_10bz_pricing_4core_5bonds_NTNBP;
   #endif
@@ -43365,7 +43953,7 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_5bonds_NTNBP(__pyx
   __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP->tp_base = __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_Bond;
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP) < (0)) __PYX_ERR(0, 386, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP) < (0)) __PYX_ERR(0, 431, __pyx_L1_error)
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount((PyObject*)__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP);
@@ -43375,9 +43963,9 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_5bonds_NTNBP(__pyx
     __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP->tp_getattro = PyObject_GenericGetAttr;
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP, __pyx_vtabptr_10bz_pricing_4core_5bonds_NTNBP) < (0)) __PYX_ERR(0, 386, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_NTNBP, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP) < (0)) __PYX_ERR(0, 386, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP) < (0)) __PYX_ERR(0, 386, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP, __pyx_vtabptr_10bz_pricing_4core_5bonds_NTNBP) < (0)) __PYX_ERR(0, 431, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_NTNBP, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP) < (0)) __PYX_ERR(0, 431, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP) < (0)) __PYX_ERR(0, 431, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -43406,11 +43994,11 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_5bonds_NTNC(__pyx_
   __pyx_vtable_10bz_pricing_4core_5bonds_NTNC.dv01 = (double (*)(struct __pyx_obj_10bz_pricing_4core_5bonds_NTNC *, struct __pyx_obj_10bz_pricing_4core_6curves_Curve *, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_5bonds_4NTNC_dv01 *__pyx_optional_args))__pyx_f_10bz_pricing_4core_5bonds_4NTNC_dv01;
   __pyx_vtable_10bz_pricing_4core_5bonds_NTNC.cashflow_details = (PyObject *(*)(struct __pyx_obj_10bz_pricing_4core_5bonds_NTNC *, struct __pyx_obj_10bz_pricing_4core_6curves_Curve *, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_5bonds_4NTNC_cashflow_details *__pyx_optional_args))__pyx_f_10bz_pricing_4core_5bonds_4NTNC_cashflow_details;
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_Bond); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 435, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_Pack(1, (PyObject *)__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_Bond); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 480, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNC = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_10bz_pricing_4core_5bonds_NTNC_spec, __pyx_t_1);
   __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNC)) __PYX_ERR(0, 435, __pyx_L1_error)
+  if (unlikely(!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNC)) __PYX_ERR(0, 480, __pyx_L1_error)
   #else
   __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNC = &__pyx_type_10bz_pricing_4core_5bonds_NTNC;
   #endif
@@ -43418,7 +44006,7 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_5bonds_NTNC(__pyx_
   __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNC->tp_base = __pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_Bond;
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNC) < (0)) __PYX_ERR(0, 435, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNC) < (0)) __PYX_ERR(0, 480, __pyx_L1_error)
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount((PyObject*)__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNC);
@@ -43428,9 +44016,9 @@ static int __Pyx_modinit_Exttype___pyx_obj_10bz_pricing_4core_5bonds_NTNC(__pyx_
     __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNC->tp_getattro = PyObject_GenericGetAttr;
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNC, __pyx_vtabptr_10bz_pricing_4core_5bonds_NTNC) < (0)) __PYX_ERR(0, 435, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_NTNC, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNC) < (0)) __PYX_ERR(0, 435, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNC) < (0)) __PYX_ERR(0, 435, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNC, __pyx_vtabptr_10bz_pricing_4core_5bonds_NTNC) < (0)) __PYX_ERR(0, 480, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_NTNC, (PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNC) < (0)) __PYX_ERR(0, 480, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_mstate->__pyx_ptype_10bz_pricing_4core_5bonds_NTNC) < (0)) __PYX_ERR(0, 480, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -44796,8 +45384,8 @@ __Pyx_RefNannySetupContext("PyInit_bonds", 0);
  *         return total_weighted / total_pv
  * 
  *     cpdef double modified_duration(self, Curve curve) except *:             # <<<<<<<<<<<<<<
- *         cdef double dur_du = self.duration(curve)
- *         cdef int last_du = self._coupon_dus[self._n_coupons - 1]
+ *         cdef double total_weighted = 0.0
+ *         cdef double total_pv = 0.0
 */
   __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNF_7modified_duration, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNF_modified_duration, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[17])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 186, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
@@ -44807,34 +45395,34 @@ __Pyx_RefNannySetupContext("PyInit_bonds", 0);
   if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNF, __pyx_mstate_global->__pyx_n_u_modified_duration, __pyx_t_4) < (0)) __PYX_ERR(0, 186, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":192
- *         return (dur_du / 252.0) / (1.0 + last_rate)
+  /* "bz_pricing/core/bonds.pyx":215
+ *         return total_weighted / total_pv
  * 
  *     cpdef double dv01(self, Curve curve) except *:             # <<<<<<<<<<<<<<
  *         cdef double mod_dur = self.modified_duration(curve)
  *         cdef double pu = self.present_value(curve)
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNF_9dv01, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNF_dv01, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[18])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 192, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNF_9dv01, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNF_dv01, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[18])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 215, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNF, __pyx_mstate_global->__pyx_n_u_dv01, __pyx_t_4) < (0)) __PYX_ERR(0, 192, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNF, __pyx_mstate_global->__pyx_n_u_dv01, __pyx_t_4) < (0)) __PYX_ERR(0, 215, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":197
+  /* "bz_pricing/core/bonds.pyx":220
  *         return mod_dur * pu * 0.0001
  * 
  *     cpdef list cashflow_details(self, Curve curve):             # <<<<<<<<<<<<<<
  *         cdef list flows = []
  *         cdef int i, du
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNF_11cashflow_details, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNF_cashflow_details, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[19])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 197, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNF_11cashflow_details, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNF_cashflow_details, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[19])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNF, __pyx_mstate_global->__pyx_n_u_cashflow_details, __pyx_t_4) < (0)) __PYX_ERR(0, 197, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNF, __pyx_mstate_global->__pyx_n_u_cashflow_details, __pyx_t_4) < (0)) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "(tree fragment)":1
@@ -44864,81 +45452,81 @@ __Pyx_RefNannySetupContext("PyInit_bonds", 0);
   if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNF, __pyx_mstate_global->__pyx_n_u_setstate_cython, __pyx_t_4) < (0)) __PYX_ERR(1, 17, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":231
+  /* "bz_pricing/core/bonds.pyx":254
  *         self._du = du
  * 
  *     cpdef double cotacao(self, Curve agio_curve) except *:             # <<<<<<<<<<<<<<
  *         if self._du <= 0:
  *             return 100.0
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_3LFT_3cotacao, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_LFT_cotacao, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[22])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 231, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_3LFT_3cotacao, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_LFT_cotacao, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[22])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_LFT, __pyx_mstate_global->__pyx_n_u_cotacao, __pyx_t_4) < (0)) __PYX_ERR(0, 231, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_LFT, __pyx_mstate_global->__pyx_n_u_cotacao, __pyx_t_4) < (0)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":240
+  /* "bz_pricing/core/bonds.pyx":263
  *         return trunc(cot * 10000.0) / 10000.0
  * 
  *     cpdef double present_value(self, Curve agio_curve, double vna=0.0, Curve selic_curve=None) except *:             # <<<<<<<<<<<<<<
  *         cdef double cot = self.cotacao(agio_curve)
  *         cdef double selic_rate = 0.0
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_3LFT_5present_value, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_LFT_present_value, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[23])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 240, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_3LFT_5present_value, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_LFT_present_value, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[23])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 263, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[2]);
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_LFT, __pyx_mstate_global->__pyx_n_u_present_value, __pyx_t_4) < (0)) __PYX_ERR(0, 240, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_LFT, __pyx_mstate_global->__pyx_n_u_present_value, __pyx_t_4) < (0)) __PYX_ERR(0, 263, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":252
+  /* "bz_pricing/core/bonds.pyx":275
  *         return trunc((vna * (cot / 100.0)) * 1000000.0) / 1000000.0
  * 
  *     cpdef double duration(self, Curve agio_curve) except *:             # <<<<<<<<<<<<<<
  *         return <double>self._du
  * 
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_3LFT_7duration, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_LFT_duration, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[24])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 252, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_3LFT_7duration, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_LFT_duration, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[24])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_LFT, __pyx_mstate_global->__pyx_n_u_duration, __pyx_t_4) < (0)) __PYX_ERR(0, 252, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_LFT, __pyx_mstate_global->__pyx_n_u_duration, __pyx_t_4) < (0)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":255
+  /* "bz_pricing/core/bonds.pyx":278
  *         return <double>self._du
  * 
  *     cpdef double dv01(self, Curve agio_curve, double vna) except *:             # <<<<<<<<<<<<<<
  *         cdef double rate = agio_curve.get_rate(self._du)
  *         cdef double pu = self.present_value(agio_curve, vna)
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_3LFT_9dv01, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_LFT_dv01, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[25])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 255, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_3LFT_9dv01, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_LFT_dv01, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[25])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 278, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_LFT, __pyx_mstate_global->__pyx_n_u_dv01, __pyx_t_4) < (0)) __PYX_ERR(0, 255, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_LFT, __pyx_mstate_global->__pyx_n_u_dv01, __pyx_t_4) < (0)) __PYX_ERR(0, 278, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":261
+  /* "bz_pricing/core/bonds.pyx":284
  *         return mod_dur * pu * 0.0001
  * 
  *     cpdef list cashflow_details(self, Curve agio_curve, double vna=0.0):             # <<<<<<<<<<<<<<
  *         cdef double rate = agio_curve.get_rate(self._du)
  *         cdef double discount_factor = trunc(pow(1.0 + rate, self._du / 252.0) * 100000000000000.0) / 100000000000000.0
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_3LFT_11cashflow_details, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_LFT_cashflow_details, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[26])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 261, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_3LFT_11cashflow_details, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_LFT_cashflow_details, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[26])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 284, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[3]);
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_LFT, __pyx_mstate_global->__pyx_n_u_cashflow_details, __pyx_t_4) < (0)) __PYX_ERR(0, 261, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_LFT, __pyx_mstate_global->__pyx_n_u_cashflow_details, __pyx_t_4) < (0)) __PYX_ERR(0, 284, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "(tree fragment)":1
@@ -44968,97 +45556,97 @@ __Pyx_RefNannySetupContext("PyInit_bonds", 0);
   if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_LFT, __pyx_mstate_global->__pyx_n_u_setstate_cython, __pyx_t_4) < (0)) __PYX_ERR(1, 17, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":280
+  /* "bz_pricing/core/bonds.pyx":303
  *         self._coupon_rate = coupon_rate
  * 
  *     cpdef double cotacao(self, Curve real_curve) except *:             # <<<<<<<<<<<<<<
  *         cdef double total_cot = 0.0
  *         cdef int i, du
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNB_3cotacao, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNB_cotacao, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[29])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 280, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNB_3cotacao, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNB_cotacao, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[29])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 303, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB, __pyx_mstate_global->__pyx_n_u_cotacao, __pyx_t_4) < (0)) __PYX_ERR(0, 280, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB, __pyx_mstate_global->__pyx_n_u_cotacao, __pyx_t_4) < (0)) __PYX_ERR(0, 303, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":305
+  /* "bz_pricing/core/bonds.pyx":328
  *         return trunc(total_cot * 10000.0) / 10000.0
  * 
  *     cpdef double present_value(self, Curve real_curve, double vna=0.0, Curve inflation_curve=None, double base_vna=0.0, int du_inflation=0) except *:             # <<<<<<<<<<<<<<
  *         cdef double cot = self.cotacao(real_curve)
  *         cdef double ipca_rate = 0.0
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNB_5present_value, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNB_present_value, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[30])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 305, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNB_5present_value, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNB_present_value, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[30])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 328, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[4]);
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB, __pyx_mstate_global->__pyx_n_u_present_value, __pyx_t_4) < (0)) __PYX_ERR(0, 305, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB, __pyx_mstate_global->__pyx_n_u_present_value, __pyx_t_4) < (0)) __PYX_ERR(0, 328, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":317
+  /* "bz_pricing/core/bonds.pyx":340
  *         return trunc((vna * (cot / 100.0)) * 1000000.0) / 1000000.0
  * 
  *     cpdef double duration(self, Curve real_curve) except *:             # <<<<<<<<<<<<<<
  *         cdef double total_weighted = 0.0
  *         cdef double total_cot = 0.0
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNB_7duration, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNB_duration, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[31])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 317, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNB_7duration, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNB_duration, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[31])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 340, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB, __pyx_mstate_global->__pyx_n_u_duration, __pyx_t_4) < (0)) __PYX_ERR(0, 317, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB, __pyx_mstate_global->__pyx_n_u_duration, __pyx_t_4) < (0)) __PYX_ERR(0, 340, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":346
+  /* "bz_pricing/core/bonds.pyx":369
  *         return total_weighted / total_cot
  * 
  *     cpdef double modified_duration(self, Curve real_curve) except *:             # <<<<<<<<<<<<<<
- *         cdef double dur_du = self.duration(real_curve)
- *         cdef int last_du = self._coupon_dus[self._n_coupons - 1]
+ *         cdef double total_weighted = 0.0
+ *         cdef double total_cot = 0.0
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNB_9modified_duration, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNB_modified_duration, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[32])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 346, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNB_9modified_duration, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNB_modified_duration, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[32])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 369, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB, __pyx_mstate_global->__pyx_n_u_modified_duration, __pyx_t_4) < (0)) __PYX_ERR(0, 346, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB, __pyx_mstate_global->__pyx_n_u_modified_duration, __pyx_t_4) < (0)) __PYX_ERR(0, 369, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":352
- *         return (dur_du / 252.0) / (1.0 + last_rate)
+  /* "bz_pricing/core/bonds.pyx":397
+ *         return total_weighted / total_cot
  * 
  *     cpdef double dv01(self, Curve real_curve, double vna=0.0) except *:             # <<<<<<<<<<<<<<
  *         cdef double mod_dur = self.modified_duration(real_curve)
  *         cdef double pu = self.present_value(real_curve, vna=vna)
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNB_11dv01, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNB_dv01, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[33])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 352, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNB_11dv01, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNB_dv01, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[33])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 397, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[5]);
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB, __pyx_mstate_global->__pyx_n_u_dv01, __pyx_t_4) < (0)) __PYX_ERR(0, 352, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB, __pyx_mstate_global->__pyx_n_u_dv01, __pyx_t_4) < (0)) __PYX_ERR(0, 397, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":357
+  /* "bz_pricing/core/bonds.pyx":402
  *         return mod_dur * pu * 0.0001
  * 
  *     cpdef list cashflow_details(self, Curve real_curve, double vna=0.0):             # <<<<<<<<<<<<<<
  *         cdef list flows = []
  *         cdef int i, du
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNB_13cashflow_details, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNB_cashflow_details, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[34])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 357, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNB_13cashflow_details, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNB_cashflow_details, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[34])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 402, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[6]);
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB, __pyx_mstate_global->__pyx_n_u_cashflow_details, __pyx_t_4) < (0)) __PYX_ERR(0, 357, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB, __pyx_mstate_global->__pyx_n_u_cashflow_details, __pyx_t_4) < (0)) __PYX_ERR(0, 402, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "(tree fragment)":1
@@ -45088,97 +45676,97 @@ __Pyx_RefNannySetupContext("PyInit_bonds", 0);
   if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNB, __pyx_mstate_global->__pyx_n_u_setstate_cython, __pyx_t_4) < (0)) __PYX_ERR(1, 17, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":393
+  /* "bz_pricing/core/bonds.pyx":438
  *         self._du = du
  * 
  *     cpdef double cotacao(self, Curve real_curve) except *:             # <<<<<<<<<<<<<<
  *         if self._du <= 0:
  *             return 100.0
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_5NTNBP_3cotacao, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNBP_cotacao, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[37])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 393, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_5NTNBP_3cotacao, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNBP_cotacao, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[37])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 438, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP, __pyx_mstate_global->__pyx_n_u_cotacao, __pyx_t_4) < (0)) __PYX_ERR(0, 393, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP, __pyx_mstate_global->__pyx_n_u_cotacao, __pyx_t_4) < (0)) __PYX_ERR(0, 438, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":402
+  /* "bz_pricing/core/bonds.pyx":447
  *         return trunc(cot * 10000.0) / 10000.0
  * 
  *     cpdef double present_value(self, Curve real_curve, double vna=0.0, Curve inflation_curve=None, double base_vna=0.0, int du_inflation=0) except *:             # <<<<<<<<<<<<<<
  *         cdef double cot = self.cotacao(real_curve)
  *         cdef double ipca_rate = 0.0
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_5NTNBP_5present_value, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNBP_present_value, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[38])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 402, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_5NTNBP_5present_value, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNBP_present_value, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[38])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 447, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[7]);
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP, __pyx_mstate_global->__pyx_n_u_present_value, __pyx_t_4) < (0)) __PYX_ERR(0, 402, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP, __pyx_mstate_global->__pyx_n_u_present_value, __pyx_t_4) < (0)) __PYX_ERR(0, 447, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":414
+  /* "bz_pricing/core/bonds.pyx":459
  *         return trunc((vna * (cot / 100.0)) * 1000000.0) / 1000000.0
  * 
  *     cpdef double duration(self, Curve real_curve) except *:             # <<<<<<<<<<<<<<
  *         return <double>self._du
  * 
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_5NTNBP_7duration, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNBP_duration, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[39])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 414, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_5NTNBP_7duration, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNBP_duration, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[39])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 459, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP, __pyx_mstate_global->__pyx_n_u_duration, __pyx_t_4) < (0)) __PYX_ERR(0, 414, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP, __pyx_mstate_global->__pyx_n_u_duration, __pyx_t_4) < (0)) __PYX_ERR(0, 459, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":417
+  /* "bz_pricing/core/bonds.pyx":462
  *         return <double>self._du
  * 
  *     cpdef double modified_duration(self, Curve real_curve) except *:             # <<<<<<<<<<<<<<
  *         cdef double rate = real_curve.get_rate(self._du)
  *         return (self._du / 252.0) / (1.0 + rate)
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_5NTNBP_9modified_duration, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNBP_modified_duration, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[40])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 417, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_5NTNBP_9modified_duration, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNBP_modified_duration, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[40])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 462, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP, __pyx_mstate_global->__pyx_n_u_modified_duration, __pyx_t_4) < (0)) __PYX_ERR(0, 417, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP, __pyx_mstate_global->__pyx_n_u_modified_duration, __pyx_t_4) < (0)) __PYX_ERR(0, 462, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":421
+  /* "bz_pricing/core/bonds.pyx":466
  *         return (self._du / 252.0) / (1.0 + rate)
  * 
  *     cpdef double dv01(self, Curve real_curve, double vna=0.0) except *:             # <<<<<<<<<<<<<<
  *         cdef double mod_dur = self.modified_duration(real_curve)
  *         cdef double pu = self.present_value(real_curve, vna=vna)
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_5NTNBP_11dv01, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNBP_dv01, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[41])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 421, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_5NTNBP_11dv01, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNBP_dv01, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[41])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 466, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[8]);
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP, __pyx_mstate_global->__pyx_n_u_dv01, __pyx_t_4) < (0)) __PYX_ERR(0, 421, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP, __pyx_mstate_global->__pyx_n_u_dv01, __pyx_t_4) < (0)) __PYX_ERR(0, 466, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":426
+  /* "bz_pricing/core/bonds.pyx":471
  *         return mod_dur * pu * 0.0001
  * 
  *     cpdef list cashflow_details(self, Curve real_curve, double vna=0.0):             # <<<<<<<<<<<<<<
  *         cdef double rate = real_curve.get_rate(self._du)
  *         cdef double discount_factor = trunc(pow(1.0 + rate, self._du / 252.0) * 100000000000000.0) / 100000000000000.0
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_5NTNBP_13cashflow_details, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNBP_cashflow_details, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[42])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 426, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_5NTNBP_13cashflow_details, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNBP_cashflow_details, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[42])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 471, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[9]);
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP, __pyx_mstate_global->__pyx_n_u_cashflow_details, __pyx_t_4) < (0)) __PYX_ERR(0, 426, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP, __pyx_mstate_global->__pyx_n_u_cashflow_details, __pyx_t_4) < (0)) __PYX_ERR(0, 471, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "(tree fragment)":1
@@ -45208,97 +45796,97 @@ __Pyx_RefNannySetupContext("PyInit_bonds", 0);
   if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNBP, __pyx_mstate_global->__pyx_n_u_setstate_cython, __pyx_t_4) < (0)) __PYX_ERR(1, 17, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":445
+  /* "bz_pricing/core/bonds.pyx":490
  *         self._coupon_rate = coupon_rate
  * 
  *     cpdef double cotacao(self, Curve real_curve) except *:             # <<<<<<<<<<<<<<
  *         cdef double total_cot = 0.0
  *         cdef int i, du
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNC_3cotacao, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNC_cotacao, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[45])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 445, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNC_3cotacao, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNC_cotacao, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[45])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 490, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNC, __pyx_mstate_global->__pyx_n_u_cotacao, __pyx_t_4) < (0)) __PYX_ERR(0, 445, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNC, __pyx_mstate_global->__pyx_n_u_cotacao, __pyx_t_4) < (0)) __PYX_ERR(0, 490, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":470
+  /* "bz_pricing/core/bonds.pyx":515
  *         return trunc(total_cot * 10000.0) / 10000.0
  * 
  *     cpdef double present_value(self, Curve real_curve, double vna=0.0, Curve inflation_curve=None, double base_vna=0.0, int du_inflation=0) except *:             # <<<<<<<<<<<<<<
  *         cdef double cot = self.cotacao(real_curve)
  *         cdef double igpm_rate = 0.0
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNC_5present_value, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNC_present_value, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[46])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 470, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNC_5present_value, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNC_present_value, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[46])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 515, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[10]);
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNC, __pyx_mstate_global->__pyx_n_u_present_value, __pyx_t_4) < (0)) __PYX_ERR(0, 470, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNC, __pyx_mstate_global->__pyx_n_u_present_value, __pyx_t_4) < (0)) __PYX_ERR(0, 515, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":482
+  /* "bz_pricing/core/bonds.pyx":527
  *         return trunc((vna * (cot / 100.0)) * 1000000.0) / 1000000.0
  * 
  *     cpdef double duration(self, Curve real_curve) except *:             # <<<<<<<<<<<<<<
  *         cdef double total_weighted = 0.0
  *         cdef double total_cot = 0.0
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNC_7duration, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNC_duration, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[47])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 482, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNC_7duration, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNC_duration, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[47])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 527, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNC, __pyx_mstate_global->__pyx_n_u_duration, __pyx_t_4) < (0)) __PYX_ERR(0, 482, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNC, __pyx_mstate_global->__pyx_n_u_duration, __pyx_t_4) < (0)) __PYX_ERR(0, 527, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":511
+  /* "bz_pricing/core/bonds.pyx":556
  *         return total_weighted / total_cot
  * 
  *     cpdef double modified_duration(self, Curve real_curve) except *:             # <<<<<<<<<<<<<<
- *         cdef double dur_du = self.duration(real_curve)
- *         cdef int last_du = self._coupon_dus[self._n_coupons - 1]
+ *         cdef double total_weighted = 0.0
+ *         cdef double total_cot = 0.0
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNC_9modified_duration, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNC_modified_duration, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[48])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 511, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNC_9modified_duration, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNC_modified_duration, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[48])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 556, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNC, __pyx_mstate_global->__pyx_n_u_modified_duration, __pyx_t_4) < (0)) __PYX_ERR(0, 511, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNC, __pyx_mstate_global->__pyx_n_u_modified_duration, __pyx_t_4) < (0)) __PYX_ERR(0, 556, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":517
- *         return (dur_du / 252.0) / (1.0 + last_rate)
+  /* "bz_pricing/core/bonds.pyx":584
+ *         return total_weighted / total_cot
  * 
  *     cpdef double dv01(self, Curve real_curve, double vna=0.0) except *:             # <<<<<<<<<<<<<<
  *         cdef double mod_dur = self.modified_duration(real_curve)
  *         cdef double pu = self.present_value(real_curve, vna=vna)
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNC_11dv01, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNC_dv01, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[49])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 517, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNC_11dv01, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNC_dv01, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[49])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 584, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[11]);
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNC, __pyx_mstate_global->__pyx_n_u_dv01, __pyx_t_4) < (0)) __PYX_ERR(0, 517, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNC, __pyx_mstate_global->__pyx_n_u_dv01, __pyx_t_4) < (0)) __PYX_ERR(0, 584, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/bonds.pyx":522
+  /* "bz_pricing/core/bonds.pyx":589
  *         return mod_dur * pu * 0.0001
  * 
  *     cpdef list cashflow_details(self, Curve real_curve, double vna=0.0):             # <<<<<<<<<<<<<<
  *         cdef list flows = []
  *         cdef int i, du
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNC_13cashflow_details, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNC_cashflow_details, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[50])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 522, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_5bonds_4NTNC_13cashflow_details, __Pyx_CYFUNCTION_CCLASS, __pyx_mstate_global->__pyx_n_u_NTNC_cashflow_details, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_bonds, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[50])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 589, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[12]);
-  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNC, __pyx_mstate_global->__pyx_n_u_cashflow_details, __pyx_t_4) < (0)) __PYX_ERR(0, 522, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict(__pyx_mstate_global->__pyx_ptype_10bz_pricing_4core_5bonds_NTNC, __pyx_mstate_global->__pyx_n_u_cashflow_details, __pyx_t_4) < (0)) __PYX_ERR(0, 589, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "(tree fragment)":1
@@ -45555,7 +46143,7 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
   if (__Pyx_PyTuple_SET_ITEM(__pyx_mstate_global->__pyx_tuple[1], 0, __pyx_mstate_global->__pyx_slice[0]) != (0)) __PYX_ERR(1, 763, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[1]);
 
-  /* "bz_pricing/core/bonds.pyx":240
+  /* "bz_pricing/core/bonds.pyx":263
  *         return trunc(cot * 10000.0) / 10000.0
  * 
  *     cpdef double present_value(self, Curve agio_curve, double vna=0.0, Curve selic_curve=None) except *:             # <<<<<<<<<<<<<<
@@ -45564,12 +46152,12 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[2] = {__pyx_mstate_global->__pyx_float_0_0, Py_None};
-    __pyx_mstate_global->__pyx_tuple[2] = __Pyx_PyTuple_FromArray(__pyx_temp, 2); if (unlikely(!__pyx_mstate_global->__pyx_tuple[2])) __PYX_ERR(0, 240, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[2] = __Pyx_PyTuple_FromArray(__pyx_temp, 2); if (unlikely(!__pyx_mstate_global->__pyx_tuple[2])) __PYX_ERR(0, 263, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[2]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[2]);
 
-  /* "bz_pricing/core/bonds.pyx":261
+  /* "bz_pricing/core/bonds.pyx":284
  *         return mod_dur * pu * 0.0001
  * 
  *     cpdef list cashflow_details(self, Curve agio_curve, double vna=0.0):             # <<<<<<<<<<<<<<
@@ -45578,12 +46166,12 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[1] = {__pyx_mstate_global->__pyx_float_0_0};
-    __pyx_mstate_global->__pyx_tuple[3] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[3])) __PYX_ERR(0, 261, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[3] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[3])) __PYX_ERR(0, 284, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[3]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[3]);
 
-  /* "bz_pricing/core/bonds.pyx":305
+  /* "bz_pricing/core/bonds.pyx":328
  *         return trunc(total_cot * 10000.0) / 10000.0
  * 
  *     cpdef double present_value(self, Curve real_curve, double vna=0.0, Curve inflation_curve=None, double base_vna=0.0, int du_inflation=0) except *:             # <<<<<<<<<<<<<<
@@ -45592,13 +46180,13 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[4] = {__pyx_mstate_global->__pyx_float_0_0, Py_None, __pyx_mstate_global->__pyx_float_0_0, __pyx_mstate_global->__pyx_int_0};
-    __pyx_mstate_global->__pyx_tuple[4] = __Pyx_PyTuple_FromArray(__pyx_temp, 4); if (unlikely(!__pyx_mstate_global->__pyx_tuple[4])) __PYX_ERR(0, 305, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[4] = __Pyx_PyTuple_FromArray(__pyx_temp, 4); if (unlikely(!__pyx_mstate_global->__pyx_tuple[4])) __PYX_ERR(0, 328, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[4]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[4]);
 
-  /* "bz_pricing/core/bonds.pyx":352
- *         return (dur_du / 252.0) / (1.0 + last_rate)
+  /* "bz_pricing/core/bonds.pyx":397
+ *         return total_weighted / total_cot
  * 
  *     cpdef double dv01(self, Curve real_curve, double vna=0.0) except *:             # <<<<<<<<<<<<<<
  *         cdef double mod_dur = self.modified_duration(real_curve)
@@ -45606,12 +46194,12 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[1] = {__pyx_mstate_global->__pyx_float_0_0};
-    __pyx_mstate_global->__pyx_tuple[5] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[5])) __PYX_ERR(0, 352, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[5] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[5])) __PYX_ERR(0, 397, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[5]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[5]);
 
-  /* "bz_pricing/core/bonds.pyx":357
+  /* "bz_pricing/core/bonds.pyx":402
  *         return mod_dur * pu * 0.0001
  * 
  *     cpdef list cashflow_details(self, Curve real_curve, double vna=0.0):             # <<<<<<<<<<<<<<
@@ -45620,12 +46208,12 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[1] = {__pyx_mstate_global->__pyx_float_0_0};
-    __pyx_mstate_global->__pyx_tuple[6] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[6])) __PYX_ERR(0, 357, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[6] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[6])) __PYX_ERR(0, 402, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[6]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[6]);
 
-  /* "bz_pricing/core/bonds.pyx":402
+  /* "bz_pricing/core/bonds.pyx":447
  *         return trunc(cot * 10000.0) / 10000.0
  * 
  *     cpdef double present_value(self, Curve real_curve, double vna=0.0, Curve inflation_curve=None, double base_vna=0.0, int du_inflation=0) except *:             # <<<<<<<<<<<<<<
@@ -45634,12 +46222,12 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[4] = {__pyx_mstate_global->__pyx_float_0_0, Py_None, __pyx_mstate_global->__pyx_float_0_0, __pyx_mstate_global->__pyx_int_0};
-    __pyx_mstate_global->__pyx_tuple[7] = __Pyx_PyTuple_FromArray(__pyx_temp, 4); if (unlikely(!__pyx_mstate_global->__pyx_tuple[7])) __PYX_ERR(0, 402, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[7] = __Pyx_PyTuple_FromArray(__pyx_temp, 4); if (unlikely(!__pyx_mstate_global->__pyx_tuple[7])) __PYX_ERR(0, 447, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[7]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[7]);
 
-  /* "bz_pricing/core/bonds.pyx":421
+  /* "bz_pricing/core/bonds.pyx":466
  *         return (self._du / 252.0) / (1.0 + rate)
  * 
  *     cpdef double dv01(self, Curve real_curve, double vna=0.0) except *:             # <<<<<<<<<<<<<<
@@ -45648,12 +46236,12 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[1] = {__pyx_mstate_global->__pyx_float_0_0};
-    __pyx_mstate_global->__pyx_tuple[8] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[8])) __PYX_ERR(0, 421, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[8] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[8])) __PYX_ERR(0, 466, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[8]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[8]);
 
-  /* "bz_pricing/core/bonds.pyx":426
+  /* "bz_pricing/core/bonds.pyx":471
  *         return mod_dur * pu * 0.0001
  * 
  *     cpdef list cashflow_details(self, Curve real_curve, double vna=0.0):             # <<<<<<<<<<<<<<
@@ -45662,12 +46250,12 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[1] = {__pyx_mstate_global->__pyx_float_0_0};
-    __pyx_mstate_global->__pyx_tuple[9] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[9])) __PYX_ERR(0, 426, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[9] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[9])) __PYX_ERR(0, 471, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[9]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[9]);
 
-  /* "bz_pricing/core/bonds.pyx":470
+  /* "bz_pricing/core/bonds.pyx":515
  *         return trunc(total_cot * 10000.0) / 10000.0
  * 
  *     cpdef double present_value(self, Curve real_curve, double vna=0.0, Curve inflation_curve=None, double base_vna=0.0, int du_inflation=0) except *:             # <<<<<<<<<<<<<<
@@ -45676,13 +46264,13 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[4] = {__pyx_mstate_global->__pyx_float_0_0, Py_None, __pyx_mstate_global->__pyx_float_0_0, __pyx_mstate_global->__pyx_int_0};
-    __pyx_mstate_global->__pyx_tuple[10] = __Pyx_PyTuple_FromArray(__pyx_temp, 4); if (unlikely(!__pyx_mstate_global->__pyx_tuple[10])) __PYX_ERR(0, 470, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[10] = __Pyx_PyTuple_FromArray(__pyx_temp, 4); if (unlikely(!__pyx_mstate_global->__pyx_tuple[10])) __PYX_ERR(0, 515, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[10]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[10]);
 
-  /* "bz_pricing/core/bonds.pyx":517
- *         return (dur_du / 252.0) / (1.0 + last_rate)
+  /* "bz_pricing/core/bonds.pyx":584
+ *         return total_weighted / total_cot
  * 
  *     cpdef double dv01(self, Curve real_curve, double vna=0.0) except *:             # <<<<<<<<<<<<<<
  *         cdef double mod_dur = self.modified_duration(real_curve)
@@ -45690,12 +46278,12 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[1] = {__pyx_mstate_global->__pyx_float_0_0};
-    __pyx_mstate_global->__pyx_tuple[11] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[11])) __PYX_ERR(0, 517, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[11] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[11])) __PYX_ERR(0, 584, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[11]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[11]);
 
-  /* "bz_pricing/core/bonds.pyx":522
+  /* "bz_pricing/core/bonds.pyx":589
  *         return mod_dur * pu * 0.0001
  * 
  *     cpdef list cashflow_details(self, Curve real_curve, double vna=0.0):             # <<<<<<<<<<<<<<
@@ -45704,7 +46292,7 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[1] = {__pyx_mstate_global->__pyx_float_0_0};
-    __pyx_mstate_global->__pyx_tuple[12] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[12])) __PYX_ERR(0, 522, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[12] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[12])) __PYX_ERR(0, 589, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[12]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[12]);
@@ -45769,30 +46357,30 @@ static int __Pyx_InitConstants(__pyx_mstatetype *__pyx_mstate) {
   CYTHON_UNUSED_VAR(__pyx_mstate);
   {
     const struct { const unsigned int length: 8; } str_length_index[] = {{6},{8},{15},{1},{2},{15},{23},{25},{32},{20},{22},{1},{1},{54},{37},{45},{22},{47},{44},{179},{8},{15},{7},{6},{2},{9},{50},{29},{30},{37},{5},{4},{22},{24},{21},{18},{8},{19},{37},{39},{36},{28},{33},{3},{21},{23},{20},{11},{12},{8},{17},{3},{21},{23},{20},{12},{8},{17},{4},{22},{24},{21},{12},{13},{9},{22},{18},{5},{23},{25},{22},{13},{14},{10},{23},{19},{4},{22},{24},{21},{12},{13},{9},{22},{18},{4},{22},{24},{21},{13},{9},{22},{18},{8},{15},{20},{12},{9},{17},{8},{8},{12},{10},{8},{10},{8},{7},{14},{12},{11},{10},{19},{19},{34},{18},{18},{19},{20},{19},{19},{14},{12},{10},{17},{13},{12},{12},{19},{8},{5},{13},{3},{10},{15},{18},{4},{8},{21},{1},{16},{9},{18},{7},{5},{10},{11},{5},{15},{2},{12},{8},{3},{4},{6},{9},{5},{10},{5},{6},{7},{2},{5},{15},{5},{8},{7},{4},{17},{4},{4},{3},{4},{3},{13},{10},{8},{4},{11},{10},{5},{4},{5},{5},{4},{4},{6},{6},{6},{12},{6},{3},{1}};
-    const struct { const unsigned int length: 8; } bytes_length_index[] = {{1},{11},{11},{11},{11},{55},{55},{55},{58},{94},{96},{96},{100},{105},{104},{108},{93},{93},{12},{11},{215},{148},{93},{58},{34},{60},{58},{58},{38},{217},{142},{208},{237},{228},{146},{44},{142},{171},{253},{137}};
+    const struct { const unsigned int length: 8; } bytes_length_index[] = {{1},{11},{11},{11},{11},{55},{55},{55},{58},{94},{96},{96},{100},{105},{104},{108},{93},{93},{12},{11},{215},{148},{93},{58},{34},{60},{38},{217},{142},{208},{247},{237},{238},{228},{146},{44},{142},{171},{253},{137}};
     #ifndef CYTHON_COMPRESS_STRINGS
       #define CYTHON_COMPRESS_STRINGS 90
     #endif
-    #if (CYTHON_COMPRESS_STRINGS) == 1 /* compression: zlib (2562 bytes) */
-static const char cstring[] = "x\332\335W\315s\023W\022G\212 J\354`d\003^p\026F\306\330\260\200@\216\034\207\217\"+\3116\013\001G6\3463\201\311h\346I\236\365hF\232\017cgS\233\034}\234\343;\276\252\275\314\336\3468GU\345\242\343\034u\324\237\300\237\260\3353\222\320\027l\212JR\331uyFO\375\372u\377\372\343u\2678\301\344\256\355qZ\361\357D4o_0uB\270\222.\224+D5/\246np\267\036\220\212\246\357?\226\311+N+q\267DM5\345\262\245Y\006\047\250\022\047\311:\236\033$\313jg\3030uY\"R\0173\247\351\357\334\357\247u9o\177\231\325ua\337\340$\320A8Q0\266K\212\366\n\276\223]R\341\252\232aX\262\316\t\\\205\030\025\001d\201\005\306\317\377\322\362\202\252j&\047\030\206\\V9S\343t\"HW4U\331\007N4m\027L\273\253\356\n\212,q\025M\"\2279\262W\005\215\000`A\\@\264\013%M7uA]\270\314\225AT\207\331\330\026\252\004\000r\302\236lp\017~\376\267\251I\032W\024\2147\350x\211\230\202\254\030\234\nH8\271RU\010:V\220\264>\366\252N\014 \363 \327\"\303\274\353\232I8s\033\"\225\3377\2675\225\223\321jE.\022]0\t\030\202\016\003\300:2\251\\a\265p%\363E&p\237N0\256\006gXEQ\001\037\020\003\243X\264d\305\004\340\346~\225\030)\356n\211\333\327,N%`28\250\n|\275\007\314m\242r\0061q\301-\004\356\024LYSy8.\253\345\205v\334\344]\202\247\327\004\305 )A\222x\340#\242\246(\270\247\251FJ(\212\222l\010E\205\020\025\337eQ6\302\225\244j`PI\260\024\223\343y\235H\226Hx\036\"\035HT5\365\n\030\270+\013\n\354\212\262*\233<o\350\342\325\342\367|\025\014\007\014WEM\047W\213\232*\031\251\352\376\236\025H\305\263\202\242h\"8\211\0230y8I0\205\324\210\3350\224\350\2600\367\214T\366a\376\356\335\034\010\304\047\325\005%\006\001\340\3716\025\274b\2003\006\350\203\321\017\210}1^U\024\271j\310\306\035\242\022\260 \337>\200\214#H\303\352G3\r\241\031\3056\010n\024\217d\351A\204G\355\365\331q\177m\013\376\207\361\205\304!<H\036\324\037\320 \243DA\303eGu\260\336\275\226\306\317~\225[\353\360?Be@\034V\t\344!\225@\353\352\3015\352\201\317>=\353[\3539|\2065\265\251C\252\002\372\240\256\220\030\332\027\254;\212\303/\2409X@\341\221K2\221\370\276\355!@\205\3405\032R\341m\230\n#A""\025zQ\025\372`\025\272\270\n\243\201\025\206\220\345\361\031\211+\377\026X\371Q\250\362=\240\362\275\230\362\035H\371\221\210\362C\200\326\360\031\th\355-\200\326F\001Z\353\005\261\326\001\2616\022\304Z?\210\207\244f\021U$\330:So\272(\317\027\366\367\340Y\201\212\315\257\223=s\223\224x\276]U\241\352A\205\303\272\373fQ&\246l\222\n\022$<\003\177%K\025\361\263\3341\003\376\240a@\227\302UE\220\325\340S\223,%\330S\205J\370\211\352y\036*$/n\023q\307\260*\3417\300\r\2657\\\267%\342\022\373C\270\262\324\252,\356\2004\254\001\003\244U\265#\246K\032Q8\0068\340^\017R\266\326\007(\230j#H\205aZ~\230\264\026\222vM,\366hu\315\022\224\216#:-f(?\272\004\262\207_ O\272\3163z\234=\224?<o\022\303\354\204H6xhH\232\005=\226@\327\023\312\262\306\213\226\276K:\r\207/Z\245\022toc_\025e-\325e6p\034\300\207\337\205&\325mo\310@RA{\023\007\223\264;\010\211\n\010\340!\3640\252\210 D\334i\337%Q\263T\023^U\000\n\303S{\205\243C\200I\n\242\014\220\303\031P\262$\013\244\224\224 \255;\351\r\3470\367!\237aB\"\020\360`\364 \272\256\351%\320\026f<\234)\0330+U\004\263=1\311\022\314od\257+.\364\002\246\263\021\276\276\207\031\247\202\023\030N^C\227\n]\017\363_\005\220U\301\236\252V\355\273a0\311)\241D\235\224e\003\006 \203(%xd1$C\230\332cE\320\340Q\035\204M\017c\007\374U\303\324\340\321-\321\204\324\001\rV\025&\004b\201\377;\021\016\024\031\020\215\275\257\177\2124cI\226`\363N\004\227\263,\311>w\022\270<\307\322l\315I\3422\355&\334y\017\030Z\261\263\264\346s\327\3341\357f}\307\337\330l\306\246\354\317\354m*\320Z3\366\341O?\330\3134\331\214\237g\033\254\344\254{\311fl\354 \375\226c\031{\217\326X\244\347\330<\023\330+G\365\262\357:\266D\343,\302\022=\307\026X\315\211\273G=\341\035\307\374\251y\266\355\010N/\312%w\303\377\374~c\335\177\376M\373\344\353\370\241\217gp\353\230\035\301\327\207v\215\036\241\212\223\304S\273\007O\354Uz\234n4\343\2236\360L\333\265\026\276p\257\326\214O\370\023\347\331\226\223p\026\334\031\357N=\335\352\247d{\244\047\354\343\366\306{\310\237c+N\304\231\006\273\226\353\311V?%\375+""\310\237g\222\223t\226\335K\336\223z\266\325O\331\030\220\377\230f \344\277\255\r/\330\034+;[n\342=\364d\334\025/\342M\327\307\032\313\376\346\303V?iP\321K\226a?\272\222\227\374\215\203\336\321\223j\304\032\331_]\027H\034;\310\034Xv\036\316\214O\331\3001Co\260g\220\366\246\233\306\353E\234\264\223wjn\314\315\271%o\245~\270\276Y\177\325(\372\005\321\027\211OJ\315\370i:\317\242\014\224O\200\234\254\275E\047\351u\226c\302\220\360\014\202\233\241K\354#\320?\347\010\277L<J\315\331\022\275\302t\377\342\ro\326\373\252\2567\022(\374\250\177\024\313P\022\327\023\007{\266I\323\270<M\223\257\217\034\372\350<\344\310\047\356C\357\003/\rr\243\365\271\272\346?z\356?\377\326\377\366\005\226\233G\220\245\267\275I\357\006h\254\341\201O\016V\355\023\266\200b\232\343\350\372oQxs|\342\300\260\317\301\3458\226h\215c-\371($\237\241\004\252]\036\nI\314\3119%7\357\352\220(Q?\367\310\177\364\304\177\362\264\005\007u{\312^\241\343\350\215\346\261?\321\t\246;\307\235\215\026,#\255\361i\333\2429Zb9\177~\031\316\236A\263P\3614\215\3229Zf\217\375K\267<\274S\007\265\216Y\361\021(\037\321$.\337\2022\0210\033\300\223\241:;\311\014g\326\271\343.\372K\177kD\033\260?\r\202nB\rEz\266\031`\312\322g\254\010\256\333tko\340H\354\222\263\341HP\322c=\230\372\202y\212\236\200\232n@7\310\200\235\047!\201\226\274\250\267P\237\364\363\217\375\307O\375\247\317B\236\"\213\261\007\356\244\233\001\243g\352\271\272\200\321\323\333\365\341\237\316c\330\030\026~\226\232l\311\211B\332N\301\225\214\342\265;\005y\377\022\322\247\035}\235N\201;\205\360dO\n\037\263cpE&\3512;\007\211?\351\244\2078:\202\356{\221\221\212\006\244\377\231n\261S\220<i\024\223\241?\300\311\025w\334\313A3\211s\354p \267]\346t:\315>\010\334\221\370\357\047?v.\272i7;\362\344\031*\371\263\0317\353n\274\313n\350a\177\310\314\377\224~\355,BQ>\343\351\365D\353\330\014\375\022\263\255\325\223mG\335\"8\177\034\357E\273\214<\203<\031\203S\033\035\303~\377\334\177\033\032\216EB7\257B:}\026d\321\242\273\345\235m\034nl6,\177\013\262\035\\\375\322\177)\373\362""\216\277\243\374r\027\337\000\365\002\253\275Wq9\002\020#\243K\313\331\320\336S4\321\261\34798\344\024\232\215\366\300\350\365\177\220;g\250\310&Y\272\035\266\261\203\353\335\236\206\367\344G\364N\327\330\377\325\010vm\014B9vp\303~H#\3036^p\"\277\323\235I\262\251\000\375H\247\373\023ID\353\307\256{\211\221%\314\277\014\r\256\257\212\371\261\234\237{\346?{\216\375n\216n\007\276\214C\227o\306\341\267E+\230\047\014{\016\306\201\3130\346m\240#f\330\335\2403\0018\354\030\021@\224\r\n\375-\327\364\226 \205\027\032\223\376W\020\313\357\374\357\000\350\244}>(\256Q\226r\2430\244nz\265Vw\3068\007\005z\222}\001\t\367\r\226\376\000\315\013\377\205\361\372\320!3r/\n\037\367\242_E\373\260A*5\343\360\023\250\007\233\177\372/\320>N\300\320v\261\276X\337j\034o\274h_\240q\234\001\366\335\010\214\247\343\247\351y\370-\363\001$\311\n\264\233K\356\213\372l\375Nc\321\177\0008\213~Q\354@=\305f\203vy\323+\326#\357\200\232\257\247{f\237?Pb\177J\327\300\204l\013\026poO@\002\316\322{\254\350_\270\016u\344\313\306,\214\265@\335@\205\246\275\210\n;SB\036~\332\025\3358\330w\t\313M\253;\215\3548\047\375\253\177\255\307\033\201Cjm\343\337cr=\037$y{\260\274\213J09\023\341\340\252\333\211\360B\024i\214\346a.XdO\235M\347\037\300\232}3\263,\263y4\345\204G\352\351\377\000\366*l\034";
-    PyObject *data = __Pyx_DecompressString(cstring, 2562, 1);
+    #if (CYTHON_COMPRESS_STRINGS) == 1 /* compression: zlib (2558 bytes) */
+static const char cstring[] = "x\332\315W\315s\323X\022\307\301\303\230M\206\340\004\310B\246@\016\371\200\005\014\316$\223!P\260\266\223\260\341#\343\204\220\020\206\240\221\245gG\033Y\262\365\021\222\331\255\2359\346\250\243\216\257j/\332\233\216:\272j.>\352\350\243\377\004\376\204\355\226l\343\257\244X\026\246HE\322s\253_\367\257?^w\213\341t\346\316>\243d\377Nx\375\3015]%\204\311\251\\\276@d\375z|\236\271\377\214\024\024\365`C$o\031%\307\334\347\025Y\027\363\206bh\014\047\013\214 \252\270\257\223,\312\215\027\232\256\212\002\021Z\230\031E=\366};\255\311\371\340aRU\271\003\215\021@\007axN\333\311I\312[\370M\366H\201)*\232f\210*\3031\005\242\0258\220\005\026h\277\377[Is\262\254\350\014\247ib^ft\205Q\t\047\334Rd\351\0008\321\264=0mY\336\343$Q`\n\212@n2d\277\010\032\001\300\024?\205h\247r\212\252\253\234<u\223\311\203\250\006\263\266\303\025\t\000d\270}Qc\236\375\376\037]\021\024&\313i\357\321\261\002\3219Q\322\030\031\2200b\241(\021t,\047(m\354E\225h@fA\256A\272yW\024\2350\372\016D*}\240\357(2#\242\325\222\230%*\247\0230\004\035\006\200Ud\222\231\314b\346\326\314\0173\276\373T\202q\325\030\315\310\362\022\370\200h\030\305\254!J:\000\327\017\212D\2133\3139\346@1\030\231\200\311\340\240\"\360\265n\320w\210\314hD\307\0053\345\273\223\323EEfa\273(\347\247\352q\023\367\010\356^\342$\215\3049A`\201\217\360\212$\341;E\326\342\\\226\027D\215\313J\204\310x\317\363\242\026\254\004Y\001\203r\234!\351\014\313\252D0x\302\262\020i_\242\254\310\267\300\300=\221\223\340-/\312\242\316\262\232\312\337\316\376\302\026\301p\300p\233WTr;\253\310\202\026/\036\354\033\276T\334\313I\222\302\203\223\030\016\223\207\0218\235\213\367x\033\204\022\035\026\344\236\026O>O//\247@ ^\361&(\336\017\000\313\326\251\340\025\r\234\321A\357\214\276Ol\213\361\242$\211EM\324\036\021\231\200\005\351\372\006d\354A\352V\337\233\251\013M/\266Np\275x\004C\365#\334\353]\233\035O\227\326\341\277\033_@\354\302\203\344N\375>\r2\212\347\024\\6T\373\353\275;\t|\266\253\\_\201\377\036*}b\267J w\251\004ZS\017\256Q\017<\333\364\254\254\257\244\360""\352\326T\247v\251\362\351\235\272\002b`\237\277n(\016~\200f\177\001\205G\314\211D`\333^w\001\312\370\267\336\2202Ga\312\364\004\225iE\225i\203\225i\342\312\364\006\226\351B\226\306\253\047\256\364\021\260\322\275P\245[@\245[1\245\033\220\322=\021\245\273\000-\341\325\023\320\322\021\200\226z\001Zj\005\261\324\000\261\324\023\304R;\210\347\244d\020\231\047\330:\343\357\273(\313f\016\366\341Z\200\212\315\256\220}}\215\344X\266^U\241\352A\205\303\272\373~\221\047\272\250\223\002\022\004\334\003\1779C\346\361\231o\230\001\177\3200\240K\341\252\300\211\262\377T\004C\362\337\311\\!x\242z\226\205\n\311\362;\204\337\325\214B\360\013pC\355\r\326u\211\270\304\376\020\254\014\271(\362\273 \rk@\007iQn\210i\222z\024\216\016\0168\327\235\224\365\225\016\n\246Z\017R\246\233\226\356&-\005\244=\035\213=Z]28\251\341\210F\213\351\312\217&\201\354\343\017\310\223\246\363\264\026gw\345\017\313\352D\323\033!\0225\026\032\222b@\217%\320\365\270\274\250\260\274\241\356\221F\303a\263F.\007\335[;\220yQ\2117\2315\034\007\360b\367\240I5\333\0332\220\270\337\336\370\316$m\016B\274\004\002X\010=\214*<\010\341w\353g\211W\014Y\207[\021\200\302\360T_\341\350\340c\022\374(\003\344`\006\024\014\301\000)9\311O\353Fz\303>\314}\310g\230\220\010\004\334\037=\210\252*j\016\264\005\031\017{\362\032\314J\005N\257OL\242\000\363\033\331o\212\013\274\200\351\254\005\267_`\306)\340\004\206\223W\327\241B\327\303\374W\000dE\260\247\250\024\333N\030LrR Q%yQ\203\001H#R\016.\221\017\310\020\246\372X\3417xT\007aS\203\330\001\177Q\323\025\270T\203\327!u@\203Q\204\t\201\030\340\377F\204}E\032Dc\377\307\337B\325p\214F\351\244\035\302\345\030\215\321\357\355(.\257\322\004]\262c\270L8Qg\322\005\206Z\370\212U\362\230;N\277{\257\274\353\255\256U\303\303\346w\346\216\305Y\245j\370\353\337\376i\316Y\261jd\202\256\322\234\275\342\306\252\341\376\303\304\021\333f\314}\253DC-\333&)G\337\332\262\233<n\333\254\025\241!\032m\3316EKv\3049\343r\307l\363\206\047\351\216\315\331\255(g\235U\357\373\247\225\025\357\325O\365\235\357\"""\047\3764\212\257\316\232!\274}m\226\254S\226d\307p\327\336\341\246\271h\235\263V\253\221!\023xF\314R\ro\370\256T\215\014z\203\023t\335\216\332S\316\250\373\250\234\250\265S\222-\322\243\3469s\365#\344\217\323\005;d\217\200]s\345X\255\235\222\370\004\362\047\251`\307\3549\347\206\273YN\326\332)\253\035\3627\254\031\010\371\347\265a\233\216\323\274\275\356D?B\317\214\263\340\206\334\221r\177e\316[{^k\047u*zCg\350\257\216\340\306>s\320\033z\342\225p%\371\311u\201\304\376\303\231C\303L\303\236\201a\0238F\255y\272\005i\257;\t<^\304N\330i\273\344\204\235\224\223s\027\312_\225\327\312o+Y/\303{<\361H\256\032\271dM\322>\n\312\007AN\322\\\267\206\254\2734E\271.\3413\010n\324\232\245\247A\377\270\315}\230x\224\2322\005\353\026U\275\353\363\356\230\373\244\254V\242(\374\214w\006\313P\014\327\203\207\373\246n%py\311\212\275;u\342\364\004\344\3107\316s\367\244\233\000\271}\345\361\262\342\275x\345\275z\355\275\336\306r\363\002\262\364\201;\344\316\203\306\022n\370\346p\321<or(\246:\200\256\177\215\302\253\003\203\207\232y\025\016\307\331hm\000k\311\351\200|\331\"P\355\322PH\302v\312\3169iG\205D\351\363R/\274\027\233\336\346\313\032lT\315as\301\032@oT\317\376\331\032\244\252}\316^\255\3012T\033\0301\r+e\345h\312\233\234\203\275\227\321,T<b\365Y\343V\236nx7\356\273x\246\016K\r\263\"=P\276\260b\270<\002e\324g\326\200g\306R\351\005\252\331c\366#g\332\233\375[\245\257\002\357G@\320=\250\241HOV}LIk\213f\301ukN\351=\034\201\336\260Wm\001Jz\270\005S[0/Z\347\241\246k\320\rf\300\316\013\220@\263n\237;U\036\362\322\033\336\306K\357\345V\300\223\245a\372\314\031rf\300\350\321r\252\314a\364\324z}\370\227\275\001/\272\205_\261t:k\367A\332\016\303\221\354\303cw\021\362\376\r\244O=\372\2525\014\356\344\202\235-)|\326\014\303\021\031\262\346\350UH\374!;\321\305\321\020\364\324\r\365T\324!\375\262%xc3N\322Y=\016\003\364\223/2\013\277\265~\264\247\241@^v\325r\264vv\324z\210\221\257\265D\376\214\223\005G\014`\216\326\217\364\026\304\254\037v\2556\014\373\343\363\360(4\014\r\005n^\204\320~\347Gt""\332Yw\257T\276\252\254U\014o\0352\017\\\375\306{#z\342\256\267+}\270\213\347A=GK\037u\320O\001\304P\357c~%\260\367\242\025m\330\363\n\034r\021\315F{`\014\372\270\334\251E\006\276\224\314a\350I:M7\241\256c06\335\024\214YA\000\373\017\3576;\r\236\230_\321O\377\227\331_\324\221\271l\361t\210&>\310\330\3775q?4\276\2377m{\206\326\317\345\376\303y\363\271\025\372D\326~)\307\264\031\321\343m\274f\207\376\240\302\030\243\303>\372\236)\346\r\306\020\255\027\276\353F{\366)\357&L\024m\255\312\013\247\274\324\226\267\365\n\007\214qk\307\367e\004\306\252j\004>\346j\376\000\247\231\3430\177\335\204\271z\025\0351J\227\375Q\000\300a\213\016\001\242\244\337Y\357;\272;\013\007v\2522\344=\201X\376\354\375\014@\207\314\tP6\002#b\334\351\203\257\2025\267Tk\016uW\255u@\374\003\034\257\237\260\327\372h\266\275m\355\335\211\023z\350q\037<\036\367=\351k\303\006\251T\215\3007g\0136\357\322_\240_\237\207)\371zy\272\274^9W\331\256\227\213\001\034\272\016\234\020|\017\014\\\262&\340\343\361$$\311\002\364\367\033\316vy\254\374\2502\355=\003\234Y/\3137\240^\244c\376|r\317\315\226C\307@M\227\023-\303\346\027\224\330\337ZK`B\262\006\013\250R\347!\001\307\254\3074\353]\273\013U\363ae\014\276#\200\272\212\nus\032\0256\306\2624|Kg\235\010\330w\303\357)\315\361o\327\276\340\335\376k9R\361\035R\252\033\377\021\237\n\023~\222\327\047\371eT\202\311\031\r\276\024T3\032\034\210\254\025\266\3220\210M\323\227\366\232\375\017`M\276\037\022\347\350$\232r\336%\345\304\177\001\201\354\006\272";
+    PyObject *data = __Pyx_DecompressString(cstring, 2558, 1);
     #define __Pyx_DecompressString_LZSS_UNUSED
     if (unlikely(!data)) __PYX_ERR(0, 1, __pyx_L1_error)
     const char* const bytes = __Pyx_PyBytes_AsString(data);
     #if !CYTHON_ASSUME_SAFE_MACROS
     if (likely(bytes)); else { Py_DECREF(data); __PYX_ERR(0, 1, __pyx_L1_error) }
     #endif
-    #elif (CYTHON_COMPRESS_STRINGS) > 0 && (CYTHON_COMPRESS_STRINGS) <= 90 /* compression: lzss (3318 bytes) */
-static const char cstring[] = "\377 at 0x o\377bject>(t\377ree frag\377ment).: \377<MemoryV\377iew of <\377contiguo\377us and d\263ir4\001\007\rin\021\005s\277trided\"\010 7or \004\031><(\tA\006\377>?Arrays\373 dx\000e cas\337hflow\r\000ev\377em possu\377ir a mes\363ma\226\000\277\000s\303\243o\377Cannot a\377ssign to\377 read-on\323ly\047\000\327\001v\330\000In\377valid mo\177de, exp\212 \356\262\000\047c\047\252\001\047fo\377rtran\047, \371gH\000%\005shape\376\310\000 axis M\377\303\251todo b\373as\224\007_deta\337ils n\207\000 i\357mple\325!ado^\"\npres\355 _\202\000\373ue\032\017Note \373th\247@Cytho\373n l\000delib\237erate\306\000\341!c\367ter!\001n PE\337P-484\233Bre\376\324As subcl\366\201 es\302Abuil\373ti\213 ypes.\377 If you \223ne\245@\236 p\251 %\tt\177hen set\200\000\367e \047\312\"atio\377n_typing\355\047\376Div\242\000o F\377alse.add}_\364 ecoll\326`\376+\000s.abcdi\177sableen\002\001\357gcis\004\003dno\377 default\377 __reduc\347e__\347@M\002non\275-\303`vial\033\000c\377init__sr\377c/bz_pri\376\016\000g/core/\377bonds.py\363xu[\002\351Aallo\355c\242  a\271a da\207ta.\013\020\305C\315\204\001\252\204\003s\177.ASCIIBN\000j\000\001.\214\006c\374\"__\017\004\026\223 st\201@_\013\n\224\204\005\366E\374>\002\327JEllips\277isGene\277\000C\000\306\204\004l\001\000\020m\017\017\023}\0168\021\215\r\216\\\021dur\335Bx\021\237\204\nL\003FT\000\000\215/\017\003\215.(\001\215-~\017\002otacaoG\001\234s\005\007\002v01[\001e\013T\017NLTN`\020\020\002a\017)\000\200b\016=\000_\006\010\001d\001Q\000\372\205\nN\007TNB\000\001\352O\017\004\353N)\002\000\354M\017\003\332\003J\002\324%\007\003\337\000`\002\377modified)_\022\n\200\016P\222\001P}\023\023\001\306\177\022P.\201\021\023\000\214\007P.\330\213\t\013\000\221\004P.\204\022P.\212\233-C\254 C\2262\022\001\2271C\210\202\021\022\000\242&C\210\t\n\000\245#C*}\022C\200\016F\275@F\247R\022\001\212\250QF\2231F\215)\n\000\252CF\372\2022F\210+Seque\327nce\267\215\001.\274\215\007__\367Pyx\001\000Dict\377_NextRef\373__\317\211\004e____\374\244\212\002""\000\006_getit\313em\026\001d0\001 \000fu\303nc&\001\030\000\371\207\0034\000im\357port<\001mai\275n\003\002odulM\002n[am\002\003ew]\001p~\000\177checksuT\000\376\n\001result_\361_\026\001K\004!\001type~\017\003unpickK\000\014\217\211\001\004\014En?\005\035\006\305\210\0209\0147LFT\002\rTN]\014\377\205\001\252\000\020P\025\017C(\017F\310\003vyt\355\213\001\323!qual\201%\330\333\213\005\307\212\016\365\213\006ex\207Ase\303t_\265%\343\212\006\241@\347\212\016__\347tes\372!\236Bis_\377coroutin\377eabcagio\277_curve\207\214\005_\377bufferas\277yncio.$\006s<\272\217\001\276\217\001_vna\325\214\007\035\001\313e.\332\214\002c\315\213\r\200\221\006cl\372k\000_\370@trace\337backc\321\211\003co\367unt\002\000pon_Gdus\003\004\267\217\001\217\002d\341B\274\260\000\376\222\003duduC\000f\371l\337\216\002\202\213\005dusdv\37701encode\371e\356@\366\217\002error\361fk\000\264\220\0031\000gsfo\357rmat\253\221\004idi?ndexinH\004\200#\372\313\204\001s\000\002izeme\341m\376\221\001\366\221\001\364\210\016\264\204\001ndi\337mobjp\315\000po\345p\235\221\nr\315 \322#reg\377istersel\355f\001\000ic\351#set\364\320\217\004\247\222\002sl\000staryt\257\216\002-\000psto\001\000\277ructun^\001u\377pdateuse\351_\322\216\005\216\222\002s\213@xO\200\377\001\330\004!\240\021\240&\373\250\001\007\001\"\240!\2406\373\250\021\022\001#\2401\240F\373\250!\035\0011\260\021\260&\375\270\036\000\340\004\037\230q\320\377 0\260\013\270;\300k\377\320QR\330\004\023\2203\377\220h\230a\230q\330\004\377\007\200|\2207\230!\330\377\010%\240Q\240f\250N\377\270!\330\004\013\2101\200\375\001\"\0224\220x\230q\240\375\001,\010&\240a\240w\250\367n\270A\033\0315\230\010\240\367\001\240\021c\010\047\240q\250\337\010\260\016\270aS\030\320\023\277&\240h\250a\250\232\t5\377\260Q\3206L\310N\320\373Z[\241\004\360\010\000\n\033\376\275\001\020\220\001\330\010\020\220\377\007\220q\230\006\230l\250\376\305\000\007\200v\210W\220E\377\230\024\230Q\330\010\022\220>\342\000\027\220q\340\010\002\000\364\001\377q\330\010\017\320\017%\240""\377T\250\021\250\047\260\033\270\357G\3001\340\004\013A\200\001\276U\006\021\220\024\220Q-0$\277\240D\250\001\250\027\372 7\323\300![\002\010\0071\035@&\240\377d\250!\2507\260+\270\247W\300A\273\002\010\007Q\261\014V\343\2304\360@\362\200/\230\200)]\240$\277\240g\250T\260\021\331\20104\377\260D\270\001\270\027\300\013\037\3107\320RS\210B\t\007\235-\377^\2404\240\177\260d\270\371!\226\202\\`\005.\310\004\310A\374\220\203NO\000\013\2104\210u\220\377C\220q\330\014\023\2201\377\340\010\033\230:\240Y\250\377a\250t\2601\330\010&\377\240e\2501\250C\250q\377\260\004\260B\260f\270D\377\300\005\300R\300w\310b\377\320Pc\320ce\320e\377f\330\010\032\230&\240\002\337\240!\330\010\017E\000A\220\377T\230\022\2309\240B\240\353a\200M\r4\372\204\001\033\2305\377\240\t\250\021\250$\250a\3749#R\001B\220d\230-\240\377r\320):\270\"\270K\357\300r\310\021Y\001\016\320\016\372\203\210\001!e\001\017\210x\220t\373\2301p\001\032\230!\360\006\377\000\t%\240D\250\r\260\337S\270\003\2701\264\000\002\300\377$\300o\320UZ\320Z\357\\\320\\]\353\207\001U\250!\277\250>\270\022\270:\316\000q\376-\001\r\210E\220\025\220avC\001\330\014\354\205\001\\\240\021\324\000\377\014\017\210s\220#\220Q\357\330\020\021\340\237 5\230\t\376\021\003\036\230e\2401\240C\377\240q\250\004\250B\250f\357\260C\260r\271`\002\320B\377U\320UW\320WX\340\3766\000r\220\023\220D\230\014\376\212!\330\020\030\230\017\240r\337\250\024\250Q\340\010\000\001\340\377\014\027\220u\230B\230f_\240B\320&79\000\036\323\001\376u\001\027\230\002\230$\230g\277\240V\320+<\270\320\205\001\210\335q\317\005\010\000\t\225\016U\230\257!\2301\330\216\025\021\316\002s\376!\0004\230r\240\026\240s\377\250\"\250G\2602\3205\277H\310\002\310!\330\202\000t\257\230;\240a\023\002A\013\001u\277\230A\230Y\240b\270 R\373\260q\205\007d\240+\250Q?\250d\260&\270\004\211\010\300J\377\031\230\025\230a\230s\240\327!\2404\345\000\026\276`5\270\377\002\270\047\300\022\320CV\377\320VX\320XY\330\010\376 \001b\240\004\240M\260\022{\2604\256 \033\300B\300\205`\277\017\210r\220""\024\220\234\207\001~\343\250V\026\000\354\002\235j\037\230t\377\2405\250\002\250\047\260\023\353\260DT\000!H\001\024\230^\357\2501\250A\366ax\220r\343\230\023\314 \361b\266\204\n\020\220\004\377\220E\230\022\2307\240#\237\240T\250\022\250\237b\330\204\n\031}\230C\003L\270\001\330\010V\020\374\330aS\010\035\230T\240\031\250\377!\2501\330\010\033\2304\377\230|\2501\250D\260\014\377\270B\270a\330\010 \240\365\005\270\205\002q\205\213\003r\230\027\240\361\003\212\"\254\204\002\034\033\n\250)\260\3671\260A%\022\036\230d\320\277\"4\260A\260Q\334\031\037\373\230q\345\203\222\034\230O\2502\377\250T\260\036\270r\300\021\377\340\020\033\230?\250\"\250\271A\374\204\003\350c\016\260b\372 \014\357\030\230\001\340\300\207\004Y\230b\013\240\0133\000Q\303\207\001\325\001\212\204ov\025W \240\001\333\207\003E\314`3\246\211\002\3772\260T\270\037\310\005\310\377R\310u\320TV\320V\377\\\320\\^\320^i\320\337ik\320kl\263\207\047:\230\177Y\240a\240q\330\014\252\2070\325\006\256 \001\305\207\023\037\346\206\003\031\230}\021\326%Z\230r\240\031\201A\316\241\212\001%\240Q\364\204\001\375\201\274\036\230\277c\240\022\2401\330\277c\013\023\2109\313\214\006\226\214\001\177\232!\344\006\212\201\265\374\333\006\306B\013\210:\220S\230\331\001\263\216\002\327\n(\250\304\210\002q\360\316\317\212^!\240\023\330\214\002\3402\320\017\375!\216A\320\0049\270\021\330\275\010\260\210\020\320,<\270\260\212\013\320\377\004B\320BY\320YZ\356\323\217\001$\230h\211\205\002\010!\240\377\021\330\010#\2401\340\010\376\251\220\001s\220$\220d\230,\377\240g\250Q\330\014\031\230w\033\240I\225\214\002!\330\014\330\217\001\365\001\217\000A\344\212\002<\260t\270\3775\300\002\300\047\310\022\320\377K^\320^`\320`a\277\330\014\022\220%\220\223\212\001\002\377\240.\260\002\260+\270Rs\270q\355\207\003\340\217\001#\230T\301`\2378\2502\250[\340\213\001\211\002]\377\320]s\360\000\000t\001{J\002\004\000J\002K\002\217\n\377 \240\001\330\010\"\240!\376\221\010\320\032*\250\047\260\025\377\260d\270)\3002\300T\257\310\024\310]\360\217""\004\014\200\217\001y\377\260\001\260\021\330\014\032\230\377%\230q\240\003\2401\240\377D\250\002\250+\260]\300\177\"\300G\3102\320M\245\000\357b\320bc\243\005\031\240\"\276\252\215\002;\270b\300\001\220\030C\353\3001\210\222\001!\212\207\216\034\230F\376\300\000A\340\020\034\230A\340\377\014\025\220U\230\"\230J\377\240b\320(9\270\022\270\077\077\310\"\310A\330\023\000\311@\237\017\210t\2202\345\221\001\236\217\005C\377\240w\250b\260\010\270\002{\270+\241\222\001\340\014\021\220\227\221\003\377k\250\026\320/@\300\010\235\310\252\213\002q\320\004\370\002\207\2240%d\220\221\002\322\223\004I\206\223\001\240\220\001\021\330\344b\363r\220\244@\275\221\001b\230\004\230\377C\230t\2402\240X\250\237R\250{\270\"\260\204\003\256\220\0037\373\240&\307\001\025\270e\3001";
-    PyObject *data = __Pyx_DecompressString_LZSS(cstring, 3318, 6725);
+    #elif (CYTHON_COMPRESS_STRINGS) > 0 && (CYTHON_COMPRESS_STRINGS) <= 90 /* compression: lzss (3310 bytes) */
+static const char cstring[] = "\377 at 0x o\377bject>(t\377ree frag\377ment).: \377<MemoryV\377iew of <\377contiguo\377us and d\263ir4\001\007\rin\021\005s\277trided\"\010 7or \004\031><(\tA\006\377>?Arrays\373 dx\000e cas\337hflow\r\000ev\377em possu\377ir a mes\363ma\226\000\277\000s\303\243o\377Cannot a\377ssign to\377 read-on\323ly\047\000\327\001v\330\000In\377valid mo\177de, exp\212 \356\262\000\047c\047\252\001\047fo\377rtran\047, \371gH\000%\005shape\376\310\000 axis M\377\303\251todo b\373as\224\007_deta\337ils n\207\000 i\357mple\325!ado^\"\npres\355 _\202\000\373ue\032\017Note \373th\247@Cytho\373n l\000delib\237erate\306\000\341!c\367ter!\001n PE\337P-484\233Bre\376\324As subcl\366\201 es\302Abuil\373ti\213 ypes.\377 If you \223ne\245@\236 p\251 %\tt\177hen set\200\000\367e \047\312\"atio\377n_typing\355\047\376Div\242\000o F\377alse.add}_\364 ecoll\326`\376+\000s.abcdi\177sableen\002\001\357gcis\004\003dno\377 default\377 __reduc\347e__\347@M\002non\275-\303`vial\033\000c\377init__sr\377c/bz_pri\376\016\000g/core/\377bonds.py\363xu[\002\351Aallo\355c\242  a\271a da\207ta.\013\020\305C\315\204\001\252\204\003s\177.ASCIIBN\000j\000\001.\214\006c\374\"__\017\004\026\223 st\201@_\013\n\224\204\005\366E\374>\002\327JEllips\277isGene\277\000C\000\306\204\004l\001\000\020m\017\017\023}\0168\021\215\r\216\\\021dur\335Bx\021\237\204\nL\003FT\000\000\215/\017\003\215.(\001\215-~\017\002otacaoG\001\234s\005\007\002v01[\001e\013T\017NLTN`\020\020\002a\017)\000\200b\016=\000_\006\010\001d\001Q\000\372\205\nN\007TNB\000\001\352O\017\004\353N)\002\000\354M\017\003\332\003J\002\324%\007\003\337\000`\002\377modified)_\022\n\200\016P\222\001P}\023\023\001\306\177\022P.\201\021\023\000\214\007P.\330\213\t\013\000\221\004P.\204\022P.\212\233-C\254 C\2262\022\001\2271C\210\202\021\022\000\242&C\210\t\n\000\245#C*}\022C\200\016F\275@F\247R\022\001\212\250QF\2231F\215)\n\000\252CF\372\2022F\210+Seque\327nce\267\215\001.\274\215\007__\367Pyx\001\000Dict\377_NextRef\373__\317\211\004e____\374\244\212\002""\000\006_getit\313em\026\001d0\001 \000fu\303nc&\001\030\000\371\207\0034\000im\357port<\001mai\275n\003\002odulM\002n[am\002\003ew]\001p~\000\177checksuT\000\376\n\001result_\361_\026\001K\004!\001type~\017\003unpickK\000\014\217\211\001\004\014En?\005\035\006\305\210\0209\0147LFT\002\rTN]\014\377\205\001\252\000\020P\025\017C(\017F\310\003vyt\355\213\001\323!qual\201%\330\333\213\005\307\212\016\365\213\006ex\207Ase\303t_\265%\343\212\006\241@\347\212\016__\347tes\372!\236Bis_\377coroutin\377eabcagio\277_curve\207\214\005_\377bufferas\277yncio.$\006s<\272\217\001\276\217\001_vna\325\214\007\035\001\313e.\332\214\002c\315\213\r\200\221\006cl\372k\000_\370@trace\337backc\321\211\003co\367unt\002\000pon_Gdus\003\004\267\217\001\217\002d\341B\274\260\000\376\222\003duduC\000f\371l\337\216\002\202\213\005dusdv\37701encode\371e\356@\366\217\002error\361fk\000\264\220\0031\000gsfo\357rmat\253\221\004idi?ndexinH\004\200#\372\313\204\001s\000\002izeme\341m\376\221\001\366\221\001\364\210\016\264\204\001ndi\337mobjp\315\000po\345p\235\221\nr\315 \322#reg\377istersel\355f\001\000ic\351#set\364\320\217\004\247\222\002sl\000staryt\257\216\002-\000psto\001\000\277ructun^\001u\377pdateuse\351_\322\216\005\216\222\002s\213@xO\200\377\001\330\004!\240\021\240&\373\250\001\007\001\"\240!\2406\373\250\021\022\001#\2401\240F\373\250!\035\0011\260\021\260&\375\270\036\000\340\004\037\230q\320\377 0\260\013\270;\300k\377\320QR\330\004\023\2203\377\220h\230a\230q\330\004\377\007\200|\2207\230!\330\377\010%\240Q\240f\250N\377\270!\330\004\013\2101\200\375\001\"\0224\220x\230q\240\375\001,\010&\240a\240w\250\367n\270A\033\0315\230\010\240\367\001\240\021c\010\047\240q\250\337\010\260\016\270aS\030\320\023\277&\240h\250a\250\232\t5\377\260Q\3206L\310N\320\373Z[\241\004\360\010\000\n\033\376\275\001\020\220\001\330\010\020\220\377\007\220q\230\006\230l\250\376\305\000\007\200v\210W\220E\377\230\024\230Q\330\010\022\220>\342\000\027\220q\340\010\002\000\364\001\377q\330\010\017\320\017%\240""\377T\250\021\250\047\260\033\270\357G\3001\340\004\013A\200\001\276U\006\021\220\024\220Q-0$\277\240D\250\001\250\027\372 7\323\300![\002\010\0071\035@&\240\377d\250!\2507\260+\270\247W\300A\273\002\010\007Q\261\014V\343\2304\360@\362\200/\230\200)]\240$\277\240g\250T\260\021\331\20104\377\260D\270\001\270\027\300\013\037\3107\320RS\210B\t\007\235-\377^\2404\240\177\260d\270\371!\226\202\\`\005.\310\004\310A\374\220\203NO\000\013\2104\210u\220\377C\220q\330\014\023\2201\377\340\010\033\230:\240Y\250\377a\250t\2601\330\010&\377\240e\2501\250C\250q\377\260\004\260B\260f\270D\377\300\005\300R\300w\310b\377\320Pc\320ce\320e\377f\330\010\032\230&\240\002\337\240!\330\010\017E\000A\220\377T\230\022\2309\240B\240\353a\200M\r4\372\204\001\033\2305\377\240\t\250\021\250$\250a\3749#R\001B\220d\230-\240\377r\320):\270\"\270K\357\300r\310\021Y\001\016\320\016\372\203\210\001!e\001\017\210x\220t\373\2301p\001\032\230!\360\006\377\000\t%\240D\250\r\260\337S\270\003\2701\264\000\002\300\377$\300o\320UZ\320Z\357\\\320\\]\353\207\001U\250!\277\250>\270\022\270:\316\000q\376-\001\r\210E\220\025\220avC\001\330\014\354\205\001\\\240\021\324\000\377\014\017\210s\220#\220Q\357\330\020\021\340\237 5\230\t\376\021\003\036\230e\2401\240C\377\240q\250\004\250B\250f\357\260C\260r\271`\002\320B\377U\320UW\320WX\340\3766\000r\220\023\220D\230\014\376\212!\330\020\030\230\017\240r\337\250\024\250Q\340\010\000\001\340\377\014\027\220u\230B\230f_\240B\320&79\000\036\323\001\376u\001\027\230\002\230$\230g\277\240V\320+<\270\320\205\001\210\335q\317\005\010\000\t\225\016U\230\257!\2301\330\216\025\021\316\002s\376!\0004\230r\240\026\240s\377\250\"\250G\2602\3205\277H\310\002\310!\330\202\000t\257\230;\240a\023\002A\013\001u\277\230A\230Y\240b\270 R\373\260q\205\007d\240+\250Q?\250d\260&\270\004\211\010\300J\377\031\230\025\230a\230s\240\327!\2404\345\000\026\276`5\270\377\002\270\047\300\022\320CV\377\320VX\320XY\330\010\376 \001b\240\004\240M\260\022{\2604\256 \033\300B\300\205`\277\017\210r\220""\024\220\234\207\001~\343\250V\026\000\354\002\235j\037\230t\377\2405\250\002\250\047\260\023\353\260DT\000!H\001\024\230^\357\2501\250A\366ax\220r\343\230\023\314 \361b\266\204\n\020\220\004\377\220E\230\022\2307\240#\237\240T\250\022\250\237b\330\204\n\031}\230C\003L\270\001\330\010V\020\374\330aS\010\036\230d\320\"4\357\260A\260Qh\031\037\230q\376\361\202\222\034\230O\2502\250T\377\260\036\270r\300\021\340\020\227\033\230?\217`A\210\204\003\364C\016\373\260b\206 \014\030\230\001\340\276\314\206\004Y\230b\240\0133\000Qp\317\206\001\325\001\226\203ov\025 \240\001\347\206\003\365E\330@3\262\210\0022\260T\270\377\037\310\005\310R\310u\320\375T\367`\\\320\\^\320^\177i\320ik\320kl\277\206\047\377:\230Y\240a\240q\330U\014\266\2060\006\256 \001\321\206\023\037\362\205\003\367\031\230\021\326%Z\230r\2409\031\201A\255\211\001%\240Q\200\204\001\212\203/\347\340\010\014\341\207\\\221\203& \240\003\377\2402\240W\250C\250t\377\2602\260W\270B\270a\235\330\311c\013\2109\341\213\006\254\213\001\177\360\244!\272\200:\325\211a\212\205&\036\230c\240\007\022\2401\310\200\"\211\204-\270\202%\331\203[\306R\376\307\204\002\013\210:\220S\230\001`\300\217\002\311O\357\204\265\311F\306\033(\250\265\213\002;q\360\300\215^!\240\023\311\217\002\273\205\022\367\320\017!\374a\320\0049\270\367\021\330\010\225\214\020\320,<\270\376\241\215\013\320\004B\320BY\320\273YZ\304\222\001$\230h\356\210\002\010\377!\240\021\330\010#\2401\373\340\010\232\223\001s\220$\220d\377\230,\240g\250Q\330\014\337\031\230\033\240I\206\217\002!\330\325\014\311\222\001\001\217\000A\325\215\002<\260\377t\2705\300\002\300\047\310\377\022\320K^\320^`\320\377`a\330\014\022\220%\220\377r\230\027\240\002\240.\260\177\002\260+\270R\270q\322\213\003\376\321\222\001#\230T\240\022\2408\317\2502\250[\321\216\001\211\002]\320\377]s\360\000\000t\001J\275\002\004\000J\002K\002\217\n \177\240\001\330\010\"\240!\221\010\377\320\032*\250\047\260\025\260\377d\270)\3002\300T\310\327\024\310]\341\222\004\014\361\221\001y\260\377\001\260""\021\330\014\032\230%\377\230q\240\003\2401\240D\377\250\002\250+\260]\300\"\277\300G\3102\320M\245\000bw\320bc\243\005\031\240\"\233\220\002\337;\270b\300\001\220\030C\300u1\371\224\001!\357\212\216\034\230F\300\000\377A\340\020\034\230A\340\014\377\025\220U\230\"\230J\240\377b\320(9\270\022\270?\237\310\"\310A\330\023\000\311@\017\317\210t\2202\326\224\001\217\222\005C\240\377w\250b\260\010\270\002\270\275+\222\225\001\340\014\021\220\210\224\003k\377\250\026\320/@\300\010\310N\217\217\002q\320\004\370\002\370\2260%\201\224\002\262\303\226\004I\367\225\001\221\223\001\021\330\344br\371\220\244@\256\224\001b\230\004\230C\377\230t\2402\240X\250R\317\250{\270\"\260\204\003\237\223\0037\240}&\307\001\025\270e\3001";
+    PyObject *data = __Pyx_DecompressString_LZSS(cstring, 3310, 7094);
     #define __Pyx_DecompressString_UNUSED
     if (unlikely(!data)) __PYX_ERR(0, 1, __pyx_L1_error)
     const char* const bytes = __Pyx_PyBytes_AsString(data);
     #if !CYTHON_ASSUME_SAFE_MACROS
     if (likely(bytes)); else { Py_DECREF(data); __PYX_ERR(0, 1, __pyx_L1_error) }
     #endif
-    #else /* compression: none (6725 bytes) */
-static const char bytes[] = " at 0x object>(tree fragment).: <MemoryView of <contiguous and direct><contiguous and indirect><strided and direct or indirect><strided and direct><strided and indirect>>?Arrays dus e cashflows devem possuir a mesma dimens\303\243oCannot assign to read-only memoryviewInvalid mode, expected \047c\047 or \047fortran\047, got Invalid shape in axis M\303\251todo base cashflow_details n\303\243o implementadoM\303\251todo base present_value n\303\243o implementadoNote that Cython is deliberately stricter than PEP-484 and rejects subclasses of builtin types. If you need to pass subclasses then set the \047annotation_typing\047 directive to False.add_notecollections.abcdisableenablegcisenabledno default __reduce__ due to non-trivial __cinit__src/bz_pricing/core/bonds.pyxunable to allocate array data.unable to allocate shape and strides.ASCIIBondBond.__reduce_cython__Bond.__setstate_cython__Bond.cashflow_detailsBond.present_valueEllipsisGenericCashflowBondGenericCashflowBond.__reduce_cython__GenericCashflowBond.__setstate_cython__GenericCashflowBond.cashflow_detailsGenericCashflowBond.durationGenericCashflowBond.present_valueLFTLFT.__reduce_cython__LFT.__setstate_cython__LFT.cashflow_detailsLFT.cotacaoLFT.durationLFT.dv01LFT.present_valueLTNLTN.__reduce_cython__LTN.__setstate_cython__LTN.cashflow_detailsLTN.durationLTN.dv01LTN.present_valueNTNBNTNB.__reduce_cython__NTNB.__setstate_cython__NTNB.cashflow_detailsNTNB.cotacaoNTNB.durationNTNB.dv01NTNB.modified_durationNTNB.present_valueNTNBPNTNBP.__reduce_cython__NTNBP.__setstate_cython__NTNBP.cashflow_detailsNTNBP.cotacaoNTNBP.durationNTNBP.dv01NTNBP.modified_durationNTNBP.present_valueNTNCNTNC.__reduce_cython__NTNC.__setstate_cython__NTNC.cashflow_detailsNTNC.cotacaoNTNC.durationNTNC.dv01NTNC.modified_durationNTNC.present_valueNTNFNTNF.__reduce_cython__NTNF.__setstate_cython__NTNF.cashflow_detailsNTNF.durationNTNF.dv01NTNF.modified_durationNTNF.present_valueSequenceView.MemoryView__Pyx_PyDict_NextRef__annotate____class____clas""s_getitem____dict____func____getstate____import____main____module____name____new____pyx_checksum__pyx_result__pyx_state__pyx_type__pyx_unpickle_Bond__pyx_unpickle_Enum__pyx_unpickle_GenericCashflowBond__pyx_unpickle_LFT__pyx_unpickle_LTN__pyx_unpickle_NTNB__pyx_unpickle_NTNBP__pyx_unpickle_NTNC__pyx_unpickle_NTNF__pyx_vtable____qualname____reduce____reduce_cython____reduce_ex____set_name____setstate____setstate_cython____test___dict_is_coroutineabcagio_curveallocate_bufferasyncio.coroutinesbasebase_vnabz_pricing.core.bondsccashflow_detailscashflowscline_in_tracebackcotacaocountcoupon_duscoupon_ratecurvedtype_is_objectdudu_inflationdurationdusdv01encodeenumerateerrorface_valueflagsformatfortranidindexinflation_curveitemsitemsizememviewmodemodified_durationnamendimobjpackpoppresent_valuereal_curveregisterselfselic_curvesetdefaultshapesizestartstatestepstopstructunpackupdateuse_setstatevaluesvnaxO\200\001\330\004!\240\021\240&\250\001\200\001\330\004\"\240!\2406\250\021\200\001\330\004#\2401\240F\250!\200\001\330\0041\260\021\260&\270\001\200\001\340\004\037\230q\320 0\260\013\270;\300k\320QR\330\004\023\2203\220h\230a\230q\330\004\007\200|\2207\230!\330\010%\240Q\240f\250N\270!\330\004\013\2101\200\001\340\004\037\230q\320 0\260\013\270;\300k\320QR\330\004\023\2204\220x\230q\240\001\330\004\007\200|\2207\230!\330\010&\240a\240w\250n\270A\330\004\013\2101\200\001\340\004\037\230q\320 0\260\013\270;\300k\320QR\330\004\023\2205\230\010\240\001\240\021\330\004\007\200|\2207\230!\330\010\047\240q\250\010\260\016\270a\330\004\013\2101\200\001\340\004\037\230q\320 0\260\013\270;\300k\320QR\330\004\023\320\023&\240h\250a\250q\330\004\007\200|\2207\230!\330\0105\260Q\3206L\310N\320Z[\330\004\013\2101\200\001\360\010\000\n\033\230!\330\010\020\220\001\330\010\020\220\007\220q\230\006\230l\250!\330\004\007\200v\210W\220E\230\024\230Q\330\010\022\220!\330\010\027\220q\340\010\027\220q\330\004\007\200q\330\010\017\320\017%\240T\250\021\250\047\260\033\270G\3001\340\010\017\320""\017%\240T\250\021\250\047\260\033\270A\200\001\360\010\000\n\033\230!\330\010\021\220\024\220Q\330\010\020\220\007\220q\230\006\230l\250!\330\004\007\200v\210W\220E\230\024\230Q\330\010\022\220!\330\010\027\220q\340\010\027\220q\330\004\007\200q\330\010\017\320\017$\240D\250\001\250\027\260\013\2707\300!\340\010\017\320\017$\240D\250\001\250\027\260\013\2701\200\001\360\010\000\n\033\230!\330\010\021\220\024\220Q\330\010\020\220\007\220q\230\006\230l\250!\330\004\007\200v\210W\220E\230\024\230Q\330\010\022\220!\330\010\027\220q\340\010\027\220q\330\004\007\200q\330\010\017\320\017&\240d\250!\2507\260+\270W\300A\340\010\017\320\017&\240d\250!\2507\260+\270Q\200\001\360\010\000\n\033\230!\330\010\021\220\024\220V\2304\230q\330\010\020\220\007\220q\230\006\230l\250!\330\004\007\200v\210W\220E\230\024\230Q\330\010\022\220!\330\010\027\220q\340\010\027\220q\330\004\007\200q\330\010\017\320\017$\240D\250\001\250\027\260\013\2707\300!\340\010\017\320\017$\240D\250\001\250\027\260\013\2701\200\001\360\010\000\n\033\230!\330\010\021\220\024\220]\240$\240g\250T\260\021\330\010\020\220\007\220q\230\006\230l\250!\330\004\007\200v\210W\220E\230\024\230Q\330\010\022\220!\330\010\027\220q\340\010\027\220q\330\004\007\200q\330\010\017\320\0174\260D\270\001\270\027\300\013\3107\320RS\340\010\017\320\0174\260D\270\001\270\027\300\013\3101\200\001\360\010\000\n\033\230!\330\010\021\220\024\220^\2404\240\177\260d\270!\330\010\020\220\007\220q\230\006\230l\250!\330\004\007\200v\210W\220E\230\024\230Q\330\010\022\220!\330\010\027\220q\340\010\027\220q\330\004\007\200q\330\010\017\320\017%\240T\250\021\250\047\260\033\270G\3001\340\010\017\320\017%\240T\250\021\250\047\260\033\270A\200\001\360\010\000\n\033\230!\330\010\021\220\024\220^\2404\240\177\260d\270.\310\004\310A\330\010\020\220\007\220q\230\006\230l\250!\330\004\007\200v\210W\220E\230\024\230Q\330\010\022\220!\330\010\027\220q\340\010\027\220q\330\004\007\200q\330\010\017\320\017%\240T\250\021\250\047\260\033\270G\3001\340\010""\017\320\017%\240T\250\021\250\047\260\033\270A\200A\330\010\013\2104\210u\220C\220q\330\014\023\2201\340\010\033\230:\240Y\250a\250t\2601\330\010&\240e\2501\250C\250q\260\004\260B\260f\270D\300\005\300R\300w\310b\320Pc\320ce\320ef\330\010\032\230&\240\002\240!\330\010\017\210u\220A\220T\230\022\2309\240B\240a\200A\330\010\013\2104\210u\220C\220q\330\014\023\2204\220q\340\010\033\2305\240\t\250\021\250$\250a\330\010&\240e\2501\250C\250q\260\004\260B\260f\270D\300\005\300R\300w\310b\320Pc\320ce\320ef\330\010\017\210u\220B\220d\230-\240r\320):\270\"\270K\300r\310\021\200A\330\010\016\320\016!\240\021\240!\200A\330\010\017\210x\220t\2301\200A\330\010\032\230!\360\006\000\t%\240D\250\r\260S\270\003\2701\270D\300\002\300$\300o\320UZ\320Z\\\320\\]\330\010%\240U\250!\250>\270\022\270:\300R\300q\360\006\000\t\r\210E\220\025\220a\220t\2301\330\014\021\220\024\220\\\240\021\240!\330\014\017\210s\220#\220Q\330\020\021\340\014\023\2205\230\t\240\021\240!\330\014\036\230e\2401\240C\240q\250\004\250B\250f\260C\260r\270\027\300\002\320BU\320UW\320WX\340\014\017\210r\220\023\220D\230\014\240B\240a\330\020\030\230\017\240r\250\024\250Q\340\020\030\230\001\340\014\027\220u\230B\230f\240B\320&7\260r\270\036\300r\310\021\330\014\021\220\027\230\002\230$\230g\240V\320+<\270A\340\010\017\210q\200A\330\010\032\230!\360\010\000\t\r\210E\220\025\220a\220t\2301\330\014\021\220\024\220U\230!\2301\330\014\017\210s\220#\220Q\330\020\021\340\014\023\2205\230\t\240\021\240!\330\014\021\220\025\220a\220s\230!\2304\230r\240\026\240s\250\"\250G\2602\3205H\310\002\310!\330\014\027\220t\230;\240a\240s\250\"\250A\330\014\027\220u\230A\230Y\240b\250\r\260R\260q\330\014\021\220\027\230\002\230$\230d\240+\250Q\250d\260&\270\004\270A\340\010\017\210q\200A\330\010\033\2305\240\t\250\021\250$\250a\330\010\031\230\025\230a\230s\240!\2404\240r\250\026\250t\2605\270\002\270\047\300\022\320CV\320VX\320XY\330\010\031\230\025\230b\240\004\240M\260\022\2604\260r\270\033\300B\300a\330\010\017\210r\220\024\220V\2304""\230~\250V\2604\260q\200A\330\010\033\2305\240\t\250\021\250$\250a\330\010\037\230t\2405\250\002\250\047\260\023\260D\270\002\270!\330\010\031\230\024\230^\2501\250A\330\010\017\210x\220r\230\023\230B\230a\200A\330\010\033\230:\240Y\250a\250t\2601\330\010\020\220\004\220E\230\022\2307\240#\240T\250\022\2501\200A\330\010\033\230:\240Y\250a\250t\2601\330\010\031\230\024\230^\2501\250L\270\001\330\010\037\230t\2405\250\002\250\047\260\023\260D\270\002\270!\330\010\017\210x\220r\230\023\230B\230a\200A\330\010\035\230T\240\031\250!\2501\330\010\033\2304\230|\2501\250D\260\014\270B\270a\330\010 \240\005\240Y\250a\250q\330\010\020\220\007\220r\230\027\240\003\2404\240r\250\021\200A\330\010\035\230T\240\031\250!\2501\330\010\033\2304\230|\2501\250D\260\014\270B\270a\330\010 \240\n\250)\2601\260A\330\010\020\220\007\220r\230\027\240\003\2404\240r\250\021\200A\330\010\036\230d\320\"4\260A\260Q\330\010\031\230\024\230^\2501\250A\330\010\017\210x\220r\230\023\230B\230a\200A\330\010\037\230q\360\006\000\t%\240D\250\r\260S\270\003\2701\270D\300\002\300$\300o\320UZ\320Z\\\320\\]\330\010%\240U\250!\250>\270\022\270:\300R\300q\360\006\000\t\r\210E\220\025\220a\220t\2301\330\014\021\220\024\220\\\240\021\240!\330\014\017\210s\220#\220Q\330\020\021\340\014\023\2205\230\t\240\021\240!\330\014\036\230e\2401\240C\240q\250\004\250B\250f\260C\260r\270\027\300\002\320BU\320UW\320WX\340\014\017\210r\220\023\220D\230\014\240B\240a\330\020\034\230O\2502\250T\260\036\270r\300\021\340\020\033\230?\250\"\250A\340\014\027\220u\230A\230Y\240b\250\016\260b\270\001\330\014\030\230\001\340\010\017\210u\220A\220Y\230b\240\013\2502\250Q\200A\330\010\037\230q\360\010\000\t\r\210E\220\025\220a\220t\2301\330\014\021\220\024\220U\230!\2301\330\014\017\210s\220#\220Q\330\020\021\340\014\023\2205\230\t\240\021\240!\330\014\021\220\025\220a\220s\230!\2304\230r\240\026\240s\250\"\250G\2602\3205H\310\002\310!\330\014\027\220t\230;\240a\240s\250\"\250A\330\014\027\220u\230A\230Y\240b\250\r\260R\260q\330\014\030""\230\001\340\010\017\210u\220A\220Y\230b\240\013\2502\250Q\200A\330\010 \240\001\360\006\000\t%\240E\250\022\2503\250a\250t\2602\260T\270\037\310\005\310R\310u\320TV\320V\\\320\\^\320^i\320ik\320kl\360\006\000\t\r\210E\220\025\220a\220t\2301\330\014\021\220\024\220\\\240\021\240!\330\014\017\210s\220#\220Q\330\020\021\340\014\023\220:\230Y\240a\240q\330\014\036\230e\2401\240C\240q\250\004\250B\250f\260C\260r\270\027\300\002\320BU\320UW\320WX\340\014\017\210r\220\023\220D\230\014\240B\240a\330\020\030\230\006\230b\240\001\340\020\030\230\001\340\014\027\220u\230B\230f\240B\320&7\260r\270\037\310\002\310!\330\014\031\230\021\340\010\017\210u\220A\220Z\230r\240\031\250\"\250A\200A\330\010%\240Q\330\010\037\230q\360\006\000\t%\240D\250\r\260S\270\003\2701\270D\300\002\300$\300o\320UZ\320Z\\\320\\]\330\010%\240U\250!\250>\270\022\270:\300R\300q\360\006\000\t\r\210E\220\025\220a\220t\2301\330\014\021\220\024\220\\\240\021\240!\330\014\017\210s\220#\220Q\330\020\021\340\014\023\2205\230\t\240\021\240!\330\014\036\230e\2401\240C\240q\250\004\250B\250f\260C\260r\270\027\300\002\320BU\320UW\320WX\340\014\017\210r\220\023\220D\230\014\240B\240a\330\020\034\230O\2502\250T\260\036\270r\300\021\340\020\033\230?\250\"\250A\340\014\027\220u\230A\230Y\240b\250\016\260b\270\001\330\014\036\230c\240\022\2401\330\014\030\230\001\340\010\013\2109\220C\220q\330\014\023\2201\330\010\017\210\177\230b\240\001\200A\330\010%\240Q\330\010 \240\001\360\006\000\t%\240E\250\022\2503\250a\250t\2602\260T\270\037\310\005\310R\310u\320TV\320V\\\320\\^\320^i\320ik\320kl\360\006\000\t\r\210E\220\025\220a\220t\2301\330\014\021\220\024\220\\\240\021\240!\330\014\017\210s\220#\220Q\330\020\021\340\014\023\220:\230Y\240a\240q\330\014\036\230e\2401\240C\240q\250\004\250B\250f\260C\260r\270\027\300\002\320BU\320UW\320WX\340\014\017\210r\220\023\220D\230\014\240B\240a\330\020\030\230\006\230b\240\001\340\020\030\230\001\340\014\027\220u\230B\230f\240B\320&7\260r\270\037\310\002\310!\330\014\036\230c\240\022""\2401\330\014\031\230\021\340\010\013\210:\220S\230\001\330\014\023\2201\330\010\017\210\177\230b\240\001\200A\330\010(\250\001\330\010\037\230q\360\010\000\t\r\210E\220\025\220a\220t\2301\330\014\021\220\024\220U\230!\2301\330\014\017\210s\220#\220Q\330\020\021\340\014\023\2205\230\t\240\021\240!\330\014\021\220\025\220a\220s\230!\2304\230r\240\026\240s\250\"\250G\2602\3205H\310\002\310!\330\014\027\220t\230;\240a\240s\250\"\250A\330\014!\240\023\240B\240a\330\014\030\230\001\340\010\013\2109\220C\220q\330\014\023\2201\330\010\017\320\017!\240\022\2401\320\0049\270\021\330\010\036\230d\320\"4\260A\260Q\330\010\031\230\024\230^\2501\320,<\270A\330\010\017\210x\220r\230\023\230B\230a\320\004B\320BY\320YZ\330\010\032\230$\230h\240a\240q\330\010!\240\021\330\010#\2401\340\010\013\2104\210s\220$\220d\230,\240g\250Q\330\014\031\230\033\240I\250Q\250d\260!\330\014\033\2305\240\001\240\023\240A\240T\250\022\250<\260t\2705\300\002\300\047\310\022\320K^\320^`\320`a\330\014\022\220%\220r\230\027\240\002\240.\260\002\260+\270R\270q\340\010\017\210u\220B\220d\230#\230T\240\022\2408\2502\250[\270\002\270!\320\004B\320B]\320]s\360\000\000t\001J\002\360\000\000J\002K\002\330\010\032\230$\230h\240a\240q\330\010 \240\001\330\010\"\240!\340\010\013\2104\210s\220$\220d\320\032*\250\047\260\025\260d\270)\3002\300T\310\024\310]\320Z\\\320\\]\330\014\030\230\017\240y\260\001\260\021\330\014\032\230%\230q\240\003\2401\240D\250\002\250+\260]\300\"\300G\3102\320M`\320`b\320bc\330\014\022\220%\220r\230\031\240\"\240M\260\022\260;\270b\300\001\340\010\017\210u\220B\220d\230#\230T\240\022\2408\2502\250[\270\002\270!\320\004C\3001\330\010\032\230!\360\006\000\t%\240E\250\022\2503\250a\250t\2602\260T\270\037\310\005\310R\310u\320TV\320V\\\320\\^\320^i\320ik\320kl\360\006\000\t\r\210E\220\025\220a\220t\2301\330\014\021\220\024\220\\\240\021\240!\330\014\017\210s\220#\220Q\330\020\021\340\014\023\220:\230Y\240a\240q\330\014\036\230e\2401\240C\240q\250\004\250B\250f\260C\260r\270\027\300\002\320BU""\320UW\320WX\340\014\017\210r\220\023\220D\230\014\240B\240a\330\020\034\230F\240\"\240A\340\020\034\230A\340\014\025\220U\230\"\230J\240b\320(9\270\022\270?\310\"\310A\330\014\025\220Q\330\014\017\210t\2202\220Q\330\020\031\230\025\230b\240\004\240C\240w\250b\260\010\270\002\270+\300R\300q\340\014\021\220\027\230\002\230$\230k\250\026\320/@\300\010\310\001\340\010\017\210q\320\004C\3001\330\010\033\230:\240Y\250a\250t\2601\330\010&\240e\2501\250C\250q\260\004\260B\260f\270D\300\005\300R\300w\310b\320Pc\320ce\320ef\330\010\032\230%\230r\240\026\240r\320):\270\"\270I\300R\300q\330\010\031\230\021\330\010\013\2104\210r\220\021\330\014\021\220\025\220b\230\004\230C\230t\2402\240X\250R\250{\270\"\270A\330\010\017\210r\220\024\220V\2307\240&\320(9\270\025\270e\3001";
+    #else /* compression: none (7094 bytes) */
+static const char bytes[] = " at 0x object>(tree fragment).: <MemoryView of <contiguous and direct><contiguous and indirect><strided and direct or indirect><strided and direct><strided and indirect>>?Arrays dus e cashflows devem possuir a mesma dimens\303\243oCannot assign to read-only memoryviewInvalid mode, expected \047c\047 or \047fortran\047, got Invalid shape in axis M\303\251todo base cashflow_details n\303\243o implementadoM\303\251todo base present_value n\303\243o implementadoNote that Cython is deliberately stricter than PEP-484 and rejects subclasses of builtin types. If you need to pass subclasses then set the \047annotation_typing\047 directive to False.add_notecollections.abcdisableenablegcisenabledno default __reduce__ due to non-trivial __cinit__src/bz_pricing/core/bonds.pyxunable to allocate array data.unable to allocate shape and strides.ASCIIBondBond.__reduce_cython__Bond.__setstate_cython__Bond.cashflow_detailsBond.present_valueEllipsisGenericCashflowBondGenericCashflowBond.__reduce_cython__GenericCashflowBond.__setstate_cython__GenericCashflowBond.cashflow_detailsGenericCashflowBond.durationGenericCashflowBond.present_valueLFTLFT.__reduce_cython__LFT.__setstate_cython__LFT.cashflow_detailsLFT.cotacaoLFT.durationLFT.dv01LFT.present_valueLTNLTN.__reduce_cython__LTN.__setstate_cython__LTN.cashflow_detailsLTN.durationLTN.dv01LTN.present_valueNTNBNTNB.__reduce_cython__NTNB.__setstate_cython__NTNB.cashflow_detailsNTNB.cotacaoNTNB.durationNTNB.dv01NTNB.modified_durationNTNB.present_valueNTNBPNTNBP.__reduce_cython__NTNBP.__setstate_cython__NTNBP.cashflow_detailsNTNBP.cotacaoNTNBP.durationNTNBP.dv01NTNBP.modified_durationNTNBP.present_valueNTNCNTNC.__reduce_cython__NTNC.__setstate_cython__NTNC.cashflow_detailsNTNC.cotacaoNTNC.durationNTNC.dv01NTNC.modified_durationNTNC.present_valueNTNFNTNF.__reduce_cython__NTNF.__setstate_cython__NTNF.cashflow_detailsNTNF.durationNTNF.dv01NTNF.modified_durationNTNF.present_valueSequenceView.MemoryView__Pyx_PyDict_NextRef__annotate____class____clas""s_getitem____dict____func____getstate____import____main____module____name____new____pyx_checksum__pyx_result__pyx_state__pyx_type__pyx_unpickle_Bond__pyx_unpickle_Enum__pyx_unpickle_GenericCashflowBond__pyx_unpickle_LFT__pyx_unpickle_LTN__pyx_unpickle_NTNB__pyx_unpickle_NTNBP__pyx_unpickle_NTNC__pyx_unpickle_NTNF__pyx_vtable____qualname____reduce____reduce_cython____reduce_ex____set_name____setstate____setstate_cython____test___dict_is_coroutineabcagio_curveallocate_bufferasyncio.coroutinesbasebase_vnabz_pricing.core.bondsccashflow_detailscashflowscline_in_tracebackcotacaocountcoupon_duscoupon_ratecurvedtype_is_objectdudu_inflationdurationdusdv01encodeenumerateerrorface_valueflagsformatfortranidindexinflation_curveitemsitemsizememviewmodemodified_durationnamendimobjpackpoppresent_valuereal_curveregisterselfselic_curvesetdefaultshapesizestartstatestepstopstructunpackupdateuse_setstatevaluesvnaxO\200\001\330\004!\240\021\240&\250\001\200\001\330\004\"\240!\2406\250\021\200\001\330\004#\2401\240F\250!\200\001\330\0041\260\021\260&\270\001\200\001\340\004\037\230q\320 0\260\013\270;\300k\320QR\330\004\023\2203\220h\230a\230q\330\004\007\200|\2207\230!\330\010%\240Q\240f\250N\270!\330\004\013\2101\200\001\340\004\037\230q\320 0\260\013\270;\300k\320QR\330\004\023\2204\220x\230q\240\001\330\004\007\200|\2207\230!\330\010&\240a\240w\250n\270A\330\004\013\2101\200\001\340\004\037\230q\320 0\260\013\270;\300k\320QR\330\004\023\2205\230\010\240\001\240\021\330\004\007\200|\2207\230!\330\010\047\240q\250\010\260\016\270a\330\004\013\2101\200\001\340\004\037\230q\320 0\260\013\270;\300k\320QR\330\004\023\320\023&\240h\250a\250q\330\004\007\200|\2207\230!\330\0105\260Q\3206L\310N\320Z[\330\004\013\2101\200\001\360\010\000\n\033\230!\330\010\020\220\001\330\010\020\220\007\220q\230\006\230l\250!\330\004\007\200v\210W\220E\230\024\230Q\330\010\022\220!\330\010\027\220q\340\010\027\220q\330\004\007\200q\330\010\017\320\017%\240T\250\021\250\047\260\033\270G\3001\340\010\017\320""\017%\240T\250\021\250\047\260\033\270A\200\001\360\010\000\n\033\230!\330\010\021\220\024\220Q\330\010\020\220\007\220q\230\006\230l\250!\330\004\007\200v\210W\220E\230\024\230Q\330\010\022\220!\330\010\027\220q\340\010\027\220q\330\004\007\200q\330\010\017\320\017$\240D\250\001\250\027\260\013\2707\300!\340\010\017\320\017$\240D\250\001\250\027\260\013\2701\200\001\360\010\000\n\033\230!\330\010\021\220\024\220Q\330\010\020\220\007\220q\230\006\230l\250!\330\004\007\200v\210W\220E\230\024\230Q\330\010\022\220!\330\010\027\220q\340\010\027\220q\330\004\007\200q\330\010\017\320\017&\240d\250!\2507\260+\270W\300A\340\010\017\320\017&\240d\250!\2507\260+\270Q\200\001\360\010\000\n\033\230!\330\010\021\220\024\220V\2304\230q\330\010\020\220\007\220q\230\006\230l\250!\330\004\007\200v\210W\220E\230\024\230Q\330\010\022\220!\330\010\027\220q\340\010\027\220q\330\004\007\200q\330\010\017\320\017$\240D\250\001\250\027\260\013\2707\300!\340\010\017\320\017$\240D\250\001\250\027\260\013\2701\200\001\360\010\000\n\033\230!\330\010\021\220\024\220]\240$\240g\250T\260\021\330\010\020\220\007\220q\230\006\230l\250!\330\004\007\200v\210W\220E\230\024\230Q\330\010\022\220!\330\010\027\220q\340\010\027\220q\330\004\007\200q\330\010\017\320\0174\260D\270\001\270\027\300\013\3107\320RS\340\010\017\320\0174\260D\270\001\270\027\300\013\3101\200\001\360\010\000\n\033\230!\330\010\021\220\024\220^\2404\240\177\260d\270!\330\010\020\220\007\220q\230\006\230l\250!\330\004\007\200v\210W\220E\230\024\230Q\330\010\022\220!\330\010\027\220q\340\010\027\220q\330\004\007\200q\330\010\017\320\017%\240T\250\021\250\047\260\033\270G\3001\340\010\017\320\017%\240T\250\021\250\047\260\033\270A\200\001\360\010\000\n\033\230!\330\010\021\220\024\220^\2404\240\177\260d\270.\310\004\310A\330\010\020\220\007\220q\230\006\230l\250!\330\004\007\200v\210W\220E\230\024\230Q\330\010\022\220!\330\010\027\220q\340\010\027\220q\330\004\007\200q\330\010\017\320\017%\240T\250\021\250\047\260\033\270G\3001\340\010""\017\320\017%\240T\250\021\250\047\260\033\270A\200A\330\010\013\2104\210u\220C\220q\330\014\023\2201\340\010\033\230:\240Y\250a\250t\2601\330\010&\240e\2501\250C\250q\260\004\260B\260f\270D\300\005\300R\300w\310b\320Pc\320ce\320ef\330\010\032\230&\240\002\240!\330\010\017\210u\220A\220T\230\022\2309\240B\240a\200A\330\010\013\2104\210u\220C\220q\330\014\023\2204\220q\340\010\033\2305\240\t\250\021\250$\250a\330\010&\240e\2501\250C\250q\260\004\260B\260f\270D\300\005\300R\300w\310b\320Pc\320ce\320ef\330\010\017\210u\220B\220d\230-\240r\320):\270\"\270K\300r\310\021\200A\330\010\016\320\016!\240\021\240!\200A\330\010\017\210x\220t\2301\200A\330\010\032\230!\360\006\000\t%\240D\250\r\260S\270\003\2701\270D\300\002\300$\300o\320UZ\320Z\\\320\\]\330\010%\240U\250!\250>\270\022\270:\300R\300q\360\006\000\t\r\210E\220\025\220a\220t\2301\330\014\021\220\024\220\\\240\021\240!\330\014\017\210s\220#\220Q\330\020\021\340\014\023\2205\230\t\240\021\240!\330\014\036\230e\2401\240C\240q\250\004\250B\250f\260C\260r\270\027\300\002\320BU\320UW\320WX\340\014\017\210r\220\023\220D\230\014\240B\240a\330\020\030\230\017\240r\250\024\250Q\340\020\030\230\001\340\014\027\220u\230B\230f\240B\320&7\260r\270\036\300r\310\021\330\014\021\220\027\230\002\230$\230g\240V\320+<\270A\340\010\017\210q\200A\330\010\032\230!\360\010\000\t\r\210E\220\025\220a\220t\2301\330\014\021\220\024\220U\230!\2301\330\014\017\210s\220#\220Q\330\020\021\340\014\023\2205\230\t\240\021\240!\330\014\021\220\025\220a\220s\230!\2304\230r\240\026\240s\250\"\250G\2602\3205H\310\002\310!\330\014\027\220t\230;\240a\240s\250\"\250A\330\014\027\220u\230A\230Y\240b\250\r\260R\260q\330\014\021\220\027\230\002\230$\230d\240+\250Q\250d\260&\270\004\270A\340\010\017\210q\200A\330\010\033\2305\240\t\250\021\250$\250a\330\010\031\230\025\230a\230s\240!\2404\240r\250\026\250t\2605\270\002\270\047\300\022\320CV\320VX\320XY\330\010\031\230\025\230b\240\004\240M\260\022\2604\260r\270\033\300B\300a\330\010\017\210r\220\024\220V\2304""\230~\250V\2604\260q\200A\330\010\033\2305\240\t\250\021\250$\250a\330\010\037\230t\2405\250\002\250\047\260\023\260D\270\002\270!\330\010\031\230\024\230^\2501\250A\330\010\017\210x\220r\230\023\230B\230a\200A\330\010\033\230:\240Y\250a\250t\2601\330\010\020\220\004\220E\230\022\2307\240#\240T\250\022\2501\200A\330\010\033\230:\240Y\250a\250t\2601\330\010\031\230\024\230^\2501\250L\270\001\330\010\037\230t\2405\250\002\250\047\260\023\260D\270\002\270!\330\010\017\210x\220r\230\023\230B\230a\200A\330\010\036\230d\320\"4\260A\260Q\330\010\031\230\024\230^\2501\250A\330\010\017\210x\220r\230\023\230B\230a\200A\330\010\037\230q\360\006\000\t%\240D\250\r\260S\270\003\2701\270D\300\002\300$\300o\320UZ\320Z\\\320\\]\330\010%\240U\250!\250>\270\022\270:\300R\300q\360\006\000\t\r\210E\220\025\220a\220t\2301\330\014\021\220\024\220\\\240\021\240!\330\014\017\210s\220#\220Q\330\020\021\340\014\023\2205\230\t\240\021\240!\330\014\036\230e\2401\240C\240q\250\004\250B\250f\260C\260r\270\027\300\002\320BU\320UW\320WX\340\014\017\210r\220\023\220D\230\014\240B\240a\330\020\034\230O\2502\250T\260\036\270r\300\021\340\020\033\230?\250\"\250A\340\014\027\220u\230A\230Y\240b\250\016\260b\270\001\330\014\030\230\001\340\010\017\210u\220A\220Y\230b\240\013\2502\250Q\200A\330\010\037\230q\360\010\000\t\r\210E\220\025\220a\220t\2301\330\014\021\220\024\220U\230!\2301\330\014\017\210s\220#\220Q\330\020\021\340\014\023\2205\230\t\240\021\240!\330\014\021\220\025\220a\220s\230!\2304\230r\240\026\240s\250\"\250G\2602\3205H\310\002\310!\330\014\027\220t\230;\240a\240s\250\"\250A\330\014\027\220u\230A\230Y\240b\250\r\260R\260q\330\014\030\230\001\340\010\017\210u\220A\220Y\230b\240\013\2502\250Q\200A\330\010 \240\001\360\006\000\t%\240E\250\022\2503\250a\250t\2602\260T\270\037\310\005\310R\310u\320TV\320V\\\320\\^\320^i\320ik\320kl\360\006\000\t\r\210E\220\025\220a\220t\2301\330\014\021\220\024\220\\\240\021\240!\330\014\017\210s\220#\220Q\330\020\021\340\014\023\220:\230Y\240a\240q\330\014""\036\230e\2401\240C\240q\250\004\250B\250f\260C\260r\270\027\300\002\320BU\320UW\320WX\340\014\017\210r\220\023\220D\230\014\240B\240a\330\020\030\230\006\230b\240\001\340\020\030\230\001\340\014\027\220u\230B\230f\240B\320&7\260r\270\037\310\002\310!\330\014\031\230\021\340\010\017\210u\220A\220Z\230r\240\031\250\"\250A\200A\330\010%\240Q\330\010\037\230q\360\006\000\t%\240D\250\r\260S\270\003\2701\270D\300\002\300$\300o\320UZ\320Z\\\320\\]\330\010%\240U\250!\250>\270\022\270:\300R\300q\340\010\014\210E\220\025\220a\220t\2301\330\014\021\220\024\220\\\240\021\240!\330\014\017\210s\220#\220Q\330\020\021\340\014\023\2205\230\t\240\021\240!\330\014\036\230e\2401\240C\240q\250\004\250B\250f\260C\260r\270\027\300\002\320BU\320UW\320WX\340\014\017\210r\220\023\220D\230\014\240B\240a\330\020\034\230O\2502\250T\260\036\270r\300\021\340\020\033\230?\250\"\250A\340\014\027\220u\230A\230Y\240b\250\016\260b\270\001\330\014 \240\003\2402\240W\250C\250t\2602\260W\270B\270a\330\014\030\230\001\340\010\013\2109\220C\220q\330\014\023\2201\330\010\017\210\177\230b\240\001\200A\330\010%\240Q\330\010\037\230q\360\006\000\t%\240D\250\r\260S\270\003\2701\270D\300\002\300$\300o\320UZ\320Z\\\320\\]\330\010%\240U\250!\250>\270\022\270:\300R\300q\360\006\000\t\r\210E\220\025\220a\220t\2301\330\014\021\220\024\220\\\240\021\240!\330\014\017\210s\220#\220Q\330\020\021\340\014\023\2205\230\t\240\021\240!\330\014\036\230e\2401\240C\240q\250\004\250B\250f\260C\260r\270\027\300\002\320BU\320UW\320WX\340\014\017\210r\220\023\220D\230\014\240B\240a\330\020\034\230O\2502\250T\260\036\270r\300\021\340\020\033\230?\250\"\250A\340\014\027\220u\230A\230Y\240b\250\016\260b\270\001\330\014\036\230c\240\022\2401\330\014\030\230\001\340\010\013\2109\220C\220q\330\014\023\2201\330\010\017\210\177\230b\240\001\200A\330\010%\240Q\330\010 \240\001\360\006\000\t%\240E\250\022\2503\250a\250t\2602\260T\270\037\310\005\310R\310u\320TV\320V\\\320\\^\320^i\320ik\320kl\340\010\014\210E\220\025\220a\220t\2301\330\014""\021\220\024\220\\\240\021\240!\330\014\017\210s\220#\220Q\330\020\021\340\014\023\220:\230Y\240a\240q\330\014\036\230e\2401\240C\240q\250\004\250B\250f\260C\260r\270\027\300\002\320BU\320UW\320WX\340\014\017\210r\220\023\220D\230\014\240B\240a\330\020\030\230\006\230b\240\001\340\020\030\230\001\340\014\027\220u\230B\230f\240B\320&7\260r\270\037\310\002\310!\330\014 \240\003\2402\240W\250C\250t\2602\260W\270B\270a\330\014\031\230\021\340\010\013\210:\220S\230\001\330\014\023\2201\330\010\017\210\177\230b\240\001\200A\330\010%\240Q\330\010 \240\001\360\006\000\t%\240E\250\022\2503\250a\250t\2602\260T\270\037\310\005\310R\310u\320TV\320V\\\320\\^\320^i\320ik\320kl\360\006\000\t\r\210E\220\025\220a\220t\2301\330\014\021\220\024\220\\\240\021\240!\330\014\017\210s\220#\220Q\330\020\021\340\014\023\220:\230Y\240a\240q\330\014\036\230e\2401\240C\240q\250\004\250B\250f\260C\260r\270\027\300\002\320BU\320UW\320WX\340\014\017\210r\220\023\220D\230\014\240B\240a\330\020\030\230\006\230b\240\001\340\020\030\230\001\340\014\027\220u\230B\230f\240B\320&7\260r\270\037\310\002\310!\330\014\036\230c\240\022\2401\330\014\031\230\021\340\010\013\210:\220S\230\001\330\014\023\2201\330\010\017\210\177\230b\240\001\200A\330\010(\250\001\330\010\037\230q\360\010\000\t\r\210E\220\025\220a\220t\2301\330\014\021\220\024\220U\230!\2301\330\014\017\210s\220#\220Q\330\020\021\340\014\023\2205\230\t\240\021\240!\330\014\021\220\025\220a\220s\230!\2304\230r\240\026\240s\250\"\250G\2602\3205H\310\002\310!\330\014\027\220t\230;\240a\240s\250\"\250A\330\014!\240\023\240B\240a\330\014\030\230\001\340\010\013\2109\220C\220q\330\014\023\2201\330\010\017\320\017!\240\022\2401\320\0049\270\021\330\010\036\230d\320\"4\260A\260Q\330\010\031\230\024\230^\2501\320,<\270A\330\010\017\210x\220r\230\023\230B\230a\320\004B\320BY\320YZ\330\010\032\230$\230h\240a\240q\330\010!\240\021\330\010#\2401\340\010\013\2104\210s\220$\220d\230,\240g\250Q\330\014\031\230\033\240I\250Q\250d\260!\330\014\033\2305\240\001""\240\023\240A\240T\250\022\250<\260t\2705\300\002\300\047\310\022\320K^\320^`\320`a\330\014\022\220%\220r\230\027\240\002\240.\260\002\260+\270R\270q\340\010\017\210u\220B\220d\230#\230T\240\022\2408\2502\250[\270\002\270!\320\004B\320B]\320]s\360\000\000t\001J\002\360\000\000J\002K\002\330\010\032\230$\230h\240a\240q\330\010 \240\001\330\010\"\240!\340\010\013\2104\210s\220$\220d\320\032*\250\047\260\025\260d\270)\3002\300T\310\024\310]\320Z\\\320\\]\330\014\030\230\017\240y\260\001\260\021\330\014\032\230%\230q\240\003\2401\240D\250\002\250+\260]\300\"\300G\3102\320M`\320`b\320bc\330\014\022\220%\220r\230\031\240\"\240M\260\022\260;\270b\300\001\340\010\017\210u\220B\220d\230#\230T\240\022\2408\2502\250[\270\002\270!\320\004C\3001\330\010\032\230!\360\006\000\t%\240E\250\022\2503\250a\250t\2602\260T\270\037\310\005\310R\310u\320TV\320V\\\320\\^\320^i\320ik\320kl\360\006\000\t\r\210E\220\025\220a\220t\2301\330\014\021\220\024\220\\\240\021\240!\330\014\017\210s\220#\220Q\330\020\021\340\014\023\220:\230Y\240a\240q\330\014\036\230e\2401\240C\240q\250\004\250B\250f\260C\260r\270\027\300\002\320BU\320UW\320WX\340\014\017\210r\220\023\220D\230\014\240B\240a\330\020\034\230F\240\"\240A\340\020\034\230A\340\014\025\220U\230\"\230J\240b\320(9\270\022\270?\310\"\310A\330\014\025\220Q\330\014\017\210t\2202\220Q\330\020\031\230\025\230b\240\004\240C\240w\250b\260\010\270\002\270+\300R\300q\340\014\021\220\027\230\002\230$\230k\250\026\320/@\300\010\310\001\340\010\017\210q\320\004C\3001\330\010\033\230:\240Y\250a\250t\2601\330\010&\240e\2501\250C\250q\260\004\260B\260f\270D\300\005\300R\300w\310b\320Pc\320ce\320ef\330\010\032\230%\230r\240\026\240r\320):\270\"\270I\300R\300q\330\010\031\230\021\330\010\013\2104\210r\220\021\330\014\021\220\025\220b\230\004\230C\230t\2402\240X\250R\250{\270\"\270A\330\010\017\210r\220\024\220V\2307\240&\320(9\270\025\270e\3001";
     PyObject *data = NULL;
     #define __Pyx_DecompressString_UNUSED
     #define __Pyx_DecompressString_LZSS_UNUSED
@@ -46011,15 +46599,15 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
   {
     const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 186};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_curve};
-    __pyx_mstate_global->__pyx_codeobj_tab[17] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_modified_duration, __pyx_mstate->__pyx_kp_b_iso88591_A_T_1_4_1D_Ba_Yaq_r_4r, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[17])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[17] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_modified_duration, __pyx_mstate->__pyx_kp_b_iso88591_A_Q_q_D_S_1D_oUZZ_U_Rq_E_at1_s_Q_2, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[17])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 192};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 215};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_curve};
     __pyx_mstate_global->__pyx_codeobj_tab[18] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_dv01, __pyx_mstate->__pyx_kp_b_iso88591_A_d_4AQ_1A_xr_Ba, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[18])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 197};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 220};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_curve};
     __pyx_mstate_global->__pyx_codeobj_tab[19] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_cashflow_details, __pyx_mstate->__pyx_kp_b_iso88591_A_D_S_1D_oUZZ_U_Rq_E_at1_s_Q_5_e, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[19])) goto bad;
   }
@@ -46034,27 +46622,27 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
     __pyx_mstate_global->__pyx_codeobj_tab[21] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_tree_fragment, __pyx_mstate->__pyx_n_u_setstate_cython, __pyx_mstate->__pyx_kp_b_iso88591_6, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[21])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 231};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 254};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_agio_curve};
     __pyx_mstate_global->__pyx_codeobj_tab[22] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_cotacao, __pyx_mstate->__pyx_kp_b_iso88591_A_4uCq_1_Yat1_e1Cq_BfD_RwbPcceef, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[22])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {4, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 240};
+    const __Pyx_PyCode_New_function_description descr = {4, 0, 0, 4, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 263};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_agio_curve, __pyx_mstate->__pyx_n_u_vna, __pyx_mstate->__pyx_n_u_selic_curve};
     __pyx_mstate_global->__pyx_codeobj_tab[23] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_present_value, __pyx_mstate->__pyx_kp_b_iso88591_BBYYZ_haq_1_4s_d_gQ_IQd_5_AT_t5, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[23])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 252};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 275};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_agio_curve};
     __pyx_mstate_global->__pyx_codeobj_tab[24] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_duration, __pyx_mstate->__pyx_kp_b_iso88591_A_xt1, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[24])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 255};
+    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 278};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_agio_curve, __pyx_mstate->__pyx_n_u_vna};
     __pyx_mstate_global->__pyx_codeobj_tab[25] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_dv01, __pyx_mstate->__pyx_kp_b_iso88591_A_Yat1_1L_t5_D_xr_Ba, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[25])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 261};
+    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 284};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_agio_curve, __pyx_mstate->__pyx_n_u_vna};
     __pyx_mstate_global->__pyx_codeobj_tab[26] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_cashflow_details, __pyx_mstate->__pyx_kp_b_iso88591_C1_Yat1_e1Cq_BfD_RwbPcceef_r_r, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[26])) goto bad;
   }
@@ -46069,32 +46657,32 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
     __pyx_mstate_global->__pyx_codeobj_tab[28] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_tree_fragment, __pyx_mstate->__pyx_n_u_setstate_cython, __pyx_mstate->__pyx_kp_b_iso88591__6, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[28])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 280};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 303};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_real_curve};
     __pyx_mstate_global->__pyx_codeobj_tab[29] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_cotacao, __pyx_mstate->__pyx_kp_b_iso88591_A_E_3at2T_RuTVV_iikkl_E_at1_s_Q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[29])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {6, 0, 0, 6, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 305};
+    const __Pyx_PyCode_New_function_description descr = {6, 0, 0, 6, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 328};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_real_curve, __pyx_mstate->__pyx_n_u_vna, __pyx_mstate->__pyx_n_u_inflation_curve, __pyx_mstate->__pyx_n_u_base_vna, __pyx_mstate->__pyx_n_u_du_inflation};
     __pyx_mstate_global->__pyx_codeobj_tab[30] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_present_value, __pyx_mstate->__pyx_kp_b_iso88591_BB_s_t_J_J_K_haq_4s_d_d_2T_Z_y, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[30])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 317};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 340};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_real_curve};
     __pyx_mstate_global->__pyx_codeobj_tab[31] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_duration, __pyx_mstate->__pyx_kp_b_iso88591_A_Q_E_3at2T_RuTVV_iikkl_E_at1_s, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[31])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 346};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 369};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_real_curve};
-    __pyx_mstate_global->__pyx_codeobj_tab[32] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_modified_duration, __pyx_mstate->__pyx_kp_b_iso88591_A_T_1_4_1D_Ba_1A_r_4r, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[32])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[32] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_modified_duration, __pyx_mstate->__pyx_kp_b_iso88591_A_Q_E_3at2T_RuTVV_iikkl_E_at1_s_2, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[32])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 352};
+    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 397};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_real_curve, __pyx_mstate->__pyx_n_u_vna};
     __pyx_mstate_global->__pyx_codeobj_tab[33] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_dv01, __pyx_mstate->__pyx_kp_b_iso88591_9_d_4AQ_1_A_xr_Ba, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[33])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 357};
+    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 402};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_real_curve, __pyx_mstate->__pyx_n_u_vna};
     __pyx_mstate_global->__pyx_codeobj_tab[34] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_cashflow_details, __pyx_mstate->__pyx_kp_b_iso88591_C1_E_3at2T_RuTVV_iikkl_E_at1_s, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[34])) goto bad;
   }
@@ -46109,32 +46697,32 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
     __pyx_mstate_global->__pyx_codeobj_tab[36] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_tree_fragment, __pyx_mstate->__pyx_n_u_setstate_cython, __pyx_mstate->__pyx_kp_b_iso88591_6, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[36])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 393};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 438};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_real_curve};
     __pyx_mstate_global->__pyx_codeobj_tab[37] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_cotacao, __pyx_mstate->__pyx_kp_b_iso88591_A_4uCq_1_Yat1_e1Cq_BfD_RwbPcceef, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[37])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {6, 0, 0, 6, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 402};
+    const __Pyx_PyCode_New_function_description descr = {6, 0, 0, 6, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 447};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_real_curve, __pyx_mstate->__pyx_n_u_vna, __pyx_mstate->__pyx_n_u_inflation_curve, __pyx_mstate->__pyx_n_u_base_vna, __pyx_mstate->__pyx_n_u_du_inflation};
     __pyx_mstate_global->__pyx_codeobj_tab[38] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_present_value, __pyx_mstate->__pyx_kp_b_iso88591_BB_s_t_J_J_K_haq_4s_d_d_2T_Z_y, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[38])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 414};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 459};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_real_curve};
     __pyx_mstate_global->__pyx_codeobj_tab[39] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_duration, __pyx_mstate->__pyx_kp_b_iso88591_A_xt1, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[39])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 417};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 462};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_real_curve};
     __pyx_mstate_global->__pyx_codeobj_tab[40] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_modified_duration, __pyx_mstate->__pyx_kp_b_iso88591_A_Yat1_E_7_T_1, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[40])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 421};
+    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 466};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_real_curve, __pyx_mstate->__pyx_n_u_vna};
     __pyx_mstate_global->__pyx_codeobj_tab[41] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_dv01, __pyx_mstate->__pyx_kp_b_iso88591_9_d_4AQ_1_A_xr_Ba, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[41])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 426};
+    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 471};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_real_curve, __pyx_mstate->__pyx_n_u_vna};
     __pyx_mstate_global->__pyx_codeobj_tab[42] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_cashflow_details, __pyx_mstate->__pyx_kp_b_iso88591_C1_Yat1_e1Cq_BfD_RwbPcceef_r_r, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[42])) goto bad;
   }
@@ -46149,32 +46737,32 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
     __pyx_mstate_global->__pyx_codeobj_tab[44] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_tree_fragment, __pyx_mstate->__pyx_n_u_setstate_cython, __pyx_mstate->__pyx_kp_b_iso88591_1F, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[44])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 445};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 490};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_real_curve};
     __pyx_mstate_global->__pyx_codeobj_tab[45] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_cotacao, __pyx_mstate->__pyx_kp_b_iso88591_A_E_3at2T_RuTVV_iikkl_E_at1_s_Q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[45])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {6, 0, 0, 6, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 470};
+    const __Pyx_PyCode_New_function_description descr = {6, 0, 0, 6, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 515};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_real_curve, __pyx_mstate->__pyx_n_u_vna, __pyx_mstate->__pyx_n_u_inflation_curve, __pyx_mstate->__pyx_n_u_base_vna, __pyx_mstate->__pyx_n_u_du_inflation};
     __pyx_mstate_global->__pyx_codeobj_tab[46] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_present_value, __pyx_mstate->__pyx_kp_b_iso88591_BB_s_t_J_J_K_haq_4s_d_d_2T_Z_y, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[46])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 482};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 527};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_real_curve};
     __pyx_mstate_global->__pyx_codeobj_tab[47] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_duration, __pyx_mstate->__pyx_kp_b_iso88591_A_Q_E_3at2T_RuTVV_iikkl_E_at1_s, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[47])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 511};
+    const __Pyx_PyCode_New_function_description descr = {2, 0, 0, 2, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 556};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_real_curve};
-    __pyx_mstate_global->__pyx_codeobj_tab[48] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_modified_duration, __pyx_mstate->__pyx_kp_b_iso88591_A_T_1_4_1D_Ba_1A_r_4r, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[48])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[48] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_modified_duration, __pyx_mstate->__pyx_kp_b_iso88591_A_Q_E_3at2T_RuTVV_iikkl_E_at1_s_2, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[48])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 517};
+    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 584};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_real_curve, __pyx_mstate->__pyx_n_u_vna};
     __pyx_mstate_global->__pyx_codeobj_tab[49] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_dv01, __pyx_mstate->__pyx_kp_b_iso88591_9_d_4AQ_1_A_xr_Ba, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[49])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 522};
+    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 589};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_self, __pyx_mstate->__pyx_n_u_real_curve, __pyx_mstate->__pyx_n_u_vna};
     __pyx_mstate_global->__pyx_codeobj_tab[50] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_bonds_pyx, __pyx_mstate->__pyx_n_u_cashflow_details, __pyx_mstate->__pyx_kp_b_iso88591_C1_E_3at2T_RuTVV_iikkl_E_at1_s, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[50])) goto bad;
   }

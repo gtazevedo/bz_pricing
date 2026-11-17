@@ -16,9 +16,6 @@ cdef class Bond:
     cpdef list cashflow_details(self, Curve curve):
         raise NotImplementedError("Método base cashflow_details não implementado")
 
-    cpdef list cashflow_details(self, Curve curve) except *:
-        raise NotImplementedError("Método base cashflow_details não implementado")
-
 cdef class GenericCashflowBond(Bond):
     """
     Título genérico baseado em fluxo de caixa com prazos e valores explícitos.
@@ -87,24 +84,6 @@ cdef class GenericCashflowBond(Bond):
 
         return flows
 
-    cpdef list cashflow_details(self, Curve curve) except *:
-        cdef list flows = []
-        cdef int i, du
-        cdef double rate, df, pv_fluxo
-
-        for i in range(self._n_flows):
-            du = self._dus[i]
-            if du <= 0:
-                continue
-
-            rate = curve.get_rate(du)
-            df = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
-            pv_fluxo = self._cashflows[i] / df
-            pv_fluxo = trunc(pv_fluxo * 100000000.0) / 100000000.0
-            flows.append((du, self._cashflows[i], rate, df, pv_fluxo))
-
-        return flows
-
 cdef class LTN(Bond):
     """
     Letra do Tesouro Nacional (título prefixado zero-cupom).
@@ -132,12 +111,6 @@ cdef class LTN(Bond):
         return mod_dur * pu * 0.0001
 
     cpdef list cashflow_details(self, Curve curve):
-        cdef double rate = curve.get_rate(self._du)
-        cdef double df = trunc(pow(1.0 + rate, self._du / 252.0) * 100000000000000.0) / 100000000000000.0
-        cdef double pu = trunc((self._face_value / df) * 1000000.0) / 1000000.0
-        return [(self._du, self._face_value, rate, df, pu)]
-
-    cpdef list cashflow_details(self, Curve curve) except *:
         cdef double rate = curve.get_rate(self._du)
         cdef double df = trunc(pow(1.0 + rate, self._du / 252.0) * 100000000000000.0) / 100000000000000.0
         cdef double pu = trunc((self._face_value / df) * 1000000.0) / 1000000.0
@@ -211,23 +184,12 @@ cdef class NTNF(Bond):
         return total_weighted / total_pv
 
     cpdef double modified_duration(self, Curve curve) except *:
-        cdef double dur_du = self.duration(curve)
-        cdef int last_du = self._coupon_dus[self._n_coupons - 1]
-        cdef double last_rate = curve.get_rate(last_du)
-        return (dur_du / 252.0) / (1.0 + last_rate)
-
-    cpdef double dv01(self, Curve curve) except *:
-        cdef double mod_dur = self.modified_duration(curve)
-        cdef double pu = self.present_value(curve)
-        return mod_dur * pu * 0.0001
-
-    cpdef list cashflow_details(self, Curve curve):
-        cdef list flows = []
+        cdef double total_weighted = 0.0
+        cdef double total_pv = 0.0
         cdef int i, du
-        cdef double rate, discount_factor
+        cdef double rate, discount_factor, pv_fluxo
         cdef double coupon_amount = self._face_value * (pow(1.0 + self._coupon_rate, 0.5) - 1.0)
         cdef double rounded_coupon = round(coupon_amount * 100000.0) / 100000.0
-        cdef double fluxo, pv_fluxo
 
         for i in range(self._n_coupons):
             du = self._coupon_dus[i]
@@ -238,16 +200,24 @@ cdef class NTNF(Bond):
             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
 
             if i == self._n_coupons - 1:
-                fluxo = rounded_coupon + self._face_value
+                pv_fluxo = (rounded_coupon + self._face_value) / discount_factor
             else:
-                fluxo = rounded_coupon
+                pv_fluxo = rounded_coupon / discount_factor
 
-            pv_fluxo = round((fluxo / discount_factor) * 1000000000.0) / 1000000000.0
-            flows.append((du, fluxo, rate, discount_factor, pv_fluxo))
+            pv_fluxo = round(pv_fluxo * 1000000000.0) / 1000000000.0
+            total_weighted += ((du / 252.0) / (1.0 + rate)) * pv_fluxo
+            total_pv += pv_fluxo
 
-        return flows
+        if total_pv <= 0.0:
+            return 0.0
+        return total_weighted / total_pv
 
-    cpdef list cashflow_details(self, Curve curve) except *:
+    cpdef double dv01(self, Curve curve) except *:
+        cdef double mod_dur = self.modified_duration(curve)
+        cdef double pu = self.present_value(curve)
+        return mod_dur * pu * 0.0001
+
+    cpdef list cashflow_details(self, Curve curve):
         cdef list flows = []
         cdef int i, du
         cdef double rate, discount_factor
@@ -312,15 +282,6 @@ cdef class LFT(Bond):
         return mod_dur * pu * 0.0001
 
     cpdef list cashflow_details(self, Curve agio_curve, double vna=0.0):
-        cdef double rate = agio_curve.get_rate(self._du)
-        cdef double discount_factor = trunc(pow(1.0 + rate, self._du / 252.0) * 100000000000000.0) / 100000000000000.0
-        cdef double cot = trunc((100.0 / discount_factor) * 10000.0) / 10000.0
-        cdef double pu = 0.0
-        if vna > 0.0:
-            pu = trunc((vna * (cot / 100.0)) * 1000000.0) / 1000000.0
-        return [(self._du, 100.0, rate, discount_factor, cot, vna, pu)]
-
-    cpdef list cashflow_details(self, Curve agio_curve, double vna=0.0) except *:
         cdef double rate = agio_curve.get_rate(self._du)
         cdef double discount_factor = trunc(pow(1.0 + rate, self._du / 252.0) * 100000000000000.0) / 100000000000000.0
         cdef double cot = trunc((100.0 / discount_factor) * 10000.0) / 10000.0
@@ -406,22 +367,11 @@ cdef class NTNB(Bond):
         return total_weighted / total_cot
 
     cpdef double modified_duration(self, Curve real_curve) except *:
-        cdef double dur_du = self.duration(real_curve)
-        cdef int last_du = self._coupon_dus[self._n_coupons - 1]
-        cdef double last_rate = real_curve.get_rate(last_du)
-        return (dur_du / 252.0) / (1.0 + last_rate)
-
-    cpdef double dv01(self, Curve real_curve, double vna=0.0) except *:
-        cdef double mod_dur = self.modified_duration(real_curve)
-        cdef double pu = self.present_value(real_curve, vna=vna)
-        return mod_dur * pu * 0.0001
-
-    cpdef list cashflow_details(self, Curve real_curve, double vna=0.0):
-        cdef list flows = []
+        cdef double total_weighted = 0.0
+        cdef double total_cot = 0.0
         cdef int i, du
-        cdef double rate, discount_factor
+        cdef double rate, discount_factor, fluxo, pv_fluxo
         cdef double coupon_factor = round((pow(1.0 + self._coupon_rate, 0.5) - 1.0) * 100.0 * 1000000.0) / 1000000.0
-        cdef double fluxo_cot, pv_cot, pv_fin
 
         for i in range(self._n_coupons):
             du = self._coupon_dus[i]
@@ -432,20 +382,24 @@ cdef class NTNB(Bond):
             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
 
             if i == self._n_coupons - 1:
-                fluxo_cot = 100.0 + coupon_factor
+                fluxo = 100.0 + coupon_factor
             else:
-                fluxo_cot = coupon_factor
+                fluxo = coupon_factor
 
-            pv_cot = round((fluxo_cot / discount_factor) * 10000000000.0) / 10000000000.0
-            pv_fin = 0.0
-            if vna > 0.0:
-                pv_fin = trunc((vna * (pv_cot / 100.0)) * 1000000.0) / 1000000.0
+            pv_fluxo = round((fluxo / discount_factor) * 10000000000.0) / 10000000000.0
+            total_weighted += ((du / 252.0) / (1.0 + rate)) * pv_fluxo
+            total_cot += pv_fluxo
 
-            flows.append((du, fluxo_cot, rate, discount_factor, pv_cot, pv_fin))
+        if total_cot <= 0.0:
+            return 0.0
+        return total_weighted / total_cot
 
-        return flows
+    cpdef double dv01(self, Curve real_curve, double vna=0.0) except *:
+        cdef double mod_dur = self.modified_duration(real_curve)
+        cdef double pu = self.present_value(real_curve, vna=vna)
+        return mod_dur * pu * 0.0001
 
-    cpdef list cashflow_details(self, Curve real_curve, double vna=0.0) except *:
+    cpdef list cashflow_details(self, Curve real_curve, double vna=0.0):
         cdef list flows = []
         cdef int i, du
         cdef double rate, discount_factor
@@ -515,15 +469,6 @@ cdef class NTNBP(Bond):
         return mod_dur * pu * 0.0001
 
     cpdef list cashflow_details(self, Curve real_curve, double vna=0.0):
-        cdef double rate = real_curve.get_rate(self._du)
-        cdef double discount_factor = trunc(pow(1.0 + rate, self._du / 252.0) * 100000000000000.0) / 100000000000000.0
-        cdef double cot = trunc((100.0 / discount_factor) * 10000.0) / 10000.0
-        cdef double pu = 0.0
-        if vna > 0.0:
-            pu = trunc((vna * (cot / 100.0)) * 1000000.0) / 1000000.0
-        return [(self._du, 100.0, rate, discount_factor, cot, vna, pu)]
-
-    cpdef list cashflow_details(self, Curve real_curve, double vna=0.0) except *:
         cdef double rate = real_curve.get_rate(self._du)
         cdef double discount_factor = trunc(pow(1.0 + rate, self._du / 252.0) * 100000000000000.0) / 100000000000000.0
         cdef double cot = trunc((100.0 / discount_factor) * 10000.0) / 10000.0
@@ -609,22 +554,11 @@ cdef class NTNC(Bond):
         return total_weighted / total_cot
 
     cpdef double modified_duration(self, Curve real_curve) except *:
-        cdef double dur_du = self.duration(real_curve)
-        cdef int last_du = self._coupon_dus[self._n_coupons - 1]
-        cdef double last_rate = real_curve.get_rate(last_du)
-        return (dur_du / 252.0) / (1.0 + last_rate)
-
-    cpdef double dv01(self, Curve real_curve, double vna=0.0) except *:
-        cdef double mod_dur = self.modified_duration(real_curve)
-        cdef double pu = self.present_value(real_curve, vna=vna)
-        return mod_dur * pu * 0.0001
-
-    cpdef list cashflow_details(self, Curve real_curve, double vna=0.0):
-        cdef list flows = []
+        cdef double total_weighted = 0.0
+        cdef double total_cot = 0.0
         cdef int i, du
-        cdef double rate, discount_factor
+        cdef double rate, discount_factor, fluxo, pv_fluxo
         cdef double coupon_factor = round((pow(1.0 + self._coupon_rate, 0.5) - 1.0) * 100.0 * 1000000.0) / 1000000.0
-        cdef double fluxo_cot, pv_cot, pv_fin
 
         for i in range(self._n_coupons):
             du = self._coupon_dus[i]
@@ -635,20 +569,24 @@ cdef class NTNC(Bond):
             discount_factor = trunc(pow(1.0 + rate, du / 252.0) * 100000000000000.0) / 100000000000000.0
 
             if i == self._n_coupons - 1:
-                fluxo_cot = 100.0 + coupon_factor
+                fluxo = 100.0 + coupon_factor
             else:
-                fluxo_cot = coupon_factor
+                fluxo = coupon_factor
 
-            pv_cot = round((fluxo_cot / discount_factor) * 10000000000.0) / 10000000000.0
-            pv_fin = 0.0
-            if vna > 0.0:
-                pv_fin = trunc((vna * (pv_cot / 100.0)) * 1000000.0) / 1000000.0
+            pv_fluxo = round((fluxo / discount_factor) * 10000000000.0) / 10000000000.0
+            total_weighted += ((du / 252.0) / (1.0 + rate)) * pv_fluxo
+            total_cot += pv_fluxo
 
-            flows.append((du, fluxo_cot, rate, discount_factor, pv_cot, pv_fin))
+        if total_cot <= 0.0:
+            return 0.0
+        return total_weighted / total_cot
 
-        return flows
+    cpdef double dv01(self, Curve real_curve, double vna=0.0) except *:
+        cdef double mod_dur = self.modified_duration(real_curve)
+        cdef double pu = self.present_value(real_curve, vna=vna)
+        return mod_dur * pu * 0.0001
 
-    cpdef list cashflow_details(self, Curve real_curve, double vna=0.0) except *:
+    cpdef list cashflow_details(self, Curve real_curve, double vna=0.0):
         cdef list flows = []
         cdef int i, du
         cdef double rate, discount_factor

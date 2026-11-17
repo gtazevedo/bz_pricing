@@ -287,11 +287,14 @@ cpdef double crr_american_price(
     bint is_call=True,
     int steps=200,
 ):
-    """Árvore binomial Cox-Ross-Rubinstein (CRR) em C puro para opções americanas."""
-    cdef double d_tmp, g_tmp, t_tmp, val
+    """Árvore binomial Cox-Ross-Rubinstein (CRR) em C puro para opções americanas (média par-ímpar N e N+1)."""
+    cdef double d_tmp, g_tmp, t_tmp, v1, v2
     with nogil:
-        val = _crr_american_core(S, K, r, q, T, sigma, is_call, steps, &d_tmp, &g_tmp, &t_tmp)
-    return val
+        v1 = _crr_american_core(S, K, r, q, T, sigma, is_call, steps, &d_tmp, &g_tmp, &t_tmp)
+        if steps >= 2:
+            v2 = _crr_american_core(S, K, r, q, T, sigma, is_call, steps + 1, &d_tmp, &g_tmp, &t_tmp)
+            return 0.5 * (v1 + v2)
+        return v1
 
 
 cpdef tuple crr_american_price_greeks(
@@ -304,22 +307,39 @@ cpdef tuple crr_american_price_greeks(
     bint is_call=True,
     int steps=200,
 ):
-    """Preço americano CRR e gregas consistentes (delta/gamma/theta na árvore; vega/rho por diferenças finitas)."""
+    """Preço americano CRR com suavização par-ímpar e gregas consistentes."""
     cdef double price, delta, gamma, theta, vega, rho
+    cdef double p1, d1_t, g1_t, t1_t, p2, d2_t, g2_t, t2_t
     cdef double d_tmp, g_tmp, t_tmp
     cdef double dv = 1e-4
     cdef double dr = 1e-4
     cdef double p_v_up, p_v_dn, p_r_up, p_r_dn
 
     with nogil:
-        price = _crr_american_core(S, K, r, q, T, sigma, is_call, steps, &delta, &gamma, &theta)
+        p1 = _crr_american_core(S, K, r, q, T, sigma, is_call, steps, &d1_t, &g1_t, &t1_t)
+        if steps >= 2:
+            p2 = _crr_american_core(S, K, r, q, T, sigma, is_call, steps + 1, &d2_t, &g2_t, &t2_t)
+            price = 0.5 * (p1 + p2)
+            delta = 0.5 * (d1_t + d2_t)
+            gamma = 0.5 * (g1_t + g2_t)
+            theta = 0.5 * (t1_t + t2_t)
+        else:
+            price = p1
+            delta = d1_t
+            gamma = g1_t
+            theta = t1_t
+
         if T > 0.0 and sigma > dv and S > 0.0 and K > 0.0:
-            p_v_up = _crr_american_core(S, K, r, q, T, sigma + dv, is_call, steps, &d_tmp, &g_tmp, &t_tmp)
-            p_v_dn = _crr_american_core(S, K, r, q, T, sigma - dv, is_call, steps, &d_tmp, &g_tmp, &t_tmp)
+            p1 = _crr_american_core(S, K, r, q, T, sigma + dv, is_call, steps, &d_tmp, &g_tmp, &t_tmp)
+            p_v_up = 0.5 * (p1 + _crr_american_core(S, K, r, q, T, sigma + dv, is_call, steps + 1, &d_tmp, &g_tmp, &t_tmp)) if steps >= 2 else p1
+            p1 = _crr_american_core(S, K, r, q, T, sigma - dv, is_call, steps, &d_tmp, &g_tmp, &t_tmp)
+            p_v_dn = 0.5 * (p1 + _crr_american_core(S, K, r, q, T, sigma - dv, is_call, steps + 1, &d_tmp, &g_tmp, &t_tmp)) if steps >= 2 else p1
             vega = (p_v_up - p_v_dn) / (2.0 * dv)
 
-            p_r_up = _crr_american_core(S, K, r + dr, q, T, sigma, is_call, steps, &d_tmp, &g_tmp, &t_tmp)
-            p_r_dn = _crr_american_core(S, K, r - dr, q, T, sigma, is_call, steps, &d_tmp, &g_tmp, &t_tmp)
+            p1 = _crr_american_core(S, K, r + dr, q, T, sigma, is_call, steps, &d_tmp, &g_tmp, &t_tmp)
+            p_r_up = 0.5 * (p1 + _crr_american_core(S, K, r + dr, q, T, sigma, is_call, steps + 1, &d_tmp, &g_tmp, &t_tmp)) if steps >= 2 else p1
+            p1 = _crr_american_core(S, K, r - dr, q, T, sigma, is_call, steps, &d_tmp, &g_tmp, &t_tmp)
+            p_r_dn = 0.5 * (p1 + _crr_american_core(S, K, r - dr, q, T, sigma, is_call, steps + 1, &d_tmp, &g_tmp, &t_tmp)) if steps >= 2 else p1
             rho = (p_r_up - p_r_dn) / (2.0 * dr)
         else:
             vega = 0.0
@@ -346,18 +366,20 @@ cpdef double corrado_su_price(
     cdef double price_bs, delta, gamma, vega, theta, rho, vanna, volga
     _bsm_core(S, K, r, q, T, sigma, True, &price_bs, &delta, &gamma, &vega, &theta, &rho, &vanna, &volga)
 
+    cdef double df_q = exp(-q * T)
+    cdef double df_r = exp(-r * T)
     cdef double sig_sqrt_T = sigma * sqrt(T)
     cdef double sig2_T = sigma * sigma * T
     cdef double exc_kurt = kappa4 - 3.0
-    cdef double w = (kappa3 / 6.0) * sig_sqrt_T * sig2_T + (exc_kurt / 24.0) * sig2_T * sig2_T
-    cdef double denom = fmax(1e-8, 1.0 + w)
-    cdef double d = (log(S / K) + (r - q + 0.5 * sigma * sigma) * T - log(denom)) / sig_sqrt_T
-    cdef double nd = _norm_pdf(d)
+    cdef double d1 = (log(S / K) + (r - q + 0.5 * sigma * sigma) * T) / sig_sqrt_T
+    cdef double d2 = d1 - sig_sqrt_T
+    cdef double nd1 = _norm_pdf(d1)
+    cdef double Nd1 = _norm_cdf(d1)
 
-    cdef double q3 = (1.0 / (6.0 * denom)) * S * sig_sqrt_T * (2.0 * sig_sqrt_T - d) * nd
-    cdef double q4 = (1.0 / (24.0 * denom)) * S * sig_sqrt_T * (
-        d * d - 3.0 * d * sig_sqrt_T + 3.0 * sig2_T - 1.0
-    ) * nd
+    cdef double q3 = (1.0 / 6.0) * S * df_q * sig_sqrt_T * ((2.0 * sig_sqrt_T - d1) * nd1 + sig2_T * Nd1)
+    cdef double q4 = (1.0 / 24.0) * S * df_q * sig_sqrt_T * (
+        (d1 * d1 - 1.0 - 3.0 * sig_sqrt_T * d2) * nd1 + (sig2_T * sig_sqrt_T) * Nd1
+    )
 
     cdef double call_cs = price_bs + kappa3 * q3 + exc_kurt * q4
     if call_cs < 0.0:
@@ -365,7 +387,7 @@ cpdef double corrado_su_price(
     if is_call:
         return call_cs
 
-    cdef double put_cs = call_cs - S * exp(-q * T) + K * exp(-r * T)
+    cdef double put_cs = call_cs - S * df_q + K * df_r
     return put_cs if put_cs > 0.0 else 0.0
 
 
@@ -553,6 +575,7 @@ cpdef tuple price_options_batch(
 
     cdef double price, delta, gamma, vega, theta, rho, vanna, volga
     cdef double d_tmp, g_tmp, t_tmp, p_v_up, p_v_dn, p_r_up, p_r_dn
+    cdef double p1_am, d1_am, g1_am, t1_am, p2_am, d2_am, g2_am, t2_am
     cdef double d_vol = 1e-4
     cdef double d_rate = 1e-4
 
@@ -561,19 +584,39 @@ cpdef tuple price_options_batch(
         for i in range(n):
             call_flag = (is_call_arr[i] != 0)
             if is_american_arr[i]:
-                pv[i] = _crr_american_core(
-                    S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i],
-                    call_flag, crr_steps, &delta, &gamma, &theta,
-                )
-                dv[i] = delta
-                gv[i] = gamma
-                tv[i] = theta
+                if crr_steps >= 2:
+                    p1_am = _crr_american_core(
+                        S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i],
+                        call_flag, crr_steps, &d1_am, &g1_am, &t1_am,
+                    )
+                    p2_am = _crr_american_core(
+                        S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i],
+                        call_flag, crr_steps + 1, &d2_am, &g2_am, &t2_am,
+                    )
+                    pv[i] = 0.5 * (p1_am + p2_am)
+                    dv[i] = 0.5 * (d1_am + d2_am)
+                    gv[i] = 0.5 * (g1_am + g2_am)
+                    tv[i] = 0.5 * (t1_am + t2_am)
+                else:
+                    pv[i] = _crr_american_core(
+                        S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i],
+                        call_flag, crr_steps, &delta, &gamma, &theta,
+                    )
+                    dv[i] = delta
+                    gv[i] = gamma
+                    tv[i] = theta
                 if T_arr[i] > 0.0 and sigma_arr[i] > d_vol and S_arr[i] > 0.0 and K_arr[i] > 0.0:
                     p_v_up = _crr_american_core(S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i] + d_vol, call_flag, crr_steps, &d_tmp, &g_tmp, &t_tmp)
                     p_v_dn = _crr_american_core(S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i] - d_vol, call_flag, crr_steps, &d_tmp, &g_tmp, &t_tmp)
+                    if crr_steps >= 2:
+                        p_v_up = 0.5 * (p_v_up + _crr_american_core(S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i] + d_vol, call_flag, crr_steps + 1, &d_tmp, &g_tmp, &t_tmp))
+                        p_v_dn = 0.5 * (p_v_dn + _crr_american_core(S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i] - d_vol, call_flag, crr_steps + 1, &d_tmp, &g_tmp, &t_tmp))
                     vv[i] = (p_v_up - p_v_dn) / (2.0 * d_vol)
                     p_r_up = _crr_american_core(S_arr[i], K_arr[i], r_arr[i] + d_rate, q_arr[i], T_arr[i], sigma_arr[i], call_flag, crr_steps, &d_tmp, &g_tmp, &t_tmp)
                     p_r_dn = _crr_american_core(S_arr[i], K_arr[i], r_arr[i] - d_rate, q_arr[i], T_arr[i], sigma_arr[i], call_flag, crr_steps, &d_tmp, &g_tmp, &t_tmp)
+                    if crr_steps >= 2:
+                        p_r_up = 0.5 * (p_r_up + _crr_american_core(S_arr[i], K_arr[i], r_arr[i] + d_rate, q_arr[i], T_arr[i], sigma_arr[i], call_flag, crr_steps + 1, &d_tmp, &g_tmp, &t_tmp))
+                        p_r_dn = 0.5 * (p_r_dn + _crr_american_core(S_arr[i], K_arr[i], r_arr[i] - d_rate, q_arr[i], T_arr[i], sigma_arr[i], call_flag, crr_steps + 1, &d_tmp, &g_tmp, &t_tmp))
                     rv[i] = (p_r_up - p_r_dn) / (2.0 * d_rate)
                 else:
                     vv[i] = 0.0
@@ -801,14 +844,28 @@ cpdef double asian_geometric_price(
     double T,
     double sigma,
     bint is_call=True,
+    int n_fixings=0,
 ) noexcept nogil:
-    """Opção asiática de média geométrica contínua (Kemna & Vorst, 1990)."""
+    """
+    Opção asiática de média geométrica (Kemna & Vorst, 1990).
+    Quando `n_fixings > 0`, utiliza momentos exatos para fixings discretos em (0, T].
+    """
     if T <= 0.0 or sigma <= 0.0 or S <= 0.0 or K <= 0.0:
         return fmax(S - K, 0.0) if is_call else fmax(K - S, 0.0)
     cdef double b = r - q
-    cdef double sig_g = sigma / sqrt(3.0)
-    cdef double b_g = 0.5 * (b - (sigma * sigma) / 6.0)
-    cdef double q_g = r - b_g
+    cdef double sig2 = sigma * sigma
+    cdef double m_f, t_bar, var_sum, sig_g, b_g, q_g
+    if n_fixings > 0:
+        m_f = <double>n_fixings
+        t_bar = T * (m_f + 1.0) / (2.0 * m_f)
+        var_sum = sig2 * T * (m_f + 1.0) * (2.0 * m_f + 1.0) / (6.0 * m_f * m_f)
+        sig_g = sqrt(var_sum / T)
+        b_g = ((b - 0.5 * sig2) * t_bar + 0.5 * var_sum) / T
+        q_g = r - b_g
+    else:
+        sig_g = sigma / sqrt(3.0)
+        b_g = 0.5 * (b - sig2 / 6.0)
+        q_g = r - b_g
     cdef double price, d_tmp, g_tmp, v_tmp, th_tmp, rh_tmp, va_tmp, vo_tmp
     _bsm_core(S, K, r, q_g, T, sig_g, is_call, &price, &d_tmp, &g_tmp, &v_tmp, &th_tmp, &rh_tmp, &va_tmp, &vo_tmp)
     return price
@@ -822,28 +879,50 @@ cpdef double asian_arithmetic_tw_price(
     double T,
     double sigma,
     bint is_call=True,
+    int n_fixings=0,
 ) noexcept nogil:
-    """Opção asiática de média aritmética contínua via aproximação de momentos (Turnbull & Wakeman, 1991)."""
+    """
+    Opção asiática de média aritmética recém-iniciada via aproximação lognormal de dois momentos
+    (Levy, 1992 / Turnbull & Wakeman, 1991). Quando `n_fixings > 0`, calcula M1 e M2 para
+    observações discretas igualmente espaçadas em (0, T].
+    """
     if T <= 0.0 or sigma <= 0.0 or S <= 0.0 or K <= 0.0:
         return fmax(S - K, 0.0) if is_call else fmax(K - S, 0.0)
 
     cdef double b = r - q
     cdef double sig2 = sigma * sigma
-    cdef double m1, m2
+    cdef double m1 = 0.0
+    cdef double m2 = 0.0
+    cdef double dt_fix, t_i, s_i, suffix_sum, sum_m1, sum_m2
+    cdef int i
 
-    if fabs(b) < 1e-8:
-        m1 = 1.0
+    if n_fixings > 0:
+        dt_fix = T / (<double>n_fixings)
+        suffix_sum = 0.0
+        sum_m1 = 0.0
+        sum_m2 = 0.0
+        for i in range(n_fixings, 0, -1):
+            t_i = (<double>i) * dt_fix
+            s_i = exp(b * t_i)
+            sum_m1 += s_i
+            sum_m2 += exp((b + sig2) * t_i) * (s_i + 2.0 * suffix_sum)
+            suffix_sum += s_i
+        m1 = sum_m1 / (<double>n_fixings)
+        m2 = sum_m2 / ((<double>n_fixings) * (<double>n_fixings))
     else:
-        m1 = (exp(b * T) - 1.0) / (b * T)
+        if fabs(b) < 1e-8:
+            m1 = 1.0
+        else:
+            m1 = (exp(b * T) - 1.0) / (b * T)
 
-    if fabs(b + sig2) < 1e-8 or fabs(2.0 * b + sig2) < 1e-8 or fabs(b) < 1e-8:
-        # Expansão segura perto de b == 0
-        m2 = (2.0 * exp(sig2 * T) - 2.0 * (1.0 + sig2 * T)) / (sig2 * sig2 * T * T) if sig2 * T > 1e-8 else 1.0
-    else:
-        m2 = (
-            (2.0 * exp((2.0 * b + sig2) * T)) / ((b + sig2) * (2.0 * b + sig2) * T * T)
-            + (2.0 / (b * T * T)) * ((1.0 / (2.0 * b + sig2)) - (exp(b * T) / (b + sig2)))
-        )
+        if fabs(b + sig2) < 1e-8 or fabs(2.0 * b + sig2) < 1e-8 or fabs(b) < 1e-8:
+            # Expansão segura perto de b == 0
+            m2 = (2.0 * exp(sig2 * T) - 2.0 * (1.0 + sig2 * T)) / (sig2 * sig2 * T * T) if sig2 * T > 1e-8 else 1.0
+        else:
+            m2 = (
+                (2.0 * exp((2.0 * b + sig2) * T)) / ((b + sig2) * (2.0 * b + sig2) * T * T)
+                + (2.0 / (b * T * T)) * ((1.0 / (2.0 * b + sig2)) - (exp(b * T) / (b + sig2)))
+            )
 
     cdef double b_eff = log(fmax(1e-12, m1)) / T
     cdef double var_eff = log(fmax(1.0 + 1e-12, m2 / (m1 * m1)))

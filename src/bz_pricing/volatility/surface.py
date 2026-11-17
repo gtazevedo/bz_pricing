@@ -157,13 +157,29 @@ class SVISlice:
         lb = np.array([-0.5, 1e-5, -0.999, -2.0, 1e-4], dtype=np.float64)
         ub = np.array([2.0, 5.0, 0.999, 2.0, 2.0], dtype=np.float64)
 
+        k_chk = np.linspace(-0.6, 0.6, 41)
+        k_chk = np.unique(np.concatenate([k_chk, k_np]))
+
         def _res(params):
             a, b, rho, m, sig = params
             w_pred = _cy_svi_eval_vec(k_np, float(a), float(b), float(rho), float(m), float(sig))
-            # Penaliza eventual variância mínima negativa
+            # Penaliza eventual variância mínima negativa e violação de Lee nas asas
             min_w = a + b * sig * math.sqrt(max(1e-8, 1.0 - rho * rho))
-            pen = max(0.0, 1e-6 - min_w) * 100.0
-            return np.append(wt * (w_pred - w_target), pen)
+            pen_w = max(0.0, 1e-6 - min_w) * 100.0
+            pen_lee = max(0.0, b * (1.0 + abs(rho)) - (2.0 - 1e-6)) * 50.0
+
+            # Condição analítica de ausência de arbitragem borboleta (Gatheral-Jacquier, 2014): g(k) >= 0
+            dk = k_chk - m
+            sq = np.sqrt(dk * dk + sig * sig)
+            w_g = np.maximum(1e-8, a + b * (rho * dk + sq))
+            wp = b * (rho + dk / sq)
+            wpp = (b * sig * sig) / (sq * sq * sq)
+            term1 = (1.0 - (k_chk * wp) / (2.0 * w_g)) ** 2
+            term2 = 0.25 * (wp * wp) * (1.0 / w_g + 0.25)
+            g_k = term1 - term2 + 0.5 * wpp
+            pen_bfly = float(np.sqrt(np.sum(np.maximum(0.0, -g_k) ** 2))) * 25.0
+
+            return np.concatenate([wt * (w_pred - w_target), [pen_w, pen_lee, pen_bfly]])
 
         res = least_squares(_res, x0, bounds=(lb, ub), max_nfev=1000)
         a, b, rho, m, sig = [float(v) for v in res.x]
@@ -239,22 +255,43 @@ class VolatilitySurface:
         smile_mode: str = "grid_strike",
         smile_interp: str = "monotone_cubic",
         time_interp: str = "total_variance",
+        slice_forwards: Optional[Dict[int, float]] = None,
     ):
         self.dus = sorted([int(d) for d in dus])
         self.smile_mode = smile_mode
         self.smile_interp = smile_interp
         self.time_interp = time_interp
         self._slices: Dict[int, object] = {}
+        self.slice_forwards: Dict[int, float] = {int(k): float(v) for k, v in slice_forwards.items()} if slice_forwards else {}
+
+    def add_slice(self, du: int, slice_obj: object, forward: Optional[float] = None) -> None:
+        du_i = int(du)
+        self._slices[du_i] = slice_obj
+        if du_i not in self.dus:
+            self.dus = sorted(self.dus + [du_i])
+        if forward is not None:
+            self.slice_forwards[du_i] = float(forward)
 
     @classmethod
-    def from_svi_slices(cls, slices_by_du: Dict[int, SVISlice], time_interp: str = "total_variance") -> "VolatilitySurface":
-        surf = cls(list(slices_by_du.keys()), smile_mode="svi", smile_interp="svi", time_interp=time_interp)
+    def from_svi_slices(
+        cls,
+        slices_by_du: Dict[int, SVISlice],
+        time_interp: str = "total_variance",
+        slice_forwards: Optional[Dict[int, float]] = None,
+    ) -> "VolatilitySurface":
+        surf = cls(list(slices_by_du.keys()), smile_mode="svi", smile_interp="svi", time_interp=time_interp, slice_forwards=slice_forwards)
         surf._slices = {int(k): v for k, v in slices_by_du.items()}
         return surf
 
     @classmethod
-    def from_sabr_slices(cls, slices_by_du: Dict[int, SABRSlice], time_interp: str = "total_variance") -> "VolatilitySurface":
-        surf = cls(list(slices_by_du.keys()), smile_mode="sabr", smile_interp="sabr", time_interp=time_interp)
+    def from_sabr_slices(
+        cls,
+        slices_by_du: Dict[int, SABRSlice],
+        time_interp: str = "total_variance",
+        slice_forwards: Optional[Dict[int, float]] = None,
+    ) -> "VolatilitySurface":
+        fwds = slice_forwards if slice_forwards is not None else {int(k): float(v.F) for k, v in slices_by_du.items()}
+        surf = cls(list(slices_by_du.keys()), smile_mode="sabr", smile_interp="sabr", time_interp=time_interp, slice_forwards=fwds)
         surf._slices = {int(k): v for k, v in slices_by_du.items()}
         return surf
 
@@ -360,30 +397,63 @@ class VolatilitySurface:
             return exp_smile_interp(x_nodes, y_nodes, x_eval)
         return monotone_cubic_interp(x_nodes, y_nodes, x_eval)
 
+    def _resolve_forward_for_du(
+        self,
+        du: int,
+        forward: Optional[Union[float, Dict[int, float], Callable[[int], float]]],
+    ) -> Optional[float]:
+        if callable(forward):
+            return float(forward(du))
+        if isinstance(forward, dict):
+            if du in forward:
+                return float(forward[du])
+            keys = sorted(forward.keys())
+            if not keys:
+                return None
+            if du <= keys[0]:
+                return float(forward[keys[0]])
+            if du >= keys[-1]:
+                return float(forward[keys[-1]])
+            vals = [float(forward[k]) for k in keys]
+            return float(np.interp(du, keys, vals))
+        if forward is None:
+            if du in self.slice_forwards:
+                return float(self.slice_forwards[du])
+            return None
+        return float(forward)
+
     def get_vol(
         self,
         du: int,
         strike: Optional[float] = None,
         delta: Optional[float] = None,
-        forward: Optional[float] = None,
+        forward: Optional[Union[float, Dict[int, float], Callable[[int], float]]] = None,
     ) -> float:
         du_i = int(du)
         if du_i in self._slices:
-            return self._eval_slice(du_i, strike=strike, delta=delta, forward=forward)
+            fwd_d = self._resolve_forward_for_du(du_i, forward)
+            return self._eval_slice(du_i, strike=strike, delta=delta, forward=fwd_d)
 
         if du_i <= self.dus[0]:
-            return self._eval_slice(self.dus[0], strike=strike, delta=delta, forward=forward)
+            du_0 = self.dus[0]
+            return self._eval_slice(du_0, strike=strike, delta=delta, forward=self._resolve_forward_for_du(du_0, forward))
         if du_i >= self.dus[-1]:
-            return self._eval_slice(self.dus[-1], strike=strike, delta=delta, forward=forward)
+            du_n = self.dus[-1]
+            return self._eval_slice(du_n, strike=strike, delta=delta, forward=self._resolve_forward_for_du(du_n, forward))
 
         idx = int(np.searchsorted(self.dus, du_i, side="right") - 1)
         du_a = self.dus[idx]
         du_p = self.dus[idx + 1]
-        vol_a = self._eval_slice(du_a, strike=strike, delta=delta, forward=forward)
-        vol_p = self._eval_slice(du_p, strike=strike, delta=delta, forward=forward)
+        fwd_a = self._resolve_forward_for_du(du_a, forward)
+        fwd_p = self._resolve_forward_for_du(du_p, forward)
+        vol_a = self._eval_slice(du_a, strike=strike, delta=delta, forward=fwd_a)
+        vol_p = self._eval_slice(du_p, strike=strike, delta=delta, forward=fwd_p)
 
         if self.time_interp == "monotone_cubic":
-            vols_all = [self._eval_slice(d, strike=strike, delta=delta, forward=forward) for d in self.dus]
+            vols_all = [
+                self._eval_slice(d, strike=strike, delta=delta, forward=self._resolve_forward_for_du(d, forward))
+                for d in self.dus
+            ]
             return monotone_cubic_interp(self.dus, vols_all, float(du_i))
 
         # Interpolação linear em variância total V_T = sigma^2 * T (padrão B3 / Bloomberg)
@@ -403,10 +473,11 @@ class VolatilitySurface:
         tol: float = 1e-8,
     ) -> Dict[str, Union[bool, int]]:
         """
-        Audita os três critérios de não arbitragem do Manual de Opções da B3:
+        Audita os critérios estáticos e de calendário de não arbitragem:
         1. Monotonicidade em strike: dC/dK < 0
         2. Convexidade borboleta: d^2C/dK^2 >= 0
         3. Monotonicidade temporal da variância total: d(sigma^2 * T)/dT >= 0
+        Com tolerâncias relativas à escala do forward nos prêmios e à variância no calendário.
         """
         def _resolve(obj, d):
             if callable(obj):
@@ -423,16 +494,17 @@ class VolatilitySurface:
             fwd = _resolve(forward_by_du, du)
             r_c = _resolve(r_cont_by_du, du)
             t_val = du / 252.0
+            price_tol = tol * max(fwd, 1.0)
             k_grid = np.linspace(0.7 * fwd, 1.3 * fwd, 25) if strikes is None else np.asarray(strikes, dtype=np.float64)
             calls = []
             for k in k_grid:
                 vol = self.get_vol(du, strike=float(k), forward=fwd)
                 calls.append(_cy_black76(fwd, float(k), r_c, t_val, vol, True)[0])
             calls_arr = np.asarray(calls, dtype=np.float64)
-            mono_viol += int(np.sum(np.diff(calls_arr) > tol))
+            mono_viol += int(np.sum(np.diff(calls_arr) > price_tol))
             if len(calls_arr) >= 3:
                 d2 = np.diff(calls_arr, n=2)
-                bfly_viol += int(np.sum(d2 < -tol))
+                bfly_viol += int(np.sum(d2 < -price_tol))
 
         if len(self.dus) >= 2:
             if strikes is None:
@@ -443,7 +515,8 @@ class VolatilitySurface:
                         fwd = _resolve(forward_by_du, du)
                         vol = self.get_vol(du, strike=float(m_val * fwd), forward=fwd)
                         tot_vars.append(vol * vol * (du / 252.0))
-                    cal_viol += int(np.sum(np.diff(tot_vars) < -tol))
+                    var_tol = tol * max(1.0, float(np.mean(tot_vars)))
+                    cal_viol += int(np.sum(np.diff(tot_vars) < -var_tol))
             else:
                 k_grid = np.asarray(strikes, dtype=np.float64)
                 for k in k_grid:
@@ -452,7 +525,8 @@ class VolatilitySurface:
                         fwd = _resolve(forward_by_du, du)
                         vol = self.get_vol(du, strike=float(k), forward=fwd)
                         tot_vars.append(vol * vol * (du / 252.0))
-                    cal_viol += int(np.sum(np.diff(tot_vars) < -tol))
+                    var_tol = tol * max(1.0, float(np.mean(tot_vars)))
+                    cal_viol += int(np.sum(np.diff(tot_vars) < -var_tol))
 
         return {
             "passed": (mono_viol == 0 and bfly_viol == 0 and cal_viol == 0),
@@ -581,8 +655,26 @@ class VolatilitySurface:
                 du_minus = max(1, du - 1)
                 du_plus = du + 1
             dt = max(1.0 / 252.0, (du_plus - du_minus) / 252.0)
-            fwd_minus = _resolve(forward_by_du, du_minus) if not isinstance(forward_by_du, dict) or du_minus in forward_by_du else fwd
-            fwd_plus = _resolve(forward_by_du, du_plus) if not isinstance(forward_by_du, dict) or du_plus in forward_by_du else fwd
+
+            def _resolve_fwd_step(d_step):
+                if callable(forward_by_du):
+                    return float(forward_by_du(d_step))
+                if isinstance(forward_by_du, dict):
+                    if d_step in forward_by_du:
+                        return float(forward_by_du[d_step])
+                    keys = sorted(forward_by_du.keys())
+                    if d_step <= keys[0]:
+                        r_edge = _resolve(r_cont_by_du, keys[0])
+                        return float(forward_by_du[keys[0]]) * math.exp(r_edge * (d_step - keys[0]) / 252.0)
+                    if d_step >= keys[-1]:
+                        r_edge = _resolve(r_cont_by_du, keys[-1])
+                        return float(forward_by_du[keys[-1]]) * math.exp(r_edge * (d_step - keys[-1]) / 252.0)
+                    vals = [math.log(max(1e-12, float(forward_by_du[k_i]))) for k_i in keys]
+                    return math.exp(float(np.interp(d_step, keys, vals)))
+                return float(forward_by_du)
+
+            fwd_minus = _resolve_fwd_step(du_minus)
+            fwd_plus = _resolve_fwd_step(du_plus)
 
             for j, k in enumerate(k_grid):
                 k_f = float(k)
@@ -601,8 +693,11 @@ class VolatilitySurface:
                 dw_dy = (w_up - w_dn) / (2.0 * dy)
                 d2w_dy2 = (w_up - 2.0 * w_c + w_dn) / (dy * dy)
 
-                sig_tp = self.get_vol(du_plus, strike=k_f, forward=fwd_plus)
-                sig_tm = self.get_vol(du_minus, strike=k_f, forward=fwd_minus)
+                # Derivada temporal dw/dT a log-moneyness y = ln(K/F(T)) constante (equação de Gatheral)
+                k_tp = fwd_plus * math.exp(y)
+                k_tm = fwd_minus * math.exp(y)
+                sig_tp = self.get_vol(du_plus, strike=k_tp, forward=fwd_plus)
+                sig_tm = self.get_vol(du_minus, strike=k_tm, forward=fwd_minus)
                 w_tp = sig_tp * sig_tp * (du_plus / 252.0)
                 w_tm = sig_tm * sig_tm * (du_minus / 252.0)
                 dw_dt = (w_tp - w_tm) / dt

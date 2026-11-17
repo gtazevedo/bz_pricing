@@ -1,4 +1,5 @@
 import datetime
+import math
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -260,6 +261,7 @@ def test_hazard_rate_curve_and_risky_credit_pricing():
 
     base_dt = datetime.date(2026, 10, 30)
     hz = HazardRateCurve.from_credit_spreads([252, 504], [0.015, 0.020], recovery_rate=0.40)
+    assert abs(hz.hazard_rate(252) - (math.log(1.015) / 0.60)) < 1e-12
     assert abs(hz.survival_prob(0) - 1.0) < 1e-12
     assert 0.90 < hz.survival_prob(252) < 1.0
     assert hz.default_prob(504) > hz.default_prob(252)
@@ -269,7 +271,9 @@ def test_hazard_rate_curve_and_risky_credit_pricing():
         [(datetime.date(2027, 4, 30), 60.0, "Juros"), (datetime.date(2027, 10, 29), 1060.0, "Vencimento")],
         indexador="PRE",
     )
+    pu_rf_direct = deb.present_value(base_dt, 0.12)
     res = deb.risky_present_value(base_dt, 0.12, hazard_curve=hz)
+    assert abs(res["pv_risk_free"] - pu_rf_direct) < 1e-4
     assert 0.0 < res["pv_risky"] < res["pv_risk_free"]
     assert abs(res["cva"] - (res["pv_risk_free"] - res["pv_risky"])) < 1e-8
 
@@ -278,7 +282,42 @@ def test_hazard_rate_curve_and_risky_credit_pricing():
     lam_imp = deb.implied_hazard_rate(base_dt, res_flat["pv_risky"], 0.12, recovery_rate=0.40)
     assert abs(lam_imp - 0.03) < 1e-6
 
+    # Acima do valor livre de risco retorna NaN; no valor exato retorna 0.0
+    assert abs(deb.implied_hazard_rate(base_dt, res["pv_risk_free"], 0.12, recovery_rate=0.40) - 0.0) < 1e-10
+    assert math.isnan(deb.implied_hazard_rate(base_dt, res["pv_risk_free"] + 25.0, 0.12, recovery_rate=0.40))
+
+    # Amortização reduz saldo exposto à recuperação vs bullet
+    deb_sac = Debenture.from_schedule("DEB-SAC", "2026-10-30", "2029-10-30", indexador="PRE", coupon_rate=0.10, coupon_freq="anual", amort_type="sac")
+    deb_bul = Debenture.from_schedule("DEB-BUL", "2026-10-30", "2029-10-30", indexador="PRE", coupon_rate=0.10, coupon_freq="anual", amort_type="bullet")
+    res_sac = deb_sac.risky_present_value(base_dt, 0.10, hazard_rate=0.05, recovery_rate=0.40)
+    res_bul = deb_bul.risky_present_value(base_dt, 0.10, hazard_rate=0.05, recovery_rate=0.40)
+    assert abs(res_sac["pv_risk_free"] - deb_sac.present_value(base_dt, 0.10)) < 1e-4
+    assert abs(res_bul["pv_risk_free"] - deb_bul.present_value(base_dt, 0.10)) < 1e-4
+    assert 0.0 < res_sac["cva"] < res_bul["cva"]
+
     cdv01 = deb.credit_dv01(base_dt, 0.12, hazard_curve=hz)
     assert cdv01 > 0.0
+
+
+def test_credit_offline_di_and_resolve_vna_consistency():
+    from bz_pricing.instruments import Debenture
+
+    base_dt = datetime.date(2026, 10, 30)
+    daily_di = {
+        "2026-10-27": 0.00055,
+        "2026-10-28": 0.00055,
+        "2026-10-29": 0.00055,
+        "2026-10-30": 0.00055,
+    }
+    deb_di = Debenture.from_schedule(
+        "DEB-DI-OFF",
+        issue_date="2026-10-27",
+        maturity_date="2028-10-30",
+        indexador="DI",
+        coupon_rate=0.015,
+    )
+    pu_par = deb_di.pu_par(base_dt, di_daily_rates=daily_di, allow_download=False)
+    assert abs(pu_par - 1000.0 * round((1.00055 ** 3) * round(1.015 ** (3 / 252.0), 9), 9)) < 0.05
+
 
 

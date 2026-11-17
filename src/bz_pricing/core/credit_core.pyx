@@ -216,10 +216,11 @@ cpdef tuple risky_bond_pv(
     double[:] q_cf,
     double recovery_rate=0.40,
     double principal=1000.0,
+    double[:] outstanding_notionals=None,
 ):
     """
     Calcula o Valor Presente com risco de crédito (Duffie-Singleton / Jarrow-Turnbull):
-      PV_risky = sum(CF_i * DF_i * Q_i) + R * Principal * sum(DF_i * (Q_{i-1} - Q_i))
+      PV_risky = sum(CF_i * DF_i * Q_i) + R * sum(Notional_i * 0.5*(DF_{i-1} + DF_i) * (Q_{i-1} - Q_i))
     Retorna (pv_risky, pv_risk_free, cva).
     """
     cdef Py_ssize_t n = cf_vals.shape[0]
@@ -228,17 +229,23 @@ cpdef tuple risky_bond_pv(
     cdef double pv_surv = 0.0
     cdef double pv_rec = 0.0
     cdef double q_prev = 1.0
-    cdef double q_curr, d_prob
+    cdef double df_prev = 1.0
+    cdef double q_curr, df_curr, df_mid, d_prob, rec_base
+    cdef bint has_notionals = (outstanding_notionals is not None)
 
     with nogil:
         for i in range(n):
             q_curr = q_cf[i]
-            pv_rf += cf_vals[i] * df_rf[i]
-            pv_surv += cf_vals[i] * df_rf[i] * q_curr
+            df_curr = df_rf[i]
+            pv_rf += cf_vals[i] * df_curr
+            pv_surv += cf_vals[i] * df_curr * q_curr
             d_prob = q_prev - q_curr
             if d_prob > 0.0:
-                pv_rec += recovery_rate * principal * df_rf[i] * d_prob
+                rec_base = outstanding_notionals[i] if has_notionals else principal
+                df_mid = 0.5 * (df_prev + df_curr)
+                pv_rec += recovery_rate * rec_base * df_mid * d_prob
             q_prev = q_curr
+            df_prev = df_curr
 
     cdef double pv_r = pv_surv + pv_rec
     return (pv_r, pv_rf, pv_rf - pv_r)

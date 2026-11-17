@@ -505,8 +505,8 @@ class DI1Option(_BaseOption):
 
 class CorradoSuOption(_BaseOption):
     """
-    Opção precificada pelo modelo de Corrado & Su (1996) com expansão de Gram-Charlier
-    para assimetria (kappa3) e curtose (kappa4), aplicado pela B3 a séries ilíquidas.
+    Opção europeia precificada pelo modelo de Corrado & Su (1996) com expansão de
+    Gram-Charlier para incorporar assimetria (kappa3) e curtose (kappa4).
     """
 
     def price(
@@ -706,7 +706,8 @@ def price_di1_options_portfolio(positions: List[Dict[str, Any]], base_date: Unio
 class Swaption(_BaseOption):
     """
     Swaption europeia sobre taxa de swap DI x Pré (modelos Black-76 lognormal ou Normal de Bachelier).
-    Aceita agenda de pagamentos do swap ou parâmetros diretos (`forward_swap_rate`, `annuity`) em modo offline.
+    Suporta convenção periódica (`swap_convention='periodic'`) ou swap zero-cupom composto B3 em base 252
+    (`swap_convention='b3_zero'`), além de parâmetros diretos (`forward_swap_rate`, `annuity`) em modo offline.
     """
 
     def __init__(
@@ -718,6 +719,7 @@ class Swaption(_BaseOption):
         option_type: str = "PAYER",
         notional: float = 1_000_000.0,
         payment_dates: Optional[List[Union[datetime.date, str]]] = None,
+        swap_convention: str = "periodic",
         calendar_name: str = "B3",
     ):
         opt_norm = option_type.strip().upper()
@@ -727,6 +729,9 @@ class Swaption(_BaseOption):
             mapped = "PUT"
         else:
             raise ValueError(f"option_type inválido para Swaption: {option_type}. Use 'PAYER'/'CALL' ou 'RECEIVER'/'PUT'.")
+        conv_norm = swap_convention.strip().lower()
+        if conv_norm not in ("periodic", "b3_zero"):
+            raise ValueError(f"swap_convention inválido: {swap_convention}. Use 'periodic' ou 'b3_zero'.")
         super().__init__(
             ticker=ticker,
             maturity_date=expiry_date,
@@ -739,6 +744,7 @@ class Swaption(_BaseOption):
         self.swap_maturity_date = self._normalize_date(swap_maturity_date) if swap_maturity_date else None
         self.notional = float(notional)
         self.payment_dates = [self._normalize_date(d) for d in payment_dates] if payment_dates else None
+        self.swap_convention = conv_norm
 
     def _resolve_swap_params(
         self,
@@ -764,6 +770,20 @@ class Swaption(_BaseOption):
         if not pay_dates:
             raise ValueError("Não há datas de pagamento do swap posteriores ao vencimento da swaption.")
 
+        r_exp = self._get_rate_for_du(pre_rate_or_curve, max(1, du_exp))
+        df_exp = (1.0 + r_exp) ** (-du_exp / 252.0) if du_exp > 0 else 1.0
+
+        if self.swap_convention == "b3_zero":
+            du_end = max(du_exp + 1, int(self.calendar.bizdays(base_dt, pay_dates[-1])))
+            r_end = self._get_rate_for_du(pre_rate_or_curve, du_end)
+            df_end = (1.0 + r_end) ** (-du_end / 252.0)
+            tau_swap = max(1e-12, (du_end - du_exp) / 252.0)
+            fwd_calc = math.pow(df_exp / max(1e-15, df_end), 1.0 / tau_swap) - 1.0
+            fwd_rate = float(forward_swap_rate) if forward_swap_rate is not None else fwd_calc
+            ann_calc = df_exp * tau_swap / max(1e-8, 1.0 + fwd_rate)
+            ann_eff = float(annuity) if annuity is not None else ann_calc
+            return du_exp, t_exp, fwd_rate, ann_eff
+
         prev_du = du_exp
         ann_val = 0.0
         for pdt in pay_dates:
@@ -774,8 +794,6 @@ class Swaption(_BaseOption):
             ann_val += tau_i * df_i
             prev_du = du_i
 
-        r_exp = self._get_rate_for_du(pre_rate_or_curve, max(1, du_exp))
-        df_exp = (1.0 + r_exp) ** (-du_exp / 252.0) if du_exp > 0 else 1.0
         r_end = self._get_rate_for_du(pre_rate_or_curve, prev_du)
         df_end = (1.0 + r_end) ** (-prev_du / 252.0)
 
@@ -986,8 +1004,10 @@ class CapFloor(_BaseOption):
 
 class BarrierOption(_BaseOption):
     """
-    Opção europeia com barreira contínua (Reiner & Rubinstein, 1991):
+    Opção europeia com barreira (Reiner & Rubinstein, 1991):
     `down-and-out`, `down-and-in`, `up-and-out` e `up-and-in`.
+    Quando `monitoring_steps` é informado (> 0), aplica a correção de continuidade
+    de Broadie, Glasserman & Kou (1997) para monitoramento discreto.
     """
 
     def __init__(
@@ -999,6 +1019,7 @@ class BarrierOption(_BaseOption):
         option_type: str = "CALL",
         barrier_type: str = "down-and-out",
         rebate: float = 0.0,
+        monitoring_steps: Optional[int] = None,
         calendar_name: str = "B3",
     ):
         super().__init__(
@@ -1017,6 +1038,7 @@ class BarrierOption(_BaseOption):
         self.is_up = bt.startswith("up")
         self.is_out = bt.endswith("out")
         self.rebate = float(rebate)
+        self.monitoring_steps = int(monitoring_steps) if monitoring_steps is not None else None
 
     def price(
         self,
@@ -1032,11 +1054,21 @@ class BarrierOption(_BaseOption):
         q_cont = math.log(1.0 + max(-0.99, self._get_rate_for_du(carry_or_div_yield, du_n)))
         fwd_est = float(spot) * math.exp((r_cont - q_cont) * t_n)
         vol_val = self._resolve_vol(vol, du_n, fwd_est)
+
+        h_eff = self.barrier
+        if self.monitoring_steps is not None and self.monitoring_steps > 0 and t_n > 0.0:
+            spot_f = float(spot)
+            if (self.is_up and spot_f < self.barrier) or ((not self.is_up) and spot_f > self.barrier):
+                beta_bgk = 0.5825971579
+                dt_mon = t_n / float(self.monitoring_steps)
+                shift = beta_bgk * vol_val * math.sqrt(dt_mon)
+                h_eff = self.barrier * math.exp(shift if self.is_up else -shift)
+
         return float(
             _cy_barrier_bsm(
                 float(spot),
                 self.strike,
-                self.barrier,
+                h_eff,
                 r_cont,
                 q_cont,
                 t_n,
@@ -1051,9 +1083,9 @@ class BarrierOption(_BaseOption):
 
 class AsianOption(_BaseOption):
     """
-    Opção asiática europeia de média contínua:
-    - `average_type='geometric'`: fórmula fechada de Kemna & Vorst (1990).
-    - `average_type='arithmetic'`: aproximação de momentos de Turnbull & Wakeman (1991).
+    Opção asiática europeia de média recém-iniciada (contínua ou discreta em `n_fixings` datas):
+    - `average_type='geometric'`: fórmula fechada de Kemna & Vorst (1990) / média geométrica discreta.
+    - `average_type='arithmetic'`: aproximação lognormal de dois momentos de Levy (1992) / Turnbull & Wakeman (1991).
     """
 
     def __init__(
@@ -1063,6 +1095,7 @@ class AsianOption(_BaseOption):
         strike: float,
         option_type: str = "CALL",
         average_type: str = "arithmetic",
+        n_fixings: Optional[int] = None,
         calendar_name: str = "B3",
     ):
         super().__init__(
@@ -1077,6 +1110,7 @@ class AsianOption(_BaseOption):
         if avg not in ("arithmetic", "geometric"):
             raise ValueError("average_type deve ser 'arithmetic' ou 'geometric'.")
         self.average_type = avg
+        self.n_fixings = int(n_fixings) if n_fixings is not None else None
 
     def price(
         self,
@@ -1092,6 +1126,7 @@ class AsianOption(_BaseOption):
         q_cont = math.log(1.0 + max(-0.99, self._get_rate_for_du(carry_or_div_yield, du_n)))
         fwd_est = float(spot) * math.exp((r_cont - q_cont) * t_n)
         vol_val = self._resolve_vol(vol, du_n, fwd_est)
+        n_fix = self.n_fixings if (self.n_fixings is not None and self.n_fixings > 0) else 0
         fn = _cy_asian_geom if self.average_type == "geometric" else _cy_asian_arith
-        return float(fn(float(spot), self.strike, r_cont, q_cont, t_n, vol_val, self.option_type == "CALL"))
+        return float(fn(float(spot), self.strike, r_cont, q_cont, t_n, vol_val, self.option_type == "CALL", n_fix))
 

@@ -49,9 +49,9 @@ class HazardRateCurve:
         spreads: List[float],
         recovery_rate: float = 0.40,
     ) -> "HazardRateCurve":
-        """Constrói a curva de hazard rate a partir de spreads de crédito via relação lambda = s / (1 - R)."""
+        """Constrói a curva de hazard rate a partir de spreads de crédito anuais (BUS/252) via lambda = ln(1 + s) / (1 - R)."""
         lgd = max(1e-6, 1.0 - float(recovery_rate))
-        lambdas = [max(0.0, float(s)) / lgd for s in spreads]
+        lambdas = [math.log(1.0 + max(0.0, float(s))) / lgd for s in spreads]
         return cls(tenors_du=tenors_du, hazard_rates=lambdas, recovery_rate=recovery_rate)
 
     def hazard_rate(self, du: int) -> float:
@@ -111,7 +111,8 @@ class Debenture:
                  anniversary_day: Optional[int] = None,
                  vna_engine: Optional[VNAEngine] = None,
                  is_pct_di: Optional[bool] = None,
-                 custom_cashflows: Any = None):
+                 custom_cashflows: Any = None,
+                 di_daily_rates: Any = None):
         self.ticker = ticker.strip().upper()
         self.indexador = indexador.strip().upper()
         self.coupon_rate = 0.0 if (coupon_rate is None or (isinstance(coupon_rate, float) and math.isnan(coupon_rate))) else float(coupon_rate)
@@ -124,6 +125,7 @@ class Debenture:
         self.vna_engine = vna_engine
         self._is_pct_di_override = is_pct_di
         self.custom_cashflows = custom_cashflows
+        self.di_daily_rates = di_daily_rates
 
         if maturity_date:
             self.nominal_maturity_date = self._normalize_date(maturity_date)
@@ -197,33 +199,49 @@ class Debenture:
         raise ValueError(f"Convenção de contagem de dias '{self.coupon_day_count}' não suportada.")
 
     def _fetch_di_factor(self, start_date: datetime.date, end_date: datetime.date,
-                         multiplicador: float = 1.0, round_factor_8: bool = False) -> float:
+                         multiplicador: float = 1.0, round_factor_8: bool = False,
+                         di_daily_rates: Any = None, allow_download: bool = True) -> float:
         """
         Calcula o fator de DI acumulado no intervalo [start_date, end_date)
-        via série SGS 12 do Banco Central (taxa DI diária), respeitando defasagem_di.
+        usando `di_daily_rates` (decimal diário, modo offline) ou a série SGS 12 em
+        janelas compatíveis com o limite de 10 anos do BCB, respeitando `defasagem_di`.
         """
         if start_date >= end_date:
             return 1.0
         if self.defasagem_di > 0:
             start_date = self.calendar.offset(start_date, -self.defasagem_di)
             end_date = self.calendar.offset(end_date, -self.defasagem_di)
-        from bcb import sgs
 
-        df_cdi = sgs.get(
-            {"CDI": 12},
-            start=start_date.strftime("%Y-%m-%d"),
-            end=end_date.strftime("%Y-%m-%d")
-        )
-        if df_cdi is None or df_cdi.empty:
-            raise ValueError(f"Série SGS 12 (CDI) indisponível para o período {start_date} a {end_date}.")
+        rates_src = di_daily_rates if di_daily_rates is not None else self.di_daily_rates
+        if rates_src is not None:
+            if isinstance(rates_src, pd.Series):
+                s = rates_src.copy()
+                s.index = pd.to_datetime(s.index)
+            elif isinstance(rates_src, dict):
+                s = pd.Series(list(rates_src.values()), index=pd.to_datetime(list(rates_src.keys())), dtype=float)
+            elif isinstance(rates_src, pd.DataFrame):
+                d_col = next((c for c in rates_src.columns if str(c).lower() in ("date", "data")), rates_src.columns[0])
+                v_col = next((c for c in rates_src.columns if str(c).lower() in ("value", "valor", "rate", "taxa", "cdi")), rates_src.columns[-1])
+                s = pd.Series(rates_src[v_col].astype(float).values, index=pd.to_datetime(rates_src[d_col]))
+            else:
+                raise TypeError(f"Formato não suportado para di_daily_rates: {type(rates_src)}")
+            s = s.sort_index()
+        else:
+            if not allow_download:
+                raise ValueError(f"Informe 'di_daily_rates' ou 'fator_di_acumulado' para {self.ticker} em modo offline.")
+            from bz_pricing.core.vna_engine import _fetch_sgs_chunked
 
-        dates = pd.to_datetime(df_cdi.index).date
+            s = _fetch_sgs_chunked(12, start_date, end_date) / 100.0
+            if s is None or s.empty:
+                raise ValueError(f"Série SGS 12 (CDI) indisponível para o período {start_date} a {end_date}.")
+
+        dates = pd.to_datetime(s.index).date
         mask = (dates >= start_date) & (dates < end_date)
-        rates = df_cdi.loc[mask, "CDI"].dropna()
+        rates = s.loc[mask].dropna()
 
         fator = 1.0
         for r in rates:
-            f_dia = 1.0 + (float(r) / 100.0) * multiplicador
+            f_dia = 1.0 + float(r) * multiplicador
             if self._is_cricra and multiplicador != 1.0:
                 f_dia = math.trunc(f_dia * 1e16) / 1e16
             fator *= f_dia
@@ -395,7 +413,8 @@ class Debenture:
 
     def resolve_vna(self, base_date: Union[datetime.date, str],
                     vna: Optional[float] = None,
-                    vna_engine: Optional[VNAEngine] = None) -> float:
+                    vna_engine: Optional[VNAEngine] = None,
+                    truncate_monthly: bool = False) -> float:
         """
         Retorna o VNA na data de referência. Se não for informado explicitamente,
         utiliza o valor nominal para papéis não corrigidos por inflação ou calcula
@@ -431,7 +450,7 @@ class Debenture:
                 ref_date=base_dt,
             )
             self.vna_engine = engine
-        return float(engine.calculate_vna(base_dt, self.calendar, anniversary_day=self.anniversary_day))
+        return float(engine.calculate_vna(base_dt, self.calendar, anniversary_day=self.anniversary_day, truncate_monthly=truncate_monthly))
 
     def calculate_vna(
         self,
@@ -475,7 +494,9 @@ class Debenture:
 
     def pu_par(self, base_date: Union[datetime.date, str], vna: Optional[float] = None,
                last_coupon_date: Union[datetime.date, str] = None,
-               fator_di_acumulado: Optional[float] = None) -> float:
+               fator_di_acumulado: Optional[float] = None,
+               di_daily_rates: Any = None,
+               allow_download: bool = True) -> float:
         """
         Calcula o PU Par na data de referência:
         PU Par = VNA * (1 + Juros_Acruados)
@@ -509,7 +530,14 @@ class Debenture:
             f_di = (
                 float(fator_di_acumulado)
                 if fator_di_acumulado is not None
-                else self._fetch_di_factor(last_date, base_date, multiplicador=self.multiplicador_di, round_factor_8=False)
+                else self._fetch_di_factor(
+                    last_date,
+                    base_date,
+                    multiplicador=self.multiplicador_di,
+                    round_factor_8=False,
+                    di_daily_rates=di_daily_rates,
+                    allow_download=allow_download,
+                )
             )
             return math.trunc((vna * f_di) * self._value_scale) / self._value_scale
 
@@ -517,7 +545,14 @@ class Debenture:
             f_di = (
                 float(fator_di_acumulado)
                 if fator_di_acumulado is not None
-                else self._fetch_di_factor(last_date, base_date, multiplicador=1.0, round_factor_8=True)
+                else self._fetch_di_factor(
+                    last_date,
+                    base_date,
+                    multiplicador=1.0,
+                    round_factor_8=True,
+                    di_daily_rates=di_daily_rates,
+                    allow_download=allow_download,
+                )
             )
             f_spr = round(math.pow(1.0 + self.coupon_rate, du_passado / 252.0), 9)
             f_juros = round(f_di * f_spr, 9) if self._is_cricra else math.trunc(f_di * f_spr * 1e9) / 1e9
@@ -588,7 +623,7 @@ class Debenture:
                     continue
                 du_d = int(self.calendar.bizdays(base_date, dt))
                 r_desc = self._get_rate_for_du(discount_rate_or_curve, du_d)
-                df_d = (1.0 + r_desc) ** (-du_d / 252.0) if du_d > 0 else 1.0
+                df_d = math.trunc(math.pow(1.0 + r_desc, du_d / 252.0) * 1e14) / 1e14 if du_d > 0 else 1.0
                 rows.append({
                     "data_evento": dt,
                     "data_pagamento": dt,
@@ -599,7 +634,7 @@ class Debenture:
                     "fluxo_nominal": fl_nom,
                     "taxa_desconto": r_desc,
                     "fator_desconto": df_d,
-                    "valor_presente": fl_nom * df_d,
+                    "valor_presente": fl_nom / df_d,
                 })
             return pd.DataFrame(rows)
 
@@ -1376,17 +1411,33 @@ class Debenture:
             recovery_rate = hz.recovery_rate
 
         cf_arr = df_flows["fluxo_nominal"].to_numpy(dtype=np.float64)
-        df_arr = df_flows["fator_desconto"].to_numpy(dtype=np.float64)
+        df_arr = 1.0 / np.maximum(1e-12, df_flows["fator_desconto"].to_numpy(dtype=np.float64))
         du_arr = df_flows["du"].to_numpy(dtype=np.int32)
         q_arr = np.array([hz.survival_prob(int(d)) for d in du_arr], dtype=np.float64)
-        principal_ref = float(vna) if vna is not None else float(self.nominal_value)
+
+        has_custom = (custom_cashflows is not None or self.custom_cashflows is not None)
+        principal_ref = float(vna) if vna is not None else (float(self.nominal_value) if has_custom else self.resolve_vna(base_dt))
+        outstanding_arr = np.empty(len(cf_arr), dtype=np.float64)
+        saldo_rem = principal_ref
+        for idx_f, (ev_s, fl_v) in enumerate(zip(df_flows["evento"].astype(str), cf_arr)):
+            outstanding_arr[idx_f] = max(0.0, saldo_rem)
+            ev_l = ev_s.lower()
+            if "amort" in ev_l or "vencimento" in ev_l:
+                saldo_rem = max(0.0, saldo_rem - float(fl_v))
 
         if _cy_risky_bond_pv is not None:
-            pv_r, pv_rf, cva = _cy_risky_bond_pv(cf_arr, df_arr, q_arr, float(recovery_rate), principal_ref)
+            pv_r, pv_rf, cva = _cy_risky_bond_pv(
+                cf_arr, df_arr, q_arr, float(recovery_rate), principal_ref, outstanding_arr
+            )
         else:
             pv_rf = float(np.sum(cf_arr * df_arr))
             q_prev = np.concatenate([[1.0], q_arr[:-1]])
-            pv_r = float(np.sum(cf_arr * df_arr * q_arr) + float(recovery_rate) * principal_ref * np.sum(df_arr * np.maximum(0.0, q_prev - q_arr)))
+            df_prev = np.concatenate([[1.0], df_arr[:-1]])
+            df_mid = 0.5 * (df_prev + df_arr)
+            pv_r = float(
+                np.sum(cf_arr * df_arr * q_arr)
+                + float(recovery_rate) * np.sum(outstanding_arr * df_mid * np.maximum(0.0, q_prev - q_arr))
+            )
             cva = pv_rf - pv_r
 
         return {
@@ -1429,8 +1480,10 @@ class Debenture:
             )["pv_risky"] - float(market_pu)
 
         f0 = _obj(0.0)
-        if f0 <= 0.0:
+        if abs(f0) <= 1e-10:
             return 0.0
+        if f0 < -1e-10:
+            return float("nan")
         high = 2.0
         while _obj(high) > 0.0 and high < 20.0:
             high *= 2.0
@@ -1508,7 +1561,8 @@ class CertificadoRecebiveis(Debenture):
                  anniversary_day: Optional[int] = None,
                  vna_engine: Optional[VNAEngine] = None,
                  is_pct_di: Optional[bool] = None,
-                 custom_cashflows: Any = None):
+                 custom_cashflows: Any = None,
+                 di_daily_rates: Any = None):
         super().__init__(
             ticker=ticker,
             maturity_date=maturity_date,
@@ -1526,6 +1580,7 @@ class CertificadoRecebiveis(Debenture):
             vna_engine=vna_engine,
             is_pct_di=is_pct_di,
             custom_cashflows=custom_cashflows,
+            di_daily_rates=di_daily_rates,
         )
         self.securitizadora = securitizadora.strip()
         self.lastro = (lastro or self.DEFAULT_LASTRO).strip()

@@ -432,3 +432,89 @@ def test_stage1_fx_surface_iv_bounds_and_parity():
         assert res_oos["rmse_vol_bps"] < 15.0
 
 
+def test_stage2_theoretical_and_quantlib_cross_checks():
+    from scipy.integrate import quad
+    from bz_pricing.core.options_core import asian_geometric_price, crr_american_price
+    from bz_pricing.instruments import AsianOption, BarrierOption, Swaption
+
+    base_dt = datetime.date(2026, 10, 30)
+    exp_dt = datetime.date(2027, 4, 30)
+
+    # 1. M1 & M2 & M3: Superfície em escala elevada (F ~ 500k) com carry não nulo deve dar vol local constante = sigma0
+    sig0 = 0.22
+    r_c = 0.14
+    spot_s = 500000.0
+    du1, du2 = 63, 126
+    f1 = spot_s * math.exp(r_c * du1 / 252.0)
+    f2 = spot_s * math.exp(r_c * du2 / 252.0)
+    sl_flat1 = SVISlice(a=(sig0 ** 2) * (du1 / 252.0), b=1e-5, rho=0.0, m=0.0, sigma=0.1, T=du1 / 252.0)
+    sl_flat2 = SVISlice(a=(sig0 ** 2) * (du2 / 252.0), b=1e-5, rho=0.0, m=0.0, sigma=0.1, T=du2 / 252.0)
+    surf_flat = VolatilitySurface.from_svi_slices({du1: sl_flat1, du2: sl_flat2}, slice_forwards={du1: f1, du2: f2})
+    arb_flat = surf_flat.check_no_arbitrage({du1: f1, du2: f2}, r_c)
+    assert arb_flat["passed"] is True
+
+    fwd_fn = lambda d: spot_s * math.exp(r_c * (d / 252.0))
+    dup_flat = surf_flat.dupire_local_vol_grid(fwd_fn, r_c)
+    assert dup_flat["passed"] is True
+    assert np.max(np.abs(dup_flat["local_vol"] - sig0)) < 1e-4
+
+    # M11: SVI fit preserva condição borboleta g(k) >= 0 de Gatheral-Jacquier
+    k_grid = np.linspace(-0.4, 0.4, 17)
+    sl_clean = SVISlice(a=0.015, b=0.06, rho=-0.4, m=0.01, sigma=0.12, T=0.25)
+    svi_fit = SVISlice.fit(k_grid, sl_clean.implied_vol(k_grid), T=0.25)
+    dk = k_grid - svi_fit.m
+    sq = np.sqrt(dk * dk + svi_fit.sigma ** 2)
+    w_v = svi_fit.a + svi_fit.b * (svi_fit.rho * dk + sq)
+    wp_v = svi_fit.b * (svi_fit.rho + dk / sq)
+    wpp_v = (svi_fit.b * svi_fit.sigma ** 2) / (sq ** 3)
+    g_vals = (1.0 - (k_grid * wp_v) / (2.0 * w_v)) ** 2 - 0.25 * (wp_v ** 2) * (1.0 / w_v + 0.25) + 0.5 * wpp_v
+    assert np.min(g_vals) >= -1e-6
+
+    # 2. M4: Corrado-Su (1996) conferido contra integração direta por quadratura (com dividendo q > 0)
+    S, K, r, q, T, sig = 58.0, 60.0, 0.14, 0.03, 0.5, 0.30
+    k3, k4 = -0.35, 4.2
+    cs_opt = CorradoSuOption("CS-QUAD", "2027-04-30", K, "CALL")
+    r_ann = math.exp(r) - 1.0
+    q_ann = math.exp(q) - 1.0
+    du_cs = cs_opt.du(base_dt)
+    t_cs = du_cs / 252.0
+    p_cs = cs_opt.price(base_dt, S, r_ann, sig, kappa3=k3, kappa4=k4, carry_or_div_yield=q_ann)
+    sT = sig * math.sqrt(t_cs)
+    d2_c = (math.log(S / K) + (r - q - 0.5 * sig * sig) * t_cs) / sT
+    n_pdf = lambda z: math.exp(-0.5 * z * z) / math.sqrt(2.0 * math.pi)
+    f_gc = lambda z: n_pdf(z) * (1.0 + (k3 / 6.0) * (z ** 3 - 3.0 * z) + ((k4 - 3.0) / 24.0) * (z ** 4 - 6.0 * z ** 2 + 3.0))
+    pay_gc = lambda z: math.exp(-r * t_cs) * max(S * math.exp((r - q - 0.5 * sig * sig) * t_cs + sT * z) - K, 0.0) * f_gc(z)
+    p_quad, _ = quad(pay_gc, -d2_c, 12.0)
+    assert abs(p_cs - p_quad) < 1e-10
+
+    # 3. M10: Suavização par-ímpar CRR elimina oscilação binomial
+    p_200 = crr_american_price(38.0, 40.0, 0.13, 0.0, 0.5, 0.30, False, 200)
+    p_201 = crr_american_price(38.0, 40.0, 0.13, 0.0, 0.5, 0.30, False, 201)
+    assert abs(p_200 - p_201) < 1e-3
+
+    # 4. M7: BarrierOption com monitoramento discreto (BGK) e comparação vs Monte Carlo
+    bar_cont = BarrierOption("B-C", exp_dt, 60.0, 52.0, "CALL", "down-and-out")
+    bar_disc = BarrierOption("B-D", exp_dt, 60.0, 52.0, "CALL", "down-and-out", monitoring_steps=12)
+    p_bc = bar_cont.price(base_dt, 62.0, 0.14, 0.30, 0.02)
+    p_bd = bar_disc.price(base_dt, 62.0, 0.14, 0.30, 0.02)
+    assert p_bd > p_bc  # barreira efetiva menor -> maior sobrevivência -> prêmio maior
+
+    # 5. M8: AsianOption com n_fixings=1 deve coincidir com EquityOption europeia; geométrica discreta == QuantLib fórmula
+    eq_1 = EquityOption("EQ-1", exp_dt, 40.0, "CALL", "EUROPEAN").price(base_dt, 40.0, 0.14, 0.30, 0.02)
+    as_1 = AsianOption("AS-1", exp_dt, 40.0, "CALL", "arithmetic", n_fixings=1).price(base_dt, 40.0, 0.14, 0.30, 0.02)
+    ag_1 = AsianOption("AG-1", exp_dt, 40.0, "CALL", "geometric", n_fixings=1).price(base_dt, 40.0, 0.14, 0.30, 0.02)
+    assert abs(as_1 - eq_1) < 1e-10
+    assert abs(ag_1 - eq_1) < 1e-10
+
+    # 6. M9: Swaption na convenção B3 zero-cupom (DI x Pré 252) + paridade Payer - Receiver
+    swap_mat = datetime.date(2028, 4, 28)
+    swp_p = Swaption("SWP-B3-P", exp_dt, swap_mat, strike_rate=0.135, option_type="PAYER", swap_convention="b3_zero")
+    swp_r = Swaption("SWP-B3-R", exp_dt, swap_mat, strike_rate=0.135, option_type="RECEIVER", swap_convention="b3_zero")
+    rm_p = swp_p.risk_metrics(base_dt, 0.14, 0.18, model="black76")
+    rm_r = swp_r.risk_metrics(base_dt, 0.14, 0.18, model="black76")
+    assert abs(rm_p["forward_swap_rate"] - 0.14) < 1e-12
+    rhs_swp = swp_p.notional * rm_p["annuity"] * (rm_p["forward_swap_rate"] - 0.135)
+    assert abs((rm_p["price"] - rm_r["price"]) - rhs_swp) < 1e-6
+
+
+
