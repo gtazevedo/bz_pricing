@@ -44,12 +44,12 @@ O pacote estrutura-se em três camadas desacopladas que separam a ingestão de d
 2. **Taxas Regulatórias Derivadas (`BUS/252`):** Taxa Básica Financeira (`TFP` / `TBF_PRE`), Taxa Referencial (`TP` / `TR_PRE`) com aplicação do redutor paramétrico por faixas e Curva DI x TR (`TR`);
 3. **Estruturas de Inflação (`BUS/252`):** Cupom Sujo de IPCA (`DIC`), Cupom Sujo de IGP-M (`DIM`) e Cupom Limpo de IPCA (`DPL` sobre contratos futuros `DAP`);
 4. **Cupons Cambiais, Spreads e Moedas a Termo (`BUS/252` e `ACT/360`):** Cupom Cambial Sujo (`DOL` sobre futuros `DDI`), Cupom Cambial Limpo (`DOC` e `DCL`), Cupons Cruzados de Euro (`EUC`) e Iene (`YCL`), Spreads de Taxas Offshore (`SDE`, `SGP`, `SMX`, `SYD`) e Estruturas a Termo de Câmbio (`PTX`, `EUR` e `JPY`);
-5. **Curvas Internacionais Offshore (`ACT/360`):** Curvas a termo de futuros de taxas *overnight* (`SFR` para SOFR, `EST` para €STR, `TIE` para F-TIIE) e curvas zero cupom de *Overnight Indexed Swaps* (`ZUS` / `LIB`, `ZEU` e `ZMX`);
+5. **Curvas Internacionais Offshore (`ACT/360` e `ACT/365`):** Curvas a termo de futuros de taxas *overnight* (`SFR`, `EST`, `TIE`), curvas zero cupom (`ZUS`, `ZEU`, `ZMX`) e *bootstrapping* institucional para `SOFR_OIS`, `ESTR_OIS`, `SONIA_OIS` e `UST_PAR` via `MonotoneConvexInterpolator` (Tesouro EUA), `LogLinearDiscountInterpolator` (CME/LCH), `LogCubicDiscountInterpolator`, `NelsonSiegelCurve` e `SvenssonCurve` (Fed/BCE);
 6. **Renda Variável e Convenience Yield (`BUS/252`):** Estruturas de preços futuros de índices (`INP` para Ibovespa, `BRP` para IBrX-50, `SML`, `MBR`, `VIX`), futuros de ações individuais e curvas de custo de carrego (`CYI`, `CYM`, `CYX`);
 7. **Títulos Públicos Federais (`TPF`) e Cálculo de VNA a partir do VNE:** Precificação exata (PU, cotação em base 100, VNA calculado a partir do VNE via `calculate_vna_from_vne`, `calculate_ntnb_vna`, `calculate_lft_vna` e `calculate_ntnc_vna`, tanto *online* pelo BCB SGS/Focus quanto *offline*), suporte a fluxos customizados (`custom_cashflows`) e métricas de sensibilidade (*Duration* de Macaulay, *Duration* Modificada, DV01 e Convexidade) para **LTN**, **NTN-F**, **NTN-B**, **NTN-B Principal**, **NTN-C** e **LFT**;
 8. **Crédito Privado (`Debenture`, `CRI`, `CRA`, `CotaFIDC`, `LetraFinanceira`, `HazardRateCurve`):** Extração estruturada no SND e ANBIMA, construção por cronograma (`from_schedule`) ou fluxos customizados (`from_cashflows` / `custom_cashflows`), PU Par, PU a mercado, *Z-Spread*, *gross-up* tributário, YTM, TIR, modelagem de *hazard rate* (`risky_present_value`, `implied_hazard_rate`, `credit_dv01`) e precificação em lote (`price_credit_portfolio`);
 9. **Derivativos Lineares (`DI1Future`, `DDIFuture`, `DAPFuture`, `DOLFuture`, `INDFuture`, `SwapDIxPRE`, `SwapDIxIPCA`, `NDFContract`):** Precificação de futuros de juros, cupom cambial, cupom de IPCA, dólar, Ibovespa, *swaps* e NDFs com cálculo de PU, taxa implícita, ajuste financeiro, DV01 e avaliação em lote (`price_di1_portfolio`);
-10. **Opções e Superfícies de Volatilidade (`EquityOption`, `FXOption`, `IDIOption`, `DI1Option`, `CorradoSuOption`, `VolatilitySurface`):** Modelos Black-Scholes-Merton, Garman-Kohlhagen (com ajuste de *fixing*), Black-76 para opções de IDI e DI1, árvore binomial CRR em Cython para exercício americano (com gregas consistentes), Corrado & Su (Gram-Charlier), parametrizações `SVISlice` e `SABRSlice`, auditoria de não arbitragem B3, cota de Lee, densidade neutra ao risco de Breeden-Litzenberger, volatilidade local de Dupire, validação *out-of-sample* e leitura de séries reais B3 (`B3DataLoader.load_options`).
+10. **Opções e Superfícies de Volatilidade (`EquityOption`, `FXOption`, `IDIOption`, `DI1Option`, `CorradoSuOption`, `VolatilitySurface`):** Modelos Black-Scholes-Merton, Garman-Kohlhagen (com ajuste de *fixing*), Black-76 para opções de IDI e DI1, árvore binomial CRR em Cython para exercício americano (com gregas consistentes), Corrado & Su (Gram-Charlier), parametrizações `SVISlice`, `SABRSlice`, mistura de lognormais com estado de *default* (`LognormalMixtureSlice` e `BloombergMixtureSurface`), desamericanização/inferência de dividendos com filtro de Kalman (`deamericanize_and_infer_forward_bbg`, `KalmanDividendFilter`, `DividendCurveBBG`), auditoria de não arbitragem, densidade de Breeden-Litzenberger, volatilidade local de Dupire e leitura de séries reais B3 (`B3DataLoader.load_options`).
 
 ---
 
@@ -371,6 +371,19 @@ fx_opt = FXOption("DOLC560", "2027-01-29", 5.60, "CALL")
 preco_fx = fx_opt.price(base_date, spot_ptax=5.55, pre_rate_or_curve=0.14, cupom_limpo_or_curve=0.05, vol=surf)
 ```
 
+### 5.6 Curvas Internacionais (`SOFR_OIS`, `UST_PAR`) e Superfície de Mistura Bloomberg
+
+```python
+from bz_pricing.curves import bootstrap_ois_curve, bootstrap_treasury_curve
+from bz_pricing.volatility import LognormalMixtureSlice, BloombergMixtureSurface
+
+sofr = bootstrap_ois_curve([90, 180, 365, 730], [0.0428, 0.0420, 0.0405, 0.0392], convention="ACT/360", method="monotone_convex")
+ust = bootstrap_treasury_curve([182, 365, 730, 1825], [0.0430, 0.0422, 0.0410, 0.0415], method="svensson")
+sl_mix = LognormalMixtureSlice([0.57, 0.38], [0.84, 1.3715789473684212], [0.35, 0.25], forward=100.0, T=1.0)
+surf_mix = BloombergMixtureSurface({252: sl_mix})
+print(f"SOFR 1Y: {sofr.get_rate(365.0)*100:.4f}% | UST 5Y: {ust.get_rate(1825.0)*100:.4f}% | Mix Vol(K=90): {surf_mix.get_vol(252, 90.0)*100:.2f}%")
+```
+
 ---
 
 ## 6. Validação Empírica por Vértices
@@ -432,6 +445,9 @@ O arquivo oficial de mercado secundário de debêntures da ANBIMA (`db261030.txt
 - **Secretaria do Tesouro Nacional (STN).** *Regras e Fórmulas de Cálculo dos Títulos Públicos Federais no Mercado Secundário*. Brasília: Ministério da Fazenda. Disponível em: <https://www.tesourodireto.com.br/titulos/historico-de-precos-e-taxas.htm>.
 - **Federal Reserve Bank of New York.** *Secured Overnight Financing Rate (SOFR) Data & Calculation Methodology*. New York: FRBNY. Disponível em: <https://www.newyorkfed.org/markets/reference-rates/sofr>.
 - **European Central Bank (ECB).** *Euro Short-Term Rate (€STR) Methodology and Policies*. Frankfurt: ECB. Disponível em: <https://www.ecb.europa.eu/stats/financial_markets_and_interest_rates/euro_short-term_rate/html/index.en.html>.
+- **Gürkaynak, R. S., Sack, B., & Wright, J. H.** *The U.S. Treasury Yield Curve: 1961 to the Present*. Federal Reserve Board, 2006. Disponível em: <https://www.federalreserve.gov/econres/feds/the-us-treasury-yield-curve-1961-to-the-present.htm>.
+- **U.S. Department of the Treasury.** *Treasury Coupon-Issue and Corporate Bond Yield Curve Methodology*. Washington, D.C.: Office of Debt Management. Disponível em: <https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics>.
+- **Hagan, P. S., & West, G.** *Interpolation Methods for Curve Construction*. Applied Mathematical Finance, v. 13, n. 2, p. 89–129, 2006.
 
 ---
 

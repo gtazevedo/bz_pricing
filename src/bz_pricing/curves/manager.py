@@ -153,6 +153,8 @@ class CurveManager:
                 if data is not None and not has_zc_kwargs:
                     return self._build_from_nodes_data(curve_name, config, base_date, data, **kwargs)
                 return self._build_zero_coupon_curve(curve_name, config, base_date, data=data, allow_download=allow_download, **kwargs)
+            elif curve_type in ("ois", "treasury"):
+                return self._build_offshore_curve(curve_name, config, base_date, data=data, allow_download=allow_download, **kwargs)
             else:
                 raise NotImplementedError(f"Tipo de curva '{curve_type}' não suportado.")
         except Exception as ex:
@@ -1151,12 +1153,18 @@ class CurveManager:
         """
         round_decimals = kwargs.get("round_decimals", config.get("round_decimals", 5))
         round_mode = kwargs.get("round_mode", config.get("round_mode", "round"))
+        interp_method = kwargs.get("interp_method", kwargs.get("method", "linear_360"))
+        day_count_basis = float(kwargs.get("day_count_basis", 360.0))
+        compounding = kwargs.get("compounding", "simple")
         discount_factors = _first_not_none(kwargs.get("discount_factors"), kwargs.get("fd_data"), kwargs.get("fd_df"))
         if discount_factors is not None:
             return self.builder.build_zero_coupon_curve(
                 discount_factors=discount_factors,
                 round_decimals=round_decimals,
-                round_mode=round_mode
+                round_mode=round_mode,
+                interp_method=interp_method,
+                day_count_basis=day_count_basis,
+                compounding=compounding,
             )
 
         if data is not None:
@@ -1166,7 +1174,76 @@ class CurveManager:
         fwd_input = _first_not_none(kwargs.get("forward_curve"), kwargs.get("fwd_curve"))
         fwd_data = _first_not_none(kwargs.get("forward_data"), kwargs.get("fwd_data"))
         fwd_curve = self._resolve_curve_input("forward_curve", fwd_name, base_date, allow_download, fwd_input, fwd_data)
-        return self.builder.build_zero_coupon_curve(fwd_curve, round_decimals=round_decimals, round_mode=round_mode)
+        return self.builder.build_zero_coupon_curve(
+            fwd_curve,
+            round_decimals=round_decimals,
+            round_mode=round_mode,
+            interp_method=interp_method,
+            day_count_basis=day_count_basis,
+            compounding=compounding,
+        )
+
+    def _build_offshore_curve(self, curve_name: str, config: dict, base_date: datetime.date,
+                              data: any = None, allow_download: bool = False, **kwargs) -> Curve:
+        """
+        Constrói curvas offshore institucionais (SOFR_OIS, ESTR_OIS, SONIA_OIS e UST_PAR)
+        em modo offline a partir de vértices de depósito/swap/títulos informados pelo usuário.
+        """
+        src = _first_not_none(data, kwargs.get("par_rates"), kwargs.get("par_yields"), kwargs.get("rates"))
+        pillars = kwargs.get("pillars_dc")
+
+        if src is None and pillars is None:
+            raise DataUnavailableError(
+                f"Insumos de mercado ('data', 'par_rates' ou 'par_yields') não informados para a curva "
+                f"offshore '{curve_name}' na data {base_date}."
+            )
+
+        if isinstance(src, dict) and pillars is None:
+            pillars = list(src.keys())
+            vals = list(src.values())
+        elif isinstance(src, pd.Series) and pillars is None:
+            pillars = list(src.index)
+            vals = list(src.values)
+        elif isinstance(src, pd.DataFrame):
+            dc_col = next((c for c in ["DC", "dc", "day360", "tenor", "maturity", "XprtnDt"] if c in src.columns), src.columns[0])
+            val_col = next((c for c in ["rate", "par_rate", "par_yield", "yield", "AdjstdQtTax", "taxa"] if c in src.columns and c != dc_col), src.columns[-1])
+            pillars = list(src[dc_col].values)
+            vals = list(src[val_col].values)
+        elif pillars is not None and src is not None:
+            vals = list(src)
+        else:
+            raise ValueError(f"Formato inválido de insumos para '{curve_name}'; informe dict, Series, DataFrame ou (pillars_dc, par_rates).")
+
+        method = kwargs.get("method", config.get("method", "monotone_convex"))
+        compounding = kwargs.get("compounding", "continuous")
+        round_decimals = kwargs.get("round_decimals", -1)
+        round_mode = kwargs.get("round_mode", "round")
+
+        if config.get("type") == "ois":
+            return self.builder.build_ois_curve(
+                pillars_dc=pillars,
+                par_rates=vals,
+                convention=kwargs.get("convention", config.get("convention", "ACT/360")),
+                payment_freq_months=int(kwargs.get("payment_freq_months", config.get("payment_freq_months", 12))),
+                method=method,
+                compounding=compounding,
+                futures_pillars=kwargs.get("futures_pillars"),
+                base_date=base_date,
+                round_decimals=round_decimals,
+                round_mode=round_mode,
+            )
+
+        return self.builder.build_treasury_curve(
+            pillars_dc=pillars,
+            par_yields=vals,
+            coupon_freq=int(kwargs.get("coupon_freq", config.get("coupon_freq", 2))),
+            day_count_basis=kwargs.get("day_count_basis", config.get("day_count_basis", 365.0)),
+            method=method,
+            compounding=compounding,
+            base_date=base_date,
+            round_decimals=round_decimals,
+            round_mode=round_mode,
+        )
 
     # =========================================================================
     # FUTUROS E CONVENIENCE YIELD DE AÇÕES

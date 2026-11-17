@@ -162,3 +162,88 @@ def test_single_node_zero_t_and_complex_curve_rounding():
     assert math.isclose(cc.get_rate(5.0), 0.1012, rel_tol=1e-12)
     assert math.isclose(cc.get_rate(100.0), 0.1212, rel_tol=1e-12)
     assert len(cc.t_nodes) == 3 and len(cc.y_nodes) == 3
+
+
+def test_offshore_interpolators_parametric_and_bootstrapping():
+    from bz_pricing import (
+        CurveManager,
+        LogCubicDiscountInterpolator,
+        LogLinearDiscountInterpolator,
+        MonotoneConvexInterpolator,
+        NelsonSiegelCurve,
+        SvenssonCurve,
+        bootstrap_ois_curve,
+        bootstrap_treasury_curve,
+    )
+
+    tenors = [30, 90, 180, 365, 730, 1095, 1825]
+    z_rates = [0.0420, 0.0430, 0.0442, 0.0455, 0.0468, 0.0476, 0.0488]
+    t_arr = np.asarray(tenors, dtype=float)
+    y_arr = np.asarray(z_rates, dtype=float)
+
+    ll_interp = LogLinearDiscountInterpolator(0, 1, 365.0, "continuous")
+    lc_interp = LogCubicDiscountInterpolator(0, 1, 365.0, "continuous")
+    mc_interp = MonotoneConvexInterpolator(0, 1, 365.0, "continuous")
+    crv_ll = SimpleCurve(t_arr, y_arr, ll_interp)
+    crv_lc = SimpleCurve(t_arr, y_arr, lc_interp)
+    crv_mc = SimpleCurve(t_arr, y_arr, mc_interp)
+
+    for d in [15, 45, 120, 270, 540, 900, 1460, 2200]:
+        assert ll_interp.forward_rate(float(d), t_arr, y_arr) > 0.0
+        assert lc_interp.forward_rate(float(d), t_arr, y_arr) > 0.0
+        assert mc_interp.forward_rate(float(d), t_arr, y_arr) > 0.0
+        assert 0.02 < crv_ll.get_rate(float(d)) < 0.08
+        assert 0.02 < crv_lc.get_rate(float(d)) < 0.08
+
+    for d, r in zip(tenors, z_rates):
+        assert abs(crv_mc.get_rate(float(d)) - r) < 1e-14
+
+    ois_dcs = [30.0, 90.0, 180.0, 360.0, 720.0, 1080.0, 1800.0]
+    ois_pars = [0.0432, 0.0436, 0.0442, 0.0450, 0.0462, 0.0471, 0.0484]
+    bz_ois_ll = bootstrap_ois_curve(ois_dcs, ois_pars, convention="ACT/360", payment_freq_months=12, method="log_linear")
+    bz_ois_mc = bootstrap_ois_curve(ois_dcs, ois_pars, convention="ACT/360", payment_freq_months=12, method="monotone_convex")
+    for dc_m, y_par in zip(ois_dcs, ois_pars):
+        if dc_m <= 360.0 + 1e-6:
+            pv = (1.0 + y_par * (dc_m / 360.0)) * math.exp(-bz_ois_ll.get_rate(dc_m) * (dc_m / 360.0))
+        else:
+            n_c = int(round(dc_m / 360.0))
+            pv = sum((y_par + (1.0 if j == n_c else 0.0)) * math.exp(-bz_ois_ll.get_rate(360.0 * j) * j) for j in range(1, n_c + 1))
+        assert abs(pv - 1.0) < 1e-11
+        assert bz_ois_mc.get_rate(dc_m) > 0.0
+
+    ust_dcs = [90.0, 182.5, 365.0, 730.0, 1095.0, 1825.0, 3650.0]
+    ust_pars = [0.0440, 0.0448, 0.0455, 0.0462, 0.0470, 0.0482, 0.0495]
+    ust_mc = bootstrap_treasury_curve(ust_dcs, ust_pars, coupon_freq=2, day_count_basis=365.0, method="monotone_convex")
+    for dc_m, y_par in zip(ust_dcs, ust_pars):
+        if dc_m <= 182.5 + 1e-6:
+            pv = (1.0 + y_par * (dc_m / 365.0)) * math.exp(-ust_mc.get_rate(dc_m) * (dc_m / 365.0))
+        else:
+            step = 182.5
+            pts = []
+            c_cur = dc_m
+            while c_cur > 1e-6:
+                pts.append(c_cur)
+                c_cur -= step
+            pts.reverse()
+            pv = 0.0
+            prev = 0.0
+            for j, pt in enumerate(pts):
+                amt = y_par * ((pt - prev) / 365.0) + (1.0 if j == len(pts) - 1 else 0.0)
+                pv += amt * math.exp(-ust_mc.get_rate(pt) * (pt / 365.0))
+                prev = pt
+        assert abs(pv - 1.0) < 1e-11
+
+    sv_true = SvenssonCurve(0.052, -0.015, -0.012, 0.018, 1.2, 4.5, day_count_basis=365.0)
+    dcs_sv = np.array([30.0, 90.0, 180.0, 365.0, 730.0, 1095.0, 1825.0, 2555.0, 3650.0, 7300.0])
+    z_sv = np.array([sv_true.get_rate(float(d)) for d in dcs_sv])
+    sv_fit = SvenssonCurve.fit(dcs_sv, z_sv, day_count_basis=365.0)
+    for d in dcs_sv:
+        assert abs(sv_fit.get_rate(float(d)) - sv_true.get_rate(float(d))) < 1e-6
+        assert abs(sv_fit.discount_factor(float(d)) - sv_true.discount_factor(float(d))) < 1e-5
+
+    ns_crv = NelsonSiegelCurve.fit(ust_dcs, [ust_mc.get_rate(d) for d in ust_dcs], day_count_basis=365.0)
+    assert ns_crv.instantaneous_forward(365.0) > 0.0
+
+    cm = CurveManager(allow_download=False)
+    mgr_sofr = cm.get_curve("SOFR_OIS", data=dict(zip(ois_dcs, ois_pars)), method="monotone_convex")
+    assert abs(mgr_sofr.get_rate(ois_dcs[-1]) - bz_ois_mc.get_rate(ois_dcs[-1])) < 1e-14

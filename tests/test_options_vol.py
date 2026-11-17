@@ -432,7 +432,7 @@ def test_stage1_fx_surface_iv_bounds_and_parity():
         assert res_oos["rmse_vol_bps"] < 15.0
 
 
-def test_stage2_theoretical_and_quantlib_cross_checks():
+def test_stage2_theoretical_cross_checks():
     from scipy.integrate import quad
     from bz_pricing.core.options_core import asian_geometric_price, crr_american_price
     from bz_pricing.instruments import AsianOption, BarrierOption, Swaption
@@ -499,7 +499,7 @@ def test_stage2_theoretical_and_quantlib_cross_checks():
     p_bd = bar_disc.price(base_dt, 62.0, 0.14, 0.30, 0.02)
     assert p_bd > p_bc  # barreira efetiva menor -> maior sobrevivência -> prêmio maior
 
-    # 5. M8: AsianOption com n_fixings=1 deve coincidir com EquityOption europeia; geométrica discreta == QuantLib fórmula
+    # 5. M8: AsianOption com n_fixings=1 deve coincidir com EquityOption europeia
     eq_1 = EquityOption("EQ-1", exp_dt, 40.0, "CALL", "EUROPEAN").price(base_dt, 40.0, 0.14, 0.30, 0.02)
     as_1 = AsianOption("AS-1", exp_dt, 40.0, "CALL", "arithmetic", n_fixings=1).price(base_dt, 40.0, 0.14, 0.30, 0.02)
     ag_1 = AsianOption("AG-1", exp_dt, 40.0, "CALL", "geometric", n_fixings=1).price(base_dt, 40.0, 0.14, 0.30, 0.02)
@@ -515,6 +515,173 @@ def test_stage2_theoretical_and_quantlib_cross_checks():
     assert abs(rm_p["forward_swap_rate"] - 0.14) < 1e-12
     rhs_swp = swp_p.notional * rm_p["annuity"] * (rm_p["forward_swap_rate"] - 0.135)
     assert abs((rm_p["price"] - rm_r["price"]) - rhs_swp) < 1e-6
+
+
+def test_bbg_part1_filtering_deamericanization_kalman_and_blended_dividends():
+    import pandas as pd
+    from bz_pricing.core.options_core import crr_american_price
+    from bz_pricing.volatility import (
+        DividendCurveBBG,
+        KalmanDividendFilter,
+        deamericanize_and_infer_forward_bbg,
+        filter_option_quotes_bbg,
+    )
+
+    # Filtragem de cotações (spread <= 0,09% do spot para T <= 1 ano)
+    raw = pd.DataFrame([
+        {"strike": 90.0, "option_type": "call", "bid": 14.17, "ask": 14.23, "mid": 14.20},
+        {"strike": 95.0, "option_type": "call", "bid": 10.17, "ask": 10.23, "mid": 10.20},
+        {"strike": 100.0, "option_type": "call", "bid": 11.67, "ask": 11.73, "mid": 11.70},
+        {"strike": 105.0, "option_type": "call", "bid": 4.37, "ask": 4.43, "mid": 4.40},
+        {"strike": 90.0, "option_type": "put", "bid": 0.0001, "ask": 0.05, "mid": 0.025},
+        {"strike": 95.0, "option_type": "put", "bid": 1.20, "ask": 5.00, "mid": 3.10},
+        {"strike": 100.0, "option_type": "put", "bid": 4.27, "ask": 4.33, "mid": 4.30},
+    ])
+    flt = filter_option_quotes_bbg(raw, spot=100.0, maturity_years=0.5)
+    assert len(flt[flt["option_type"] == "call"]) == 3
+    assert 100.0 not in flt[flt["option_type"] == "call"]["strike"].values
+    assert len(flt[flt["option_type"] == "put"]) == 1
+
+    # Desamericanização iterativa e recuperação do forward
+    spot, r, q_true, T, sig = 100.0, 0.10, 0.03, 0.5, 0.25
+    ks = np.array([90.0, 95.0, 100.0, 105.0, 110.0])
+    c_am = [crr_american_price(spot, k, r, q_true, T, sig, True, 120) for k in ks]
+    p_am = [crr_american_price(spot, k, r, q_true, T, sig, False, 120) for k in ks]
+    out_am = deamericanize_and_infer_forward_bbg(ks, c_am, p_am, spot=spot, r_cont=r, T=T, exercise="AMERICAN", crr_steps=120)
+    f_true = spot * math.exp((r - q_true) * T)
+    assert abs(out_am["forward"] - f_true) < 0.15
+
+    # Filtro de Kalman com piso e aceleração em violação bid/ask
+    kf = KalmanDividendFilter(alpha_over_sigma=1.0)
+    kf.update(0.020, d_bid=0.015, d_ask=0.025)
+    u2 = kf.update(0.021, d_bid=0.015, d_ask=0.025)
+    assert u2["gain"] >= 0.03 and not u2["violation"]
+    u3 = kf.update(0.032, d_bid=0.026, d_ask=0.035)
+    assert u3["violation"] and abs(u3["gain"] - 0.5) < 1e-12
+    u4 = kf.update(0.010, d_bid=0.005, d_ask=0.015, elapsed_days=8.0)
+    assert abs(u4["dividend"] - 0.010) < 1e-12
+
+    # Sazonalidade, horário estendido e Blended Dividends
+    dc_bbg = DividendCurveBBG(is_index=False)
+    wts = dc_bbg.fit_seasonality(
+        ["2024-03-10", "2024-09-10", "2025-03-12", "2025-09-12"],
+        [1.0, 3.0, 1.0, 3.0],
+    )
+    assert abs(np.sum(wts) - 1.0) < 1e-12 and wts[8] > wts[2]
+    s_ets = dc_bbg.extended_trading_hours_spot(5000.0, 5050.0, 0.05, 5040.0, 0.05, 0.25)
+    assert abs(s_ets - 5000.0 * (5050.0 / 5040.0)) < 1e-8
+
+    bd = dc_bbg.decompose_blended_dividends([0.5, 1.5, 3.0, 11.0], spot_f0=100.0, fwd_T=96.0, r_cont=0.05, T=11.5)
+    assert abs(bd["w_d"][0] - 1.0) < 1e-12 and abs(bd["w_q"][3] - 1.0) < 1e-12
+    f_cur = 100.0
+    t_prev = 0.0
+    for ti, dc_i, yp_i in zip(bd["times"], bd["d_cash"], bd["y_prop"]):
+        f_cur = f_cur * math.exp((0.05 - bd["q"]) * (ti - t_prev)) * (1.0 - yp_i) - dc_i
+        t_prev = ti
+    f_terminal = f_cur * math.exp((0.05 - bd["q"]) * (11.5 - t_prev))
+    assert abs(f_terminal - 96.0) < 1e-8
+
+
+def test_bbg_part2_mixture_fig15_1_and_2d_surface():
+    from scipy.integrate import quad
+    from bz_pricing.volatility import BloombergMixtureSurface, LognormalMixtureSlice
+
+    sl_15 = LognormalMixtureSlice(weights=[0.5, 0.5], xis=[0.95, 1.05], sigmas_total=[0.40, 0.20], forward=1.0, T=1.0)
+    area, _ = quad(lambda s: sl_15.pdf(s), 1e-6, 10.0)
+    mean, _ = quad(lambda s: s * sl_15.pdf(s), 1e-6, 10.0)
+    assert abs(area - 1.0) < 1e-4
+    assert abs(mean - 1.0) < 1e-4
+
+    p_vec = np.array([0.30, 0.45, 0.20])
+    xi_vec = LognormalMixtureSlice._reconstruct_xis(p_vec, np.log([1.1, 1.15]))
+    sl_def = LognormalMixtureSlice(p_vec, xi_vec, [0.42, 0.24, 0.18], forward=100.0, T=0.5, k_min_damp=90.0)
+    for k_t in [65.0, 89.9, 90.0, 100.0, 130.0]:
+        c_val = sl_def.option_price(k_t, r_cont=0.05, is_call=True)
+        p_val = sl_def.option_price(k_t, r_cont=0.05, is_call=False)
+        assert abs((c_val - p_val) - math.exp(-0.05 * 0.5) * (100.0 - k_t)) < 1e-10
+
+    _, _, q_far = sl_def.damped_parameters(45.0)
+    _, _, q_edge = sl_def.damped_parameters(89.99)
+    assert q_far < q_edge <= sl_def.Q_default + 1e-12
+
+    v_ext_l = sl_15.implied_vol(0.05)
+    v_ext_r = sl_15.implied_vol(8.0)
+    assert math.isfinite(v_ext_l) and v_ext_l > 0.0
+    assert math.isfinite(v_ext_r) and v_ext_r > 0.0
+
+    sl_1y = LognormalMixtureSlice(p_vec, xi_vec, [0.55, 0.34, 0.25], forward=105.0, T=1.0)
+    bbg_surf = BloombergMixtureSurface({126: sl_def, 252: sl_1y})
+    v_short = bbg_surf.get_vol(21, 100.0, forward=100.0)
+    v_mid = bbg_surf.get_vol(189, 102.5, forward=102.5)
+    v_long = bbg_surf.get_vol(756, 105.0, forward=105.0)
+    assert 0.05 < v_short < 1.0 and 0.05 < v_mid < 1.0 and 0.05 < v_long < 1.0
+
+    vs = VolatilitySurface.from_bloomberg_mixture(bbg_surf)
+    assert abs(vs.get_vol(189, strike=102.5, forward=102.5) - v_mid) < 1e-12
+
+
+def test_bbg_surface_real_b3_bova11_calibration():
+    import pandas as pd
+    from bz_pricing.core.calendars import get_calendar
+    from bz_pricing.curves import CurveManager
+    from bz_pricing.data.loaders import B3DataLoader
+    from bz_pricing.volatility import (
+        BloombergMixtureSurface,
+        filter_surface_quotes_bbg,
+        validate_slice_out_of_sample,
+    )
+
+    ref = datetime.date(2026, 10, 30)
+    ldr = B3DataLoader(data_dir="dados/b3")
+    cal = get_calendar("B3")
+    pre = CurveManager(loader=ldr, allow_download=True).get_curve("PRE", ref)
+    bova = ldr.load_equity_options(ref, underlying="BOVA11", only_priced=True, auto_download=False)
+    spot = float(bova["spot_price"].iloc[0])
+
+    b_sub = bova[(bova["TOTNEG"] >= 10) & (bova["ExrcPric"].between(0.85 * spot, 1.15 * spot))].copy()
+    exps = ["2026-11-19", "2026-12-18"]
+    fwds = {}
+    rs = {}
+    dus = {}
+    for e_s in exps:
+        du_i = cal.bizdays(ref, pd.to_datetime(e_s).date())
+        r_i = math.log(1.0 + pre.get_rate(du_i))
+        fwds[e_s] = spot * math.exp(r_i * (du_i / 252.0))
+        rs[e_s] = r_i
+        dus[e_s] = du_i
+
+    cleaned = filter_surface_quotes_bbg(
+        b_sub[b_sub["XprtnDt"].dt.strftime("%Y-%m-%d").isin(exps)],
+        fwds,
+        rs,
+        du_by_expiry=dus,
+        use_bid_ask=False,
+    )
+    assert not cleaned.empty
+
+    slices_data = {}
+    for e_s in exps:
+        g = cleaned[cleaned["XprtnDt"] == e_s].sort_values("_k")
+        slices_data[dus[e_s]] = {
+            "strikes": g["_k"].to_numpy(),
+            "market_prices": g["_price"].to_numpy(),
+            "option_types": g["option_type"].to_numpy(),
+            "forward": fwds[e_s],
+            "r_cont": rs[e_s],
+        }
+    surf_bbg = BloombergMixtureSurface.fit(slices_data, n_components=4, allow_default=True)
+    oos = validate_slice_out_of_sample(
+        strikes=slices_data[dus["2026-12-18"]]["strikes"],
+        market_prices=slices_data[dus["2026-12-18"]]["market_prices"],
+        option_types=slices_data[dus["2026-12-18"]]["option_types"],
+        forward=fwds["2026-12-18"],
+        r_cont=rs["2026-12-18"],
+        du=dus["2026-12-18"],
+        model="bloomberg_mixture",
+        otm_only=True,
+    )
+    assert oos["rmse_vol_bps"] < 120.0
+    assert math.isfinite(surf_bbg.get_vol(dus["2026-11-19"] + 10, spot))
 
 
 

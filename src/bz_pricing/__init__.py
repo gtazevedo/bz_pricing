@@ -11,6 +11,13 @@ from bz_pricing.data.loaders import B3DataLoader
 from bz_pricing.curves.builder import B3CurveBuilder
 from bz_pricing.curves.exceptions import DataUnavailableError
 from bz_pricing.curves.manager import CurveManager
+from bz_pricing.curves.offshore import bootstrap_ois_curve, bootstrap_treasury_curve
+from bz_pricing.core.curves import SimpleCurve, FlatCurve, NelsonSiegelCurve, SvenssonCurve
+from bz_pricing.core.interpolators import (
+    MonotoneConvexInterpolator,
+    LogLinearDiscountInterpolator,
+    LogCubicDiscountInterpolator,
+)
 from bz_pricing.instruments.tpf import LTN, NTNF, LFT, NTNB, NTNBPrincipal, NTNC
 from bz_pricing.core.vna_engine import (
     VNAEngine,
@@ -26,6 +33,15 @@ __all__ = [
     "B3CurveBuilder",
     "CurveManager",
     "DataUnavailableError",
+    "bootstrap_ois_curve",
+    "bootstrap_treasury_curve",
+    "SimpleCurve",
+    "FlatCurve",
+    "NelsonSiegelCurve",
+    "SvenssonCurve",
+    "MonotoneConvexInterpolator",
+    "LogLinearDiscountInterpolator",
+    "LogCubicDiscountInterpolator",
     "LTN",
     "NTNF",
     "LFT",

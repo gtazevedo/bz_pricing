@@ -45,5 +45,29 @@ cdef class SpreadCurve(Curve):
     cdef Curve _curve_a
     cdef Curve _curve_b
 
+cdef class NelsonSiegelCurve(Curve):
+    cdef double _beta0
+    cdef double _beta1
+    cdef double _beta2
+    cdef double _lambda1
+    cdef double _day_count_basis
+    cdef int _compounding
+    cdef int _freq
+    cpdef double instantaneous_forward(self, double t) except *
+    cpdef double discount_factor(self, double t) except *
+
+cdef class SvenssonCurve(Curve):
+    cdef double _beta0
+    cdef double _beta1
+    cdef double _beta2
+    cdef double _beta3
+    cdef double _lambda1
+    cdef double _lambda2
+    cdef double _day_count_basis
+    cdef int _compounding
+    cdef int _freq
+    cpdef double instantaneous_forward(self, double t) except *
+    cpdef double discount_factor(self, double t) except *
+
 cpdef list extract_linear360_knot_indices(double[:] dcs, double[:] rates, double tolerance=*)
 

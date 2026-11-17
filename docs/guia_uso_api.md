@@ -453,3 +453,55 @@ arb = surf.check_no_arbitrage(forward_by_du=5.55, r_cont_by_du=0.13)
 bl = surf.breeden_litzenberger_density(63, forward=5.55, r_cont=0.13)
 ```
 
+---
+
+## 8. Curvas Internacionais (`offshore`) e Superfície de Mistura Bloomberg (`bloomberg_surface`)
+
+O módulo [`offshore.py`](../src/bz_pricing/curves/offshore.py) e os interpoladores internacionais de [`interpolators.pyx`](../src/bz_pricing/core/interpolators.pyx) e [`curves.pyx`](../src/bz_pricing/core/curves.pyx) oferecem construção integralmente *offline* de curvas OIS e soberanas (`SOFR_OIS`, `ESTR_OIS`, `SONIA_OIS`, `UST_PAR`) tanto diretamente pelas funções de *bootstrapping* quanto por `CurveManager(allow_download=False)`:
+
+```python
+import pandas as pd
+from bz_pricing.curves import CurveManager, bootstrap_ois_curve, bootstrap_treasury_curve
+from bz_pricing.core.interpolators import MonotoneConvexInterpolator, LogLinearDiscountInterpolator
+
+crv_sofr = bootstrap_ois_curve(
+    pillars_dc=[30, 90, 180, 365, 730],
+    par_rates=[0.0432, 0.0428, 0.0420, 0.0405, 0.0392],
+    convention="ACT/360",
+    method="monotone_convex",
+)
+crv_ust = bootstrap_treasury_curve(
+    pillars_dc=[91, 182, 365, 730, 1825],
+    par_yields=[0.0435, 0.0430, 0.0422, 0.0410, 0.0415],
+    method="svensson",
+)
+
+manager_off = CurveManager(allow_download=False)
+df_sofr = pd.DataFrame({"DC": [30, 90, 180, 365], "par_rate": [0.0432, 0.0428, 0.0420, 0.0405]})
+crv_mgr = manager_off.get_curve("SOFR_OIS", data=df_sofr, method="log_linear")
+print(f"SOFR 1Y (Monotone Convex): {crv_sofr.get_rate(365.0)*100:.4f}% | Manager LogLinear: {crv_mgr.get_rate(365.0)*100:.4f}%")
+```
+
+O módulo [`bloomberg_surface.py`](../src/bz_pricing/volatility/bloomberg_surface.py) disponibiliza a inferência de *forwards* com desamericanização binomial (`deamericanize_and_infer_forward_bbg`), filtro de Kalman adaptativo para dividendos (`KalmanDividendFilter`), interpolação sazonal e decomposição híbrida (`DividendCurveBBG`), calibração por mistura de lognormais com estado de *default* (`LognormalMixtureSlice`) e superfície temporal (`BloombergMixtureSurface`, integrável diretamente via `VolatilitySurface.from_bloomberg_mixture`):
+
+```python
+import math
+import numpy as np
+from bz_pricing.volatility import LognormalMixtureSlice, BloombergMixtureSurface, VolatilitySurface
+
+sl_bbg = LognormalMixtureSlice(
+    weights=[0.57, 0.38],
+    xis=[0.84, 1.3715789473684212],
+    sigmas_total=[0.35, 0.25],
+    forward=100.0,
+    T=1.0,
+)
+surf_bbg = VolatilitySurface.from_bloomberg_mixture(BloombergMixtureSurface({252: sl_bbg}))
+put_parity_diff = (
+    sl_bbg.option_price(90.0, r_cont=0.05, is_call=True)
+    - sl_bbg.option_price(90.0, r_cont=0.05, is_call=False)
+    - math.exp(-0.05) * (sl_bbg.F - 90.0)
+)
+print(f"Vol(K=90): {surf_bbg.get_vol(252, 90.0, 100.0)*100:.2f}% | Erro paridade Q-default={sl_bbg.Q_default:.2%}: {abs(put_parity_diff):.2e}")
+```
+

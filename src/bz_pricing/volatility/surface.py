@@ -269,6 +269,7 @@ class VolatilitySurface:
         self.time_interp = time_interp
         self._slices: Dict[int, object] = {}
         self.slice_forwards: Dict[int, float] = {int(k): float(v) for k, v in slice_forwards.items()} if slice_forwards else {}
+        self._bbg_surface = None
 
     def add_slice(self, du: int, slice_obj: object, forward: Optional[float] = None) -> None:
         du_i = int(du)
@@ -299,6 +300,25 @@ class VolatilitySurface:
         fwds = slice_forwards if slice_forwards is not None else {int(k): float(v.F) for k, v in slices_by_du.items()}
         surf = cls(list(slices_by_du.keys()), smile_mode="sabr", smile_interp="sabr", time_interp=time_interp, slice_forwards=fwds)
         surf._slices = {int(k): v for k, v in slices_by_du.items()}
+        return surf
+
+    @classmethod
+    def from_bloomberg_mixture(
+        cls,
+        slices_or_surface,
+        time_interp: str = "monotone_cubic",
+        slice_forwards: Optional[Dict[int, float]] = None,
+    ) -> "VolatilitySurface":
+        from bz_pricing.volatility.bloomberg_surface import BloombergMixtureSurface
+
+        if isinstance(slices_or_surface, BloombergMixtureSurface):
+            bbg_surf = slices_or_surface
+        else:
+            bbg_surf = BloombergMixtureSurface(slices_or_surface)
+        fwds = slice_forwards if slice_forwards is not None else {int(k): float(v.F) for k, v in bbg_surf.slices.items()}
+        surf = cls(bbg_surf.dus, smile_mode="bloomberg_mixture", smile_interp="bloomberg_mixture", time_interp=time_interp, slice_forwards=fwds)
+        surf._bbg_surface = bbg_surf
+        surf._slices = dict(bbg_surf.slices)
         return surf
 
     @classmethod
@@ -376,6 +396,12 @@ class VolatilitySurface:
                 raise ValueError("Informe 'strike' para superfície SABR.")
             return float(sl.implied_vol(float(strike)))
 
+        if self.smile_mode == "bloomberg_mixture":
+            if strike is None:
+                raise ValueError("Informe 'strike' para superfície Bloomberg Mixture.")
+            fwd_use = sl.F if forward is None else float(forward)
+            return float(sl.implied_vol(float(strike) * (sl.F / max(1e-12, fwd_use))))
+
         x_nodes, y_nodes = sl
         if self.smile_mode == "grid_delta":
             if delta is not None:
@@ -436,6 +462,11 @@ class VolatilitySurface:
         forward: Optional[Union[float, Dict[int, float], Callable[[int], float]]] = None,
     ) -> float:
         du_i = int(du)
+        if self.smile_mode == "bloomberg_mixture" and self._bbg_surface is not None:
+            if strike is None:
+                raise ValueError("Informe 'strike' para superfície Bloomberg Mixture.")
+            fwd_d = self._resolve_forward_for_du(du_i, forward)
+            return float(self._bbg_surface.get_vol(du_i, strike=float(strike), forward=fwd_d))
         if du_i in self._slices:
             fwd_d = self._resolve_forward_for_du(du_i, forward)
             return self._eval_slice(du_i, strike=strike, delta=delta, forward=fwd_d)
@@ -888,8 +919,21 @@ def validate_slice_out_of_sample(
             float(forward), k_arr[mask], mkt_vols[mask], t_val, beta=sabr_beta, weights=fit_weights
         )
         pred_vols_test = fitted_slice.implied_vol(k_arr[~mask])
+    elif model.lower() in ("bloomberg_mixture", "bbg", "lognormal_mixture"):
+        from bz_pricing.volatility.bloomberg_surface import LognormalMixtureSlice
+
+        types_train = ["CALL" if bool(ic) else "PUT" for ic in is_call_arr[mask]]
+        fitted_slice = LognormalMixtureSlice.fit(
+            strikes=k_arr[mask],
+            market_prices=p_arr[mask],
+            option_types=types_train,
+            forward=float(forward),
+            r_cont=float(r_cont),
+            T=t_val,
+        )
+        pred_vols_test = np.asarray(fitted_slice.implied_vol(k_arr[~mask], r_cont=float(r_cont)), dtype=np.float64)
     else:
-        raise ValueError(f"Modelo '{model}' não suportado; use 'svi' ou 'sabr'.")
+        raise ValueError(f"Modelo '{model}' não suportado; use 'svi', 'sabr' ou 'bloomberg_mixture'.")
 
     pred_prices_test = np.array(
         [

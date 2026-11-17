@@ -223,3 +223,4 @@ dados/
 .agents/
 scratch/
 *.bak
+tests/test_quantlib_validation.py

@@ -48,6 +48,17 @@ Empregada na construção de curvas de preços futuros de índices de ações (`
 
 $$P(\text{DU}) = P_k \times \left( \frac{P_{k+1}}{P_k} \right)^{\frac{\text{DU} - \text{DU}_k}{\text{DU}_{k+1} - \text{DU}_k}}$$
 
+### 1.5 Interpoladores de Curvas Internacionais e Modelos Paramétricos
+
+Para curvas *offshore* (`SOFR_OIS`, `ESTR_OIS`, `SONIA_OIS`, `UST_PAR`), o núcleo em Cython implementa interpolação em espaço de fatores de desconto $\text{DF}(t)$ ou taxas instantâneas a termo $f(t)$ sob base arbitrária (`day_count_basis`) e regime `continuous`, `simple` ou `compounded`:
+
+- **Log-Linear nos Fatores de Desconto (`LogLinearDiscountInterpolator`):** Padrão de câmaras de compensação (CME e LCH) para descontos *overnight*. Interpola linearmente $\ln \text{DF}(t) = -r(t) \cdot t$, o que equivale a taxa instantânea constante por partes entre nós.
+- **Log-Cúbica Monotônica nos Fatores de Desconto (`LogCubicDiscountInterpolator`):** Aplica derivadas harmônicas de Fritsch-Carlson sobre os segmentos de $-\ln \text{DF}(t)$ com polinômio cúbico de Hermite, preservando monotonicidade de $r(t) \cdot t$ sem oscilações de Runge.
+- **Convexo Monótono de Hagan-West (`MonotoneConvexInterpolator`):** Padrão oficial do Departamento do Tesouro dos EUA para derivação de taxas *zero* e a termo a partir da curva par. Sobre as taxas a termo discretas $f_i^d = [r_i t_i - r_{i-1} t_{i-1}] / (t_i - t_{i-1})$, constrói funções quadráticas por partes contínuas que reproduzem exatamente todos os nós e mantêm positividade ($f(t) \ge 0$).
+- **Modelos Paramétricos de Nelson-Siegel e Svensson (`NelsonSiegelCurve` e `SvenssonCurve`):** Utilizados pelo Federal Reserve Board e pelo Banco Central Europeu (BCE). Na formulação estendida de Svensson, a taxa zero contínua $r(t)$ segue:
+
+$$r(t) = \beta_0 + \beta_1 \left( \frac{1 - e^{-t/\lambda_1}}{t/\lambda_1} \right) + \beta_2 \left( \frac{1 - e^{-t/\lambda_1}}{t/\lambda_1} - e^{-t/\lambda_1} \right) + \beta_3 \left( \frac{1 - e^{-t/\lambda_2}}{t/\lambda_2} - e^{-t/\lambda_2} \right)$$
+
 ---
 
 ## 2. Curvas de Juros Prefixadas Domésticas (`PRE`, `SELIC_PRE` e `LTN`)
@@ -130,6 +141,10 @@ Quando derivadas de uma grade de taxas a termo $f_k$ com intervalos $\Delta \tex
 $$\text{FD}_n = \prod_{k=1}^{n} \left( 1 + f_k \times \frac{\Delta \text{DC}_k}{360} \right)^{-1}$$
 
 Na construção a partir de tabelas referenciais de *swaps*, o método `_extract_linear360_knots` identifica os nós primários onde ocorre mudança de inclinação da taxa linear acumulada e interpola os prazos intermediários via `Linear360Interpolator(0, 0)`.
+
+### 4.3 Bootstrapping Institucional de OIS e Treasuries (`SOFR_OIS`, `ESTR_OIS`, `SONIA_OIS`, `UST_PAR`)
+
+No módulo [`offshore.py`](../src/bz_pricing/curves/offshore.py), os construtores `bootstrap_ois_curve` e `bootstrap_treasury_curve` permitem selecionar entre os padrões `monotone_convex` (Tesouro dos EUA), `log_linear` (CME e LCH), `log_cubic` e os modelos paramétricos `nelson_siegel` e `svensson` (Federal Reserve Board e Banco Central Europeu). Para instrumentos cujas datas intermediárias de cupom recaem entre os vértices informados de mercado, o algoritmo executa uma solução sequencial seguida de polimento em múltiplas passagens (`_polish_sparse_schedules`) que garante o reproçamento exato de todos os títulos ao par ($\text{PV} = 1{,}0$) com tolerância numérica inferior a $10^{-11}$.
 
 ---
 
@@ -333,4 +348,7 @@ As formulações matemáticas, convenções de contagem de prazos e regras de ar
 - **Banco Central do Brasil (BCB).** *Sistema Gerenciador de Séries Temporais (SGS)*. Brasília: BCB. Disponível em: <https://www3.bcb.gov.br/sgspub/>.
 - **Secretaria do Tesouro Nacional (STN).** *Regras e Fórmulas de Cálculo dos Títulos Públicos Federais no Mercado Secundário*. Brasília: Ministério da Fazenda. Disponível em: <https://www.tesourodireto.com.br/titulos/historico-de-precos-e-taxas.htm>.
 - **Federal Reserve Bank of New York.** *Secured Overnight Financing Rate (SOFR) Data & Calculation Methodology*. New York: FRBNY. Disponível em: <https://www.newyorkfed.org/markets/reference-rates/sofr>.
-- **European Central Bank (ECB).** *Euro Short-Term Rate (€STR) Methodology and Policies*. Frankfurt: ECB. Disponível em: <https://www.ecb.europa.eu/stats/financial_markets_and_interest_rates/euro_short-term_rate/html/index.en.html>.
+- **European Central Bank (ECB).** *Euro Short-Term Rate (€STR) Methodology and Policies* e *Euro Area Yield Curves*. Frankfurt: ECB. Disponível em: <https://www.ecb.europa.eu/stats/financial_markets_and_interest_rates/euro_short-term_rate/html/index.en.html>.
+- **Gürkaynak, R. S., Sack, B., & Wright, J. H.** *The U.S. Treasury Yield Curve: 1961 to the Present*. Finance and Economics Discussion Series, Federal Reserve Board, 2006. Disponível em: <https://www.federalreserve.gov/econres/feds/the-us-treasury-yield-curve-1961-to-the-present.htm>.
+- **U.S. Department of the Treasury.** *Treasury Coupon-Issue and Corporate Bond Yield Curve Methodology*. Washington, D.C.: Office of Debt Management. Disponível em: <https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics>.
+- **Hagan, P. S., & West, G.** *Interpolation Methods for Curve Construction*. Applied Mathematical Finance, v. 13, n. 2, p. 89–129, 2006.

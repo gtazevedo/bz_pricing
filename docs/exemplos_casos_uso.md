@@ -240,3 +240,61 @@ df_lote_opt = price_options_portfolio(
 )
 print(df_lote_opt[["ticker", "classe", "price", "mtm", "delta", "vega_1pct"]])
 ```
+
+---
+
+## 6. Curvas Internacionais (`SOFR_OIS`, `UST_PAR`) e Superfície de Mistura Lognormal Bloomberg
+
+Todos os interpoladores *offshore*, *bootstrappers* de OIS e Treasuries e ferramentas do modelo Bloomberg (desamericanização binomial, filtro de Kalman para dividendos, decomposição híbrida de dividendos e mistura de lognormais com estado de *default*) operam de forma integralmente *offline* com dados do usuário:
+
+```python
+import datetime
+import math
+import numpy as np
+from bz_pricing.curves.offshore import bootstrap_ois_curve, bootstrap_treasury_curve
+from bz_pricing.core.curves import SvenssonCurve
+from bz_pricing.volatility import (
+    deamericanize_and_infer_forward_bbg,
+    KalmanDividendFilter,
+    DividendCurveBBG,
+    LognormalMixtureSlice,
+    BloombergMixtureSurface,
+)
+
+# 6.1 Bootstrapping offline de OIS SOFR (ACT/360) e Treasuries EUA (Monotone Convex e Svensson)
+sofr_crv = bootstrap_ois_curve(
+    pillars_dc=[30, 90, 180, 365, 730, 1825],
+    par_rates=[0.0432, 0.0428, 0.0420, 0.0405, 0.0392, 0.0385],
+    convention="ACT/360",
+    method="monotone_convex",
+)
+ust_mc = bootstrap_treasury_curve(
+    pillars_dc=[91, 182, 365, 730, 1825, 3650],
+    par_yields=[0.0435, 0.0430, 0.0422, 0.0410, 0.0415, 0.0425],
+    method="monotone_convex",
+)
+t_nodes = np.array([91.0, 182.0, 365.0, 730.0, 1825.0, 3650.0])
+y_nodes = np.array([ust_mc.get_rate(t) for t in t_nodes])
+ust_svensson = SvenssonCurve.fit(t_nodes, y_nodes, day_count_basis=365.0)
+print(f"SOFR 1Y zero: {sofr_crv.get_rate(365.0)*100:.4f}% | UST Svensson 5Y fwd: {ust_svensson.instantaneous_forward(1825.0)*100:.4f}%")
+
+# 6.2 Part I Bloomberg: inferência de forward/dividendo com desamericanização, filtro de Kalman e decomposição híbrida
+strikes = np.array([90.0, 95.0, 100.0, 105.0, 110.0])
+T_opt = 0.50
+r_c = 0.12
+fwd_true = 100.0 * math.exp((r_c - 0.04) * T_opt)
+sl_ref = LognormalMixtureSlice([0.65, 0.35], [0.96, 1.0742857], [0.16, 0.24], forward=fwd_true, T=T_opt)
+c_eu = np.array([sl_ref.option_price(k, r_cont=r_c, is_call=True) for k in strikes])
+p_eu = np.array([sl_ref.option_price(k, r_cont=r_c, is_call=False) for k in strikes])
+res_fwd = deamericanize_and_infer_forward_bbg(strikes, c_eu, p_eu, spot=100.0, r_cont=r_c, T=T_opt, exercise="EUROPEAN")
+
+kf = KalmanDividendFilter(alpha_over_sigma=1.0)
+kf_out = kf.update(res_fwd["cash_dividend"])
+decomp = DividendCurveBBG.decompose_blended_dividends([0.25, 0.75], spot_f0=100.0, fwd_T=102.0, r_cont=0.05, T=1.0)
+print(f"Forward inferido: {res_fwd['forward']:.4f} | Div. filtrado: {kf_out['dividend']:.4f} | q_res: {decomp['q']:.4f}")
+
+# 6.3 Part II Bloomberg: mistura de lognormais com estado de default e superfície 2D
+sl_mix = LognormalMixtureSlice.fit(strikes, np.where(strikes < fwd_true, p_eu, c_eu), np.where(strikes < fwd_true, "PUT", "CALL"), fwd_true, r_c, T_opt, n_components=2)
+surf_bbg = BloombergMixtureSurface({126: sl_mix})
+print(f"Q_default={sl_mix.Q_default:.4f} | Vol ATM (126 DU): {surf_bbg.get_vol(126, fwd_true)*100:.2f}%")
+```

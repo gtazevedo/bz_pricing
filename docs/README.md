@@ -10,30 +10,30 @@ O pacote `bz-pricing` constitui uma biblioteca quantitativa de alta performance 
    - Operadores de interpolação em Cython (`FlatForward252Interpolator`, `FlatForward252LinearInterpolator`, `Linear360Interpolator` e `PriceInterpolator`);
    - Curvas de juros prefixadas domésticas (`PRE`, `SELIC_PRE` e `LTN`);
    - Curvas de Taxa Básica Financeira (`TFP`) e Taxa Referencial (`TP` e `TR`);
-   - Curvas internacionais de futuros e *swaps* OIS (`SFR`, `EST`, `TIE`, `ZUS`, `ZEU` e `ZMX`);
+   - Curvas internacionais de futuros e *swaps* OIS (`SFR`, `EST`, `TIE`, `ZUS`, `ZEU`, `ZMX`, `SOFR_OIS`, `ESTR_OIS`, `SONIA_OIS`, `UST_PAR`) e interpoladores (`MonotoneConvexInterpolator`, `LogLinearDiscountInterpolator`, `LogCubicDiscountInterpolator`, `NelsonSiegelCurve`, `SvenssonCurve`);
    - Estruturas a termo de inflação em cupom sujo (`DIC` e `DIM`) e cupom limpo (`DPL`);
    - Cupons cambiais (`DOL`, `DOC`, `DCL`, `EUC` e `YCL`), spreads externos (`SDE`, `SGP`, `SMX`, `SYD`) e moedas a termo (`PTX`, `EUR` e `JPY`);
    - Curvas de índices de ações (`INP`, `BRP`), futuros de ações individuais e *Convenience Yield* (`CYI`);
    - Construção *offline* de curvas a partir de vértices e componentes informados pelo usuário;
    - Referências normativas e bibliográficas.
 2. **[Guia de Referência da API](guia_uso_api.md)**
-   - Orquestrador central de estruturas a termo (`CurveManager`);
+   - Orquestrador central de estruturas a termo (`CurveManager`) e *bootstrapping offshore* (`bootstrap_ois_curve`, `bootstrap_treasury_curve`);
    - Construção por vértices customizados e tratamento de exceções (`DataUnavailableError`);
    - Extração e coleta automatizada de dados (`B3DataLoader` e `B3Scraper`, com suporte a séries de opções via `load_options`);
    - Instanciação direta de curvas e interpoladores em Cython (`B3CurveBuilder` e `SimpleCurve`);
    - Precificação de títulos públicos federais (`TPF`), cálculo de VNA a partir do VNE (`VNAEngine`, `calculate_vna_from_vne`, `calculate_ntnb_vna`, `calculate_lft_vna`) e fluxos customizados (`custom_cashflows`);
    - Crédito privado (`Debenture`, `CRI`, `CRA`, `CotaFIDC`, `LetraFinanceira`), *Z-Spread*, YTM, TIR e lotes (`price_credit_portfolio`);
    - Derivativos lineares (`DI1Future`, `DDIFuture`, `DAPFuture`, `DOLFuture`, `INDFuture`, `SwapDIxPRE`, `SwapDIxIPCA`, `NDFContract`);
-   - Opções e superfícies de volatilidade (`EquityOption`, `FXOption`, `IDIOption`, `DI1Option`, `CorradoSuOption`, `SVISlice`, `SABRSlice`, `VolatilitySurface`).
+   - Opções e superfícies de volatilidade (`EquityOption`, `FXOption`, `IDIOption`, `DI1Option`, `CorradoSuOption`, `SVISlice`, `SABRSlice`, `LognormalMixtureSlice`, `BloombergMixtureSurface`, `KalmanDividendFilter`, `DividendCurveBBG`, `VolatilitySurface`).
 3. **[Calendários, Convenções de Contagem de Dias e Regimes de Extrapolação](calendarios_convencoes.md)**
    - Convenções `BUS/252`, `ACT/360`, `ACT/365` e `30/360`;
    - Calendário de feriados nacionais e regras de rolagem de datas (`following`, `preceding`, `modified_following`);
    - Regimes de extrapolação constante (`EXTRAP_FLAT`) e por taxa a termo constante (`EXTRAP_FLAT_FORWARD`).
 4. **[Casos de Uso e Exemplos Práticos](exemplos_casos_uso.md)**
-   - Construção de curvas *onshore* e *offshore* (*offline* e automático);
+   - Construção de curvas *onshore* e *offshore* (*offline* e automático, incluindo SOFR OIS e Treasuries EUA);
    - Títulos públicos federais, cálculo de VNA a partir do VNE (`calculate_ntnb_vna`, `calculate_lft_vna`, `calculate_vna_from_vne`) e fluxos customizados (`custom_cashflows`);
    - Crédito privado (`Debenture`, `CRI`, `CRA`, `CotaFIDC`, `LetraFinanceira`), *Z-Spread*, YTM/TIR e avaliação em lote;
-   - Derivativos lineares, opções listadas e de balcão e validação de superfícies de volatilidade.
+   - Derivativos lineares, opções listadas e de balcão e validação de superfícies de volatilidade (SVI, SABR e modelo de mistura lognormal Bloomberg).
 
 ---
 

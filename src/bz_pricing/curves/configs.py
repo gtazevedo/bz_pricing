@@ -5,7 +5,10 @@ from bz_pricing.core.interpolators import (
     FlatForward252LogInterpolator,
     Linear360Interpolator,
     Interpolation360Interpolator,
-    PriceInterpolator
+    PriceInterpolator,
+    LogLinearDiscountInterpolator,
+    LogCubicDiscountInterpolator,
+    MonotoneConvexInterpolator,
 )
 
 # Mapeamento oficial de configurações de construção de Curvas
@@ -508,5 +511,53 @@ CURVE_CONFIGS = {
         "tp_curve": "TP",
         "round_decimals": 5,
         "round_mode": "round"
-    }
+    },
+    "SOFR_OIS": {
+        "description": "Curva Zero Coupon SOFR OIS (ACT/360, Monotone Convex / Log-Linear)",
+        "type": "ois",
+        "convention": "ACT/360",
+        "payment_freq_months": 12,
+        "method": "monotone_convex",
+        "interpolator_class": MonotoneConvexInterpolator,
+        "extrap_left": 0,
+        "extrap_right": 1,
+        "use_dc": True,
+        "index_by_dc": True,
+    },
+    "ESTR_OIS": {
+        "description": "Curva Zero Coupon ESTR OIS (ACT/360, Monotone Convex / Log-Linear)",
+        "type": "ois",
+        "convention": "ACT/360",
+        "payment_freq_months": 12,
+        "method": "monotone_convex",
+        "interpolator_class": MonotoneConvexInterpolator,
+        "extrap_left": 0,
+        "extrap_right": 1,
+        "use_dc": True,
+        "index_by_dc": True,
+    },
+    "SONIA_OIS": {
+        "description": "Curva Zero Coupon SONIA OIS (ACT/365, Monotone Convex)",
+        "type": "ois",
+        "convention": "ACT/365",
+        "payment_freq_months": 12,
+        "method": "monotone_convex",
+        "interpolator_class": MonotoneConvexInterpolator,
+        "extrap_left": 0,
+        "extrap_right": 1,
+        "use_dc": True,
+        "index_by_dc": True,
+    },
+    "UST_PAR": {
+        "description": "Curva Soberana US Treasury Par/Zero (Monotone Convex / Svensson)",
+        "type": "treasury",
+        "day_count_basis": 365.0,
+        "coupon_freq": 2,
+        "method": "monotone_convex",
+        "interpolator_class": MonotoneConvexInterpolator,
+        "extrap_left": 0,
+        "extrap_right": 1,
+        "use_dc": True,
+        "index_by_dc": True,
+    },
 }
