@@ -149,29 +149,35 @@ class SVISlice:
             wt = np.ones_like(k_np)
         else:
             w_raw = np.maximum(0.0, np.asarray(weights, dtype=np.float64))
-            w_mean = float(np.mean(w_raw)) if len(w_raw) > 0 else 1.0
-            wt = np.sqrt(w_raw / w_mean) if w_mean > 0.0 else np.ones_like(k_np)
+            wt_mean = float(np.mean(w_raw)) if len(w_raw) > 0 else 1.0
+            wt = np.sqrt(w_raw / wt_mean) if wt_mean > 0.0 else np.ones_like(k_np)
 
+        w_mean = max(1e-12, float(np.mean(w_target)))
         w_min = float(np.min(w_target))
-        x0 = np.array([max(1e-4, w_min * 0.8), 0.1, -0.3, 0.0, 0.1], dtype=np.float64)
-        lb = np.array([-0.5, 1e-5, -0.999, -2.0, 1e-4], dtype=np.float64)
+        w_span = max(1e-12, float(np.max(w_target) - w_min))
+        k_span = max(1e-3, float(np.max(k_np) - np.min(k_np)))
+        b0 = min(1.5, max(1e-4, w_span / k_span))
+        sig0 = min(0.5, max(1e-3, k_span * 0.25))
+        x0 = np.array([max(1e-12, w_min * 0.8), b0, -0.3, float(np.mean(k_np)), sig0], dtype=np.float64)
+        lb = np.array([-0.5, 1e-6, -0.999, -2.0, 1e-4], dtype=np.float64)
         ub = np.array([2.0, 5.0, 0.999, 2.0, 2.0], dtype=np.float64)
 
-        k_chk = np.linspace(-0.6, 0.6, 41)
-        k_chk = np.unique(np.concatenate([k_chk, k_np]))
+        k_chk = np.unique(
+            np.concatenate([np.linspace(min(-0.1, float(np.min(k_np)) * 1.5), max(0.1, float(np.max(k_np)) * 1.5), 41), k_np])
+        )
 
         def _res(params):
             a, b, rho, m, sig = params
             w_pred = _cy_svi_eval_vec(k_np, float(a), float(b), float(rho), float(m), float(sig))
             # Penaliza eventual variância mínima negativa e violação de Lee nas asas
             min_w = a + b * sig * math.sqrt(max(1e-8, 1.0 - rho * rho))
-            pen_w = max(0.0, 1e-6 - min_w) * 100.0
+            pen_w = max(0.0, 1e-12 - min_w) / w_mean * 100.0
             pen_lee = max(0.0, b * (1.0 + abs(rho)) - (2.0 - 1e-6)) * 50.0
 
             # Condição analítica de ausência de arbitragem borboleta (Gatheral-Jacquier, 2014): g(k) >= 0
             dk = k_chk - m
             sq = np.sqrt(dk * dk + sig * sig)
-            w_g = np.maximum(1e-8, a + b * (rho * dk + sq))
+            w_g = np.maximum(1e-12, a + b * (rho * dk + sq))
             wp = b * (rho + dk / sq)
             wpp = (b * sig * sig) / (sq * sq * sq)
             term1 = (1.0 - (k_chk * wp) / (2.0 * w_g)) ** 2
@@ -179,9 +185,9 @@ class SVISlice:
             g_k = term1 - term2 + 0.5 * wpp
             pen_bfly = float(np.sqrt(np.sum(np.maximum(0.0, -g_k) ** 2))) * 25.0
 
-            return np.concatenate([wt * (w_pred - w_target), [pen_w, pen_lee, pen_bfly]])
+            return np.concatenate([wt * (w_pred - w_target) / w_mean, [pen_w, pen_lee, pen_bfly]])
 
-        res = least_squares(_res, x0, bounds=(lb, ub), max_nfev=1000)
+        res = least_squares(_res, x0, bounds=(lb, ub), x_scale="jac", max_nfev=2000)
         a, b, rho, m, sig = [float(v) for v in res.x]
         return cls(a, b, rho, m, sig, float(T))
 
