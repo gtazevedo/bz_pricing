@@ -55,7 +55,7 @@ O pacote estrutura-se em três camadas desacopladas que separam a ingestão de d
 
 ## 2. Fundamentação Metodológica e Formulações Matemáticas
 
-As formulações completas encontram-se detalhadas em [`docs/metodologia_curvas.md`](docs/metodologia_curvas.md). Apresentam-se a seguir as equações centrais implementadas no motor em Cython.
+As formulações completas encontram-se detalhadas em [`docs/metodologia_curvas.md`](docs/metodologia_curvas.md) e na [Wiki do projeto](https://github.com/gtazevedo/bz_pricing/wiki). Apresentam-se a seguir as equações centrais implementadas no motor em Cython.
 
 ### 2.1 Operadores de Interpolação em Cython (`bz_pricing.core.interpolators`)
 
