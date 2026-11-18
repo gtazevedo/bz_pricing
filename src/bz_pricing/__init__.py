@@ -19,6 +19,12 @@ from bz_pricing.core.interpolators import (
     LogCubicDiscountInterpolator,
 )
 from bz_pricing.instruments.tpf import LTN, NTNF, LFT, NTNB, NTNBPrincipal, NTNC
+from bz_pricing.instruments.offshore_bonds import (
+    OffshoreBond,
+    TIPS,
+    USTreasuryBill,
+    USTreasuryNoteBond,
+)
 from bz_pricing.core.vna_engine import (
     VNAEngine,
     calculate_vna_from_vne,
@@ -48,6 +54,10 @@ __all__ = [
     "NTNB",
     "NTNBPrincipal",
     "NTNC",
+    "USTreasuryBill",
+    "USTreasuryNoteBond",
+    "TIPS",
+    "OffshoreBond",
     "VNAEngine",
     "calculate_vna_from_vne",
     "calculate_ntnb_vna",

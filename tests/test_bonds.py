@@ -554,5 +554,101 @@ def test_tpf_offline_series_and_empirical_real_discount():
     assert abs(gb_real.present_value(real_crv) - pu_expected) / pu_expected < 1e-4
 
 
+def test_offshore_bonds_ust_tbill_tnote_tips_and_corporate():
+    import pandas as pd
+    from bz_pricing.curves.offshore import bootstrap_ois_curve, bootstrap_treasury_curve
+    from bz_pricing.instruments import (
+        HazardRateCurve,
+        OffshoreBond,
+        TIPS,
+        USTreasuryBill,
+        USTreasuryNoteBond,
+    )
+
+    base_dt = datetime.date(2026, 10, 30)
+
+    # 1. US Treasury Bill (curto <= 182 DC e longo > 182 DC)
+    tbill_short = USTreasuryBill(datetime.date(2027, 1, 29), face_value=1_000_000.0)  # 91 dias
+    m_short = tbill_short.risk_metrics(base_dt, discount_rate=0.042)
+    p100_short = 100.0 * (1.0 - 0.042 * (91.0 / 360.0))
+    assert abs(m_short["price_per_100"] - p100_short) < 1e-12
+    assert abs(tbill_short.discount_rate_from_price(base_dt, p100_short) - 0.042) < 1e-12
+    assert m_short["money_market_yield"] > 0.042
+    assert abs(m_short["bond_equivalent_yield"] - ((100.0 - p100_short) / p100_short) * (365.0 / 91.0)) < 1e-12
+    assert abs(tbill_short.present_value(base_dt, discount_rate=0.042) - 1_000_000.0 * (p100_short / 100.0)) < 1e-8
+    assert tbill_short.dv01(base_dt, 0.042) > 0.0
+
+    tbill_long = USTreasuryBill(datetime.date(2027, 10, 29))  # 364 dias (> 182 DC)
+    bey_long = tbill_long.bond_equivalent_yield(base_dt, 0.043)
+    p100_long = tbill_long.price_per_100(base_dt, 0.043)
+    t_yr = 364.0 / 365.0
+    check_bey = (p100_long / 100.0) * (1.0 + bey_long / 2.0) * (1.0 + (bey_long / 2.0) * (2.0 * t_yr - 1.0))
+    assert abs(check_bey - 1.0) < 1e-12
+
+    sofr = bootstrap_ois_curve([30, 90, 180, 360, 720, 1800, 3600], [0.041, 0.0415, 0.042, 0.0425, 0.0435, 0.0445, 0.0455], convention="ACT/360")
+    assert tbill_short.present_value(base_dt, discount_curve=sofr) > 980_000.0
+    assert len(tbill_short.cashflow_table(base_dt, discount_curve=sofr)) == 1
+
+    # 2. US Treasury Note/Bond (ACT/ACT ICMA, regra EOM, Street YTM e curva zero Treasury)
+    tnote = USTreasuryNoteBond(datetime.date(2036, 5, 15), coupon_rate=0.0425, issue_date=datetime.date(2026, 5, 15))
+    rm_tn = tnote.risk_metrics(base_dt, ytm=0.044)
+    assert rm_tn["accrued_interest"] > 0.0
+    assert abs(rm_tn["dirty_price"] - (rm_tn["clean_price"] + rm_tn["accrued_interest"])) < 1e-12
+    assert abs(tnote.ytm_from_clean_price(base_dt, rm_tn["clean_price"]) - 0.044) < 1e-10
+    assert abs(tnote.ytm_from_dirty_price(base_dt, rm_tn["dirty_price"]) - 0.044) < 1e-10
+    assert rm_tn["macaulay_duration"] > rm_tn["modified_duration"] > 5.0
+    assert rm_tn["dv01"] > 0.0 and rm_tn["convexity"] > 0.0
+
+    # Schedule EOM (fim de fevereiro -> fim de agosto)
+    tn_eom = USTreasuryNoteBond(datetime.date(2030, 2, 28), coupon_rate=0.04, end_of_month=True)
+    cpns_eom = tn_eom.get_coupon_dates(base_dt)
+    assert datetime.date(2029, 8, 31) in cpns_eom
+
+    ust_crv = bootstrap_treasury_curve([90, 182.5, 365, 730, 1825, 3650], [0.041, 0.042, 0.0425, 0.0435, 0.0445, 0.046], coupon_freq=2, day_count_basis=365.0)
+    pv_tn_crv, df_tn = tnote.present_value(base_dt, ust_crv, return_cashflows=True)
+    assert pv_tn_crv > 90.0 and not df_tn.empty
+
+    # 3. TIPS (interpolação CPI-U 3M/2M e piso par contra deflação)
+    cpi_hist = {
+        "2026-06-01": 314.0,
+        "2026-07-01": 315.0,
+        "2026-08-01": 316.55,
+    }
+    tips = TIPS(datetime.date(2036, 7, 15), coupon_rate=0.0175, issue_cpi=300.0, issue_date=datetime.date(2026, 7, 15))
+    ref_cpi = tips.reference_cpi(base_dt, cpi_hist)
+    expected_ref = round(315.0 + ((30 - 1) / 31.0) * (316.55 - 315.0), 5)
+    assert abs(ref_cpi - expected_ref) < 1e-12
+    ir = tips.index_ratio(base_dt, cpi_history=cpi_hist)
+    assert abs(ir - round(expected_ref / 300.0, 5)) < 1e-12
+    rm_tips = tips.risk_metrics(base_dt, real_ytm=0.019, cpi_history=cpi_hist)
+    assert abs(rm_tips["adjusted_dirty_price"] - rm_tips["real_dirty_price"] * ir) < 1e-10
+    assert abs(tips.real_ytm_from_clean_price(base_dt, rm_tips["real_clean_price"]) - 0.019) < 1e-10
+    assert tips.deflation_floor_principal(terminal_index_ratio=0.92) == 100.0
+    assert abs(tips.deflation_floor_principal(terminal_index_ratio=1.18) - 118.0) < 1e-12
+
+    # 4. OffshoreBond (30/360, ACT/365, ACT/360, G-Spread, Z-Spread e Hazard CVA)
+    for conv in ("30/360", "ACT/365", "ACT/360", "ACT/ACT_ICMA"):
+        corp = OffshoreBond(datetime.date(2031, 8, 15), coupon_rate=0.055, issue_date=datetime.date(2024, 8, 15), day_count=conv, freq=2)
+        p_c = corp.clean_price(base_dt, 0.062)
+        assert 90.0 < p_c < 105.0
+        assert abs(corp.ytm_from_clean_price(base_dt, p_c) - 0.062) < 1e-10
+
+    corp_30 = OffshoreBond(datetime.date(2031, 8, 15), coupon_rate=0.055, issue_date=datetime.date(2024, 8, 15), day_count="30/360", freq=2)
+    ust_par_pts = {1.0: 0.042, 3.0: 0.0435, 5.0: 0.045, 10.0: 0.0465}
+    g_sp = corp_30.g_spread(base_dt, 0.062, ust_par_pts)
+    assert 0.015 < g_sp < 0.020
+
+    clean_97 = corp_30.clean_price(base_dt, 0.062)
+    z_sp = corp_30.z_spread(base_dt, clean_97, sofr, clean_input=True)
+    assert 0.010 < z_sp < 0.025
+
+    hz = HazardRateCurve([252, 756], [0.02, 0.025], recovery_rate=0.40)
+    rv = corp_30.risky_present_value(base_dt, sofr, hazard_curve=hz)
+    assert 0.0 < rv["pv_risky"] < rv["pv_risk_free"]
+    lam_imp = corp_30.implied_hazard_rate(base_dt, rv["pv_risky"], sofr, recovery_rate=0.40)
+    assert lam_imp > 0.01
+
+
+
 
 

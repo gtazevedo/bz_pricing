@@ -1,4 +1,10 @@
 from .tpf import TituloPublico, LTN, NTNF, LFT, NTNB, NTNBPrincipal, NTNC
+from .offshore_bonds import (
+    USTreasuryBill,
+    USTreasuryNoteBond,
+    TIPS,
+    OffshoreBond,
+)
 from .credit import (
     HazardRateCurve,
     Debenture,
@@ -45,6 +51,10 @@ __all__ = [
     "NTNB",
     "NTNBPrincipal",
     "NTNC",
+    "USTreasuryBill",
+    "USTreasuryNoteBond",
+    "TIPS",
+    "OffshoreBond",
     "HazardRateCurve",
     "Debenture",
     "CertificadoRecebiveis",
