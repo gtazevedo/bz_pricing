@@ -414,6 +414,40 @@ cdef class LogLinearDiscountInterpolator(Interpolator):
 cdef class LogCubicDiscountInterpolator(Interpolator):
     """Interpolação cúbica monótona de Fritsch-Carlson sobre o logaritmo do fator de desconto."""
 
+    def __cinit__(self):
+        self._cached_n = 0
+        self._cached_m = 0
+        self._cached_t = NULL
+        self._cached_y = NULL
+        self._xs = NULL
+        self._ys = NULL
+        self._h = NULL
+        self._d = NULL
+        self._slopes = NULL
+
+    def __dealloc__(self):
+        if self._cached_t != NULL:
+            free(self._cached_t)
+            self._cached_t = NULL
+        if self._cached_y != NULL:
+            free(self._cached_y)
+            self._cached_y = NULL
+        if self._xs != NULL:
+            free(self._xs)
+            self._xs = NULL
+        if self._ys != NULL:
+            free(self._ys)
+            self._ys = NULL
+        if self._h != NULL:
+            free(self._h)
+            self._h = NULL
+        if self._d != NULL:
+            free(self._d)
+            self._d = NULL
+        if self._slopes != NULL:
+            free(self._slopes)
+            self._slopes = NULL
+
     def __init__(
         self,
         int extrap_left=0,
@@ -447,39 +481,58 @@ cdef class LogCubicDiscountInterpolator(Interpolator):
     def freq(self):
         return self._freq
 
-    cdef tuple _eval_ln_df_and_fwd(self, double t, double *t_nodes, double *y_nodes, int n_nodes):
-        if n_nodes <= 0:
-            raise ValueError("Nós de interpolação vazios.")
+    cdef void _ensure_cache(self, double *t_nodes, double *y_nodes, int n_nodes) except *:
+        cdef int i, offset, m
+        cdef bint match = (self._cached_n == n_nodes and self._cached_t != NULL and self._cached_y != NULL)
+        if match:
+            for i in range(n_nodes):
+                if self._cached_t[i] != t_nodes[i] or self._cached_y[i] != y_nodes[i]:
+                    match = False
+                    break
+        if match:
+            return
+
+        if self._cached_t != NULL: free(self._cached_t); self._cached_t = NULL
+        if self._cached_y != NULL: free(self._cached_y); self._cached_y = NULL
+        if self._xs != NULL: free(self._xs); self._xs = NULL
+        if self._ys != NULL: free(self._ys); self._ys = NULL
+        if self._h != NULL: free(self._h); self._h = NULL
+        if self._d != NULL: free(self._d); self._d = NULL
+        if self._slopes != NULL: free(self._slopes); self._slopes = NULL
+        self._cached_n = 0
+        self._cached_m = 0
+
         cdef bint prepend_zero = (t_nodes[0] > 0.0)
-        cdef int m = n_nodes + (1 if prepend_zero else 0)
+        m = n_nodes + (1 if prepend_zero else 0)
+        cdef double *ct = <double *>malloc(n_nodes * sizeof(double))
+        cdef double *cy = <double *>malloc(n_nodes * sizeof(double))
         cdef double *xs = <double *>malloc(m * sizeof(double))
         cdef double *ys = <double *>malloc(m * sizeof(double))
         cdef double *h = <double *>malloc(m * sizeof(double))
         cdef double *d = <double *>malloc(m * sizeof(double))
         cdef double *slopes = <double *>malloc(m * sizeof(double))
-        if xs == NULL or ys == NULL or h == NULL or d == NULL or slopes == NULL:
-            free(xs); free(ys); free(h); free(d); free(slopes)
+        if ct == NULL or cy == NULL or xs == NULL or ys == NULL or h == NULL or d == NULL or slopes == NULL:
+            free(ct); free(cy); free(xs); free(ys); free(h); free(d); free(slopes)
             raise MemoryError()
 
-        cdef int i, offset, idx
-        cdef double tau, s_val, alpha, beta, denom_fc, w1, w2, r2, sc
-        cdef double h_seg, u, u2, u3, h00, h10, h01, h11, dh00, dh10, dh01, dh11, ln_v, dlndf
-        try:
-            offset = 1 if prepend_zero else 0
-            if prepend_zero:
-                xs[0] = 0.0
-                ys[0] = 0.0
-            for i in range(n_nodes):
-                xs[i + offset] = t_nodes[i] / self._day_count_basis
-                ys[i + offset] = _rate_to_ln_df(y_nodes[i], xs[i + offset], self._compounding, self._freq)
+        for i in range(n_nodes):
+            ct[i] = t_nodes[i]
+            cy[i] = y_nodes[i]
 
-            if m == 1:
-                return (0.0, 0.0)
-            if m == 2:
-                d[0] = (ys[1] - ys[0]) / max(1e-12, xs[1] - xs[0])
-                tau = t / self._day_count_basis
-                return (ys[0] + d[0] * (tau - xs[0]), -d[0])
+        offset = 1 if prepend_zero else 0
+        if prepend_zero:
+            xs[0] = 0.0
+            ys[0] = 0.0
+        for i in range(n_nodes):
+            xs[i + offset] = t_nodes[i] / self._day_count_basis
+            ys[i + offset] = _rate_to_ln_df(y_nodes[i], xs[i + offset], self._compounding, self._freq)
 
+        cdef double w1, w2, alpha, beta, r2, sc
+        if m == 2:
+            d[0] = (ys[1] - ys[0]) / max(1e-12, xs[1] - xs[0])
+            slopes[0] = d[0]
+            slopes[1] = d[0]
+        elif m > 2:
             for i in range(m - 1):
                 h[i] = xs[i + 1] - xs[i]
                 d[i] = (ys[i + 1] - ys[i]) / h[i] if h[i] > 1e-12 else 0.0
@@ -519,41 +572,74 @@ cdef class LogCubicDiscountInterpolator(Interpolator):
                         slopes[i] = sc * alpha * d[i]
                         slopes[i + 1] = sc * beta * d[i]
 
-            tau = t / self._day_count_basis
-            if tau <= 0.0:
-                return (0.0, -slopes[0])
-            if tau >= xs[m - 1]:
-                if self._extrap_right == EXTRAP_FLAT:
-                    ln_v = _rate_to_ln_df(y_nodes[n_nodes - 1], tau, self._compounding, self._freq)
-                    return (ln_v, -ln_v / tau)
-                ln_v = ys[m - 1] + slopes[m - 1] * (tau - xs[m - 1])
-                return (ln_v, -slopes[m - 1])
+        self._cached_t = ct
+        self._cached_y = cy
+        self._xs = xs
+        self._ys = ys
+        self._h = h
+        self._d = d
+        self._slopes = slopes
+        self._cached_n = n_nodes
+        self._cached_m = m
 
-            idx = m - 2
-            for i in range(m - 1):
-                if tau <= xs[i + 1]:
-                    idx = i
-                    break
+    cdef tuple _eval_ln_df_and_fwd(self, double t, double *t_nodes, double *y_nodes, int n_nodes):
+        if n_nodes <= 0:
+            raise ValueError("Nós de interpolação vazios.")
+        self._ensure_cache(t_nodes, y_nodes, n_nodes)
+        cdef int m = self._cached_m
+        cdef double *xs = self._xs
+        cdef double *ys = self._ys
+        cdef double *h = self._h
+        cdef double *d = self._d
+        cdef double *slopes = self._slopes
 
-            h_seg = h[idx]
-            u = (tau - xs[idx]) / h_seg
-            u2 = u * u
-            u3 = u2 * u
-            h00 = 2.0 * u3 - 3.0 * u2 + 1.0
-            h10 = u3 - 2.0 * u2 + u
-            h01 = -2.0 * u3 + 3.0 * u2
-            h11 = u3 - u2
+        if m == 1:
+            return (0.0, 0.0)
+        cdef double tau = t / self._day_count_basis
+        if m == 2:
+            return (ys[0] + d[0] * (tau - xs[0]), -d[0])
 
-            dh00 = (6.0 * u2 - 6.0 * u) / h_seg
-            dh10 = (3.0 * u2 - 4.0 * u + 1.0)
-            dh01 = (-6.0 * u2 + 6.0 * u) / h_seg
-            dh11 = (3.0 * u2 - 2.0 * u)
+        if tau <= 0.0:
+            return (0.0, -slopes[0])
+        cdef double ln_v, dlndf
+        if tau >= xs[m - 1]:
+            if self._extrap_right == EXTRAP_FLAT:
+                ln_v = _rate_to_ln_df(y_nodes[n_nodes - 1], tau, self._compounding, self._freq)
+                return (ln_v, -ln_v / tau)
+            ln_v = ys[m - 1] + slopes[m - 1] * (tau - xs[m - 1])
+            return (ln_v, -slopes[m - 1])
 
-            ln_v = ys[idx] * h00 + h_seg * slopes[idx] * h10 + ys[idx + 1] * h01 + h_seg * slopes[idx + 1] * h11
-            dlndf = ys[idx] * dh00 + h_seg * slopes[idx] * dh10 + ys[idx + 1] * dh01 + h_seg * slopes[idx + 1] * dh11
-            return (ln_v, -dlndf)
-        finally:
-            free(xs); free(ys); free(h); free(d); free(slopes)
+        cdef int lo = 0
+        cdef int hi = m - 2
+        cdef int mid
+        cdef int idx = m - 2
+        while lo <= hi:
+            mid = (lo + hi) >> 1
+            if tau < xs[mid]:
+                hi = mid - 1
+            elif tau > xs[mid + 1]:
+                lo = mid + 1
+            else:
+                idx = mid
+                break
+
+        cdef double h_seg = h[idx]
+        cdef double u = (tau - xs[idx]) / h_seg if h_seg > 1e-12 else 0.0
+        cdef double u2 = u * u
+        cdef double u3 = u2 * u
+        cdef double h00 = 2.0 * u3 - 3.0 * u2 + 1.0
+        cdef double h10 = u3 - 2.0 * u2 + u
+        cdef double h01 = -2.0 * u3 + 3.0 * u2
+        cdef double h11 = u3 - u2
+
+        cdef double dh00 = (6.0 * u2 - 6.0 * u) / h_seg if h_seg > 1e-12 else 0.0
+        cdef double dh10 = (3.0 * u2 - 4.0 * u + 1.0)
+        cdef double dh01 = (-6.0 * u2 + 6.0 * u) / h_seg if h_seg > 1e-12 else 0.0
+        cdef double dh11 = (3.0 * u2 - 2.0 * u)
+
+        ln_v = ys[idx] * h00 + h_seg * slopes[idx] * h10 + ys[idx + 1] * h01 + h_seg * slopes[idx + 1] * h11
+        dlndf = ys[idx] * dh00 + h_seg * slopes[idx] * dh10 + ys[idx + 1] * dh01 + h_seg * slopes[idx + 1] * dh11
+        return (ln_v, -dlndf)
 
     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
         if n_nodes <= 1 or t <= 0.0:
@@ -570,6 +656,36 @@ cdef class LogCubicDiscountInterpolator(Interpolator):
 
 cdef class MonotoneConvexInterpolator(Interpolator):
     """Interpolação Monotone Convex de Hagan e West (2006) para taxas a termo e curvas soberanas/OIS."""
+
+    def __cinit__(self):
+        self._cached_n = 0
+        self._cached_m = 0
+        self._cached_t = NULL
+        self._cached_y = NULL
+        self._taus = NULL
+        self._zcum = NULL
+        self._fd = NULL
+        self._fnodes = NULL
+
+    def __dealloc__(self):
+        if self._cached_t != NULL:
+            free(self._cached_t)
+            self._cached_t = NULL
+        if self._cached_y != NULL:
+            free(self._cached_y)
+            self._cached_y = NULL
+        if self._taus != NULL:
+            free(self._taus)
+            self._taus = NULL
+        if self._zcum != NULL:
+            free(self._zcum)
+            self._zcum = NULL
+        if self._fd != NULL:
+            free(self._fd)
+            self._fd = NULL
+        if self._fnodes != NULL:
+            free(self._fnodes)
+            self._fnodes = NULL
 
     def __init__(
         self,
@@ -606,39 +722,57 @@ cdef class MonotoneConvexInterpolator(Interpolator):
     def freq(self):
         return self._freq
 
-    cdef tuple _eval_ln_df_and_fwd(self, double t, double *t_nodes, double *y_nodes, int n_nodes):
-        if n_nodes <= 0:
-            raise ValueError("Nós de interpolação vazios.")
-        cdef int start_idx = 1 if (n_nodes > 1 and t_nodes[0] <= 0.0) else 0
-        cdef int m = (n_nodes - start_idx) + 1
+    cdef void _ensure_cache(self, double *t_nodes, double *y_nodes, int n_nodes) except *:
+        cdef int i, start_idx, m
+        cdef bint match = (self._cached_n == n_nodes and self._cached_t != NULL and self._cached_y != NULL)
+        if match:
+            for i in range(n_nodes):
+                if self._cached_t[i] != t_nodes[i] or self._cached_y[i] != y_nodes[i]:
+                    match = False
+                    break
+        if match:
+            return
+
+        if self._cached_t != NULL: free(self._cached_t); self._cached_t = NULL
+        if self._cached_y != NULL: free(self._cached_y); self._cached_y = NULL
+        if self._taus != NULL: free(self._taus); self._taus = NULL
+        if self._zcum != NULL: free(self._zcum); self._zcum = NULL
+        if self._fd != NULL: free(self._fd); self._fd = NULL
+        if self._fnodes != NULL: free(self._fnodes); self._fnodes = NULL
+        self._cached_n = 0
+        self._cached_m = 0
+
+        start_idx = 1 if (n_nodes > 1 and t_nodes[0] <= 0.0) else 0
+        m = (n_nodes - start_idx) + 1
+        cdef double *ct = <double *>malloc(n_nodes * sizeof(double))
+        cdef double *cy = <double *>malloc(n_nodes * sizeof(double))
         cdef double *taus = <double *>malloc(m * sizeof(double))
         cdef double *zcum = <double *>malloc(m * sizeof(double))
         cdef double *fd = <double *>malloc(m * sizeof(double))
         cdef double *fnodes = <double *>malloc(m * sizeof(double))
-        if taus == NULL or zcum == NULL or fd == NULL or fnodes == NULL:
-            free(taus); free(zcum); free(fd); free(fnodes)
+        if ct == NULL or cy == NULL or taus == NULL or zcum == NULL or fd == NULL or fnodes == NULL:
+            free(ct); free(cy); free(taus); free(zcum); free(fd); free(fnodes)
             raise MemoryError()
 
-        cdef int i, seg_idx
-        cdef double tau, h_seg, x, g0, g1, g_x, G_x, eta, u, A, denom, fd_seg, cum_int, inst_fwd
+        for i in range(n_nodes):
+            ct[i] = t_nodes[i]
+            cy[i] = y_nodes[i]
+
         cdef double min_fd = 1e99
         cdef double w1, w2, span
-        try:
-            taus[0] = 0.0
-            zcum[0] = 0.0
-            fd[0] = 0.0
-            for i in range(1, m):
-                taus[i] = t_nodes[start_idx + i - 1] / self._day_count_basis
-                zcum[i] = -_rate_to_ln_df(y_nodes[start_idx + i - 1], taus[i], self._compounding, self._freq)
-                span = taus[i] - taus[i - 1]
-                fd[i] = (zcum[i] - zcum[i - 1]) / span if span > 1e-12 else 0.0
-                if fd[i] < min_fd:
-                    min_fd = fd[i]
+        taus[0] = 0.0
+        zcum[0] = 0.0
+        fd[0] = 0.0
+        fnodes[0] = 0.0
+        for i in range(1, m):
+            taus[i] = t_nodes[start_idx + i - 1] / self._day_count_basis
+            zcum[i] = -_rate_to_ln_df(y_nodes[start_idx + i - 1], taus[i], self._compounding, self._freq)
+            span = taus[i] - taus[i - 1]
+            fd[i] = (zcum[i] - zcum[i - 1]) / span if span > 1e-12 else 0.0
+            if fd[i] < min_fd:
+                min_fd = fd[i]
 
-            if m == 2:
-                tau = t / self._day_count_basis
-                return (-fd[1] * tau, fd[1])
-
+        if m > 2:
             for i in range(1, m - 1):
                 span = taus[i + 1] - taus[i - 1]
                 if span > 1e-12:
@@ -669,92 +803,122 @@ cdef class MonotoneConvexInterpolator(Interpolator):
                 elif fnodes[m - 1] > 2.0 * fd[m - 1]:
                     fnodes[m - 1] = 2.0 * fd[m - 1]
 
-            tau = t / self._day_count_basis
-            if tau <= 0.0:
-                return (0.0, fnodes[0])
+        self._cached_t = ct
+        self._cached_y = cy
+        self._taus = taus
+        self._zcum = zcum
+        self._fd = fd
+        self._fnodes = fnodes
+        self._cached_n = n_nodes
+        self._cached_m = m
 
-            if tau >= taus[m - 1]:
-                if self._extrap_right == EXTRAP_FLAT:
-                    cum_int = -_rate_to_ln_df(y_nodes[n_nodes - 1], tau, self._compounding, self._freq)
-                    return (-cum_int, fnodes[m - 1])
-                cum_int = zcum[m - 1] + fnodes[m - 1] * (tau - taus[m - 1])
+    cdef tuple _eval_ln_df_and_fwd(self, double t, double *t_nodes, double *y_nodes, int n_nodes):
+        if n_nodes <= 0:
+            raise ValueError("Nós de interpolação vazios.")
+        self._ensure_cache(t_nodes, y_nodes, n_nodes)
+        cdef int m = self._cached_m
+        cdef double *taus = self._taus
+        cdef double *zcum = self._zcum
+        cdef double *fd = self._fd
+        cdef double *fnodes = self._fnodes
+
+        cdef double tau = t / self._day_count_basis
+        if m <= 1:
+            return (0.0, 0.0)
+        if m == 2:
+            return (-fd[1] * tau, fd[1])
+        if tau <= 0.0:
+            return (0.0, fnodes[0])
+
+        cdef double cum_int, inst_fwd, h_seg, x, g0, g1, g_x, G_x, eta, u, A, denom, fd_seg
+        if tau >= taus[m - 1]:
+            if self._extrap_right == EXTRAP_FLAT:
+                cum_int = -_rate_to_ln_df(y_nodes[n_nodes - 1], tau, self._compounding, self._freq)
                 return (-cum_int, fnodes[m - 1])
+            cum_int = zcum[m - 1] + fnodes[m - 1] * (tau - taus[m - 1])
+            return (-cum_int, fnodes[m - 1])
 
-            seg_idx = m - 1
-            for i in range(1, m):
-                if tau <= taus[i]:
-                    seg_idx = i
-                    break
-
-            h_seg = taus[seg_idx] - taus[seg_idx - 1]
-            if h_seg <= 1e-12:
-                return (-zcum[seg_idx], fnodes[seg_idx])
-
-            x = (tau - taus[seg_idx - 1]) / h_seg
-            if x < 0.0:
-                x = 0.0
-            elif x > 1.0:
-                x = 1.0
-
-            fd_seg = fd[seg_idx]
-            g0 = fnodes[seg_idx - 1] - fd_seg
-            g1 = fnodes[seg_idx] - fd_seg
-
-            if fabs(g0) < 1e-15 and fabs(g1) < 1e-15:
-                g_x = 0.0
-                G_x = 0.0
-            elif (g0 > 0.0 and -2.0 * g0 <= g1 and g1 <= -0.5 * g0) or (g0 < 0.0 and -0.5 * g0 <= g1 and g1 <= -2.0 * g0):
-                g_x = g0 + (-4.0 * g0 - 2.0 * g1) * x + (3.0 * g0 + 3.0 * g1) * x * x
-                G_x = g0 * x + (-2.0 * g0 - g1) * x * x + (g0 + g1) * x * x * x
-            elif (g0 > 0.0 and -0.5 * g0 < g1 and g1 < 0.0) or (g0 < 0.0 and 0.0 < g1 and g1 < -0.5 * g0):
-                eta = (3.0 * g1) / (g1 - g0)
-                if eta < 1e-12:
-                    g_x = g1
-                    G_x = 0.0
-                elif x < eta:
-                    u = (eta - x) / eta
-                    g_x = g1 + (g0 - g1) * u * u
-                    G_x = g1 * x + (eta / 3.0) * (g0 - g1) * (1.0 - u * u * u)
-                else:
-                    g_x = g1
-                    G_x = g1 * x + (eta / 3.0) * (g0 - g1)
-            elif (g0 > 0.0 and g1 < -2.0 * g0) or (g0 < 0.0 and g1 > -2.0 * g0):
-                eta = (g1 + 2.0 * g0) / (g1 - g0)
-                if eta > 1.0 - 1e-12:
-                    g_x = g0
-                    G_x = 0.0
-                elif x <= eta:
-                    g_x = g0
-                    G_x = g0 * x
-                else:
-                    u = (x - eta) / (1.0 - eta)
-                    g_x = g0 + (g1 - g0) * u * u
-                    G_x = g0 * x + ((1.0 - eta) / 3.0) * (g1 - g0) * u * u * u
+        cdef int lo = 1
+        cdef int hi = m - 1
+        cdef int mid
+        cdef int seg_idx = m - 1
+        while lo <= hi:
+            mid = (lo + hi) >> 1
+            if tau < taus[mid - 1]:
+                hi = mid - 1
+            elif tau > taus[mid]:
+                lo = mid + 1
             else:
-                denom = g0 + g1
-                if fabs(g0) > 1e-15 and fabs(g1) > 1e-15 and fabs(denom) > 1e-15:
-                    eta = g1 / denom
-                else:
-                    eta = 0.5
-                if eta < 0.001:
-                    eta = 0.001
-                elif eta > 0.999:
-                    eta = 0.999
-                A = -0.5 * (eta * g0 + (1.0 - eta) * g1)
-                if x <= eta:
-                    u = (eta - x) / eta
-                    g_x = A + (g0 - A) * u * u
-                    G_x = A * x + (eta / 3.0) * (g0 - A) * (1.0 - u * u * u)
-                else:
-                    u = (x - eta) / (1.0 - eta)
-                    g_x = A + (g1 - A) * u * u
-                    G_x = A * x + (eta / 3.0) * (g0 - A) + ((1.0 - eta) / 3.0) * (g1 - A) * u * u * u
+                seg_idx = mid
+                break
 
-            cum_int = zcum[seg_idx - 1] + h_seg * (fd_seg * x + G_x)
-            inst_fwd = fd_seg + g_x
-            return (-cum_int, inst_fwd)
-        finally:
-            free(taus); free(zcum); free(fd); free(fnodes)
+        h_seg = taus[seg_idx] - taus[seg_idx - 1]
+        if h_seg <= 1e-12:
+            return (-zcum[seg_idx], fnodes[seg_idx])
+
+        x = (tau - taus[seg_idx - 1]) / h_seg
+        if x < 0.0:
+            x = 0.0
+        elif x > 1.0:
+            x = 1.0
+
+        fd_seg = fd[seg_idx]
+        g0 = fnodes[seg_idx - 1] - fd_seg
+        g1 = fnodes[seg_idx] - fd_seg
+
+        if fabs(g0) < 1e-15 and fabs(g1) < 1e-15:
+            g_x = 0.0
+            G_x = 0.0
+        elif (g0 > 0.0 and -2.0 * g0 <= g1 and g1 <= -0.5 * g0) or (g0 < 0.0 and -0.5 * g0 <= g1 and g1 <= -2.0 * g0):
+            g_x = g0 + (-4.0 * g0 - 2.0 * g1) * x + (3.0 * g0 + 3.0 * g1) * x * x
+            G_x = g0 * x + (-2.0 * g0 - g1) * x * x + (g0 + g1) * x * x * x
+        elif (g0 > 0.0 and -0.5 * g0 < g1 and g1 < 0.0) or (g0 < 0.0 and 0.0 < g1 and g1 < -0.5 * g0):
+            eta = (3.0 * g1) / (g1 - g0)
+            if eta < 1e-12:
+                g_x = g1
+                G_x = 0.0
+            elif x < eta:
+                u = (eta - x) / eta
+                g_x = g1 + (g0 - g1) * u * u
+                G_x = g1 * x + (eta / 3.0) * (g0 - g1) * (1.0 - u * u * u)
+            else:
+                g_x = g1
+                G_x = g1 * x + (eta / 3.0) * (g0 - g1)
+        elif (g0 > 0.0 and g1 < -2.0 * g0) or (g0 < 0.0 and g1 > -2.0 * g0):
+            eta = (g1 + 2.0 * g0) / (g1 - g0)
+            if eta > 1.0 - 1e-12:
+                g_x = g0
+                G_x = 0.0
+            elif x <= eta:
+                g_x = g0
+                G_x = g0 * x
+            else:
+                u = (x - eta) / (1.0 - eta)
+                g_x = g0 + (g1 - g0) * u * u
+                G_x = g0 * x + ((1.0 - eta) / 3.0) * (g1 - g0) * u * u * u
+        else:
+            denom = g0 + g1
+            if fabs(g0) > 1e-15 and fabs(g1) > 1e-15 and fabs(denom) > 1e-15:
+                eta = g1 / denom
+            else:
+                eta = 0.5
+            if eta < 0.001:
+                eta = 0.001
+            elif eta > 0.999:
+                eta = 0.999
+            A = -0.5 * (eta * g0 + (1.0 - eta) * g1)
+            if x <= eta:
+                u = (eta - x) / eta
+                g_x = A + (g0 - A) * u * u
+                G_x = A * x + (eta / 3.0) * (g0 - A) * (1.0 - u * u * u)
+            else:
+                u = (x - eta) / (1.0 - eta)
+                g_x = A + (g1 - A) * u * u
+                G_x = A * x + (eta / 3.0) * (g0 - A) + ((1.0 - eta) / 3.0) * (g1 - A) * u * u * u
+
+        cum_int = zcum[seg_idx - 1] + h_seg * (fd_seg * x + G_x)
+        inst_fwd = fd_seg + g_x
+        return (-cum_int, inst_fwd)
 
     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
         if n_nodes <= 1 or t <= 0.0:

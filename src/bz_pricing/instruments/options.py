@@ -18,11 +18,15 @@ try:
     from bz_pricing.core.options_core import (
         asian_arithmetic_tw_price as _cy_asian_arith,
         asian_geometric_price as _cy_asian_geom,
+        asian_price_greeks as _cy_asian_greeks,
         bachelier_price_greeks as _cy_bachelier,
         barrier_bsm_price as _cy_barrier_bsm,
+        barrier_bsm_price_greeks as _cy_barrier_bsm_greeks,
         black76_price_greeks as _cy_black76,
         bsm_price_greeks as _cy_bsm,
         corrado_su_price as _cy_corrado_su,
+        corrado_su_price_greeks as _cy_corrado_su_greeks,
+        crr_american_discrete_div_price_greeks as _cy_crr_discrete_greeks,
         crr_american_price as _cy_crr_american,
         crr_american_price_greeks as _cy_crr_american_greeks,
         implied_vol_bachelier as _cy_iv_bachelier,
@@ -36,11 +40,15 @@ except ImportError:
     _cy_black76 = None
     _cy_bachelier = None
     _cy_barrier_bsm = None
+    _cy_barrier_bsm_greeks = None
     _cy_asian_geom = None
     _cy_asian_arith = None
+    _cy_asian_greeks = None
     _cy_crr_american = None
     _cy_crr_american_greeks = None
+    _cy_crr_discrete_greeks = None
     _cy_corrado_su = None
+    _cy_corrado_su_greeks = None
     _cy_iv_bsm = None
     _cy_iv_black76 = None
     _cy_iv_bachelier = None
@@ -173,8 +181,57 @@ class EquityOption(_BaseOption):
     Opção sobre ação, ETF ou índice (Manual de Apreçamento de Opções B3 / Bloomberg):
     - r_n = ln(1 + T_PreDI1_n)
     - q_n = ln(1 + T_CY_n) (custo de carrego / dividend yield contínuo)
-    - Exercício europeu por Black-Scholes-Merton ou americano via árvore binomial CRR em Cython.
+    - Exercício europeu por Black-Scholes-Merton ou americano via árvore binomial CRR em Cython,
+      com suporte opcional a dividendos discretos em dinheiro (`discrete_dividends`) e proporcionais
+      (`prop_dividends`).
     """
+
+    def __init__(
+        self,
+        ticker: str,
+        maturity_date: Union[datetime.date, str],
+        strike: float,
+        option_type: str = "CALL",
+        exercise: str = "EUROPEAN",
+        calendar_name: str = "B3",
+        multiplier: float = 1.0,
+        holidays: Any = None,
+        discrete_dividends: Any = None,
+        prop_dividends: Any = None,
+    ):
+        super().__init__(
+            ticker=ticker,
+            maturity_date=maturity_date,
+            strike=strike,
+            option_type=option_type,
+            exercise=exercise,
+            calendar_name=calendar_name,
+            multiplier=multiplier,
+            holidays=holidays,
+        )
+        self.discrete_dividends = discrete_dividends
+        self.prop_dividends = prop_dividends
+
+    def _prepare_dividend_arrays(
+        self, base_dt: datetime.date, t_n: float, divs: Any
+    ):
+        if not divs:
+            return np.empty(0, dtype=np.float64), np.empty(0, dtype=np.float64)
+        items = list(divs.items()) if isinstance(divs, dict) else list(divs)
+        ts: List[float] = []
+        vals: List[float] = []
+        for k_t, amt in items:
+            if isinstance(k_t, (int, float)):
+                t_val = float(k_t)
+            else:
+                dt_ex = self._normalize_date(k_t)
+                if dt_ex <= base_dt:
+                    continue
+                t_val = float(self.calendar.bizdays(base_dt, dt_ex)) / 252.0
+            if 0.0 < t_val <= t_n + 1e-9 and float(amt) > 0.0:
+                ts.append(min(t_n, t_val))
+                vals.append(float(amt))
+        return np.asarray(ts, dtype=np.float64), np.asarray(vals, dtype=np.float64)
 
     def _resolve_params(
         self,
@@ -197,21 +254,57 @@ class EquityOption(_BaseOption):
         vol: float,
         carry_or_div_yield: Union[float, Curve] = 0.0,
         crr_steps: int = 200,
+        discrete_dividends: Any = None,
+        prop_dividends: Any = None,
     ) -> Dict[str, float]:
-        du_n, t_n, r_cont, q_cont = self._resolve_params(base_date, pre_rate_or_curve, carry_or_div_yield)
+        base_dt = self._normalize_date(base_date)
+        du_n, t_n, r_cont, q_cont = self._resolve_params(base_dt, pre_rate_or_curve, carry_or_div_yield)
         is_call = self.option_type == "CALL"
 
         if _cy_bsm is None:
             raise RuntimeError("Extensão Cython 'options_core' não compilada.")
 
-        fwd_est = float(spot) * math.exp((r_cont - q_cont) * t_n)
+        d_src = discrete_dividends if discrete_dividends is not None else self.discrete_dividends
+        p_src = prop_dividends if prop_dividends is not None else self.prop_dividends
+        div_t, div_a = self._prepare_dividend_arrays(base_dt, t_n, d_src)
+        prop_t, prop_y = self._prepare_dividend_arrays(base_dt, t_n, p_src)
+        has_divs = (len(div_t) > 0) or (len(prop_t) > 0)
+
+        pv_div = float(np.sum(div_a * np.exp(-r_cont * div_t))) if len(div_t) else 0.0
+        prod_prop = float(np.prod(1.0 - np.clip(prop_y, 0.0, 0.999))) if len(prop_t) else 1.0
+        spot_eff = max(1e-8, (float(spot) - pv_div) * prod_prop)
+        fwd_est = spot_eff * math.exp((r_cont - q_cont) * t_n)
         vol_val = self._resolve_vol(vol, du_n, fwd_est)
 
-        price_eu, delta, gamma, vega, theta, rho, vanna, volga = _cy_bsm(
-            float(spot), self.strike, r_cont, q_cont, t_n, vol_val, is_call
-        )
-        if self.exercise == "AMERICAN":
-            if _cy_crr_american_greeks is not None:
+        if self.exercise == "EUROPEAN":
+            price, delta_u, gamma_u, vega, theta, rho, vanna, volga = _cy_bsm(
+                spot_eff, self.strike, r_cont, q_cont, t_n, vol_val, is_call
+            )
+            delta = delta_u * prod_prop
+            gamma = gamma_u * prod_prop * prod_prop
+            if len(div_t) > 0:
+                d_s_eff_dr = prod_prop * float(np.sum(div_t * div_a * np.exp(-r_cont * div_t)))
+                rho += delta_u * d_s_eff_dr
+        else:
+            _, _, _, _, _, _, vanna, volga = _cy_bsm(
+                float(spot), self.strike, r_cont, q_cont, t_n, vol_val, is_call
+            )
+            if has_divs and _cy_crr_discrete_greeks is not None:
+                price, delta, gamma, vega, theta, rho = _cy_crr_discrete_greeks(
+                    float(spot),
+                    self.strike,
+                    r_cont,
+                    q_cont,
+                    t_n,
+                    vol_val,
+                    is_call,
+                    int(crr_steps),
+                    div_t,
+                    div_a,
+                    prop_t,
+                    prop_y,
+                )
+            elif _cy_crr_american_greeks is not None:
                 price, delta, gamma, vega, theta, rho = _cy_crr_american_greeks(
                     float(spot), self.strike, r_cont, q_cont, t_n, vol_val, is_call, int(crr_steps)
                 )
@@ -219,8 +312,7 @@ class EquityOption(_BaseOption):
                 price = _cy_crr_american(
                     float(spot), self.strike, r_cont, q_cont, t_n, vol_val, is_call, int(crr_steps)
                 )
-        else:
-            price = price_eu
+                delta = gamma = vega = theta = rho = np.nan
 
         return {
             "du": float(du_n),
@@ -247,8 +339,19 @@ class EquityOption(_BaseOption):
         vol: float,
         carry_or_div_yield: Union[float, Curve] = 0.0,
         crr_steps: int = 200,
+        discrete_dividends: Any = None,
+        prop_dividends: Any = None,
     ) -> float:
-        return self.risk_metrics(base_date, spot, pre_rate_or_curve, vol, carry_or_div_yield, crr_steps)["price"]
+        return self.risk_metrics(
+            base_date,
+            spot,
+            pre_rate_or_curve,
+            vol,
+            carry_or_div_yield,
+            crr_steps,
+            discrete_dividends=discrete_dividends,
+            prop_dividends=prop_dividends,
+        )["price"]
 
     def implied_volatility(
         self,
@@ -257,17 +360,44 @@ class EquityOption(_BaseOption):
         spot: float,
         pre_rate_or_curve: Union[float, Curve],
         carry_or_div_yield: Union[float, Curve] = 0.0,
+        discrete_dividends: Any = None,
+        prop_dividends: Any = None,
+        crr_steps: int = 200,
     ) -> float:
-        _, t_n, r_cont, q_cont = self._resolve_params(base_date, pre_rate_or_curve, carry_or_div_yield)
+        base_dt = self._normalize_date(base_date)
+        _, t_n, r_cont, q_cont = self._resolve_params(base_dt, pre_rate_or_curve, carry_or_div_yield)
         is_call = self.option_type == "CALL"
+        d_src = discrete_dividends if discrete_dividends is not None else self.discrete_dividends
+        p_src = prop_dividends if prop_dividends is not None else self.prop_dividends
+        div_t, div_a = self._prepare_dividend_arrays(base_dt, t_n, d_src)
+        prop_t, prop_y = self._prepare_dividend_arrays(base_dt, t_n, p_src)
         if self.exercise == "EUROPEAN" and _cy_iv_bsm is not None:
-            return float(_cy_iv_bsm(float(market_price), float(spot), self.strike, r_cont, q_cont, t_n, is_call))
+            pv_div = float(np.sum(div_a * np.exp(-r_cont * div_t))) if len(div_t) else 0.0
+            prod_prop = float(np.prod(1.0 - np.clip(prop_y, 0.0, 0.999))) if len(prop_t) else 1.0
+            spot_eff = max(1e-8, (float(spot) - pv_div) * prod_prop)
+            return float(_cy_iv_bsm(float(market_price), spot_eff, self.strike, r_cont, q_cont, t_n, is_call))
         from scipy.optimize import brentq
 
-        def _obj(s: float) -> float:
-            return self.price(base_date, spot, pre_rate_or_curve, s, carry_or_div_yield) - float(market_price)
+        steps_val = max(2, int(crr_steps))
+        s_lo = max(1e-4, abs(r_cont - q_cont) * math.sqrt(max(0.0, t_n) / float(steps_val)) * 1.05 + 1e-4)
 
-        return float(brentq(_obj, 1e-4, 5.0, xtol=1e-8))
+        def _obj(s: float) -> float:
+            return self.price(
+                base_date,
+                spot,
+                pre_rate_or_curve,
+                s,
+                carry_or_div_yield,
+                crr_steps=steps_val,
+                discrete_dividends=d_src,
+                prop_dividends=p_src,
+            ) - float(market_price)
+
+        f_lo = _obj(s_lo)
+        f_hi = _obj(5.0)
+        if not (math.isfinite(f_lo) and math.isfinite(f_hi)) or f_lo > 0.0 or f_hi < 0.0:
+            return float("nan")
+        return float(brentq(_obj, s_lo, 5.0, xtol=1e-8))
 
 
 class FXOption(_BaseOption):
@@ -564,16 +694,16 @@ class CorradoSuOption(_BaseOption):
     Gram-Charlier para incorporar assimetria (kappa3) e curtose (kappa4).
     """
 
-    def price(
+    def risk_metrics(
         self,
         base_date: Union[datetime.date, str],
         spot: float,
         pre_rate_or_curve: Union[float, Curve],
-        vol: float,
+        vol: Any,
         kappa3: float = 0.0,
         kappa4: float = 3.0,
         carry_or_div_yield: Union[float, Curve] = 0.0,
-    ) -> float:
+    ) -> Dict[str, float]:
         du_n = self.du(base_date)
         dc_n = self.dc(base_date)
         t_n = du_n / 252.0
@@ -581,8 +711,8 @@ class CorradoSuOption(_BaseOption):
         q_cont = self._resolve_cont_rate(carry_or_div_yield, du_n, dc_n, default_conv="exp_252")
         fwd_est = float(spot) * math.exp((r_cont - q_cont) * t_n)
         vol_val = self._resolve_vol(vol, du_n, fwd_est)
-        return float(
-            _cy_corrado_su(
+        if _cy_corrado_su_greeks is not None:
+            price, delta, gamma, vega, theta, rho = _cy_corrado_su_greeks(
                 float(spot),
                 self.strike,
                 r_cont,
@@ -593,7 +723,56 @@ class CorradoSuOption(_BaseOption):
                 float(kappa4),
                 self.option_type == "CALL",
             )
-        )
+        else:
+            price = float(
+                _cy_corrado_su(
+                    float(spot),
+                    self.strike,
+                    r_cont,
+                    q_cont,
+                    t_n,
+                    vol_val,
+                    float(kappa3),
+                    float(kappa4),
+                    self.option_type == "CALL",
+                )
+            )
+            delta = gamma = vega = theta = rho = np.nan
+        return {
+            "du": float(du_n),
+            "T": t_n,
+            "r_cont": r_cont,
+            "q_cont": q_cont,
+            "vol_eff": vol_val,
+            "price": float(price),
+            "delta": float(delta),
+            "gamma": float(gamma),
+            "vega": float(vega),
+            "vega_1pct": float(vega * 0.01),
+            "theta": float(theta),
+            "theta_du": float(theta / 252.0),
+            "rho": float(rho),
+        }
+
+    def price(
+        self,
+        base_date: Union[datetime.date, str],
+        spot: float,
+        pre_rate_or_curve: Union[float, Curve],
+        vol: Any,
+        kappa3: float = 0.0,
+        kappa4: float = 3.0,
+        carry_or_div_yield: Union[float, Curve] = 0.0,
+    ) -> float:
+        return self.risk_metrics(
+            base_date,
+            spot,
+            pre_rate_or_curve,
+            vol,
+            kappa3=kappa3,
+            kappa4=kappa4,
+            carry_or_div_yield=carry_or_div_yield,
+        )["price"]
 
 
 def price_options_portfolio(
@@ -602,8 +781,8 @@ def price_options_portfolio(
     crr_steps: int = 150,
 ) -> pd.DataFrame:
     """
-    Precifica em lote carteiras mistas de opções (`EquityOption`, `FXOption`, `IDIOption`, `DI1Option`
-    e `CorradoSuOption`) via núcleos Cython (`nogil`), retornando prêmio unitário, MtM e gregas.
+    Precifica em lote carteiras mistas de opções (`EquityOption`, `FXOption`, `IDIOption`, `DI1Option`,
+    `CorradoSuOption`, `BarrierOption` e `AsianOption`) via núcleos Cython (`nogil`), retornando prêmio unitário, MtM e gregas.
     """
     if not positions:
         return pd.DataFrame()
@@ -613,7 +792,6 @@ def price_options_portfolio(
     n = len(positions)
     bsm_idx: List[int] = []
     b76_idx: List[int] = []
-    cs_idx: List[int] = []
 
     tickers = []
     classes = []
@@ -667,8 +845,7 @@ def price_options_portfolio(
             b76_idx.append(i)
             b76_params.append((1 if opt.option_type == "CALL" else 0, s_prime, k_prime, 0.0, t_c_dc, sig, delta_ann))
         elif isinstance(opt, CorradoSuOption):
-            cs_idx.append(i)
-            p_cs = opt.price(
+            rm_cs = opt.risk_metrics(
                 base_date,
                 pos["spot"],
                 pos["pre_rate_or_curve"],
@@ -677,23 +854,61 @@ def price_options_portfolio(
                 kappa4=pos.get("kappa4", 3.0),
                 carry_or_div_yield=pos.get("carry_or_div_yield", 0.0),
             )
-            p_out[i] = p_cs
-            d_out[i] = np.nan
-            g_out[i] = np.nan
-            v_out[i] = np.nan
-            t_out[i] = np.nan
-            r_out[i] = np.nan
+            p_out[i] = rm_cs["price"]
+            d_out[i] = rm_cs["delta"]
+            g_out[i] = rm_cs["gamma"]
+            v_out[i] = rm_cs["vega"]
+            t_out[i] = rm_cs["theta"]
+            r_out[i] = rm_cs["rho"]
+        elif isinstance(opt, (BarrierOption, AsianOption)):
+            rm_ex = opt.risk_metrics(
+                base_date,
+                pos["spot"],
+                pos["pre_rate_or_curve"],
+                pos["vol"],
+                carry_or_div_yield=pos.get("carry_or_div_yield", 0.0),
+            )
+            p_out[i] = rm_ex["price"]
+            d_out[i] = rm_ex["delta"]
+            g_out[i] = rm_ex["gamma"]
+            v_out[i] = rm_ex["vega"]
+            t_out[i] = rm_ex["theta"]
+            r_out[i] = rm_ex["rho"]
         elif isinstance(opt, EquityOption):
-            du_n = opt.du(base_date)
-            dc_n = opt.dc(base_date)
-            t_n = du_n / 252.0
-            r_c = opt._resolve_cont_rate(pos["pre_rate_or_curve"], du_n, dc_n, default_conv="exp_252")
-            q_c = opt._resolve_cont_rate(pos.get("carry_or_div_yield", 0.0), du_n, dc_n, default_conv="exp_252")
-            S_val = float(pos["spot"])
-            fwd_est = S_val * math.exp((r_c - q_c) * t_n)
-            sig = opt._resolve_vol(pos["vol"], du_n, fwd_est)
-            bsm_idx.append(i)
-            bsm_params.append((1 if opt.option_type == "CALL" else 0, 1 if opt.exercise == "AMERICAN" else 0, S_val, opt.strike, r_c, q_c, t_n, sig))
+            has_pos_div = bool(
+                pos.get("discrete_dividends")
+                or pos.get("prop_dividends")
+                or opt.discrete_dividends
+                or opt.prop_dividends
+            )
+            if has_pos_div:
+                rm_eq = opt.risk_metrics(
+                    base_date,
+                    pos["spot"],
+                    pos["pre_rate_or_curve"],
+                    pos["vol"],
+                    carry_or_div_yield=pos.get("carry_or_div_yield", 0.0),
+                    crr_steps=int(pos.get("crr_steps", crr_steps)),
+                    discrete_dividends=pos.get("discrete_dividends"),
+                    prop_dividends=pos.get("prop_dividends"),
+                )
+                p_out[i] = rm_eq["price"]
+                d_out[i] = rm_eq["delta"]
+                g_out[i] = rm_eq["gamma"]
+                v_out[i] = rm_eq["vega"]
+                t_out[i] = rm_eq["theta"]
+                r_out[i] = rm_eq["rho"]
+            else:
+                du_n = opt.du(base_date)
+                dc_n = opt.dc(base_date)
+                t_n = du_n / 252.0
+                r_c = opt._resolve_cont_rate(pos["pre_rate_or_curve"], du_n, dc_n, default_conv="exp_252")
+                q_c = opt._resolve_cont_rate(pos.get("carry_or_div_yield", 0.0), du_n, dc_n, default_conv="exp_252")
+                S_val = float(pos["spot"])
+                fwd_est = S_val * math.exp((r_c - q_c) * t_n)
+                sig = opt._resolve_vol(pos["vol"], du_n, fwd_est)
+                bsm_idx.append(i)
+                bsm_params.append((1 if opt.option_type == "CALL" else 0, 1 if opt.exercise == "AMERICAN" else 0, S_val, opt.strike, r_c, q_c, t_n, sig))
         else:
             raise TypeError(f"Instrumento não suportado em price_options_portfolio: {type(opt)}")
 
@@ -1189,14 +1404,14 @@ class BarrierOption(_BaseOption):
         self.rebate = float(rebate)
         self.monitoring_steps = int(monitoring_steps) if monitoring_steps is not None else None
 
-    def price(
+    def risk_metrics(
         self,
         base_date: Union[datetime.date, str],
         spot: float,
         pre_rate_or_curve: Union[float, Curve],
         vol: Any,
         carry_or_div_yield: Union[float, Curve] = 0.0,
-    ) -> float:
+    ) -> Dict[str, float]:
         du_n = self.du(base_date)
         dc_n = self.dc(base_date)
         t_n = du_n / 252.0
@@ -1214,8 +1429,8 @@ class BarrierOption(_BaseOption):
                 shift = beta_bgk * vol_val * math.sqrt(dt_mon)
                 h_eff = self.barrier * math.exp(shift if self.is_up else -shift)
 
-        return float(
-            _cy_barrier_bsm(
+        if _cy_barrier_bsm_greeks is not None:
+            price, delta, gamma, vega, theta, rho = _cy_barrier_bsm_greeks(
                 float(spot),
                 self.strike,
                 h_eff,
@@ -1228,7 +1443,50 @@ class BarrierOption(_BaseOption):
                 self.is_out,
                 self.rebate,
             )
-        )
+        else:
+            price = float(
+                _cy_barrier_bsm(
+                    float(spot),
+                    self.strike,
+                    h_eff,
+                    r_cont,
+                    q_cont,
+                    t_n,
+                    vol_val,
+                    self.option_type == "CALL",
+                    self.is_up,
+                    self.is_out,
+                    self.rebate,
+                )
+            )
+            delta = gamma = vega = theta = rho = np.nan
+
+        return {
+            "du": float(du_n),
+            "T": t_n,
+            "r_cont": r_cont,
+            "q_cont": q_cont,
+            "barrier_eff": h_eff,
+            "vol_eff": vol_val,
+            "price": float(price),
+            "delta": float(delta),
+            "gamma": float(gamma),
+            "vega": float(vega),
+            "vega_1pct": float(vega * 0.01),
+            "theta": float(theta),
+            "theta_du": float(theta / 252.0),
+            "rho": float(rho),
+        }
+
+    def price(
+        self,
+        base_date: Union[datetime.date, str],
+        spot: float,
+        pre_rate_or_curve: Union[float, Curve],
+        vol: Any,
+        carry_or_div_yield: Union[float, Curve] = 0.0,
+    ) -> float:
+        return self.risk_metrics(base_date, spot, pre_rate_or_curve, vol, carry_or_div_yield)["price"]
 
 
 class AsianOption(_BaseOption):
@@ -1264,14 +1522,14 @@ class AsianOption(_BaseOption):
         self.average_type = avg
         self.n_fixings = int(n_fixings) if n_fixings is not None else None
 
-    def price(
+    def risk_metrics(
         self,
         base_date: Union[datetime.date, str],
         spot: float,
         pre_rate_or_curve: Union[float, Curve],
         vol: Any,
         carry_or_div_yield: Union[float, Curve] = 0.0,
-    ) -> float:
+    ) -> Dict[str, float]:
         du_n = self.du(base_date)
         dc_n = self.dc(base_date)
         t_n = du_n / 252.0
@@ -1280,6 +1538,38 @@ class AsianOption(_BaseOption):
         fwd_est = float(spot) * math.exp((r_cont - q_cont) * t_n)
         vol_val = self._resolve_vol(vol, du_n, fwd_est)
         n_fix = self.n_fixings if (self.n_fixings is not None and self.n_fixings > 0) else 0
-        fn = _cy_asian_geom if self.average_type == "geometric" else _cy_asian_arith
-        return float(fn(float(spot), self.strike, r_cont, q_cont, t_n, vol_val, self.option_type == "CALL", n_fix))
+        is_geom = self.average_type == "geometric"
+        if _cy_asian_greeks is not None:
+            price, delta, gamma, vega, theta, rho = _cy_asian_greeks(
+                float(spot), self.strike, r_cont, q_cont, t_n, vol_val, self.option_type == "CALL", n_fix, is_geom
+            )
+        else:
+            fn = _cy_asian_geom if is_geom else _cy_asian_arith
+            price = float(fn(float(spot), self.strike, r_cont, q_cont, t_n, vol_val, self.option_type == "CALL", n_fix))
+            delta = gamma = vega = theta = rho = np.nan
+        return {
+            "du": float(du_n),
+            "T": t_n,
+            "r_cont": r_cont,
+            "q_cont": q_cont,
+            "vol_eff": vol_val,
+            "price": float(price),
+            "delta": float(delta),
+            "gamma": float(gamma),
+            "vega": float(vega),
+            "vega_1pct": float(vega * 0.01),
+            "theta": float(theta),
+            "theta_du": float(theta / 252.0),
+            "rho": float(rho),
+        }
+
+    def price(
+        self,
+        base_date: Union[datetime.date, str],
+        spot: float,
+        pre_rate_or_curve: Union[float, Curve],
+        vol: Any,
+        carry_or_div_yield: Union[float, Curve] = 0.0,
+    ) -> float:
+        return self.risk_metrics(base_date, spot, pre_rate_or_curve, vol, carry_or_div_yield)["price"]
 

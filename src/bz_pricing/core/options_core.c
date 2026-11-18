@@ -2037,6 +2037,9 @@ struct __pyx_opt_args_10bz_pricing_4core_12options_core_implied_vol_bachelier;
 struct __pyx_opt_args_10bz_pricing_4core_12options_core_barrier_bsm_price;
 struct __pyx_opt_args_10bz_pricing_4core_12options_core_asian_geometric_price;
 struct __pyx_opt_args_10bz_pricing_4core_12options_core_asian_arithmetic_tw_price;
+struct __pyx_opt_args_10bz_pricing_4core_12options_core_corrado_su_price_greeks;
+struct __pyx_opt_args_10bz_pricing_4core_12options_core_barrier_bsm_price_greeks;
+struct __pyx_opt_args_10bz_pricing_4core_12options_core_asian_price_greeks;
 
 /* "bz_pricing/core/options_core.pyx":153
  * 
@@ -2088,7 +2091,7 @@ struct __pyx_opt_args_10bz_pricing_4core_12options_core_crr_american_price_greek
   int steps;
 };
 
-/* "bz_pricing/core/options_core.pyx":353
+/* "bz_pricing/core/options_core.pyx":540
  * 
  * 
  * cpdef double corrado_su_price(             # <<<<<<<<<<<<<<
@@ -2100,7 +2103,7 @@ struct __pyx_opt_args_10bz_pricing_4core_12options_core_corrado_su_price {
   int is_call;
 };
 
-/* "bz_pricing/core/options_core.pyx":396
+/* "bz_pricing/core/options_core.pyx":583
  * 
  * 
  * cpdef double implied_vol_bsm(             # <<<<<<<<<<<<<<
@@ -2114,7 +2117,7 @@ struct __pyx_opt_args_10bz_pricing_4core_12options_core_implied_vol_bsm {
   int max_iter;
 };
 
-/* "bz_pricing/core/options_core.pyx":456
+/* "bz_pricing/core/options_core.pyx":643
  * 
  * 
  * cpdef double implied_vol_black76(             # <<<<<<<<<<<<<<
@@ -2128,7 +2131,7 @@ struct __pyx_opt_args_10bz_pricing_4core_12options_core_implied_vol_black76 {
   int max_iter;
 };
 
-/* "bz_pricing/core/options_core.pyx":549
+/* "bz_pricing/core/options_core.pyx":736
  * 
  * 
  * cpdef tuple price_options_batch(             # <<<<<<<<<<<<<<
@@ -2140,7 +2143,7 @@ struct __pyx_opt_args_10bz_pricing_4core_12options_core_price_options_batch {
   int crr_steps;
 };
 
-/* "bz_pricing/core/options_core.pyx":685
+/* "bz_pricing/core/options_core.pyx":872
  * 
  * 
  * cpdef tuple bachelier_price_greeks(             # <<<<<<<<<<<<<<
@@ -2152,7 +2155,7 @@ struct __pyx_opt_args_10bz_pricing_4core_12options_core_bachelier_price_greeks {
   int is_call;
 };
 
-/* "bz_pricing/core/options_core.pyx":700
+/* "bz_pricing/core/options_core.pyx":887
  * 
  * 
  * cpdef double implied_vol_bachelier(             # <<<<<<<<<<<<<<
@@ -2166,7 +2169,7 @@ struct __pyx_opt_args_10bz_pricing_4core_12options_core_implied_vol_bachelier {
   int max_iter;
 };
 
-/* "bz_pricing/core/options_core.pyx":752
+/* "bz_pricing/core/options_core.pyx":939
  * 
  * 
  * cpdef double barrier_bsm_price(             # <<<<<<<<<<<<<<
@@ -2181,7 +2184,7 @@ struct __pyx_opt_args_10bz_pricing_4core_12options_core_barrier_bsm_price {
   double rebate;
 };
 
-/* "bz_pricing/core/options_core.pyx":841
+/* "bz_pricing/core/options_core.pyx":1028
  * 
  * 
  * cpdef double asian_geometric_price(             # <<<<<<<<<<<<<<
@@ -2194,7 +2197,7 @@ struct __pyx_opt_args_10bz_pricing_4core_12options_core_asian_geometric_price {
   int n_fixings;
 };
 
-/* "bz_pricing/core/options_core.pyx":876
+/* "bz_pricing/core/options_core.pyx":1063
  * 
  * 
  * cpdef double asian_arithmetic_tw_price(             # <<<<<<<<<<<<<<
@@ -2205,6 +2208,47 @@ struct __pyx_opt_args_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
   int __pyx_n;
   int is_call;
   int n_fixings;
+};
+
+/* "bz_pricing/core/options_core.pyx":1179
+ * 
+ * 
+ * cpdef tuple corrado_su_price_greeks(             # <<<<<<<<<<<<<<
+ *     double S,
+ *     double K,
+*/
+struct __pyx_opt_args_10bz_pricing_4core_12options_core_corrado_su_price_greeks {
+  int __pyx_n;
+  int is_call;
+};
+
+/* "bz_pricing/core/options_core.pyx":1223
+ * 
+ * 
+ * cpdef tuple barrier_bsm_price_greeks(             # <<<<<<<<<<<<<<
+ *     double S,
+ *     double K,
+*/
+struct __pyx_opt_args_10bz_pricing_4core_12options_core_barrier_bsm_price_greeks {
+  int __pyx_n;
+  int is_call;
+  int is_up;
+  int is_out;
+  double rebate;
+};
+
+/* "bz_pricing/core/options_core.pyx":1268
+ * 
+ * 
+ * cpdef tuple asian_price_greeks(             # <<<<<<<<<<<<<<
+ *     double S,
+ *     double K,
+*/
+struct __pyx_opt_args_10bz_pricing_4core_12options_core_asian_price_greeks {
+  int __pyx_n;
+  int is_call;
+  int n_fixings;
+  int is_geometric;
 };
 
 /* "View.MemoryView":128
@@ -3845,6 +3889,9 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_black76_price_greeks(
 static double __pyx_f_10bz_pricing_4core_12options_core__crr_american_core(double, double, double, double, double, double, int, int, double *, double *, double *); /*proto*/
 static double __pyx_f_10bz_pricing_4core_12options_core_crr_american_price(double, double, double, double, double, double, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_12options_core_crr_american_price *__pyx_optional_args); /*proto*/
 static PyObject *__pyx_f_10bz_pricing_4core_12options_core_crr_american_price_greeks(double, double, double, double, double, double, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_12options_core_crr_american_price_greeks *__pyx_optional_args); /*proto*/
+static double __pyx_f_10bz_pricing_4core_12options_core__crr_american_discrete_core(double, double, double, double, double, double, int, int, double *, double *, int, double *, double *, int); /*proto*/
+static double __pyx_f_10bz_pricing_4core_12options_core__crr_disc_smoothed(double, double, double, double, double, double, int, int, double *, double *, int, double *, double *, int); /*proto*/
+static PyObject *__pyx_f_10bz_pricing_4core_12options_core_crr_american_discrete_div_price_greeks(double, double, double, double, double, double, int, int, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, int __pyx_skip_dispatch); /*proto*/
 static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double, double, double, double, double, double, double, double, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_12options_core_corrado_su_price *__pyx_optional_args); /*proto*/
 static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double, double, double, double, double, double, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_12options_core_implied_vol_bsm *__pyx_optional_args); /*proto*/
 static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_black76(double, double, double, double, double, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_12options_core_implied_vol_black76 *__pyx_optional_args); /*proto*/
@@ -3859,6 +3906,9 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 static double __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(double, double, double, double, double, double, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_12options_core_asian_geometric_price *__pyx_optional_args); /*proto*/
 static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_price(double, double, double, double, double, double, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_12options_core_asian_arithmetic_tw_price *__pyx_optional_args); /*proto*/
 static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(__Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, int __pyx_skip_dispatch); /*proto*/
+static PyObject *__pyx_f_10bz_pricing_4core_12options_core_corrado_su_price_greeks(double, double, double, double, double, double, double, double, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_12options_core_corrado_su_price_greeks *__pyx_optional_args); /*proto*/
+static PyObject *__pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price_greeks(double, double, double, double, double, double, double, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_12options_core_barrier_bsm_price_greeks *__pyx_optional_args); /*proto*/
+static PyObject *__pyx_f_10bz_pricing_4core_12options_core_asian_price_greeks(double, double, double, double, double, double, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_12options_core_asian_price_greeks *__pyx_optional_args); /*proto*/
 static int __pyx_array_allocate_buffer(struct __pyx_array_obj *); /*proto*/
 static struct __pyx_array_obj *__pyx_array_new(PyObject *, Py_ssize_t, char *, char const *, char *); /*proto*/
 static PyObject *__pyx_memoryview_new(PyObject *, int, int, __Pyx_TypeInfo const *); /*proto*/
@@ -3976,19 +4026,23 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_6bsm_price_greeks(CY
 static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_8black76_price_greeks(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_F, double __pyx_v_K, double __pyx_v_r, double __pyx_v_T, double __pyx_v_sigma, int __pyx_v_is_call); /* proto */
 static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_10crr_american_price(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, int __pyx_v_is_call, int __pyx_v_steps); /* proto */
 static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_12crr_american_price_greeks(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, int __pyx_v_is_call, int __pyx_v_steps); /* proto */
-static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_14corrado_su_price(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, double __pyx_v_kappa3, double __pyx_v_kappa4, int __pyx_v_is_call); /* proto */
-static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_16implied_vol_bsm(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_target_price, double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, int __pyx_v_is_call, double __pyx_v_tol, int __pyx_v_max_iter); /* proto */
-static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_18implied_vol_black76(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_target_price, double __pyx_v_F, double __pyx_v_K, double __pyx_v_r, double __pyx_v_T, int __pyx_v_is_call, double __pyx_v_tol, int __pyx_v_max_iter); /* proto */
-static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_20svi_total_variance(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_k, double __pyx_v_a, double __pyx_v_b, double __pyx_v_rho, double __pyx_v_m, double __pyx_v_sigma); /* proto */
-static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_22svi_eval_vec(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_k_arr, double __pyx_v_a, double __pyx_v_b, double __pyx_v_rho, double __pyx_v_m, double __pyx_v_sigma); /* proto */
-static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_24sabr_implied_vol(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_F, double __pyx_v_K, double __pyx_v_T, double __pyx_v_alpha, double __pyx_v_beta, double __pyx_v_rho, double __pyx_v_nu); /* proto */
-static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_26price_options_batch(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_is_call_arr, __Pyx_memviewslice __pyx_v_is_american_arr, __Pyx_memviewslice __pyx_v_S_arr, __Pyx_memviewslice __pyx_v_K_arr, __Pyx_memviewslice __pyx_v_r_arr, __Pyx_memviewslice __pyx_v_q_arr, __Pyx_memviewslice __pyx_v_T_arr, __Pyx_memviewslice __pyx_v_sigma_arr, int __pyx_v_crr_steps); /* proto */
-static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_28bachelier_price_greeks(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_F, double __pyx_v_K, double __pyx_v_df_r, double __pyx_v_T, double __pyx_v_sigma_n, int __pyx_v_is_call); /* proto */
-static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_30implied_vol_bachelier(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_target_price, double __pyx_v_F, double __pyx_v_K, double __pyx_v_df_r, double __pyx_v_T, int __pyx_v_is_call, double __pyx_v_tol, int __pyx_v_max_iter); /* proto */
-static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_32barrier_bsm_price(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_S, double __pyx_v_K, double __pyx_v_H, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, int __pyx_v_is_call, int __pyx_v_is_up, int __pyx_v_is_out, double __pyx_v_rebate); /* proto */
-static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_34asian_geometric_price(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, int __pyx_v_is_call, int __pyx_v_n_fixings); /* proto */
-static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_36asian_arithmetic_tw_price(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, int __pyx_v_is_call, int __pyx_v_n_fixings); /* proto */
-static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_38price_black76_batch(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_is_call_arr, __Pyx_memviewslice __pyx_v_F_arr, __Pyx_memviewslice __pyx_v_K_arr, __Pyx_memviewslice __pyx_v_r_arr, __Pyx_memviewslice __pyx_v_T_arr, __Pyx_memviewslice __pyx_v_sigma_arr, __Pyx_memviewslice __pyx_v_scale_arr); /* proto */
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_14crr_american_discrete_div_price_greeks(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, int __pyx_v_is_call, int __pyx_v_steps, __Pyx_memviewslice __pyx_v_div_times, __Pyx_memviewslice __pyx_v_div_amounts, __Pyx_memviewslice __pyx_v_prop_div_times, __Pyx_memviewslice __pyx_v_prop_div_yields); /* proto */
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_16corrado_su_price(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, double __pyx_v_kappa3, double __pyx_v_kappa4, int __pyx_v_is_call); /* proto */
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_18implied_vol_bsm(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_target_price, double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, int __pyx_v_is_call, double __pyx_v_tol, int __pyx_v_max_iter); /* proto */
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_20implied_vol_black76(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_target_price, double __pyx_v_F, double __pyx_v_K, double __pyx_v_r, double __pyx_v_T, int __pyx_v_is_call, double __pyx_v_tol, int __pyx_v_max_iter); /* proto */
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_22svi_total_variance(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_k, double __pyx_v_a, double __pyx_v_b, double __pyx_v_rho, double __pyx_v_m, double __pyx_v_sigma); /* proto */
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_24svi_eval_vec(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_k_arr, double __pyx_v_a, double __pyx_v_b, double __pyx_v_rho, double __pyx_v_m, double __pyx_v_sigma); /* proto */
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_26sabr_implied_vol(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_F, double __pyx_v_K, double __pyx_v_T, double __pyx_v_alpha, double __pyx_v_beta, double __pyx_v_rho, double __pyx_v_nu); /* proto */
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_28price_options_batch(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_is_call_arr, __Pyx_memviewslice __pyx_v_is_american_arr, __Pyx_memviewslice __pyx_v_S_arr, __Pyx_memviewslice __pyx_v_K_arr, __Pyx_memviewslice __pyx_v_r_arr, __Pyx_memviewslice __pyx_v_q_arr, __Pyx_memviewslice __pyx_v_T_arr, __Pyx_memviewslice __pyx_v_sigma_arr, int __pyx_v_crr_steps); /* proto */
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_30bachelier_price_greeks(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_F, double __pyx_v_K, double __pyx_v_df_r, double __pyx_v_T, double __pyx_v_sigma_n, int __pyx_v_is_call); /* proto */
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_32implied_vol_bachelier(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_target_price, double __pyx_v_F, double __pyx_v_K, double __pyx_v_df_r, double __pyx_v_T, int __pyx_v_is_call, double __pyx_v_tol, int __pyx_v_max_iter); /* proto */
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_34barrier_bsm_price(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_S, double __pyx_v_K, double __pyx_v_H, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, int __pyx_v_is_call, int __pyx_v_is_up, int __pyx_v_is_out, double __pyx_v_rebate); /* proto */
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_36asian_geometric_price(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, int __pyx_v_is_call, int __pyx_v_n_fixings); /* proto */
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_38asian_arithmetic_tw_price(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, int __pyx_v_is_call, int __pyx_v_n_fixings); /* proto */
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_40price_black76_batch(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_is_call_arr, __Pyx_memviewslice __pyx_v_F_arr, __Pyx_memviewslice __pyx_v_K_arr, __Pyx_memviewslice __pyx_v_r_arr, __Pyx_memviewslice __pyx_v_T_arr, __Pyx_memviewslice __pyx_v_sigma_arr, __Pyx_memviewslice __pyx_v_scale_arr); /* proto */
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_42corrado_su_price_greeks(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, double __pyx_v_kappa3, double __pyx_v_kappa4, int __pyx_v_is_call); /* proto */
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_44barrier_bsm_price_greeks(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_S, double __pyx_v_K, double __pyx_v_H, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, int __pyx_v_is_call, int __pyx_v_is_up, int __pyx_v_is_out, double __pyx_v_rebate); /* proto */
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_46asian_price_greeks(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, int __pyx_v_is_call, int __pyx_v_n_fixings, int __pyx_v_is_geometric); /* proto */
 static PyObject *__pyx_tp_new__initialisation_array(PyObject *o, 
 #if CYTHON_VECTORCALL_TPNEW
     PyObject *const *args, Py_ssize_t nargs, PyObject *kwnames
@@ -4138,9 +4192,9 @@ namespace {
     __Pyx_CachedCFunction __pyx_umethod_PyDict_Type_pop;
     __Pyx_CachedCFunction __pyx_umethod_PyDict_Type_values;
     PyObject *__pyx_slice[1];
-    PyObject *__pyx_tuple[11];
-    PyObject *__pyx_codeobj_tab[20];
-    PyObject *__pyx_string_tab[183];
+    PyObject *__pyx_tuple[13];
+    PyObject *__pyx_codeobj_tab[24];
+    PyObject *__pyx_string_tab[196];
     PyObject *__pyx_number_tab[8];
 /* #### Code section: module_state_contents ### */
 /* PyFrozenDict.module_state_decls */
@@ -4263,116 +4317,129 @@ static __pyx_mstatetype * const __pyx_mstate_global = &__pyx_mstate_global_stati
 #define __pyx_n_u_alpha __pyx_string_tab[70]
 #define __pyx_n_u_asian_arithmetic_tw_price __pyx_string_tab[71]
 #define __pyx_n_u_asian_geometric_price __pyx_string_tab[72]
-#define __pyx_n_u_asyncio_coroutines __pyx_string_tab[73]
-#define __pyx_n_u_b __pyx_string_tab[74]
-#define __pyx_n_u_bachelier_price_greeks __pyx_string_tab[75]
-#define __pyx_n_u_barrier_bsm_price __pyx_string_tab[76]
-#define __pyx_n_u_base __pyx_string_tab[77]
-#define __pyx_n_u_beta __pyx_string_tab[78]
-#define __pyx_n_u_black76_price_greeks __pyx_string_tab[79]
-#define __pyx_n_u_bsm_price_greeks __pyx_string_tab[80]
-#define __pyx_n_u_bz_pricing_core_options_core __pyx_string_tab[81]
-#define __pyx_n_u_c __pyx_string_tab[82]
-#define __pyx_n_u_cline_in_traceback __pyx_string_tab[83]
-#define __pyx_n_u_corrado_su_price __pyx_string_tab[84]
-#define __pyx_n_u_count __pyx_string_tab[85]
-#define __pyx_n_u_crr_american_price __pyx_string_tab[86]
-#define __pyx_n_u_crr_american_price_greeks __pyx_string_tab[87]
-#define __pyx_n_u_crr_steps __pyx_string_tab[88]
-#define __pyx_n_u_df_r __pyx_string_tab[89]
-#define __pyx_n_u_dtype __pyx_string_tab[90]
-#define __pyx_n_u_dtype_is_object __pyx_string_tab[91]
-#define __pyx_n_u_empty __pyx_string_tab[92]
-#define __pyx_n_u_encode __pyx_string_tab[93]
-#define __pyx_n_u_enumerate __pyx_string_tab[94]
-#define __pyx_n_u_error __pyx_string_tab[95]
-#define __pyx_n_u_flags __pyx_string_tab[96]
-#define __pyx_n_u_float64 __pyx_string_tab[97]
-#define __pyx_n_u_format __pyx_string_tab[98]
-#define __pyx_n_u_fortran __pyx_string_tab[99]
-#define __pyx_n_u_id __pyx_string_tab[100]
-#define __pyx_n_u_implied_vol_bachelier __pyx_string_tab[101]
-#define __pyx_n_u_implied_vol_black76 __pyx_string_tab[102]
-#define __pyx_n_u_implied_vol_bsm __pyx_string_tab[103]
-#define __pyx_n_u_index __pyx_string_tab[104]
-#define __pyx_n_u_is_american_arr __pyx_string_tab[105]
-#define __pyx_n_u_is_call __pyx_string_tab[106]
-#define __pyx_n_u_is_call_arr __pyx_string_tab[107]
-#define __pyx_n_u_is_out __pyx_string_tab[108]
-#define __pyx_n_u_is_up __pyx_string_tab[109]
-#define __pyx_n_u_items __pyx_string_tab[110]
-#define __pyx_n_u_itemsize __pyx_string_tab[111]
-#define __pyx_n_u_k __pyx_string_tab[112]
-#define __pyx_n_u_k_arr __pyx_string_tab[113]
-#define __pyx_n_u_kappa3 __pyx_string_tab[114]
-#define __pyx_n_u_kappa4 __pyx_string_tab[115]
-#define __pyx_n_u_m __pyx_string_tab[116]
-#define __pyx_n_u_max_iter __pyx_string_tab[117]
-#define __pyx_n_u_memview __pyx_string_tab[118]
-#define __pyx_n_u_mode __pyx_string_tab[119]
-#define __pyx_n_u_n_fixings __pyx_string_tab[120]
-#define __pyx_n_u_name __pyx_string_tab[121]
-#define __pyx_n_u_ndim __pyx_string_tab[122]
-#define __pyx_n_u_norm_cdf __pyx_string_tab[123]
-#define __pyx_n_u_norm_pdf __pyx_string_tab[124]
-#define __pyx_n_u_norm_ppf __pyx_string_tab[125]
-#define __pyx_n_u_np __pyx_string_tab[126]
-#define __pyx_n_u_nu __pyx_string_tab[127]
-#define __pyx_n_u_numpy __pyx_string_tab[128]
-#define __pyx_n_u_obj __pyx_string_tab[129]
-#define __pyx_n_u_p __pyx_string_tab[130]
-#define __pyx_n_u_pack __pyx_string_tab[131]
-#define __pyx_n_u_pop __pyx_string_tab[132]
-#define __pyx_n_u_price_black76_batch __pyx_string_tab[133]
-#define __pyx_n_u_price_options_batch __pyx_string_tab[134]
-#define __pyx_n_u_q __pyx_string_tab[135]
-#define __pyx_n_u_q_arr __pyx_string_tab[136]
-#define __pyx_n_u_r __pyx_string_tab[137]
-#define __pyx_n_u_r_arr __pyx_string_tab[138]
-#define __pyx_n_u_rebate __pyx_string_tab[139]
-#define __pyx_n_u_register __pyx_string_tab[140]
-#define __pyx_n_u_rho __pyx_string_tab[141]
-#define __pyx_n_u_sabr_implied_vol __pyx_string_tab[142]
-#define __pyx_n_u_scale_arr __pyx_string_tab[143]
-#define __pyx_n_u_setdefault __pyx_string_tab[144]
-#define __pyx_n_u_shape __pyx_string_tab[145]
-#define __pyx_n_u_sigma __pyx_string_tab[146]
-#define __pyx_n_u_sigma_arr __pyx_string_tab[147]
-#define __pyx_n_u_sigma_n __pyx_string_tab[148]
-#define __pyx_n_u_size __pyx_string_tab[149]
-#define __pyx_n_u_start __pyx_string_tab[150]
-#define __pyx_n_u_step __pyx_string_tab[151]
-#define __pyx_n_u_steps __pyx_string_tab[152]
-#define __pyx_n_u_stop __pyx_string_tab[153]
-#define __pyx_n_u_struct __pyx_string_tab[154]
-#define __pyx_n_u_svi_eval_vec __pyx_string_tab[155]
-#define __pyx_n_u_svi_total_variance __pyx_string_tab[156]
-#define __pyx_n_u_target_price __pyx_string_tab[157]
-#define __pyx_n_u_tol __pyx_string_tab[158]
-#define __pyx_n_u_unpack __pyx_string_tab[159]
-#define __pyx_n_u_update __pyx_string_tab[160]
-#define __pyx_n_u_values __pyx_string_tab[161]
-#define __pyx_n_u_x __pyx_string_tab[162]
-#define __pyx_n_b_O __pyx_string_tab[163]
-#define __pyx_kp_b_iso88591_9AQ __pyx_string_tab[164]
-#define __pyx_kp_b_iso88591_r_A_q_r_A_q_Q_a_Q_a_Q_a_Q_a_Q_a __pyx_string_tab[165]
-#define __pyx_kp_b_iso88591_Cs_S_a __pyx_string_tab[166]
-#define __pyx_kp_b_iso88591_r_D_5_1_q_E_D_2S_T_BcQR_Cz_1_q __pyx_string_tab[167]
-#define __pyx_kp_b_iso88591_s_S_7_WAWAWAV1G1E_G7_we7_2 __pyx_string_tab[168]
-#define __pyx_kp_b_iso88591_q_3fCy_QRRXXYYZ_G7_q __pyx_string_tab[169]
-#define __pyx_kp_b_iso88591_Q_Q_q_3c_CwiwavQfTUUV_6_A_1Cs_S __pyx_string_tab[170]
-#define __pyx_kp_b_iso88591_r_D_2S_Cr_A_q_s_1Bb_s_1Bb_D_2U __pyx_string_tab[171]
-#define __pyx_kp_b_iso88591_r_D_6_D_2S_Cr_A_t1Bb_8_ARr_A_Bb __pyx_string_tab[172]
-#define __pyx_kp_b_iso88591_r_D_6_D_2S_Cr_A_t1Bb_8_ARr_A_Bb_2 __pyx_string_tab[173]
-#define __pyx_kp_b_iso88591_s_S_7_WAWAWAV1G1E_G7_we7 __pyx_string_tab[174]
-#define __pyx_kp_b_iso88591_V1A_0_F_A_1_E_aq_q_Cs_s_1 __pyx_string_tab[175]
-#define __pyx_kp_b_iso88591_r_D_6_D_2S_Cr_D_2S_q_s_1Bb_s_1B __pyx_string_tab[176]
-#define __pyx_kp_b_iso88591_Rr_2Rr_D_Rt1Cr_BfBa __pyx_string_tab[177]
-#define __pyx_kp_b_iso88591_r_D_6_A_t1Bb_8_ARr_A_Qc_Cs_WF_Q __pyx_string_tab[178]
-#define __pyx_kp_b_iso88591_V1A_7b_as_6b_as_6b_as_5RvQc_r_6 __pyx_string_tab[179]
-#define __pyx_kp_b_iso88591_r_D_2S_Cr_D_6_A_q_Rq_t1Bb_2Q_AS __pyx_string_tab[180]
-#define __pyx_kp_b_iso88591_V1A_7b_as_6b_as_6b_as_5RvQc_r_6_2 __pyx_string_tab[181]
-#define __pyx_kp_b_iso88591_q_q_3c_CwiwawawVWWX_6_A_1Cs_S_7 __pyx_string_tab[182]
+#define __pyx_n_u_asian_price_greeks __pyx_string_tab[73]
+#define __pyx_n_u_asyncio_coroutines __pyx_string_tab[74]
+#define __pyx_n_u_b __pyx_string_tab[75]
+#define __pyx_n_u_bachelier_price_greeks __pyx_string_tab[76]
+#define __pyx_n_u_barrier_bsm_price __pyx_string_tab[77]
+#define __pyx_n_u_barrier_bsm_price_greeks __pyx_string_tab[78]
+#define __pyx_n_u_base __pyx_string_tab[79]
+#define __pyx_n_u_beta __pyx_string_tab[80]
+#define __pyx_n_u_black76_price_greeks __pyx_string_tab[81]
+#define __pyx_n_u_bsm_price_greeks __pyx_string_tab[82]
+#define __pyx_n_u_bz_pricing_core_options_core __pyx_string_tab[83]
+#define __pyx_n_u_c __pyx_string_tab[84]
+#define __pyx_n_u_cline_in_traceback __pyx_string_tab[85]
+#define __pyx_n_u_corrado_su_price __pyx_string_tab[86]
+#define __pyx_n_u_corrado_su_price_greeks __pyx_string_tab[87]
+#define __pyx_n_u_count __pyx_string_tab[88]
+#define __pyx_n_u_crr_american_discrete_div_price __pyx_string_tab[89]
+#define __pyx_n_u_crr_american_price __pyx_string_tab[90]
+#define __pyx_n_u_crr_american_price_greeks __pyx_string_tab[91]
+#define __pyx_n_u_crr_steps __pyx_string_tab[92]
+#define __pyx_n_u_df_r __pyx_string_tab[93]
+#define __pyx_n_u_div_amounts __pyx_string_tab[94]
+#define __pyx_n_u_div_times __pyx_string_tab[95]
+#define __pyx_n_u_dtype __pyx_string_tab[96]
+#define __pyx_n_u_dtype_is_object __pyx_string_tab[97]
+#define __pyx_n_u_empty __pyx_string_tab[98]
+#define __pyx_n_u_encode __pyx_string_tab[99]
+#define __pyx_n_u_enumerate __pyx_string_tab[100]
+#define __pyx_n_u_error __pyx_string_tab[101]
+#define __pyx_n_u_flags __pyx_string_tab[102]
+#define __pyx_n_u_float64 __pyx_string_tab[103]
+#define __pyx_n_u_format __pyx_string_tab[104]
+#define __pyx_n_u_fortran __pyx_string_tab[105]
+#define __pyx_n_u_id __pyx_string_tab[106]
+#define __pyx_n_u_implied_vol_bachelier __pyx_string_tab[107]
+#define __pyx_n_u_implied_vol_black76 __pyx_string_tab[108]
+#define __pyx_n_u_implied_vol_bsm __pyx_string_tab[109]
+#define __pyx_n_u_index __pyx_string_tab[110]
+#define __pyx_n_u_is_american_arr __pyx_string_tab[111]
+#define __pyx_n_u_is_call __pyx_string_tab[112]
+#define __pyx_n_u_is_call_arr __pyx_string_tab[113]
+#define __pyx_n_u_is_geometric __pyx_string_tab[114]
+#define __pyx_n_u_is_out __pyx_string_tab[115]
+#define __pyx_n_u_is_up __pyx_string_tab[116]
+#define __pyx_n_u_items __pyx_string_tab[117]
+#define __pyx_n_u_itemsize __pyx_string_tab[118]
+#define __pyx_n_u_k __pyx_string_tab[119]
+#define __pyx_n_u_k_arr __pyx_string_tab[120]
+#define __pyx_n_u_kappa3 __pyx_string_tab[121]
+#define __pyx_n_u_kappa4 __pyx_string_tab[122]
+#define __pyx_n_u_m __pyx_string_tab[123]
+#define __pyx_n_u_max_iter __pyx_string_tab[124]
+#define __pyx_n_u_memview __pyx_string_tab[125]
+#define __pyx_n_u_mode __pyx_string_tab[126]
+#define __pyx_n_u_n_fixings __pyx_string_tab[127]
+#define __pyx_n_u_name __pyx_string_tab[128]
+#define __pyx_n_u_ndim __pyx_string_tab[129]
+#define __pyx_n_u_norm_cdf __pyx_string_tab[130]
+#define __pyx_n_u_norm_pdf __pyx_string_tab[131]
+#define __pyx_n_u_norm_ppf __pyx_string_tab[132]
+#define __pyx_n_u_np __pyx_string_tab[133]
+#define __pyx_n_u_nu __pyx_string_tab[134]
+#define __pyx_n_u_numpy __pyx_string_tab[135]
+#define __pyx_n_u_obj __pyx_string_tab[136]
+#define __pyx_n_u_p __pyx_string_tab[137]
+#define __pyx_n_u_pack __pyx_string_tab[138]
+#define __pyx_n_u_pop __pyx_string_tab[139]
+#define __pyx_n_u_price_black76_batch __pyx_string_tab[140]
+#define __pyx_n_u_price_options_batch __pyx_string_tab[141]
+#define __pyx_n_u_prop_div_times __pyx_string_tab[142]
+#define __pyx_n_u_prop_div_yields __pyx_string_tab[143]
+#define __pyx_n_u_q __pyx_string_tab[144]
+#define __pyx_n_u_q_arr __pyx_string_tab[145]
+#define __pyx_n_u_r __pyx_string_tab[146]
+#define __pyx_n_u_r_arr __pyx_string_tab[147]
+#define __pyx_n_u_rebate __pyx_string_tab[148]
+#define __pyx_n_u_register __pyx_string_tab[149]
+#define __pyx_n_u_rho __pyx_string_tab[150]
+#define __pyx_n_u_sabr_implied_vol __pyx_string_tab[151]
+#define __pyx_n_u_scale_arr __pyx_string_tab[152]
+#define __pyx_n_u_setdefault __pyx_string_tab[153]
+#define __pyx_n_u_shape __pyx_string_tab[154]
+#define __pyx_n_u_sigma __pyx_string_tab[155]
+#define __pyx_n_u_sigma_arr __pyx_string_tab[156]
+#define __pyx_n_u_sigma_n __pyx_string_tab[157]
+#define __pyx_n_u_size __pyx_string_tab[158]
+#define __pyx_n_u_start __pyx_string_tab[159]
+#define __pyx_n_u_step __pyx_string_tab[160]
+#define __pyx_n_u_steps __pyx_string_tab[161]
+#define __pyx_n_u_stop __pyx_string_tab[162]
+#define __pyx_n_u_struct __pyx_string_tab[163]
+#define __pyx_n_u_svi_eval_vec __pyx_string_tab[164]
+#define __pyx_n_u_svi_total_variance __pyx_string_tab[165]
+#define __pyx_n_u_target_price __pyx_string_tab[166]
+#define __pyx_n_u_tol __pyx_string_tab[167]
+#define __pyx_n_u_unpack __pyx_string_tab[168]
+#define __pyx_n_u_update __pyx_string_tab[169]
+#define __pyx_n_u_values __pyx_string_tab[170]
+#define __pyx_n_u_x __pyx_string_tab[171]
+#define __pyx_n_b_O __pyx_string_tab[172]
+#define __pyx_kp_b_iso88591_9AQ __pyx_string_tab[173]
+#define __pyx_kp_b_iso88591_r_A_q_r_A_q_Q_a_Q_a_Q_a_Q_a_Q_a __pyx_string_tab[174]
+#define __pyx_kp_b_iso88591_Cs_S_a __pyx_string_tab[175]
+#define __pyx_kp_b_iso88591_r_D_5_1_q_E_D_2S_T_BcQR_Cz_1_q __pyx_string_tab[176]
+#define __pyx_kp_b_iso88591_s_S_7_WAWAWAV1G1E_G7_we7_2 __pyx_string_tab[177]
+#define __pyx_kp_b_iso88591_q_3fCy_QRRXXYYZ_G7_q __pyx_string_tab[178]
+#define __pyx_kp_b_iso88591_Q_Q_q_3c_CwiwavQfTUUV_6_A_1Cs_S __pyx_string_tab[179]
+#define __pyx_kp_b_iso88591_r_D_2S_Cr_A_q_s_1Bb_s_1Bb_D_2U __pyx_string_tab[180]
+#define __pyx_kp_b_iso88591_m_VW_T_Rq_Q_Q_T_Ba_1_S_3c_r_4t6 __pyx_string_tab[181]
+#define __pyx_kp_b_iso88591_r_D_6_D_2S_Cr_A_t1Bb_8_ARr_A_Bb __pyx_string_tab[182]
+#define __pyx_kp_b_iso88591_r_D_6_D_2S_Cr_A_t1Bb_8_ARr_A_Bb_2 __pyx_string_tab[183]
+#define __pyx_kp_b_iso88591_s_S_7_WAWAWAV1G1E_G7_we7 __pyx_string_tab[184]
+#define __pyx_kp_b_iso88591_V1A_0_F_A_1_E_aq_q_Cs_s_1 __pyx_string_tab[185]
+#define __pyx_kp_b_iso88591_m_VW_t1Bb_T_r_E_9E_U_A_Q_Q_T_Ba __pyx_string_tab[186]
+#define __pyx_kp_b_iso88591_r_D_6_D_2S_Cr_D_2S_q_s_1Bb_s_1B __pyx_string_tab[187]
+#define __pyx_kp_b_iso88591_Rr_2Rr_D_Rt1Cr_BfBa __pyx_string_tab[188]
+#define __pyx_kp_b_iso88591_r_D_6_A_t1Bb_8_ARr_A_Qc_Cs_WF_Q __pyx_string_tab[189]
+#define __pyx_kp_b_iso88591_m_VW_T_Rq_Q_Q_T_Ba_Cs_S_xxq_2Rt __pyx_string_tab[190]
+#define __pyx_kp_b_iso88591_V1A_7b_as_6b_as_6b_as_5RvQc_r_6 __pyx_string_tab[191]
+#define __pyx_kp_b_iso88591_r_D_2S_Cr_D_6_A_q_Rq_t1Bb_2Q_AS __pyx_string_tab[192]
+#define __pyx_kp_b_iso88591_V1A_7b_as_6b_as_6b_as_5RvQc_r_6_2 __pyx_string_tab[193]
+#define __pyx_kp_b_iso88591_U_6_e_q_9AV6_7_avV2WA_r_6_m_VW __pyx_string_tab[194]
+#define __pyx_kp_b_iso88591_q_q_3c_CwiwawawVWWX_6_A_1Cs_S_7 __pyx_string_tab[195]
 #define __pyx_float_0_0 __pyx_number_tab[0]
 #define __pyx_float_1eneg_9 __pyx_number_tab[1]
 #define __pyx_int_0 __pyx_number_tab[2]
@@ -4423,9 +4490,9 @@ static CYTHON_SMALL_CODE int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_umethod_PyDict_Type_pop.method);
   Py_CLEAR(clear_module_state->__pyx_umethod_PyDict_Type_values.method);
   for (int i=0; i<1; ++i) { Py_CLEAR(clear_module_state->__pyx_slice[i]); }
-  for (int i=0; i<11; ++i) { Py_CLEAR(clear_module_state->__pyx_tuple[i]); }
-  for (int i=0; i<20; ++i) { Py_CLEAR(clear_module_state->__pyx_codeobj_tab[i]); }
-  for (int i=0; i<183; ++i) { Py_CLEAR(clear_module_state->__pyx_string_tab[i]); }
+  for (int i=0; i<13; ++i) { Py_CLEAR(clear_module_state->__pyx_tuple[i]); }
+  for (int i=0; i<24; ++i) { Py_CLEAR(clear_module_state->__pyx_codeobj_tab[i]); }
+  for (int i=0; i<196; ++i) { Py_CLEAR(clear_module_state->__pyx_string_tab[i]); }
   for (int i=0; i<8; ++i) { Py_CLEAR(clear_module_state->__pyx_number_tab[i]); }
 /* #### Code section: module_state_clear_contents ### */
 /* CommonTypesMetaclass.module_state_clear */
@@ -4477,9 +4544,9 @@ static CYTHON_SMALL_CODE int __pyx_m_traverse(PyObject *m, visitproc visit, void
   Py_VISIT(traverse_module_state->__pyx_umethod_PyDict_Type_pop.method);
   Py_VISIT(traverse_module_state->__pyx_umethod_PyDict_Type_values.method);
   for (int i=0; i<1; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_slice[i]); }
-  for (int i=0; i<11; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_tuple[i]); }
-  for (int i=0; i<20; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_codeobj_tab[i]); }
-  for (int i=0; i<183; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_string_tab[i]); }
+  for (int i=0; i<13; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_tuple[i]); }
+  for (int i=0; i<24; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_codeobj_tab[i]); }
+  for (int i=0; i<196; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_string_tab[i]); }
   for (int i=0; i<8; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_number_tab[i]); }
 /* #### Code section: module_state_traverse_contents ### */
 /* CommonTypesMetaclass.module_state_traverse */
@@ -24429,12 +24496,2042 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_12crr_american_price
 /* "bz_pricing/core/options_core.pyx":353
  * 
  * 
+ * cdef double _crr_american_discrete_core(             # <<<<<<<<<<<<<<
+ *     double S,
+ *     double K,
+*/
+
+static double __pyx_f_10bz_pricing_4core_12options_core__crr_american_discrete_core(double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, int __pyx_v_is_call, int __pyx_v_steps, double *__pyx_v_div_t, double *__pyx_v_div_a, int __pyx_v_n_div, double *__pyx_v_prop_t, double *__pyx_v_prop_y, int __pyx_v_n_prop) {
+  int __pyx_v_k;
+  int __pyx_v_j;
+  int __pyx_v_i;
+  double __pyx_v_d_tmp;
+  double __pyx_v_g_tmp;
+  double __pyx_v_t_tmp;
+  double __pyx_v_pv_div0;
+  double __pyx_v_S_star;
+  double __pyx_v_dt;
+  double __pyx_v_u;
+  double __pyx_v_d;
+  double __pyx_v_d_sq;
+  double __pyx_v_growth;
+  double __pyx_v_disc;
+  double __pyx_v_p;
+  double __pyx_v_one_minus_p;
+  double *__pyx_v_values;
+  double *__pyx_v_step_pv;
+  double *__pyx_v_step_prop;
+  double __pyx_v_t_j;
+  double __pyx_v_pv_j;
+  double __pyx_v_pr_j;
+  double __pyx_v_y_clip;
+  double __pyx_v_spot_i;
+  double __pyx_v_s_node;
+  double __pyx_v_spot_row_base;
+  double __pyx_v_hold;
+  double __pyx_v_exercise;
+  double __pyx_v_val;
+  double __pyx_r;
+  int __pyx_t_1;
+  int __pyx_t_2;
+  double __pyx_t_3;
+  int __pyx_t_4;
+  int __pyx_t_5;
+  int __pyx_t_6;
+  long __pyx_t_7;
+  long __pyx_t_8;
+  int __pyx_t_9;
+
+  /* "bz_pricing/core/options_core.pyx":371
+ *     cdef int k, j, i
+ *     cdef double d_tmp, g_tmp, t_tmp
+ *     if n_div == 0 and n_prop == 0:             # <<<<<<<<<<<<<<
+ *         return _crr_american_core(S, K, r, q, T, sigma, is_call, steps, &d_tmp, &g_tmp, &t_tmp)
+ *     if T <= 0.0 or sigma <= 0.0 or steps <= 0 or S <= 0.0 or K <= 0.0:
+*/
+  __pyx_t_2 = (__pyx_v_n_div == 0);
+
+  if (__pyx_t_2) {
+
+  } else {
+
+    __pyx_t_1 = __pyx_t_2;
+
+    goto __pyx_L4_bool_binop_done;
+  }
+  __pyx_t_2 = (__pyx_v_n_prop == 0);
+
+
+  __pyx_t_1 = __pyx_t_2;
+
+  __pyx_L4_bool_binop_done:;
+  if (__pyx_t_1) {
+
+
+    /* "bz_pricing/core/options_core.pyx":372
+ *     cdef double d_tmp, g_tmp, t_tmp
+ *     if n_div == 0 and n_prop == 0:
+ *         return _crr_american_core(S, K, r, q, T, sigma, is_call, steps, &d_tmp, &g_tmp, &t_tmp)             # <<<<<<<<<<<<<<
+ *     if T <= 0.0 or sigma <= 0.0 or steps <= 0 or S <= 0.0 or K <= 0.0:
+ *         return fmax(S - K, 0.0) if is_call else fmax(K - S, 0.0)
+*/
+    {
+
+      __pyx_r = __pyx_f_10bz_pricing_4core_12options_core__crr_american_core(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_is_call, __pyx_v_steps, (&__pyx_v_d_tmp), (&__pyx_v_g_tmp), (&__pyx_v_t_tmp));
+    }
+    goto __pyx_L0;
+
+    /* "bz_pricing/core/options_core.pyx":371
+ *     cdef int k, j, i
+ *     cdef double d_tmp, g_tmp, t_tmp
+ *     if n_div == 0 and n_prop == 0:             # <<<<<<<<<<<<<<
+ *         return _crr_american_core(S, K, r, q, T, sigma, is_call, steps, &d_tmp, &g_tmp, &t_tmp)
+ *     if T <= 0.0 or sigma <= 0.0 or steps <= 0 or S <= 0.0 or K <= 0.0:
+*/
+  }
+
+  /* "bz_pricing/core/options_core.pyx":373
+ *     if n_div == 0 and n_prop == 0:
+ *         return _crr_american_core(S, K, r, q, T, sigma, is_call, steps, &d_tmp, &g_tmp, &t_tmp)
+ *     if T <= 0.0 or sigma <= 0.0 or steps <= 0 or S <= 0.0 or K <= 0.0:             # <<<<<<<<<<<<<<
+ *         return fmax(S - K, 0.0) if is_call else fmax(K - S, 0.0)
+ * 
+*/
+  __pyx_t_2 = (__pyx_v_T <= 0.0);
+
+  if (!__pyx_t_2) {
+
+  } else {
+
+    __pyx_t_1 = __pyx_t_2;
+
+    goto __pyx_L7_bool_binop_done;
+  }
+  __pyx_t_2 = (__pyx_v_sigma <= 0.0);
+
+  if (!__pyx_t_2) {
+
+  } else {
+
+    __pyx_t_1 = __pyx_t_2;
+
+    goto __pyx_L7_bool_binop_done;
+  }
+  __pyx_t_2 = (__pyx_v_steps <= 0);
+
+  if (!__pyx_t_2) {
+
+  } else {
+
+    __pyx_t_1 = __pyx_t_2;
+
+    goto __pyx_L7_bool_binop_done;
+  }
+  __pyx_t_2 = (__pyx_v_S <= 0.0);
+
+  if (!__pyx_t_2) {
+
+  } else {
+
+    __pyx_t_1 = __pyx_t_2;
+
+    goto __pyx_L7_bool_binop_done;
+  }
+  __pyx_t_2 = (__pyx_v_K <= 0.0);
+
+
+  __pyx_t_1 = __pyx_t_2;
+
+  __pyx_L7_bool_binop_done:;
+  if (__pyx_t_1) {
+
+
+    /* "bz_pricing/core/options_core.pyx":374
+ *         return _crr_american_core(S, K, r, q, T, sigma, is_call, steps, &d_tmp, &g_tmp, &t_tmp)
+ *     if T <= 0.0 or sigma <= 0.0 or steps <= 0 or S <= 0.0 or K <= 0.0:
+ *         return fmax(S - K, 0.0) if is_call else fmax(K - S, 0.0)             # <<<<<<<<<<<<<<
+ * 
+ *     cdef double pv_div0 = 0.0
+*/
+    if (__pyx_v_is_call) {
+
+      __pyx_t_3 = fmax((__pyx_v_S - __pyx_v_K), 0.0);
+    } else {
+
+      __pyx_t_3 = fmax((__pyx_v_K - __pyx_v_S), 0.0);
+    }
+    {
+      __pyx_r = __pyx_t_3;
+    }
+    goto __pyx_L0;
+
+    /* "bz_pricing/core/options_core.pyx":373
+ *     if n_div == 0 and n_prop == 0:
+ *         return _crr_american_core(S, K, r, q, T, sigma, is_call, steps, &d_tmp, &g_tmp, &t_tmp)
+ *     if T <= 0.0 or sigma <= 0.0 or steps <= 0 or S <= 0.0 or K <= 0.0:             # <<<<<<<<<<<<<<
+ *         return fmax(S - K, 0.0) if is_call else fmax(K - S, 0.0)
+ * 
+*/
+  }
+
+  /* "bz_pricing/core/options_core.pyx":376
+ *         return fmax(S - K, 0.0) if is_call else fmax(K - S, 0.0)
+ * 
+ *     cdef double pv_div0 = 0.0             # <<<<<<<<<<<<<<
+ *     for k in range(n_div):
+ *         if 0.0 < div_t[k] <= T + 1e-12 and div_a[k] > 0.0:
+*/
+  __pyx_v_pv_div0 = 0.0;
+
+  /* "bz_pricing/core/options_core.pyx":377
+ * 
+ *     cdef double pv_div0 = 0.0
+ *     for k in range(n_div):             # <<<<<<<<<<<<<<
+ *         if 0.0 < div_t[k] <= T + 1e-12 and div_a[k] > 0.0:
+ *             pv_div0 += div_a[k] * exp(-r * div_t[k])
+*/
+
+  __pyx_t_4 = __pyx_v_n_div;
+  __pyx_t_5 = __pyx_t_4;
+
+  for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
+    __pyx_v_k = __pyx_t_6;
+
+    /* "bz_pricing/core/options_core.pyx":378
+ *     cdef double pv_div0 = 0.0
+ *     for k in range(n_div):
+ *         if 0.0 < div_t[k] <= T + 1e-12 and div_a[k] > 0.0:             # <<<<<<<<<<<<<<
+ *             pv_div0 += div_a[k] * exp(-r * div_t[k])
+ * 
+*/
+    __pyx_t_2 = (0.0 < (__pyx_v_div_t[__pyx_v_k]));
+    if (__pyx_t_2) {
+      __pyx_t_2 = ((__pyx_v_div_t[__pyx_v_k]) <= (__pyx_v_T + 1e-12));
+    }
+    if (__pyx_t_2) {
+
+    } else {
+
+      __pyx_t_1 = __pyx_t_2;
+
+      goto __pyx_L15_bool_binop_done;
+    }
+    __pyx_t_2 = ((__pyx_v_div_a[__pyx_v_k]) > 0.0);
+
+
+    __pyx_t_1 = __pyx_t_2;
+
+    __pyx_L15_bool_binop_done:;
+    if (__pyx_t_1) {
+
+
+      /* "bz_pricing/core/options_core.pyx":379
+ *     for k in range(n_div):
+ *         if 0.0 < div_t[k] <= T + 1e-12 and div_a[k] > 0.0:
+ *             pv_div0 += div_a[k] * exp(-r * div_t[k])             # <<<<<<<<<<<<<<
+ * 
+ *     cdef double S_star = fmax(1e-8, S - pv_div0)
+*/
+      __pyx_v_pv_div0 = (__pyx_v_pv_div0 + ((__pyx_v_div_a[__pyx_v_k]) * exp(((-__pyx_v_r) * (__pyx_v_div_t[__pyx_v_k])))));
+
+      /* "bz_pricing/core/options_core.pyx":378
+ *     cdef double pv_div0 = 0.0
+ *     for k in range(n_div):
+ *         if 0.0 < div_t[k] <= T + 1e-12 and div_a[k] > 0.0:             # <<<<<<<<<<<<<<
+ *             pv_div0 += div_a[k] * exp(-r * div_t[k])
+ * 
+*/
+    }
+  }
+
+
+  /* "bz_pricing/core/options_core.pyx":381
+ *             pv_div0 += div_a[k] * exp(-r * div_t[k])
+ * 
+ *     cdef double S_star = fmax(1e-8, S - pv_div0)             # <<<<<<<<<<<<<<
+ *     cdef double dt = T / (<double>steps)
+ *     cdef double u = exp(sigma * sqrt(dt))
+*/
+  __pyx_v_S_star = fmax(1e-8, (__pyx_v_S - __pyx_v_pv_div0));
+
+  /* "bz_pricing/core/options_core.pyx":382
+ * 
+ *     cdef double S_star = fmax(1e-8, S - pv_div0)
+ *     cdef double dt = T / (<double>steps)             # <<<<<<<<<<<<<<
+ *     cdef double u = exp(sigma * sqrt(dt))
+ *     cdef double d = 1.0 / u
+*/
+  __pyx_v_dt = (__pyx_v_T / ((double)__pyx_v_steps));
+
+  /* "bz_pricing/core/options_core.pyx":383
+ *     cdef double S_star = fmax(1e-8, S - pv_div0)
+ *     cdef double dt = T / (<double>steps)
+ *     cdef double u = exp(sigma * sqrt(dt))             # <<<<<<<<<<<<<<
+ *     cdef double d = 1.0 / u
+ *     cdef double d_sq = d * d
+*/
+  __pyx_v_u = exp((__pyx_v_sigma * sqrt(__pyx_v_dt)));
+
+  /* "bz_pricing/core/options_core.pyx":384
+ *     cdef double dt = T / (<double>steps)
+ *     cdef double u = exp(sigma * sqrt(dt))
+ *     cdef double d = 1.0 / u             # <<<<<<<<<<<<<<
+ *     cdef double d_sq = d * d
+ *     cdef double growth = exp((r - q) * dt)
+*/
+  __pyx_v_d = (1.0 / __pyx_v_u);
+
+  /* "bz_pricing/core/options_core.pyx":385
+ *     cdef double u = exp(sigma * sqrt(dt))
+ *     cdef double d = 1.0 / u
+ *     cdef double d_sq = d * d             # <<<<<<<<<<<<<<
+ *     cdef double growth = exp((r - q) * dt)
+ *     cdef double disc = exp(-r * dt)
+*/
+  __pyx_v_d_sq = (__pyx_v_d * __pyx_v_d);
+
+  /* "bz_pricing/core/options_core.pyx":386
+ *     cdef double d = 1.0 / u
+ *     cdef double d_sq = d * d
+ *     cdef double growth = exp((r - q) * dt)             # <<<<<<<<<<<<<<
+ *     cdef double disc = exp(-r * dt)
+ *     cdef double p = (growth - d) / (u - d)
+*/
+  __pyx_v_growth = exp(((__pyx_v_r - __pyx_v_q) * __pyx_v_dt));
+
+  /* "bz_pricing/core/options_core.pyx":387
+ *     cdef double d_sq = d * d
+ *     cdef double growth = exp((r - q) * dt)
+ *     cdef double disc = exp(-r * dt)             # <<<<<<<<<<<<<<
+ *     cdef double p = (growth - d) / (u - d)
+ *     if p < 0.0 or p > 1.0:
+*/
+  __pyx_v_disc = exp(((-__pyx_v_r) * __pyx_v_dt));
+
+  /* "bz_pricing/core/options_core.pyx":388
+ *     cdef double growth = exp((r - q) * dt)
+ *     cdef double disc = exp(-r * dt)
+ *     cdef double p = (growth - d) / (u - d)             # <<<<<<<<<<<<<<
+ *     if p < 0.0 or p > 1.0:
+ *         return NAN
+*/
+  __pyx_v_p = ((__pyx_v_growth - __pyx_v_d) / (__pyx_v_u - __pyx_v_d));
+
+  /* "bz_pricing/core/options_core.pyx":389
+ *     cdef double disc = exp(-r * dt)
+ *     cdef double p = (growth - d) / (u - d)
+ *     if p < 0.0 or p > 1.0:             # <<<<<<<<<<<<<<
+ *         return NAN
+ *     cdef double one_minus_p = 1.0 - p
+*/
+  __pyx_t_2 = (__pyx_v_p < 0.0);
+
+  if (!__pyx_t_2) {
+
+  } else {
+
+    __pyx_t_1 = __pyx_t_2;
+
+    goto __pyx_L18_bool_binop_done;
+  }
+  __pyx_t_2 = (__pyx_v_p > 1.0);
+
+
+  __pyx_t_1 = __pyx_t_2;
+
+  __pyx_L18_bool_binop_done:;
+  if (__pyx_t_1) {
+
+
+    /* "bz_pricing/core/options_core.pyx":390
+ *     cdef double p = (growth - d) / (u - d)
+ *     if p < 0.0 or p > 1.0:
+ *         return NAN             # <<<<<<<<<<<<<<
+ *     cdef double one_minus_p = 1.0 - p
+ * 
+*/
+    {
+
+      __pyx_r = NAN;
+    }
+    goto __pyx_L0;
+
+    /* "bz_pricing/core/options_core.pyx":389
+ *     cdef double disc = exp(-r * dt)
+ *     cdef double p = (growth - d) / (u - d)
+ *     if p < 0.0 or p > 1.0:             # <<<<<<<<<<<<<<
+ *         return NAN
+ *     cdef double one_minus_p = 1.0 - p
+*/
+  }
+
+  /* "bz_pricing/core/options_core.pyx":391
+ *     if p < 0.0 or p > 1.0:
+ *         return NAN
+ *     cdef double one_minus_p = 1.0 - p             # <<<<<<<<<<<<<<
+ * 
+ *     cdef double *values = <double *>malloc((steps + 1) * sizeof(double))
+*/
+  __pyx_v_one_minus_p = (1.0 - __pyx_v_p);
+
+  /* "bz_pricing/core/options_core.pyx":393
+ *     cdef double one_minus_p = 1.0 - p
+ * 
+ *     cdef double *values = <double *>malloc((steps + 1) * sizeof(double))             # <<<<<<<<<<<<<<
+ *     cdef double *step_pv = <double *>malloc((steps + 1) * sizeof(double))
+ *     cdef double *step_prop = <double *>malloc((steps + 1) * sizeof(double))
+*/
+  __pyx_v_values = ((double *)malloc(((__pyx_v_steps + 1) * (sizeof(double)))));
+
+  /* "bz_pricing/core/options_core.pyx":394
+ * 
+ *     cdef double *values = <double *>malloc((steps + 1) * sizeof(double))
+ *     cdef double *step_pv = <double *>malloc((steps + 1) * sizeof(double))             # <<<<<<<<<<<<<<
+ *     cdef double *step_prop = <double *>malloc((steps + 1) * sizeof(double))
+ *     if values == NULL or step_pv == NULL or step_prop == NULL:
+*/
+  __pyx_v_step_pv = ((double *)malloc(((__pyx_v_steps + 1) * (sizeof(double)))));
+
+  /* "bz_pricing/core/options_core.pyx":395
+ *     cdef double *values = <double *>malloc((steps + 1) * sizeof(double))
+ *     cdef double *step_pv = <double *>malloc((steps + 1) * sizeof(double))
+ *     cdef double *step_prop = <double *>malloc((steps + 1) * sizeof(double))             # <<<<<<<<<<<<<<
+ *     if values == NULL or step_pv == NULL or step_prop == NULL:
+ *         free(values); free(step_pv); free(step_prop)
+*/
+  __pyx_v_step_prop = ((double *)malloc(((__pyx_v_steps + 1) * (sizeof(double)))));
+
+  /* "bz_pricing/core/options_core.pyx":396
+ *     cdef double *step_pv = <double *>malloc((steps + 1) * sizeof(double))
+ *     cdef double *step_prop = <double *>malloc((steps + 1) * sizeof(double))
+ *     if values == NULL or step_pv == NULL or step_prop == NULL:             # <<<<<<<<<<<<<<
+ *         free(values); free(step_pv); free(step_prop)
+ *         return NAN
+*/
+  __pyx_t_2 = (__pyx_v_values == NULL);
+
+  if (!__pyx_t_2) {
+
+  } else {
+
+    __pyx_t_1 = __pyx_t_2;
+
+    goto __pyx_L21_bool_binop_done;
+  }
+  __pyx_t_2 = (__pyx_v_step_pv == NULL);
+
+  if (!__pyx_t_2) {
+
+  } else {
+
+    __pyx_t_1 = __pyx_t_2;
+
+    goto __pyx_L21_bool_binop_done;
+  }
+  __pyx_t_2 = (__pyx_v_step_prop == NULL);
+
+
+  __pyx_t_1 = __pyx_t_2;
+
+  __pyx_L21_bool_binop_done:;
+  if (__pyx_t_1) {
+
+
+    /* "bz_pricing/core/options_core.pyx":397
+ *     cdef double *step_prop = <double *>malloc((steps + 1) * sizeof(double))
+ *     if values == NULL or step_pv == NULL or step_prop == NULL:
+ *         free(values); free(step_pv); free(step_prop)             # <<<<<<<<<<<<<<
+ *         return NAN
+ * 
+*/
+    free(__pyx_v_values);
+    free(__pyx_v_step_pv);
+    free(__pyx_v_step_prop);
+
+    /* "bz_pricing/core/options_core.pyx":398
+ *     if values == NULL or step_pv == NULL or step_prop == NULL:
+ *         free(values); free(step_pv); free(step_prop)
+ *         return NAN             # <<<<<<<<<<<<<<
+ * 
+ *     cdef double t_j, pv_j, pr_j, y_clip
+*/
+    {
+
+      __pyx_r = NAN;
+    }
+    goto __pyx_L0;
+
+    /* "bz_pricing/core/options_core.pyx":396
+ *     cdef double *step_pv = <double *>malloc((steps + 1) * sizeof(double))
+ *     cdef double *step_prop = <double *>malloc((steps + 1) * sizeof(double))
+ *     if values == NULL or step_pv == NULL or step_prop == NULL:             # <<<<<<<<<<<<<<
+ *         free(values); free(step_pv); free(step_prop)
+ *         return NAN
+*/
+  }
+
+  /* "bz_pricing/core/options_core.pyx":401
+ * 
+ *     cdef double t_j, pv_j, pr_j, y_clip
+ *     for j in range(steps + 1):             # <<<<<<<<<<<<<<
+ *         t_j = (<double>j) * dt
+ *         pv_j = 0.0
+*/
+
+  __pyx_t_7 = (__pyx_v_steps + 1);
+  __pyx_t_8 = __pyx_t_7;
+
+  for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_8; __pyx_t_4+=1) {
+    __pyx_v_j = __pyx_t_4;
+
+    /* "bz_pricing/core/options_core.pyx":402
+ *     cdef double t_j, pv_j, pr_j, y_clip
+ *     for j in range(steps + 1):
+ *         t_j = (<double>j) * dt             # <<<<<<<<<<<<<<
+ *         pv_j = 0.0
+ *         for k in range(n_div):
+*/
+    __pyx_v_t_j = (((double)__pyx_v_j) * __pyx_v_dt);
+
+    /* "bz_pricing/core/options_core.pyx":403
+ *     for j in range(steps + 1):
+ *         t_j = (<double>j) * dt
+ *         pv_j = 0.0             # <<<<<<<<<<<<<<
+ *         for k in range(n_div):
+ *             if div_t[k] > t_j + 1e-12 and div_t[k] <= T + 1e-12 and div_a[k] > 0.0:
+*/
+    __pyx_v_pv_j = 0.0;
+
+    /* "bz_pricing/core/options_core.pyx":404
+ *         t_j = (<double>j) * dt
+ *         pv_j = 0.0
+ *         for k in range(n_div):             # <<<<<<<<<<<<<<
+ *             if div_t[k] > t_j + 1e-12 and div_t[k] <= T + 1e-12 and div_a[k] > 0.0:
+ *                 pv_j += div_a[k] * exp(-r * (div_t[k] - t_j))
+*/
+
+    __pyx_t_5 = __pyx_v_n_div;
+    __pyx_t_6 = __pyx_t_5;
+
+    for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_6; __pyx_t_9+=1) {
+      __pyx_v_k = __pyx_t_9;
+
+      /* "bz_pricing/core/options_core.pyx":405
+ *         pv_j = 0.0
+ *         for k in range(n_div):
+ *             if div_t[k] > t_j + 1e-12 and div_t[k] <= T + 1e-12 and div_a[k] > 0.0:             # <<<<<<<<<<<<<<
+ *                 pv_j += div_a[k] * exp(-r * (div_t[k] - t_j))
+ *         pr_j = 1.0
+*/
+      __pyx_t_2 = ((__pyx_v_div_t[__pyx_v_k]) > (__pyx_v_t_j + 1e-12));
+
+      if (__pyx_t_2) {
+
+      } else {
+
+        __pyx_t_1 = __pyx_t_2;
+
+        goto __pyx_L29_bool_binop_done;
+      }
+      __pyx_t_2 = ((__pyx_v_div_t[__pyx_v_k]) <= (__pyx_v_T + 1e-12));
+
+      if (__pyx_t_2) {
+
+      } else {
+
+        __pyx_t_1 = __pyx_t_2;
+
+        goto __pyx_L29_bool_binop_done;
+      }
+      __pyx_t_2 = ((__pyx_v_div_a[__pyx_v_k]) > 0.0);
+
+
+      __pyx_t_1 = __pyx_t_2;
+
+      __pyx_L29_bool_binop_done:;
+      if (__pyx_t_1) {
+
+
+        /* "bz_pricing/core/options_core.pyx":406
+ *         for k in range(n_div):
+ *             if div_t[k] > t_j + 1e-12 and div_t[k] <= T + 1e-12 and div_a[k] > 0.0:
+ *                 pv_j += div_a[k] * exp(-r * (div_t[k] - t_j))             # <<<<<<<<<<<<<<
+ *         pr_j = 1.0
+ *         for k in range(n_prop):
+*/
+        __pyx_v_pv_j = (__pyx_v_pv_j + ((__pyx_v_div_a[__pyx_v_k]) * exp(((-__pyx_v_r) * ((__pyx_v_div_t[__pyx_v_k]) - __pyx_v_t_j)))));
+
+        /* "bz_pricing/core/options_core.pyx":405
+ *         pv_j = 0.0
+ *         for k in range(n_div):
+ *             if div_t[k] > t_j + 1e-12 and div_t[k] <= T + 1e-12 and div_a[k] > 0.0:             # <<<<<<<<<<<<<<
+ *                 pv_j += div_a[k] * exp(-r * (div_t[k] - t_j))
+ *         pr_j = 1.0
+*/
+      }
+    }
+
+
+    /* "bz_pricing/core/options_core.pyx":407
+ *             if div_t[k] > t_j + 1e-12 and div_t[k] <= T + 1e-12 and div_a[k] > 0.0:
+ *                 pv_j += div_a[k] * exp(-r * (div_t[k] - t_j))
+ *         pr_j = 1.0             # <<<<<<<<<<<<<<
+ *         for k in range(n_prop):
+ *             if 0.0 < prop_t[k] <= t_j + 1e-12 and prop_y[k] > 0.0:
+*/
+    __pyx_v_pr_j = 1.0;
+
+    /* "bz_pricing/core/options_core.pyx":408
+ *                 pv_j += div_a[k] * exp(-r * (div_t[k] - t_j))
+ *         pr_j = 1.0
+ *         for k in range(n_prop):             # <<<<<<<<<<<<<<
+ *             if 0.0 < prop_t[k] <= t_j + 1e-12 and prop_y[k] > 0.0:
+ *                 y_clip = prop_y[k] if prop_y[k] < 0.999 else 0.999
+*/
+
+    __pyx_t_5 = __pyx_v_n_prop;
+    __pyx_t_6 = __pyx_t_5;
+
+    for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_6; __pyx_t_9+=1) {
+      __pyx_v_k = __pyx_t_9;
+
+      /* "bz_pricing/core/options_core.pyx":409
+ *         pr_j = 1.0
+ *         for k in range(n_prop):
+ *             if 0.0 < prop_t[k] <= t_j + 1e-12 and prop_y[k] > 0.0:             # <<<<<<<<<<<<<<
+ *                 y_clip = prop_y[k] if prop_y[k] < 0.999 else 0.999
+ *                 pr_j *= (1.0 - y_clip)
+*/
+      __pyx_t_2 = (0.0 < (__pyx_v_prop_t[__pyx_v_k]));
+      if (__pyx_t_2) {
+        __pyx_t_2 = ((__pyx_v_prop_t[__pyx_v_k]) <= (__pyx_v_t_j + 1e-12));
+      }
+      if (__pyx_t_2) {
+
+      } else {
+
+        __pyx_t_1 = __pyx_t_2;
+
+        goto __pyx_L35_bool_binop_done;
+      }
+      __pyx_t_2 = ((__pyx_v_prop_y[__pyx_v_k]) > 0.0);
+
+
+      __pyx_t_1 = __pyx_t_2;
+
+      __pyx_L35_bool_binop_done:;
+      if (__pyx_t_1) {
+
+
+        /* "bz_pricing/core/options_core.pyx":410
+ *         for k in range(n_prop):
+ *             if 0.0 < prop_t[k] <= t_j + 1e-12 and prop_y[k] > 0.0:
+ *                 y_clip = prop_y[k] if prop_y[k] < 0.999 else 0.999             # <<<<<<<<<<<<<<
+ *                 pr_j *= (1.0 - y_clip)
+ *         step_pv[j] = pv_j
+*/
+        __pyx_t_1 = ((__pyx_v_prop_y[__pyx_v_k]) < 0.999);
+
+        if (__pyx_t_1) {
+
+          __pyx_t_3 = (__pyx_v_prop_y[__pyx_v_k]);
+        } else {
+
+          __pyx_t_3 = 0.999;
+        }
+
+        __pyx_v_y_clip = __pyx_t_3;
+
+        /* "bz_pricing/core/options_core.pyx":411
+ *             if 0.0 < prop_t[k] <= t_j + 1e-12 and prop_y[k] > 0.0:
+ *                 y_clip = prop_y[k] if prop_y[k] < 0.999 else 0.999
+ *                 pr_j *= (1.0 - y_clip)             # <<<<<<<<<<<<<<
+ *         step_pv[j] = pv_j
+ *         step_prop[j] = pr_j
+*/
+        __pyx_v_pr_j = (__pyx_v_pr_j * (1.0 - __pyx_v_y_clip));
+
+        /* "bz_pricing/core/options_core.pyx":409
+ *         pr_j = 1.0
+ *         for k in range(n_prop):
+ *             if 0.0 < prop_t[k] <= t_j + 1e-12 and prop_y[k] > 0.0:             # <<<<<<<<<<<<<<
+ *                 y_clip = prop_y[k] if prop_y[k] < 0.999 else 0.999
+ *                 pr_j *= (1.0 - y_clip)
+*/
+      }
+    }
+
+
+    /* "bz_pricing/core/options_core.pyx":412
+ *                 y_clip = prop_y[k] if prop_y[k] < 0.999 else 0.999
+ *                 pr_j *= (1.0 - y_clip)
+ *         step_pv[j] = pv_j             # <<<<<<<<<<<<<<
+ *         step_prop[j] = pr_j
+ * 
+*/
+    (__pyx_v_step_pv[__pyx_v_j]) = __pyx_v_pv_j;
+
+    /* "bz_pricing/core/options_core.pyx":413
+ *                 pr_j *= (1.0 - y_clip)
+ *         step_pv[j] = pv_j
+ *         step_prop[j] = pr_j             # <<<<<<<<<<<<<<
+ * 
+ *     cdef double spot_i = S_star * step_prop[steps] * pow(u, steps)
+*/
+    (__pyx_v_step_prop[__pyx_v_j]) = __pyx_v_pr_j;
+  }
+
+
+  /* "bz_pricing/core/options_core.pyx":415
+ *         step_prop[j] = pr_j
+ * 
+ *     cdef double spot_i = S_star * step_prop[steps] * pow(u, steps)             # <<<<<<<<<<<<<<
+ *     cdef double s_node
+ *     for i in range(steps + 1):
+*/
+  __pyx_v_spot_i = ((__pyx_v_S_star * (__pyx_v_step_prop[__pyx_v_steps])) * pow(__pyx_v_u, __pyx_v_steps));
+
+  /* "bz_pricing/core/options_core.pyx":417
+ *     cdef double spot_i = S_star * step_prop[steps] * pow(u, steps)
+ *     cdef double s_node
+ *     for i in range(steps + 1):             # <<<<<<<<<<<<<<
+ *         s_node = spot_i + step_pv[steps]
+ *         values[i] = fmax(s_node - K, 0.0) if is_call else fmax(K - s_node, 0.0)
+*/
+
+  __pyx_t_7 = (__pyx_v_steps + 1);
+  __pyx_t_8 = __pyx_t_7;
+
+  for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_8; __pyx_t_4+=1) {
+    __pyx_v_i = __pyx_t_4;
+
+    /* "bz_pricing/core/options_core.pyx":418
+ *     cdef double s_node
+ *     for i in range(steps + 1):
+ *         s_node = spot_i + step_pv[steps]             # <<<<<<<<<<<<<<
+ *         values[i] = fmax(s_node - K, 0.0) if is_call else fmax(K - s_node, 0.0)
+ *         spot_i *= d_sq
+*/
+    __pyx_v_s_node = (__pyx_v_spot_i + (__pyx_v_step_pv[__pyx_v_steps]));
+
+    /* "bz_pricing/core/options_core.pyx":419
+ *     for i in range(steps + 1):
+ *         s_node = spot_i + step_pv[steps]
+ *         values[i] = fmax(s_node - K, 0.0) if is_call else fmax(K - s_node, 0.0)             # <<<<<<<<<<<<<<
+ *         spot_i *= d_sq
+ * 
+*/
+    if (__pyx_v_is_call) {
+
+      __pyx_t_3 = fmax((__pyx_v_s_node - __pyx_v_K), 0.0);
+    } else {
+
+      __pyx_t_3 = fmax((__pyx_v_K - __pyx_v_s_node), 0.0);
+    }
+    (__pyx_v_values[__pyx_v_i]) = __pyx_t_3;
+
+
+    /* "bz_pricing/core/options_core.pyx":420
+ *         s_node = spot_i + step_pv[steps]
+ *         values[i] = fmax(s_node - K, 0.0) if is_call else fmax(K - s_node, 0.0)
+ *         spot_i *= d_sq             # <<<<<<<<<<<<<<
+ * 
+ *     cdef double spot_row_base = S_star * pow(u, steps - 1)
+*/
+    __pyx_v_spot_i = (__pyx_v_spot_i * __pyx_v_d_sq);
+  }
+
+
+  /* "bz_pricing/core/options_core.pyx":422
+ *         spot_i *= d_sq
+ * 
+ *     cdef double spot_row_base = S_star * pow(u, steps - 1)             # <<<<<<<<<<<<<<
+ *     cdef double hold, exercise
+ *     for j in range(steps - 1, -1, -1):
+*/
+  __pyx_v_spot_row_base = (__pyx_v_S_star * pow(__pyx_v_u, (__pyx_v_steps - 1)));
+
+  /* "bz_pricing/core/options_core.pyx":424
+ *     cdef double spot_row_base = S_star * pow(u, steps - 1)
+ *     cdef double hold, exercise
+ *     for j in range(steps - 1, -1, -1):             # <<<<<<<<<<<<<<
+ *         spot_i = spot_row_base * step_prop[j]
+ *         for i in range(j + 1):
+*/
+  for (__pyx_t_4 = (__pyx_v_steps - 1); __pyx_t_4 > -1; __pyx_t_4-=1) {
+    __pyx_v_j = __pyx_t_4;
+
+    /* "bz_pricing/core/options_core.pyx":425
+ *     cdef double hold, exercise
+ *     for j in range(steps - 1, -1, -1):
+ *         spot_i = spot_row_base * step_prop[j]             # <<<<<<<<<<<<<<
+ *         for i in range(j + 1):
+ *             hold = disc * (p * values[i] + one_minus_p * values[i + 1])
+*/
+    __pyx_v_spot_i = (__pyx_v_spot_row_base * (__pyx_v_step_prop[__pyx_v_j]));
+
+    /* "bz_pricing/core/options_core.pyx":426
+ *     for j in range(steps - 1, -1, -1):
+ *         spot_i = spot_row_base * step_prop[j]
+ *         for i in range(j + 1):             # <<<<<<<<<<<<<<
+ *             hold = disc * (p * values[i] + one_minus_p * values[i + 1])
+ *             s_node = spot_i + step_pv[j]
+*/
+
+    __pyx_t_7 = (__pyx_v_j + 1);
+    __pyx_t_8 = __pyx_t_7;
+
+    for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_8; __pyx_t_5+=1) {
+      __pyx_v_i = __pyx_t_5;
+
+      /* "bz_pricing/core/options_core.pyx":427
+ *         spot_i = spot_row_base * step_prop[j]
+ *         for i in range(j + 1):
+ *             hold = disc * (p * values[i] + one_minus_p * values[i + 1])             # <<<<<<<<<<<<<<
+ *             s_node = spot_i + step_pv[j]
+ *             exercise = (s_node - K) if is_call else (K - s_node)
+*/
+      __pyx_v_hold = (__pyx_v_disc * ((__pyx_v_p * (__pyx_v_values[__pyx_v_i])) + (__pyx_v_one_minus_p * (__pyx_v_values[(__pyx_v_i + 1)]))));
+
+      /* "bz_pricing/core/options_core.pyx":428
+ *         for i in range(j + 1):
+ *             hold = disc * (p * values[i] + one_minus_p * values[i + 1])
+ *             s_node = spot_i + step_pv[j]             # <<<<<<<<<<<<<<
+ *             exercise = (s_node - K) if is_call else (K - s_node)
+ *             values[i] = hold if hold > exercise else exercise
+*/
+      __pyx_v_s_node = (__pyx_v_spot_i + (__pyx_v_step_pv[__pyx_v_j]));
+
+      /* "bz_pricing/core/options_core.pyx":429
+ *             hold = disc * (p * values[i] + one_minus_p * values[i + 1])
+ *             s_node = spot_i + step_pv[j]
+ *             exercise = (s_node - K) if is_call else (K - s_node)             # <<<<<<<<<<<<<<
+ *             values[i] = hold if hold > exercise else exercise
+ *             spot_i *= d_sq
+*/
+      if (__pyx_v_is_call) {
+
+        __pyx_t_3 = (__pyx_v_s_node - __pyx_v_K);
+      } else {
+
+        __pyx_t_3 = (__pyx_v_K - __pyx_v_s_node);
+      }
+      __pyx_v_exercise = __pyx_t_3;
+
+      /* "bz_pricing/core/options_core.pyx":430
+ *             s_node = spot_i + step_pv[j]
+ *             exercise = (s_node - K) if is_call else (K - s_node)
+ *             values[i] = hold if hold > exercise else exercise             # <<<<<<<<<<<<<<
+ *             spot_i *= d_sq
+ *         spot_row_base *= d
+*/
+      __pyx_t_1 = (__pyx_v_hold > __pyx_v_exercise);
+
+      if (__pyx_t_1) {
+
+        __pyx_t_3 = __pyx_v_hold;
+      } else {
+
+        __pyx_t_3 = __pyx_v_exercise;
+      }
+
+      (__pyx_v_values[__pyx_v_i]) = __pyx_t_3;
+
+
+      /* "bz_pricing/core/options_core.pyx":431
+ *             exercise = (s_node - K) if is_call else (K - s_node)
+ *             values[i] = hold if hold > exercise else exercise
+ *             spot_i *= d_sq             # <<<<<<<<<<<<<<
+ *         spot_row_base *= d
+ * 
+*/
+      __pyx_v_spot_i = (__pyx_v_spot_i * __pyx_v_d_sq);
+    }
+
+
+    /* "bz_pricing/core/options_core.pyx":432
+ *             values[i] = hold if hold > exercise else exercise
+ *             spot_i *= d_sq
+ *         spot_row_base *= d             # <<<<<<<<<<<<<<
+ * 
+ *     cdef double val = values[0]
+*/
+    __pyx_v_spot_row_base = (__pyx_v_spot_row_base * __pyx_v_d);
+  }
+
+  /* "bz_pricing/core/options_core.pyx":434
+ *         spot_row_base *= d
+ * 
+ *     cdef double val = values[0]             # <<<<<<<<<<<<<<
+ *     free(values)
+ *     free(step_pv)
+*/
+  __pyx_v_val = (__pyx_v_values[0]);
+
+  /* "bz_pricing/core/options_core.pyx":435
+ * 
+ *     cdef double val = values[0]
+ *     free(values)             # <<<<<<<<<<<<<<
+ *     free(step_pv)
+ *     free(step_prop)
+*/
+  free(__pyx_v_values);
+
+  /* "bz_pricing/core/options_core.pyx":436
+ *     cdef double val = values[0]
+ *     free(values)
+ *     free(step_pv)             # <<<<<<<<<<<<<<
+ *     free(step_prop)
+ *     return val
+*/
+  free(__pyx_v_step_pv);
+
+  /* "bz_pricing/core/options_core.pyx":437
+ *     free(values)
+ *     free(step_pv)
+ *     free(step_prop)             # <<<<<<<<<<<<<<
+ *     return val
+ * 
+*/
+  free(__pyx_v_step_prop);
+
+  /* "bz_pricing/core/options_core.pyx":438
+ *     free(step_pv)
+ *     free(step_prop)
+ *     return val             # <<<<<<<<<<<<<<
+ * 
+ * 
+*/
+  {
+
+    __pyx_r = __pyx_v_val;
+  }
+  goto __pyx_L0;
+
+  /* "bz_pricing/core/options_core.pyx":353
+ * 
+ * 
+ * cdef double _crr_american_discrete_core(             # <<<<<<<<<<<<<<
+ *     double S,
+ *     double K,
+*/
+
+  /* function exit code */
+  __pyx_L0:;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  return __pyx_r;
+}
+
+/* "bz_pricing/core/options_core.pyx":441
+ * 
+ * 
+ * cdef double _crr_disc_smoothed(             # <<<<<<<<<<<<<<
+ *     double S,
+ *     double K,
+*/
+
+static double __pyx_f_10bz_pricing_4core_12options_core__crr_disc_smoothed(double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, int __pyx_v_is_call, int __pyx_v_steps, double *__pyx_v_div_t, double *__pyx_v_div_a, int __pyx_v_n_div, double *__pyx_v_prop_t, double *__pyx_v_prop_y, int __pyx_v_n_prop) {
+  double __pyx_v_v1;
+  double __pyx_r;
+  int __pyx_t_1;
+
+  /* "bz_pricing/core/options_core.pyx":457
+ *     int n_prop,
+ * ) noexcept nogil:
+ *     cdef double v1 = _crr_american_discrete_core(             # <<<<<<<<<<<<<<
+ *         S, K, r, q, T, sigma, is_call, steps, div_t, div_a, n_div, prop_t, prop_y, n_prop
+ *     )
+*/
+  __pyx_v_v1 = __pyx_f_10bz_pricing_4core_12options_core__crr_american_discrete_core(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_is_call, __pyx_v_steps, __pyx_v_div_t, __pyx_v_div_a, __pyx_v_n_div, __pyx_v_prop_t, __pyx_v_prop_y, __pyx_v_n_prop);
+
+  /* "bz_pricing/core/options_core.pyx":460
+ *         S, K, r, q, T, sigma, is_call, steps, div_t, div_a, n_div, prop_t, prop_y, n_prop
+ *     )
+ *     if steps >= 2:             # <<<<<<<<<<<<<<
+ *         return 0.5 * (
+ *             v1 + _crr_american_discrete_core(
+*/
+  __pyx_t_1 = (__pyx_v_steps >= 2);
+
+  if (__pyx_t_1) {
+
+
+    /* "bz_pricing/core/options_core.pyx":461
+ *     )
+ *     if steps >= 2:
+ *         return 0.5 * (             # <<<<<<<<<<<<<<
+ *             v1 + _crr_american_discrete_core(
+ *                 S, K, r, q, T, sigma, is_call, steps + 1, div_t, div_a, n_div, prop_t, prop_y, n_prop
+*/
+    {
+
+      __pyx_r = (0.5 * (__pyx_v_v1 + __pyx_f_10bz_pricing_4core_12options_core__crr_american_discrete_core(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_is_call, (__pyx_v_steps + 1), __pyx_v_div_t, __pyx_v_div_a, __pyx_v_n_div, __pyx_v_prop_t, __pyx_v_prop_y, __pyx_v_n_prop)));
+    }
+    goto __pyx_L0;
+
+    /* "bz_pricing/core/options_core.pyx":460
+ *         S, K, r, q, T, sigma, is_call, steps, div_t, div_a, n_div, prop_t, prop_y, n_prop
+ *     )
+ *     if steps >= 2:             # <<<<<<<<<<<<<<
+ *         return 0.5 * (
+ *             v1 + _crr_american_discrete_core(
+*/
+  }
+
+  /* "bz_pricing/core/options_core.pyx":466
+ *             )
+ *         )
+ *     return v1             # <<<<<<<<<<<<<<
+ * 
+ * 
+*/
+  {
+
+    __pyx_r = __pyx_v_v1;
+  }
+  goto __pyx_L0;
+
+  /* "bz_pricing/core/options_core.pyx":441
+ * 
+ * 
+ * cdef double _crr_disc_smoothed(             # <<<<<<<<<<<<<<
+ *     double S,
+ *     double K,
+*/
+
+  /* function exit code */
+  __pyx_L0:;
+
+  return __pyx_r;
+}
+
+/* "bz_pricing/core/options_core.pyx":469
+ * 
+ * 
+ * cpdef tuple crr_american_discrete_div_price_greeks(             # <<<<<<<<<<<<<<
+ *     double S,
+ *     double K,
+*/
+
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_15crr_american_discrete_div_price_greeks(PyObject *__pyx_self, 
+#if CYTHON_VECTORCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+); /*proto*/
+static PyObject *__pyx_f_10bz_pricing_4core_12options_core_crr_american_discrete_div_price_greeks(double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, int __pyx_v_is_call, int __pyx_v_steps, __Pyx_memviewslice __pyx_v_div_times, __Pyx_memviewslice __pyx_v_div_amounts, __Pyx_memviewslice __pyx_v_prop_div_times, __Pyx_memviewslice __pyx_v_prop_div_yields, CYTHON_UNUSED int __pyx_skip_dispatch) {
+  int __pyx_v_n_div;
+  int __pyx_v_n_prop;
+  double *__pyx_v_dt_ptr;
+  double *__pyx_v_da_ptr;
+  double *__pyx_v_pt_ptr;
+  double *__pyx_v_py_ptr;
+  double __pyx_v_price;
+  double __pyx_v_delta;
+  double __pyx_v_gamma;
+  double __pyx_v_vega;
+  double __pyx_v_theta;
+  double __pyx_v_rho;
+  double __pyx_v_p_s_up;
+  double __pyx_v_p_s_dn;
+  double __pyx_v_p_v_up;
+  double __pyx_v_p_v_dn;
+  double __pyx_v_p_r_up;
+  double __pyx_v_p_r_dn;
+  double __pyx_v_p_t_dn;
+  double __pyx_v_dS;
+  double __pyx_v_dv;
+  double __pyx_v_dr;
+  double __pyx_v_dt_th;
+  int __pyx_v_k;
+  double *__pyx_v_dt_sh;
+  double *__pyx_v_pt_sh;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  double *__pyx_t_1;
+  int __pyx_t_2;
+  Py_ssize_t __pyx_t_3;
+  int __pyx_t_4;
+  int __pyx_t_5;
+  int __pyx_t_6;
+  int __pyx_t_7;
+  double __pyx_t_8;
+  double __pyx_t_9;
+  PyObject *__pyx_t_10 = NULL;
+  PyObject *__pyx_t_11 = NULL;
+  PyObject *__pyx_t_12 = NULL;
+  PyObject *__pyx_t_13 = NULL;
+  PyObject *__pyx_t_14 = NULL;
+  PyObject *__pyx_t_15 = NULL;
+  PyObject *__pyx_t_16 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("crr_american_discrete_div_price_greeks", 0);
+
+  /* "bz_pricing/core/options_core.pyx":484
+ * ):
+ *     """rvore CRR para opes americanas com dividendos discretos em dinheiro e/ou proporcionais."""
+ *     cdef int n_div = <int>div_times.shape[0]             # <<<<<<<<<<<<<<
+ *     cdef int n_prop = <int>prop_div_times.shape[0]
+ *     cdef double *dt_ptr = &div_times[0] if n_div > 0 else NULL
+*/
+  __pyx_v_n_div = ((int)(__pyx_v_div_times.shape[0]));
+
+  /* "bz_pricing/core/options_core.pyx":485
+ *     """rvore CRR para opes americanas com dividendos discretos em dinheiro e/ou proporcionais."""
+ *     cdef int n_div = <int>div_times.shape[0]
+ *     cdef int n_prop = <int>prop_div_times.shape[0]             # <<<<<<<<<<<<<<
+ *     cdef double *dt_ptr = &div_times[0] if n_div > 0 else NULL
+ *     cdef double *da_ptr = &div_amounts[0] if n_div > 0 else NULL
+*/
+  __pyx_v_n_prop = ((int)(__pyx_v_prop_div_times.shape[0]));
+
+  /* "bz_pricing/core/options_core.pyx":486
+ *     cdef int n_div = <int>div_times.shape[0]
+ *     cdef int n_prop = <int>prop_div_times.shape[0]
+ *     cdef double *dt_ptr = &div_times[0] if n_div > 0 else NULL             # <<<<<<<<<<<<<<
+ *     cdef double *da_ptr = &div_amounts[0] if n_div > 0 else NULL
+ *     cdef double *pt_ptr = &prop_div_times[0] if n_prop > 0 else NULL
+*/
+  __pyx_t_2 = (__pyx_v_n_div > 0);
+
+  if (__pyx_t_2) {
+    __pyx_t_3 = 0;
+
+    __pyx_t_1 = (&(*((double *) ( /* dim=0 */ (__pyx_v_div_times.data + __pyx_t_3 * __pyx_v_div_times.strides[0]) ))));
+  } else {
+
+    __pyx_t_1 = NULL;
+  }
+
+  __pyx_v_dt_ptr = __pyx_t_1;
+
+  /* "bz_pricing/core/options_core.pyx":487
+ *     cdef int n_prop = <int>prop_div_times.shape[0]
+ *     cdef double *dt_ptr = &div_times[0] if n_div > 0 else NULL
+ *     cdef double *da_ptr = &div_amounts[0] if n_div > 0 else NULL             # <<<<<<<<<<<<<<
+ *     cdef double *pt_ptr = &prop_div_times[0] if n_prop > 0 else NULL
+ *     cdef double *py_ptr = &prop_div_yields[0] if n_prop > 0 else NULL
+*/
+  __pyx_t_2 = (__pyx_v_n_div > 0);
+
+  if (__pyx_t_2) {
+    __pyx_t_3 = 0;
+
+    __pyx_t_1 = (&(*((double *) ( /* dim=0 */ (__pyx_v_div_amounts.data + __pyx_t_3 * __pyx_v_div_amounts.strides[0]) ))));
+  } else {
+
+    __pyx_t_1 = NULL;
+  }
+
+  __pyx_v_da_ptr = __pyx_t_1;
+
+  /* "bz_pricing/core/options_core.pyx":488
+ *     cdef double *dt_ptr = &div_times[0] if n_div > 0 else NULL
+ *     cdef double *da_ptr = &div_amounts[0] if n_div > 0 else NULL
+ *     cdef double *pt_ptr = &prop_div_times[0] if n_prop > 0 else NULL             # <<<<<<<<<<<<<<
+ *     cdef double *py_ptr = &prop_div_yields[0] if n_prop > 0 else NULL
+ * 
+*/
+  __pyx_t_2 = (__pyx_v_n_prop > 0);
+
+  if (__pyx_t_2) {
+    __pyx_t_3 = 0;
+
+    __pyx_t_1 = (&(*((double *) ( /* dim=0 */ (__pyx_v_prop_div_times.data + __pyx_t_3 * __pyx_v_prop_div_times.strides[0]) ))));
+  } else {
+
+    __pyx_t_1 = NULL;
+  }
+
+  __pyx_v_pt_ptr = __pyx_t_1;
+
+  /* "bz_pricing/core/options_core.pyx":489
+ *     cdef double *da_ptr = &div_amounts[0] if n_div > 0 else NULL
+ *     cdef double *pt_ptr = &prop_div_times[0] if n_prop > 0 else NULL
+ *     cdef double *py_ptr = &prop_div_yields[0] if n_prop > 0 else NULL             # <<<<<<<<<<<<<<
+ * 
+ *     cdef double price = 0.0, delta = 0.0, gamma = 0.0, vega = 0.0, theta = 0.0, rho = 0.0
+*/
+  __pyx_t_2 = (__pyx_v_n_prop > 0);
+
+  if (__pyx_t_2) {
+    __pyx_t_3 = 0;
+
+    __pyx_t_1 = (&(*((double *) ( /* dim=0 */ (__pyx_v_prop_div_yields.data + __pyx_t_3 * __pyx_v_prop_div_yields.strides[0]) ))));
+  } else {
+
+    __pyx_t_1 = NULL;
+  }
+
+  __pyx_v_py_ptr = __pyx_t_1;
+
+  /* "bz_pricing/core/options_core.pyx":491
+ *     cdef double *py_ptr = &prop_div_yields[0] if n_prop > 0 else NULL
+ * 
+ *     cdef double price = 0.0, delta = 0.0, gamma = 0.0, vega = 0.0, theta = 0.0, rho = 0.0             # <<<<<<<<<<<<<<
+ *     cdef double p_s_up, p_s_dn, p_v_up, p_v_dn, p_r_up, p_r_dn, p_t_dn
+ *     cdef double dS = fmax(1e-3, S * fmax(0.01, 0.5 * sigma * sqrt(fmax(1e-6, T) / fmax(4.0, <double>steps))))
+*/
+  __pyx_v_price = 0.0;
+  __pyx_v_delta = 0.0;
+  __pyx_v_gamma = 0.0;
+  __pyx_v_vega = 0.0;
+  __pyx_v_theta = 0.0;
+  __pyx_v_rho = 0.0;
+
+  /* "bz_pricing/core/options_core.pyx":493
+ *     cdef double price = 0.0, delta = 0.0, gamma = 0.0, vega = 0.0, theta = 0.0, rho = 0.0
+ *     cdef double p_s_up, p_s_dn, p_v_up, p_v_dn, p_r_up, p_r_dn, p_t_dn
+ *     cdef double dS = fmax(1e-3, S * fmax(0.01, 0.5 * sigma * sqrt(fmax(1e-6, T) / fmax(4.0, <double>steps))))             # <<<<<<<<<<<<<<
+ *     cdef double dv = 1e-4
+ *     cdef double dr = 1e-4
+*/
+  __pyx_v_dS = fmax(1e-3, (__pyx_v_S * fmax(0.01, ((0.5 * __pyx_v_sigma) * sqrt((fmax(1e-6, __pyx_v_T) / fmax(4.0, ((double)__pyx_v_steps))))))));
+
+  /* "bz_pricing/core/options_core.pyx":494
+ *     cdef double p_s_up, p_s_dn, p_v_up, p_v_dn, p_r_up, p_r_dn, p_t_dn
+ *     cdef double dS = fmax(1e-3, S * fmax(0.01, 0.5 * sigma * sqrt(fmax(1e-6, T) / fmax(4.0, <double>steps))))
+ *     cdef double dv = 1e-4             # <<<<<<<<<<<<<<
+ *     cdef double dr = 1e-4
+ *     cdef double dt_th = fmin(1.0 / 252.0, 0.1 * T)
+*/
+  __pyx_v_dv = 1e-4;
+
+  /* "bz_pricing/core/options_core.pyx":495
+ *     cdef double dS = fmax(1e-3, S * fmax(0.01, 0.5 * sigma * sqrt(fmax(1e-6, T) / fmax(4.0, <double>steps))))
+ *     cdef double dv = 1e-4
+ *     cdef double dr = 1e-4             # <<<<<<<<<<<<<<
+ *     cdef double dt_th = fmin(1.0 / 252.0, 0.1 * T)
+ *     cdef int k
+*/
+  __pyx_v_dr = 1e-4;
+
+  /* "bz_pricing/core/options_core.pyx":496
+ *     cdef double dv = 1e-4
+ *     cdef double dr = 1e-4
+ *     cdef double dt_th = fmin(1.0 / 252.0, 0.1 * T)             # <<<<<<<<<<<<<<
+ *     cdef int k
+ *     cdef double *dt_sh = NULL
+*/
+  __pyx_v_dt_th = fmin((1.0 / 252.0), (0.1 * __pyx_v_T));
+
+  /* "bz_pricing/core/options_core.pyx":498
+ *     cdef double dt_th = fmin(1.0 / 252.0, 0.1 * T)
+ *     cdef int k
+ *     cdef double *dt_sh = NULL             # <<<<<<<<<<<<<<
+ *     cdef double *pt_sh = NULL
+ * 
+*/
+  __pyx_v_dt_sh = NULL;
+
+  /* "bz_pricing/core/options_core.pyx":499
+ *     cdef int k
+ *     cdef double *dt_sh = NULL
+ *     cdef double *pt_sh = NULL             # <<<<<<<<<<<<<<
+ * 
+ *     with nogil:
+*/
+  __pyx_v_pt_sh = NULL;
+
+  /* "bz_pricing/core/options_core.pyx":501
+ *     cdef double *pt_sh = NULL
+ * 
+ *     with nogil:             # <<<<<<<<<<<<<<
+ *         price = _crr_disc_smoothed(S, K, r, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+ *         if T > 0.0 and sigma > dv and S > dS and K > 0.0:
+*/
+  {
+      PyThreadState * _save;
+      _save = PyEval_SaveThread();
+      __Pyx_FastGIL_Remember();
+      /*try:*/ {
+
+        /* "bz_pricing/core/options_core.pyx":502
+ * 
+ *     with nogil:
+ *         price = _crr_disc_smoothed(S, K, r, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)             # <<<<<<<<<<<<<<
+ *         if T > 0.0 and sigma > dv and S > dS and K > 0.0:
+ *             p_s_up = _crr_disc_smoothed(S + dS, K, r, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+*/
+        __pyx_v_price = __pyx_f_10bz_pricing_4core_12options_core__crr_disc_smoothed(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_is_call, __pyx_v_steps, __pyx_v_dt_ptr, __pyx_v_da_ptr, __pyx_v_n_div, __pyx_v_pt_ptr, __pyx_v_py_ptr, __pyx_v_n_prop);
+
+        /* "bz_pricing/core/options_core.pyx":503
+ *     with nogil:
+ *         price = _crr_disc_smoothed(S, K, r, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+ *         if T > 0.0 and sigma > dv and S > dS and K > 0.0:             # <<<<<<<<<<<<<<
+ *             p_s_up = _crr_disc_smoothed(S + dS, K, r, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+ *             p_s_dn = _crr_disc_smoothed(S - dS, K, r, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+*/
+        __pyx_t_4 = (__pyx_v_T > 0.0);
+
+        if (__pyx_t_4) {
+
+        } else {
+
+          __pyx_t_2 = __pyx_t_4;
+
+          goto __pyx_L7_bool_binop_done;
+        }
+        __pyx_t_4 = (__pyx_v_sigma > __pyx_v_dv);
+
+        if (__pyx_t_4) {
+
+        } else {
+
+          __pyx_t_2 = __pyx_t_4;
+
+          goto __pyx_L7_bool_binop_done;
+        }
+        __pyx_t_4 = (__pyx_v_S > __pyx_v_dS);
+
+        if (__pyx_t_4) {
+
+        } else {
+
+          __pyx_t_2 = __pyx_t_4;
+
+          goto __pyx_L7_bool_binop_done;
+        }
+        __pyx_t_4 = (__pyx_v_K > 0.0);
+
+
+        __pyx_t_2 = __pyx_t_4;
+
+        __pyx_L7_bool_binop_done:;
+        if (__pyx_t_2) {
+
+
+          /* "bz_pricing/core/options_core.pyx":504
+ *         price = _crr_disc_smoothed(S, K, r, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+ *         if T > 0.0 and sigma > dv and S > dS and K > 0.0:
+ *             p_s_up = _crr_disc_smoothed(S + dS, K, r, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)             # <<<<<<<<<<<<<<
+ *             p_s_dn = _crr_disc_smoothed(S - dS, K, r, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+ *             delta = (p_s_up - p_s_dn) / (2.0 * dS)
+*/
+          __pyx_v_p_s_up = __pyx_f_10bz_pricing_4core_12options_core__crr_disc_smoothed((__pyx_v_S + __pyx_v_dS), __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_is_call, __pyx_v_steps, __pyx_v_dt_ptr, __pyx_v_da_ptr, __pyx_v_n_div, __pyx_v_pt_ptr, __pyx_v_py_ptr, __pyx_v_n_prop);
+
+          /* "bz_pricing/core/options_core.pyx":505
+ *         if T > 0.0 and sigma > dv and S > dS and K > 0.0:
+ *             p_s_up = _crr_disc_smoothed(S + dS, K, r, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+ *             p_s_dn = _crr_disc_smoothed(S - dS, K, r, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)             # <<<<<<<<<<<<<<
+ *             delta = (p_s_up - p_s_dn) / (2.0 * dS)
+ *             gamma = (p_s_up - 2.0 * price + p_s_dn) / (dS * dS)
+*/
+          __pyx_v_p_s_dn = __pyx_f_10bz_pricing_4core_12options_core__crr_disc_smoothed((__pyx_v_S - __pyx_v_dS), __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_is_call, __pyx_v_steps, __pyx_v_dt_ptr, __pyx_v_da_ptr, __pyx_v_n_div, __pyx_v_pt_ptr, __pyx_v_py_ptr, __pyx_v_n_prop);
+
+          /* "bz_pricing/core/options_core.pyx":506
+ *             p_s_up = _crr_disc_smoothed(S + dS, K, r, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+ *             p_s_dn = _crr_disc_smoothed(S - dS, K, r, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+ *             delta = (p_s_up - p_s_dn) / (2.0 * dS)             # <<<<<<<<<<<<<<
+ *             gamma = (p_s_up - 2.0 * price + p_s_dn) / (dS * dS)
+ * 
+*/
+          __pyx_v_delta = ((__pyx_v_p_s_up - __pyx_v_p_s_dn) / (2.0 * __pyx_v_dS));
+
+          /* "bz_pricing/core/options_core.pyx":507
+ *             p_s_dn = _crr_disc_smoothed(S - dS, K, r, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+ *             delta = (p_s_up - p_s_dn) / (2.0 * dS)
+ *             gamma = (p_s_up - 2.0 * price + p_s_dn) / (dS * dS)             # <<<<<<<<<<<<<<
+ * 
+ *             p_v_up = _crr_disc_smoothed(S, K, r, q, T, sigma + dv, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+*/
+          __pyx_v_gamma = (((__pyx_v_p_s_up - (2.0 * __pyx_v_price)) + __pyx_v_p_s_dn) / (__pyx_v_dS * __pyx_v_dS));
+
+          /* "bz_pricing/core/options_core.pyx":509
+ *             gamma = (p_s_up - 2.0 * price + p_s_dn) / (dS * dS)
+ * 
+ *             p_v_up = _crr_disc_smoothed(S, K, r, q, T, sigma + dv, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)             # <<<<<<<<<<<<<<
+ *             p_v_dn = _crr_disc_smoothed(S, K, r, q, T, sigma - dv, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+ *             vega = (p_v_up - p_v_dn) / (2.0 * dv)
+*/
+          __pyx_v_p_v_up = __pyx_f_10bz_pricing_4core_12options_core__crr_disc_smoothed(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, (__pyx_v_sigma + __pyx_v_dv), __pyx_v_is_call, __pyx_v_steps, __pyx_v_dt_ptr, __pyx_v_da_ptr, __pyx_v_n_div, __pyx_v_pt_ptr, __pyx_v_py_ptr, __pyx_v_n_prop);
+
+          /* "bz_pricing/core/options_core.pyx":510
+ * 
+ *             p_v_up = _crr_disc_smoothed(S, K, r, q, T, sigma + dv, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+ *             p_v_dn = _crr_disc_smoothed(S, K, r, q, T, sigma - dv, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)             # <<<<<<<<<<<<<<
+ *             vega = (p_v_up - p_v_dn) / (2.0 * dv)
+ * 
+*/
+          __pyx_v_p_v_dn = __pyx_f_10bz_pricing_4core_12options_core__crr_disc_smoothed(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, (__pyx_v_sigma - __pyx_v_dv), __pyx_v_is_call, __pyx_v_steps, __pyx_v_dt_ptr, __pyx_v_da_ptr, __pyx_v_n_div, __pyx_v_pt_ptr, __pyx_v_py_ptr, __pyx_v_n_prop);
+
+          /* "bz_pricing/core/options_core.pyx":511
+ *             p_v_up = _crr_disc_smoothed(S, K, r, q, T, sigma + dv, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+ *             p_v_dn = _crr_disc_smoothed(S, K, r, q, T, sigma - dv, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+ *             vega = (p_v_up - p_v_dn) / (2.0 * dv)             # <<<<<<<<<<<<<<
+ * 
+ *             p_r_up = _crr_disc_smoothed(S, K, r + dr, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+*/
+          __pyx_v_vega = ((__pyx_v_p_v_up - __pyx_v_p_v_dn) / (2.0 * __pyx_v_dv));
+
+          /* "bz_pricing/core/options_core.pyx":513
+ *             vega = (p_v_up - p_v_dn) / (2.0 * dv)
+ * 
+ *             p_r_up = _crr_disc_smoothed(S, K, r + dr, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)             # <<<<<<<<<<<<<<
+ *             p_r_dn = _crr_disc_smoothed(S, K, r - dr, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+ *             rho = (p_r_up - p_r_dn) / (2.0 * dr)
+*/
+          __pyx_v_p_r_up = __pyx_f_10bz_pricing_4core_12options_core__crr_disc_smoothed(__pyx_v_S, __pyx_v_K, (__pyx_v_r + __pyx_v_dr), __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_is_call, __pyx_v_steps, __pyx_v_dt_ptr, __pyx_v_da_ptr, __pyx_v_n_div, __pyx_v_pt_ptr, __pyx_v_py_ptr, __pyx_v_n_prop);
+
+          /* "bz_pricing/core/options_core.pyx":514
+ * 
+ *             p_r_up = _crr_disc_smoothed(S, K, r + dr, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+ *             p_r_dn = _crr_disc_smoothed(S, K, r - dr, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)             # <<<<<<<<<<<<<<
+ *             rho = (p_r_up - p_r_dn) / (2.0 * dr)
+ * 
+*/
+          __pyx_v_p_r_dn = __pyx_f_10bz_pricing_4core_12options_core__crr_disc_smoothed(__pyx_v_S, __pyx_v_K, (__pyx_v_r - __pyx_v_dr), __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_is_call, __pyx_v_steps, __pyx_v_dt_ptr, __pyx_v_da_ptr, __pyx_v_n_div, __pyx_v_pt_ptr, __pyx_v_py_ptr, __pyx_v_n_prop);
+
+          /* "bz_pricing/core/options_core.pyx":515
+ *             p_r_up = _crr_disc_smoothed(S, K, r + dr, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+ *             p_r_dn = _crr_disc_smoothed(S, K, r - dr, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+ *             rho = (p_r_up - p_r_dn) / (2.0 * dr)             # <<<<<<<<<<<<<<
+ * 
+ *             if T > dt_th + 1e-8:
+*/
+          __pyx_v_rho = ((__pyx_v_p_r_up - __pyx_v_p_r_dn) / (2.0 * __pyx_v_dr));
+
+          /* "bz_pricing/core/options_core.pyx":517
+ *             rho = (p_r_up - p_r_dn) / (2.0 * dr)
+ * 
+ *             if T > dt_th + 1e-8:             # <<<<<<<<<<<<<<
+ *                 if n_div > 0:
+ *                     dt_sh = <double *>malloc(n_div * sizeof(double))
+*/
+          __pyx_t_2 = (__pyx_v_T > (__pyx_v_dt_th + 1e-8));
+
+          if (__pyx_t_2) {
+
+
+            /* "bz_pricing/core/options_core.pyx":518
+ * 
+ *             if T > dt_th + 1e-8:
+ *                 if n_div > 0:             # <<<<<<<<<<<<<<
+ *                     dt_sh = <double *>malloc(n_div * sizeof(double))
+ *                     for k in range(n_div):
+*/
+            __pyx_t_2 = (__pyx_v_n_div > 0);
+
+            if (__pyx_t_2) {
+
+
+              /* "bz_pricing/core/options_core.pyx":519
+ *             if T > dt_th + 1e-8:
+ *                 if n_div > 0:
+ *                     dt_sh = <double *>malloc(n_div * sizeof(double))             # <<<<<<<<<<<<<<
+ *                     for k in range(n_div):
+ *                         dt_sh[k] = dt_ptr[k] - dt_th
+*/
+              __pyx_v_dt_sh = ((double *)malloc((__pyx_v_n_div * (sizeof(double)))));
+
+              /* "bz_pricing/core/options_core.pyx":520
+ *                 if n_div > 0:
+ *                     dt_sh = <double *>malloc(n_div * sizeof(double))
+ *                     for k in range(n_div):             # <<<<<<<<<<<<<<
+ *                         dt_sh[k] = dt_ptr[k] - dt_th
+ *                 if n_prop > 0:
+*/
+
+              __pyx_t_5 = __pyx_v_n_div;
+              __pyx_t_6 = __pyx_t_5;
+
+              for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
+                __pyx_v_k = __pyx_t_7;
+
+                /* "bz_pricing/core/options_core.pyx":521
+ *                     dt_sh = <double *>malloc(n_div * sizeof(double))
+ *                     for k in range(n_div):
+ *                         dt_sh[k] = dt_ptr[k] - dt_th             # <<<<<<<<<<<<<<
+ *                 if n_prop > 0:
+ *                     pt_sh = <double *>malloc(n_prop * sizeof(double))
+*/
+                (__pyx_v_dt_sh[__pyx_v_k]) = ((__pyx_v_dt_ptr[__pyx_v_k]) - __pyx_v_dt_th);
+              }
+
+
+              /* "bz_pricing/core/options_core.pyx":518
+ * 
+ *             if T > dt_th + 1e-8:
+ *                 if n_div > 0:             # <<<<<<<<<<<<<<
+ *                     dt_sh = <double *>malloc(n_div * sizeof(double))
+ *                     for k in range(n_div):
+*/
+            }
+
+            /* "bz_pricing/core/options_core.pyx":522
+ *                     for k in range(n_div):
+ *                         dt_sh[k] = dt_ptr[k] - dt_th
+ *                 if n_prop > 0:             # <<<<<<<<<<<<<<
+ *                     pt_sh = <double *>malloc(n_prop * sizeof(double))
+ *                     for k in range(n_prop):
+*/
+            __pyx_t_2 = (__pyx_v_n_prop > 0);
+
+            if (__pyx_t_2) {
+
+
+              /* "bz_pricing/core/options_core.pyx":523
+ *                         dt_sh[k] = dt_ptr[k] - dt_th
+ *                 if n_prop > 0:
+ *                     pt_sh = <double *>malloc(n_prop * sizeof(double))             # <<<<<<<<<<<<<<
+ *                     for k in range(n_prop):
+ *                         pt_sh[k] = pt_ptr[k] - dt_th
+*/
+              __pyx_v_pt_sh = ((double *)malloc((__pyx_v_n_prop * (sizeof(double)))));
+
+              /* "bz_pricing/core/options_core.pyx":524
+ *                 if n_prop > 0:
+ *                     pt_sh = <double *>malloc(n_prop * sizeof(double))
+ *                     for k in range(n_prop):             # <<<<<<<<<<<<<<
+ *                         pt_sh[k] = pt_ptr[k] - dt_th
+ *                 p_t_dn = _crr_disc_smoothed(
+*/
+
+              __pyx_t_5 = __pyx_v_n_prop;
+              __pyx_t_6 = __pyx_t_5;
+
+              for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
+                __pyx_v_k = __pyx_t_7;
+
+                /* "bz_pricing/core/options_core.pyx":525
+ *                     pt_sh = <double *>malloc(n_prop * sizeof(double))
+ *                     for k in range(n_prop):
+ *                         pt_sh[k] = pt_ptr[k] - dt_th             # <<<<<<<<<<<<<<
+ *                 p_t_dn = _crr_disc_smoothed(
+ *                     S, K, r, q, T - dt_th, sigma, is_call, steps, dt_sh, da_ptr, n_div, pt_sh, py_ptr, n_prop
+*/
+                (__pyx_v_pt_sh[__pyx_v_k]) = ((__pyx_v_pt_ptr[__pyx_v_k]) - __pyx_v_dt_th);
+              }
+
+
+              /* "bz_pricing/core/options_core.pyx":522
+ *                     for k in range(n_div):
+ *                         dt_sh[k] = dt_ptr[k] - dt_th
+ *                 if n_prop > 0:             # <<<<<<<<<<<<<<
+ *                     pt_sh = <double *>malloc(n_prop * sizeof(double))
+ *                     for k in range(n_prop):
+*/
+            }
+
+            /* "bz_pricing/core/options_core.pyx":526
+ *                     for k in range(n_prop):
+ *                         pt_sh[k] = pt_ptr[k] - dt_th
+ *                 p_t_dn = _crr_disc_smoothed(             # <<<<<<<<<<<<<<
+ *                     S, K, r, q, T - dt_th, sigma, is_call, steps, dt_sh, da_ptr, n_div, pt_sh, py_ptr, n_prop
+ *                 )
+*/
+            __pyx_v_p_t_dn = __pyx_f_10bz_pricing_4core_12options_core__crr_disc_smoothed(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, (__pyx_v_T - __pyx_v_dt_th), __pyx_v_sigma, __pyx_v_is_call, __pyx_v_steps, __pyx_v_dt_sh, __pyx_v_da_ptr, __pyx_v_n_div, __pyx_v_pt_sh, __pyx_v_py_ptr, __pyx_v_n_prop);
+
+            /* "bz_pricing/core/options_core.pyx":529
+ *                     S, K, r, q, T - dt_th, sigma, is_call, steps, dt_sh, da_ptr, n_div, pt_sh, py_ptr, n_prop
+ *                 )
+ *                 theta = (p_t_dn - price) / dt_th             # <<<<<<<<<<<<<<
+ *                 if dt_sh != NULL:
+ *                     free(dt_sh)
+*/
+            __pyx_v_theta = ((__pyx_v_p_t_dn - __pyx_v_price) / __pyx_v_dt_th);
+
+            /* "bz_pricing/core/options_core.pyx":530
+ *                 )
+ *                 theta = (p_t_dn - price) / dt_th
+ *                 if dt_sh != NULL:             # <<<<<<<<<<<<<<
+ *                     free(dt_sh)
+ *                 if pt_sh != NULL:
+*/
+            __pyx_t_2 = (__pyx_v_dt_sh != NULL);
+
+            if (__pyx_t_2) {
+
+
+              /* "bz_pricing/core/options_core.pyx":531
+ *                 theta = (p_t_dn - price) / dt_th
+ *                 if dt_sh != NULL:
+ *                     free(dt_sh)             # <<<<<<<<<<<<<<
+ *                 if pt_sh != NULL:
+ *                     free(pt_sh)
+*/
+              free(__pyx_v_dt_sh);
+
+              /* "bz_pricing/core/options_core.pyx":530
+ *                 )
+ *                 theta = (p_t_dn - price) / dt_th
+ *                 if dt_sh != NULL:             # <<<<<<<<<<<<<<
+ *                     free(dt_sh)
+ *                 if pt_sh != NULL:
+*/
+            }
+
+            /* "bz_pricing/core/options_core.pyx":532
+ *                 if dt_sh != NULL:
+ *                     free(dt_sh)
+ *                 if pt_sh != NULL:             # <<<<<<<<<<<<<<
+ *                     free(pt_sh)
+ *         else:
+*/
+            __pyx_t_2 = (__pyx_v_pt_sh != NULL);
+
+            if (__pyx_t_2) {
+
+
+              /* "bz_pricing/core/options_core.pyx":533
+ *                     free(dt_sh)
+ *                 if pt_sh != NULL:
+ *                     free(pt_sh)             # <<<<<<<<<<<<<<
+ *         else:
+ *             delta = (1.0 if S > K else 0.0) if is_call else (-1.0 if K > S else 0.0)
+*/
+              free(__pyx_v_pt_sh);
+
+              /* "bz_pricing/core/options_core.pyx":532
+ *                 if dt_sh != NULL:
+ *                     free(dt_sh)
+ *                 if pt_sh != NULL:             # <<<<<<<<<<<<<<
+ *                     free(pt_sh)
+ *         else:
+*/
+            }
+
+            /* "bz_pricing/core/options_core.pyx":517
+ *             rho = (p_r_up - p_r_dn) / (2.0 * dr)
+ * 
+ *             if T > dt_th + 1e-8:             # <<<<<<<<<<<<<<
+ *                 if n_div > 0:
+ *                     dt_sh = <double *>malloc(n_div * sizeof(double))
+*/
+          }
+
+          /* "bz_pricing/core/options_core.pyx":503
+ *     with nogil:
+ *         price = _crr_disc_smoothed(S, K, r, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+ *         if T > 0.0 and sigma > dv and S > dS and K > 0.0:             # <<<<<<<<<<<<<<
+ *             p_s_up = _crr_disc_smoothed(S + dS, K, r, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+ *             p_s_dn = _crr_disc_smoothed(S - dS, K, r, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+*/
+          goto __pyx_L6;
+        }
+
+        /* "bz_pricing/core/options_core.pyx":535
+ *                     free(pt_sh)
+ *         else:
+ *             delta = (1.0 if S > K else 0.0) if is_call else (-1.0 if K > S else 0.0)             # <<<<<<<<<<<<<<
+ * 
+ *     return (price, delta, gamma, vega, theta, rho)
+*/
+        /*else*/ {
+          if (__pyx_v_is_call) {
+            __pyx_t_2 = (__pyx_v_S > __pyx_v_K);
+
+            if (__pyx_t_2) {
+
+              __pyx_t_9 = 1.0;
+            } else {
+
+              __pyx_t_9 = 0.0;
+            }
+
+            __pyx_t_8 = __pyx_t_9;
+          } else {
+            __pyx_t_2 = (__pyx_v_K > __pyx_v_S);
+
+            if (__pyx_t_2) {
+
+              __pyx_t_9 = -1.0;
+            } else {
+
+              __pyx_t_9 = 0.0;
+            }
+
+            __pyx_t_8 = __pyx_t_9;
+          }
+          __pyx_v_delta = __pyx_t_8;
+        }
+        __pyx_L6:;
+      }
+
+      /* "bz_pricing/core/options_core.pyx":501
+ *     cdef double *pt_sh = NULL
+ * 
+ *     with nogil:             # <<<<<<<<<<<<<<
+ *         price = _crr_disc_smoothed(S, K, r, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+ *         if T > 0.0 and sigma > dv and S > dS and K > 0.0:
+*/
+      /*finally:*/ {
+        /*normal exit:*/{
+          __Pyx_FastGIL_Forget();
+          PyEval_RestoreThread(_save);
+          goto __pyx_L5;
+        }
+        __pyx_L5:;
+      }
+  }
+
+  /* "bz_pricing/core/options_core.pyx":537
+ *             delta = (1.0 if S > K else 0.0) if is_call else (-1.0 if K > S else 0.0)
+ * 
+ *     return (price, delta, gamma, vega, theta, rho)             # <<<<<<<<<<<<<<
+ * 
+ * 
+*/
+  __pyx_t_10 = PyFloat_FromDouble(__pyx_v_price); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 537, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_10);
+  __pyx_t_11 = PyFloat_FromDouble(__pyx_v_delta); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 537, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_11);
+  __pyx_t_12 = PyFloat_FromDouble(__pyx_v_gamma); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 537, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_12);
+  __pyx_t_13 = PyFloat_FromDouble(__pyx_v_vega); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 537, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_13);
+  __pyx_t_14 = PyFloat_FromDouble(__pyx_v_theta); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 537, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_14);
+  __pyx_t_15 = PyFloat_FromDouble(__pyx_v_rho); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 537, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_15);
+  __pyx_t_16 = PyTuple_New(6); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 537, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_16);
+  __Pyx_GIVEREF(__pyx_t_10);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_16, 0, __pyx_t_10) != (0)) __PYX_ERR(0, 537, __pyx_L1_error);
+  __Pyx_GIVEREF(__pyx_t_11);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_16, 1, __pyx_t_11) != (0)) __PYX_ERR(0, 537, __pyx_L1_error);
+  __Pyx_GIVEREF(__pyx_t_12);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_16, 2, __pyx_t_12) != (0)) __PYX_ERR(0, 537, __pyx_L1_error);
+  __Pyx_GIVEREF(__pyx_t_13);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_16, 3, __pyx_t_13) != (0)) __PYX_ERR(0, 537, __pyx_L1_error);
+  __Pyx_GIVEREF(__pyx_t_14);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_16, 4, __pyx_t_14) != (0)) __PYX_ERR(0, 537, __pyx_L1_error);
+  __Pyx_GIVEREF(__pyx_t_15);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_16, 5, __pyx_t_15) != (0)) __PYX_ERR(0, 537, __pyx_L1_error);
+  __pyx_t_10 = 0;
+  __pyx_t_11 = 0;
+  __pyx_t_12 = 0;
+  __pyx_t_13 = 0;
+  __pyx_t_14 = 0;
+  __pyx_t_15 = 0;
+  {
+    PyObject *__pyx_temp;
+    {
+      __pyx_temp = __pyx_r;
+      __pyx_r = ((PyObject*)__pyx_t_16);
+    }
+    __Pyx_XDECREF(__pyx_temp);
+  }
+  __pyx_t_16 = 0;
+  goto __pyx_L0;
+
+  /* "bz_pricing/core/options_core.pyx":469
+ * 
+ * 
+ * cpdef tuple crr_american_discrete_div_price_greeks(             # <<<<<<<<<<<<<<
+ *     double S,
+ *     double K,
+*/
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_10);
+  __Pyx_XDECREF(__pyx_t_11);
+  __Pyx_XDECREF(__pyx_t_12);
+  __Pyx_XDECREF(__pyx_t_13);
+  __Pyx_XDECREF(__pyx_t_14);
+  __Pyx_XDECREF(__pyx_t_15);
+  __Pyx_XDECREF(__pyx_t_16);
+  __Pyx_AddTraceback("bz_pricing.core.options_core.crr_american_discrete_div_price_greeks", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_15crr_american_discrete_div_price_greeks(PyObject *__pyx_self, 
+#if CYTHON_VECTORCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+); /*proto*/
+PyDoc_STRVAR(__pyx_doc_10bz_pricing_4core_12options_core_14crr_american_discrete_div_price_greeks, "\303\201rvore CRR para op\303\247\303\265es americanas com dividendos discretos em dinheiro e/ou proporcionais.");
+static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_15crr_american_discrete_div_price_greeks = {"crr_american_discrete_div_price_greeks", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_15crr_american_discrete_div_price_greeks, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10bz_pricing_4core_12options_core_14crr_american_discrete_div_price_greeks};
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_15crr_american_discrete_div_price_greeks(PyObject *__pyx_self, 
+#if CYTHON_VECTORCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+) {
+  double __pyx_v_S;
+  double __pyx_v_K;
+  double __pyx_v_r;
+  double __pyx_v_q;
+  double __pyx_v_T;
+  double __pyx_v_sigma;
+  int __pyx_v_is_call;
+  int __pyx_v_steps;
+  __Pyx_memviewslice __pyx_v_div_times = { 0, 0, { 0 }, { 0 }, { 0 } };
+  __Pyx_memviewslice __pyx_v_div_amounts = { 0, 0, { 0 }, { 0 }, { 0 } };
+  __Pyx_memviewslice __pyx_v_prop_div_times = { 0, 0, { 0 }, { 0 }, { 0 } };
+  __Pyx_memviewslice __pyx_v_prop_div_yields = { 0, 0, { 0 }, { 0 }, { 0 } };
+  #if !CYTHON_VECTORCALL
+  CYTHON_UNUSED Py_ssize_t __pyx_nargs;
+  #endif
+  CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
+  PyObject* values[12] = {0,0,0,0,0,0,0,0,0,0,0,0};
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("crr_american_discrete_div_price_greeks (wrapper)", 0);
+  #if !CYTHON_VECTORCALL
+  #if CYTHON_ASSUME_SAFE_SIZE
+  __pyx_nargs = PyTuple_GET_SIZE(__pyx_args);
+  #else
+  __pyx_nargs = PyTuple_Size(__pyx_args); if (unlikely(__pyx_nargs < 0)) return NULL;
+  #endif
+  #endif
+  __pyx_kwvalues = __Pyx_KwValues_FASTCALL(__pyx_args, __pyx_nargs);
+  {
+    PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_S,&__pyx_mstate_global->__pyx_n_u_K,&__pyx_mstate_global->__pyx_n_u_r,&__pyx_mstate_global->__pyx_n_u_q,&__pyx_mstate_global->__pyx_n_u_T,&__pyx_mstate_global->__pyx_n_u_sigma,&__pyx_mstate_global->__pyx_n_u_is_call,&__pyx_mstate_global->__pyx_n_u_steps,&__pyx_mstate_global->__pyx_n_u_div_times,&__pyx_mstate_global->__pyx_n_u_div_amounts,&__pyx_mstate_global->__pyx_n_u_prop_div_times,&__pyx_mstate_global->__pyx_n_u_prop_div_yields,0};
+    const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 469, __pyx_L3_error)
+    if (__pyx_kwds_len > 0) {
+      switch (__pyx_nargs) {
+        case 12:
+        values[11] = __Pyx_ArgRef_FASTCALL(__pyx_args, 11);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[11])) __PYX_ERR(0, 469, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case 11:
+        values[10] = __Pyx_ArgRef_FASTCALL(__pyx_args, 10);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[10])) __PYX_ERR(0, 469, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case 10:
+        values[9] = __Pyx_ArgRef_FASTCALL(__pyx_args, 9);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[9])) __PYX_ERR(0, 469, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  9:
+        values[8] = __Pyx_ArgRef_FASTCALL(__pyx_args, 8);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 469, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  8:
+        values[7] = __Pyx_ArgRef_FASTCALL(__pyx_args, 7);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 469, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  7:
+        values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 469, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  6:
+        values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 469, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  5:
+        values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 469, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  4:
+        values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 469, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  3:
+        values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 469, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  2:
+        values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 469, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  1:
+        values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 469, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      const Py_ssize_t kwd_pos_args = __pyx_nargs;
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "crr_american_discrete_div_price_greeks", 0) < (0)) __PYX_ERR(0, 469, __pyx_L3_error)
+      for (Py_ssize_t i = __pyx_nargs; i < 12; i++) {
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("crr_american_discrete_div_price_greeks", 1, 12, 12, i); __PYX_ERR(0, 469, __pyx_L3_error) }
+      }
+    } else if (unlikely(__pyx_nargs != 12)) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 469, __pyx_L3_error)
+      values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 469, __pyx_L3_error)
+      values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 469, __pyx_L3_error)
+      values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 469, __pyx_L3_error)
+      values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 469, __pyx_L3_error)
+      values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 469, __pyx_L3_error)
+      values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 469, __pyx_L3_error)
+      values[7] = __Pyx_ArgRef_FASTCALL(__pyx_args, 7);
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 469, __pyx_L3_error)
+      values[8] = __Pyx_ArgRef_FASTCALL(__pyx_args, 8);
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 469, __pyx_L3_error)
+      values[9] = __Pyx_ArgRef_FASTCALL(__pyx_args, 9);
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[9])) __PYX_ERR(0, 469, __pyx_L3_error)
+      values[10] = __Pyx_ArgRef_FASTCALL(__pyx_args, 10);
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[10])) __PYX_ERR(0, 469, __pyx_L3_error)
+      values[11] = __Pyx_ArgRef_FASTCALL(__pyx_args, 11);
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[11])) __PYX_ERR(0, 469, __pyx_L3_error)
+    }
+    __pyx_v_S = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_S == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 470, __pyx_L3_error)
+    __pyx_v_K = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_K == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 471, __pyx_L3_error)
+    __pyx_v_r = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_r == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 472, __pyx_L3_error)
+    __pyx_v_q = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_q == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 473, __pyx_L3_error)
+    __pyx_v_T = __Pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_T == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 474, __pyx_L3_error)
+    __pyx_v_sigma = __Pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_sigma == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 475, __pyx_L3_error)
+    __pyx_v_is_call = __Pyx_PyObject_IsTrue(values[6]); if (unlikely((__pyx_v_is_call == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 476, __pyx_L3_error)
+    __pyx_v_steps = __Pyx_PyLong_As_int(values[7]); if (unlikely((__pyx_v_steps == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 477, __pyx_L3_error)
+    __pyx_v_div_times = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[8], PyBUF_WRITABLE); if (unlikely(!__pyx_v_div_times.memview)) __PYX_ERR(0, 478, __pyx_L3_error)
+    __pyx_v_div_amounts = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[9], PyBUF_WRITABLE); if (unlikely(!__pyx_v_div_amounts.memview)) __PYX_ERR(0, 479, __pyx_L3_error)
+    __pyx_v_prop_div_times = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[10], PyBUF_WRITABLE); if (unlikely(!__pyx_v_prop_div_times.memview)) __PYX_ERR(0, 480, __pyx_L3_error)
+    __pyx_v_prop_div_yields = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[11], PyBUF_WRITABLE); if (unlikely(!__pyx_v_prop_div_yields.memview)) __PYX_ERR(0, 481, __pyx_L3_error)
+  }
+  goto __pyx_L6_skip;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("crr_american_discrete_div_price_greeks", 1, 12, 12, __pyx_nargs); __PYX_ERR(0, 469, __pyx_L3_error)
+  __pyx_L6_skip:;
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L3_error:;
+  for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+    Py_XDECREF(values[__pyx_temp]);
+  }
+  __PYX_XCLEAR_MEMVIEW(&__pyx_v_div_times, 1);
+  __PYX_XCLEAR_MEMVIEW(&__pyx_v_div_amounts, 1);
+  __PYX_XCLEAR_MEMVIEW(&__pyx_v_prop_div_times, 1);
+  __PYX_XCLEAR_MEMVIEW(&__pyx_v_prop_div_yields, 1);
+  __Pyx_AddTraceback("bz_pricing.core.options_core.crr_american_discrete_div_price_greeks", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_14crr_american_discrete_div_price_greeks(__pyx_self, __pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_is_call, __pyx_v_steps, __pyx_v_div_times, __pyx_v_div_amounts, __pyx_v_prop_div_times, __pyx_v_prop_div_yields);
+
+  /* function exit code */
+  for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+    Py_XDECREF(values[__pyx_temp]);
+  }
+
+
+
+
+
+
+
+
+  __PYX_XCLEAR_MEMVIEW(&__pyx_v_div_times, 1);
+  __PYX_XCLEAR_MEMVIEW(&__pyx_v_div_amounts, 1);
+  __PYX_XCLEAR_MEMVIEW(&__pyx_v_prop_div_times, 1);
+  __PYX_XCLEAR_MEMVIEW(&__pyx_v_prop_div_yields, 1);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_14crr_american_discrete_div_price_greeks(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, int __pyx_v_is_call, int __pyx_v_steps, __Pyx_memviewslice __pyx_v_div_times, __Pyx_memviewslice __pyx_v_div_amounts, __Pyx_memviewslice __pyx_v_prop_div_times, __Pyx_memviewslice __pyx_v_prop_div_yields) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("crr_american_discrete_div_price_greeks", 0);
+  if (unlikely(!__pyx_v_div_times.memview)) { __Pyx_RaiseUnboundLocalError("div_times"); __PYX_ERR(0, 469, __pyx_L1_error) }
+  if (unlikely(!__pyx_v_div_amounts.memview)) { __Pyx_RaiseUnboundLocalError("div_amounts"); __PYX_ERR(0, 469, __pyx_L1_error) }
+  if (unlikely(!__pyx_v_prop_div_times.memview)) { __Pyx_RaiseUnboundLocalError("prop_div_times"); __PYX_ERR(0, 469, __pyx_L1_error) }
+  if (unlikely(!__pyx_v_prop_div_yields.memview)) { __Pyx_RaiseUnboundLocalError("prop_div_yields"); __PYX_ERR(0, 469, __pyx_L1_error) }
+  __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_crr_american_discrete_div_price_greeks(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_is_call, __pyx_v_steps, __pyx_v_div_times, __pyx_v_div_amounts, __pyx_v_prop_div_times, __pyx_v_prop_div_yields, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 469, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  {
+    PyObject *__pyx_temp;
+    {
+      __pyx_temp = __pyx_r;
+      __pyx_r = __pyx_t_1;
+    }
+    __Pyx_XDECREF(__pyx_temp);
+  }
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("bz_pricing.core.options_core.crr_american_discrete_div_price_greeks", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "bz_pricing/core/options_core.pyx":540
+ * 
+ * 
  * cpdef double corrado_su_price(             # <<<<<<<<<<<<<<
  *     double S,
  *     double K,
 */
 
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_15corrado_su_price(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_17corrado_su_price(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -24443,7 +26540,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 ); /*proto*/
 static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, double __pyx_v_kappa3, double __pyx_v_kappa4, CYTHON_UNUSED int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_12options_core_corrado_su_price *__pyx_optional_args) {
 
-  /* "bz_pricing/core/options_core.pyx":362
+  /* "bz_pricing/core/options_core.pyx":549
  *     double kappa3,
  *     double kappa4,
  *     bint is_call=True,             # <<<<<<<<<<<<<<
@@ -24482,7 +26579,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double 
     }
   }
 
-  /* "bz_pricing/core/options_core.pyx":365
+  /* "bz_pricing/core/options_core.pyx":552
  * ) noexcept nogil:
  *     """Modelo de Corrado & Su (1996) com expanso de Gram-Charlier (assimetria e curtose)."""
  *     if T <= 0.0 or sigma <= 0.0:             # <<<<<<<<<<<<<<
@@ -24508,7 +26605,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double 
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/options_core.pyx":366
+    /* "bz_pricing/core/options_core.pyx":553
  *     """Modelo de Corrado & Su (1996) com expanso de Gram-Charlier (assimetria e curtose)."""
  *     if T <= 0.0 or sigma <= 0.0:
  *         return fmax(S - K, 0.0) if is_call else fmax(K - S, 0.0)             # <<<<<<<<<<<<<<
@@ -24527,7 +26624,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double 
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/options_core.pyx":365
+    /* "bz_pricing/core/options_core.pyx":552
  * ) noexcept nogil:
  *     """Modelo de Corrado & Su (1996) com expanso de Gram-Charlier (assimetria e curtose)."""
  *     if T <= 0.0 or sigma <= 0.0:             # <<<<<<<<<<<<<<
@@ -24536,7 +26633,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double 
 */
   }
 
-  /* "bz_pricing/core/options_core.pyx":369
+  /* "bz_pricing/core/options_core.pyx":556
  * 
  *     cdef double price_bs, delta, gamma, vega, theta, rho, vanna, volga
  *     _bsm_core(S, K, r, q, T, sigma, True, &price_bs, &delta, &gamma, &vega, &theta, &rho, &vanna, &volga)             # <<<<<<<<<<<<<<
@@ -24545,7 +26642,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double 
 */
   __pyx_f_10bz_pricing_4core_12options_core__bsm_core(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, 1, (&__pyx_v_price_bs), (&__pyx_v_delta), (&__pyx_v_gamma), (&__pyx_v_vega), (&__pyx_v_theta), (&__pyx_v_rho), (&__pyx_v_vanna), (&__pyx_v_volga));
 
-  /* "bz_pricing/core/options_core.pyx":371
+  /* "bz_pricing/core/options_core.pyx":558
  *     _bsm_core(S, K, r, q, T, sigma, True, &price_bs, &delta, &gamma, &vega, &theta, &rho, &vanna, &volga)
  * 
  *     cdef double df_q = exp(-q * T)             # <<<<<<<<<<<<<<
@@ -24554,7 +26651,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double 
 */
   __pyx_v_df_q = exp(((-__pyx_v_q) * __pyx_v_T));
 
-  /* "bz_pricing/core/options_core.pyx":372
+  /* "bz_pricing/core/options_core.pyx":559
  * 
  *     cdef double df_q = exp(-q * T)
  *     cdef double df_r = exp(-r * T)             # <<<<<<<<<<<<<<
@@ -24563,7 +26660,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double 
 */
   __pyx_v_df_r = exp(((-__pyx_v_r) * __pyx_v_T));
 
-  /* "bz_pricing/core/options_core.pyx":373
+  /* "bz_pricing/core/options_core.pyx":560
  *     cdef double df_q = exp(-q * T)
  *     cdef double df_r = exp(-r * T)
  *     cdef double sig_sqrt_T = sigma * sqrt(T)             # <<<<<<<<<<<<<<
@@ -24572,7 +26669,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double 
 */
   __pyx_v_sig_sqrt_T = (__pyx_v_sigma * sqrt(__pyx_v_T));
 
-  /* "bz_pricing/core/options_core.pyx":374
+  /* "bz_pricing/core/options_core.pyx":561
  *     cdef double df_r = exp(-r * T)
  *     cdef double sig_sqrt_T = sigma * sqrt(T)
  *     cdef double sig2_T = sigma * sigma * T             # <<<<<<<<<<<<<<
@@ -24581,7 +26678,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double 
 */
   __pyx_v_sig2_T = ((__pyx_v_sigma * __pyx_v_sigma) * __pyx_v_T);
 
-  /* "bz_pricing/core/options_core.pyx":375
+  /* "bz_pricing/core/options_core.pyx":562
  *     cdef double sig_sqrt_T = sigma * sqrt(T)
  *     cdef double sig2_T = sigma * sigma * T
  *     cdef double exc_kurt = kappa4 - 3.0             # <<<<<<<<<<<<<<
@@ -24590,7 +26687,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double 
 */
   __pyx_v_exc_kurt = (__pyx_v_kappa4 - 3.0);
 
-  /* "bz_pricing/core/options_core.pyx":376
+  /* "bz_pricing/core/options_core.pyx":563
  *     cdef double sig2_T = sigma * sigma * T
  *     cdef double exc_kurt = kappa4 - 3.0
  *     cdef double d1 = (log(S / K) + (r - q + 0.5 * sigma * sigma) * T) / sig_sqrt_T             # <<<<<<<<<<<<<<
@@ -24599,7 +26696,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double 
 */
   __pyx_v_d1 = ((log((__pyx_v_S / __pyx_v_K)) + (((__pyx_v_r - __pyx_v_q) + ((0.5 * __pyx_v_sigma) * __pyx_v_sigma)) * __pyx_v_T)) / __pyx_v_sig_sqrt_T);
 
-  /* "bz_pricing/core/options_core.pyx":377
+  /* "bz_pricing/core/options_core.pyx":564
  *     cdef double exc_kurt = kappa4 - 3.0
  *     cdef double d1 = (log(S / K) + (r - q + 0.5 * sigma * sigma) * T) / sig_sqrt_T
  *     cdef double d2 = d1 - sig_sqrt_T             # <<<<<<<<<<<<<<
@@ -24608,7 +26705,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double 
 */
   __pyx_v_d2 = (__pyx_v_d1 - __pyx_v_sig_sqrt_T);
 
-  /* "bz_pricing/core/options_core.pyx":378
+  /* "bz_pricing/core/options_core.pyx":565
  *     cdef double d1 = (log(S / K) + (r - q + 0.5 * sigma * sigma) * T) / sig_sqrt_T
  *     cdef double d2 = d1 - sig_sqrt_T
  *     cdef double nd1 = _norm_pdf(d1)             # <<<<<<<<<<<<<<
@@ -24617,7 +26714,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double 
 */
   __pyx_v_nd1 = __pyx_f_10bz_pricing_4core_12options_core__norm_pdf(__pyx_v_d1);
 
-  /* "bz_pricing/core/options_core.pyx":379
+  /* "bz_pricing/core/options_core.pyx":566
  *     cdef double d2 = d1 - sig_sqrt_T
  *     cdef double nd1 = _norm_pdf(d1)
  *     cdef double Nd1 = _norm_cdf(d1)             # <<<<<<<<<<<<<<
@@ -24626,7 +26723,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double 
 */
   __pyx_v_Nd1 = __pyx_f_10bz_pricing_4core_12options_core__norm_cdf(__pyx_v_d1);
 
-  /* "bz_pricing/core/options_core.pyx":381
+  /* "bz_pricing/core/options_core.pyx":568
  *     cdef double Nd1 = _norm_cdf(d1)
  * 
  *     cdef double q3 = (1.0 / 6.0) * S * df_q * sig_sqrt_T * ((2.0 * sig_sqrt_T - d1) * nd1 + sig2_T * Nd1)             # <<<<<<<<<<<<<<
@@ -24635,7 +26732,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double 
 */
   __pyx_v_q3 = (((((1.0 / 6.0) * __pyx_v_S) * __pyx_v_df_q) * __pyx_v_sig_sqrt_T) * ((((2.0 * __pyx_v_sig_sqrt_T) - __pyx_v_d1) * __pyx_v_nd1) + (__pyx_v_sig2_T * __pyx_v_Nd1)));
 
-  /* "bz_pricing/core/options_core.pyx":382
+  /* "bz_pricing/core/options_core.pyx":569
  * 
  *     cdef double q3 = (1.0 / 6.0) * S * df_q * sig_sqrt_T * ((2.0 * sig_sqrt_T - d1) * nd1 + sig2_T * Nd1)
  *     cdef double q4 = (1.0 / 24.0) * S * df_q * sig_sqrt_T * (             # <<<<<<<<<<<<<<
@@ -24644,7 +26741,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double 
 */
   __pyx_v_q4 = (((((1.0 / 24.0) * __pyx_v_S) * __pyx_v_df_q) * __pyx_v_sig_sqrt_T) * (((((__pyx_v_d1 * __pyx_v_d1) - 1.0) - ((3.0 * __pyx_v_sig_sqrt_T) * __pyx_v_d2)) * __pyx_v_nd1) + ((__pyx_v_sig2_T * __pyx_v_sig_sqrt_T) * __pyx_v_Nd1)));
 
-  /* "bz_pricing/core/options_core.pyx":386
+  /* "bz_pricing/core/options_core.pyx":573
  *     )
  * 
  *     cdef double call_cs = price_bs + kappa3 * q3 + exc_kurt * q4             # <<<<<<<<<<<<<<
@@ -24653,7 +26750,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double 
 */
   __pyx_v_call_cs = ((__pyx_v_price_bs + (__pyx_v_kappa3 * __pyx_v_q3)) + (__pyx_v_exc_kurt * __pyx_v_q4));
 
-  /* "bz_pricing/core/options_core.pyx":387
+  /* "bz_pricing/core/options_core.pyx":574
  * 
  *     cdef double call_cs = price_bs + kappa3 * q3 + exc_kurt * q4
  *     if call_cs < 0.0:             # <<<<<<<<<<<<<<
@@ -24665,7 +26762,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double 
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/options_core.pyx":388
+    /* "bz_pricing/core/options_core.pyx":575
  *     cdef double call_cs = price_bs + kappa3 * q3 + exc_kurt * q4
  *     if call_cs < 0.0:
  *         call_cs = 0.0             # <<<<<<<<<<<<<<
@@ -24674,7 +26771,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double 
 */
     __pyx_v_call_cs = 0.0;
 
-    /* "bz_pricing/core/options_core.pyx":387
+    /* "bz_pricing/core/options_core.pyx":574
  * 
  *     cdef double call_cs = price_bs + kappa3 * q3 + exc_kurt * q4
  *     if call_cs < 0.0:             # <<<<<<<<<<<<<<
@@ -24683,7 +26780,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double 
 */
   }
 
-  /* "bz_pricing/core/options_core.pyx":389
+  /* "bz_pricing/core/options_core.pyx":576
  *     if call_cs < 0.0:
  *         call_cs = 0.0
  *     if is_call:             # <<<<<<<<<<<<<<
@@ -24692,7 +26789,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double 
 */
   if (__pyx_v_is_call) {
 
-    /* "bz_pricing/core/options_core.pyx":390
+    /* "bz_pricing/core/options_core.pyx":577
  *         call_cs = 0.0
  *     if is_call:
  *         return call_cs             # <<<<<<<<<<<<<<
@@ -24705,7 +26802,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double 
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/options_core.pyx":389
+    /* "bz_pricing/core/options_core.pyx":576
  *     if call_cs < 0.0:
  *         call_cs = 0.0
  *     if is_call:             # <<<<<<<<<<<<<<
@@ -24714,7 +26811,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double 
 */
   }
 
-  /* "bz_pricing/core/options_core.pyx":392
+  /* "bz_pricing/core/options_core.pyx":579
  *         return call_cs
  * 
  *     cdef double put_cs = call_cs - S * df_q + K * df_r             # <<<<<<<<<<<<<<
@@ -24723,7 +26820,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double 
 */
   __pyx_v_put_cs = ((__pyx_v_call_cs - (__pyx_v_S * __pyx_v_df_q)) + (__pyx_v_K * __pyx_v_df_r));
 
-  /* "bz_pricing/core/options_core.pyx":393
+  /* "bz_pricing/core/options_core.pyx":580
  * 
  *     cdef double put_cs = call_cs - S * df_q + K * df_r
  *     return put_cs if put_cs > 0.0 else 0.0             # <<<<<<<<<<<<<<
@@ -24745,7 +26842,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double 
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/options_core.pyx":353
+  /* "bz_pricing/core/options_core.pyx":540
  * 
  * 
  * cpdef double corrado_su_price(             # <<<<<<<<<<<<<<
@@ -24780,16 +26877,16 @@ static double __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(double 
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_15corrado_su_price(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_17corrado_su_price(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_10bz_pricing_4core_12options_core_14corrado_su_price, "Modelo de Corrado & Su (1996) com expans\303\243o de Gram-Charlier (assimetria e curtose).");
-static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_15corrado_su_price = {"corrado_su_price", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_15corrado_su_price, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10bz_pricing_4core_12options_core_14corrado_su_price};
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_15corrado_su_price(PyObject *__pyx_self, 
+PyDoc_STRVAR(__pyx_doc_10bz_pricing_4core_12options_core_16corrado_su_price, "Modelo de Corrado & Su (1996) com expans\303\243o de Gram-Charlier (assimetria e curtose).");
+static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_17corrado_su_price = {"corrado_su_price", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_17corrado_su_price, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10bz_pricing_4core_12options_core_16corrado_su_price};
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_17corrado_su_price(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -24827,93 +26924,93 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_S,&__pyx_mstate_global->__pyx_n_u_K,&__pyx_mstate_global->__pyx_n_u_r,&__pyx_mstate_global->__pyx_n_u_q,&__pyx_mstate_global->__pyx_n_u_T,&__pyx_mstate_global->__pyx_n_u_sigma,&__pyx_mstate_global->__pyx_n_u_kappa3,&__pyx_mstate_global->__pyx_n_u_kappa4,&__pyx_mstate_global->__pyx_n_u_is_call,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 353, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 540, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  9:
         values[8] = __Pyx_ArgRef_FASTCALL(__pyx_args, 8);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 353, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 540, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  8:
         values[7] = __Pyx_ArgRef_FASTCALL(__pyx_args, 7);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 353, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 540, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  7:
         values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 353, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 540, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  6:
         values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 353, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 540, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 353, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 540, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 353, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 540, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 353, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 540, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 353, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 540, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 353, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 540, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "corrado_su_price", 0) < (0)) __PYX_ERR(0, 353, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "corrado_su_price", 0) < (0)) __PYX_ERR(0, 540, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 8; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("corrado_su_price", 0, 8, 9, i); __PYX_ERR(0, 353, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("corrado_su_price", 0, 8, 9, i); __PYX_ERR(0, 540, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  9:
         values[8] = __Pyx_ArgRef_FASTCALL(__pyx_args, 8);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 353, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 540, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  8:
         values[7] = __Pyx_ArgRef_FASTCALL(__pyx_args, 7);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 353, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 540, __pyx_L3_error)
         values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 353, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 540, __pyx_L3_error)
         values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 353, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 540, __pyx_L3_error)
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 353, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 540, __pyx_L3_error)
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 353, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 540, __pyx_L3_error)
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 353, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 540, __pyx_L3_error)
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 353, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 540, __pyx_L3_error)
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 353, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 540, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_S = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_S == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 354, __pyx_L3_error)
-    __pyx_v_K = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_K == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 355, __pyx_L3_error)
-    __pyx_v_r = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_r == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 356, __pyx_L3_error)
-    __pyx_v_q = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_q == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 357, __pyx_L3_error)
-    __pyx_v_T = __Pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_T == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 358, __pyx_L3_error)
-    __pyx_v_sigma = __Pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_sigma == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 359, __pyx_L3_error)
-    __pyx_v_kappa3 = __Pyx_PyFloat_AsDouble(values[6]); if (unlikely((__pyx_v_kappa3 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 360, __pyx_L3_error)
-    __pyx_v_kappa4 = __Pyx_PyFloat_AsDouble(values[7]); if (unlikely((__pyx_v_kappa4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 361, __pyx_L3_error)
+    __pyx_v_S = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_S == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 541, __pyx_L3_error)
+    __pyx_v_K = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_K == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 542, __pyx_L3_error)
+    __pyx_v_r = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_r == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 543, __pyx_L3_error)
+    __pyx_v_q = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_q == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 544, __pyx_L3_error)
+    __pyx_v_T = __Pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_T == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 545, __pyx_L3_error)
+    __pyx_v_sigma = __Pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_sigma == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 546, __pyx_L3_error)
+    __pyx_v_kappa3 = __Pyx_PyFloat_AsDouble(values[6]); if (unlikely((__pyx_v_kappa3 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 547, __pyx_L3_error)
+    __pyx_v_kappa4 = __Pyx_PyFloat_AsDouble(values[7]); if (unlikely((__pyx_v_kappa4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 548, __pyx_L3_error)
     if (values[8]) {
-      __pyx_v_is_call = __Pyx_PyObject_IsTrue(values[8]); if (unlikely((__pyx_v_is_call == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 362, __pyx_L3_error)
+      __pyx_v_is_call = __Pyx_PyObject_IsTrue(values[8]); if (unlikely((__pyx_v_is_call == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 549, __pyx_L3_error)
     } else {
 
-      /* "bz_pricing/core/options_core.pyx":362
+      /* "bz_pricing/core/options_core.pyx":549
  *     double kappa3,
  *     double kappa4,
  *     bint is_call=True,             # <<<<<<<<<<<<<<
@@ -24925,7 +27022,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("corrado_su_price", 0, 8, 9, __pyx_nargs); __PYX_ERR(0, 353, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("corrado_su_price", 0, 8, 9, __pyx_nargs); __PYX_ERR(0, 540, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -24936,9 +27033,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_14corrado_su_price(__pyx_self, __pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_kappa3, __pyx_v_kappa4, __pyx_v_is_call);
+  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_16corrado_su_price(__pyx_self, __pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_kappa3, __pyx_v_kappa4, __pyx_v_is_call);
 
-  /* "bz_pricing/core/options_core.pyx":353
+  /* "bz_pricing/core/options_core.pyx":540
  * 
  * 
  * cpdef double corrado_su_price(             # <<<<<<<<<<<<<<
@@ -24963,7 +27060,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_14corrado_su_price(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, double __pyx_v_kappa3, double __pyx_v_kappa4, int __pyx_v_is_call) {
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_16corrado_su_price(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, double __pyx_v_kappa3, double __pyx_v_kappa4, int __pyx_v_is_call) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   double __pyx_t_1;
@@ -24976,7 +27073,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_14corrado_su_price(C
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.is_call = __pyx_v_is_call;
   __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_kappa3, __pyx_v_kappa4, 1, &__pyx_t_2); 
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 353, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 540, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
   {
@@ -25001,7 +27098,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_14corrado_su_price(C
   return __pyx_r;
 }
 
-/* "bz_pricing/core/options_core.pyx":396
+/* "bz_pricing/core/options_core.pyx":583
  * 
  * 
  * cpdef double implied_vol_bsm(             # <<<<<<<<<<<<<<
@@ -25009,7 +27106,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_14corrado_su_price(C
  *     double S,
 */
 
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_17implied_vol_bsm(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_19implied_vol_bsm(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -25018,7 +27115,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 ); /*proto*/
 static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double __pyx_v_target_price, double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, CYTHON_UNUSED int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_12options_core_implied_vol_bsm *__pyx_optional_args) {
 
-  /* "bz_pricing/core/options_core.pyx":403
+  /* "bz_pricing/core/options_core.pyx":590
  *     double q,
  *     double T,
  *     bint is_call=True,             # <<<<<<<<<<<<<<
@@ -25064,7 +27161,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
     }
   }
 
-  /* "bz_pricing/core/options_core.pyx":408
+  /* "bz_pricing/core/options_core.pyx":595
  * ) noexcept nogil:
  *     """Inverso de volatilidade implcita via Newton-Raphson com fallback por bisseo."""
  *     if T <= 0.0 or S <= 0.0 or K <= 0.0:             # <<<<<<<<<<<<<<
@@ -25100,7 +27197,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/options_core.pyx":409
+    /* "bz_pricing/core/options_core.pyx":596
  *     """Inverso de volatilidade implcita via Newton-Raphson com fallback por bisseo."""
  *     if T <= 0.0 or S <= 0.0 or K <= 0.0:
  *         return 0.0             # <<<<<<<<<<<<<<
@@ -25113,7 +27210,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/options_core.pyx":408
+    /* "bz_pricing/core/options_core.pyx":595
  * ) noexcept nogil:
  *     """Inverso de volatilidade implcita via Newton-Raphson com fallback por bisseo."""
  *     if T <= 0.0 or S <= 0.0 or K <= 0.0:             # <<<<<<<<<<<<<<
@@ -25122,7 +27219,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
 */
   }
 
-  /* "bz_pricing/core/options_core.pyx":411
+  /* "bz_pricing/core/options_core.pyx":598
  *         return 0.0
  * 
  *     cdef double df_q = exp(-q * T)             # <<<<<<<<<<<<<<
@@ -25131,7 +27228,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
 */
   __pyx_v_df_q = exp(((-__pyx_v_q) * __pyx_v_T));
 
-  /* "bz_pricing/core/options_core.pyx":412
+  /* "bz_pricing/core/options_core.pyx":599
  * 
  *     cdef double df_q = exp(-q * T)
  *     cdef double df_r = exp(-r * T)             # <<<<<<<<<<<<<<
@@ -25140,7 +27237,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
 */
   __pyx_v_df_r = exp(((-__pyx_v_r) * __pyx_v_T));
 
-  /* "bz_pricing/core/options_core.pyx":413
+  /* "bz_pricing/core/options_core.pyx":600
  *     cdef double df_q = exp(-q * T)
  *     cdef double df_r = exp(-r * T)
  *     cdef double intrinsic = fmax(S * df_q - K * df_r, 0.0) if is_call else fmax(K * df_r - S * df_q, 0.0)             # <<<<<<<<<<<<<<
@@ -25156,7 +27253,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
   }
   __pyx_v_intrinsic = __pyx_t_3;
 
-  /* "bz_pricing/core/options_core.pyx":414
+  /* "bz_pricing/core/options_core.pyx":601
  *     cdef double df_r = exp(-r * T)
  *     cdef double intrinsic = fmax(S * df_q - K * df_r, 0.0) if is_call else fmax(K * df_r - S * df_q, 0.0)
  *     cdef double upper_bound = (S * df_q) if is_call else (K * df_r)             # <<<<<<<<<<<<<<
@@ -25172,7 +27269,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
   }
   __pyx_v_upper_bound = __pyx_t_3;
 
-  /* "bz_pricing/core/options_core.pyx":415
+  /* "bz_pricing/core/options_core.pyx":602
  *     cdef double intrinsic = fmax(S * df_q - K * df_r, 0.0) if is_call else fmax(K * df_r - S * df_q, 0.0)
  *     cdef double upper_bound = (S * df_q) if is_call else (K * df_r)
  *     if target_price <= intrinsic + 1e-12:             # <<<<<<<<<<<<<<
@@ -25184,7 +27281,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/options_core.pyx":416
+    /* "bz_pricing/core/options_core.pyx":603
  *     cdef double upper_bound = (S * df_q) if is_call else (K * df_r)
  *     if target_price <= intrinsic + 1e-12:
  *         return NAN             # <<<<<<<<<<<<<<
@@ -25197,7 +27294,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/options_core.pyx":415
+    /* "bz_pricing/core/options_core.pyx":602
  *     cdef double intrinsic = fmax(S * df_q - K * df_r, 0.0) if is_call else fmax(K * df_r - S * df_q, 0.0)
  *     cdef double upper_bound = (S * df_q) if is_call else (K * df_r)
  *     if target_price <= intrinsic + 1e-12:             # <<<<<<<<<<<<<<
@@ -25206,7 +27303,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
 */
   }
 
-  /* "bz_pricing/core/options_core.pyx":417
+  /* "bz_pricing/core/options_core.pyx":604
  *     if target_price <= intrinsic + 1e-12:
  *         return NAN
  *     if target_price >= upper_bound - 1e-12:             # <<<<<<<<<<<<<<
@@ -25218,7 +27315,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/options_core.pyx":418
+    /* "bz_pricing/core/options_core.pyx":605
  *         return NAN
  *     if target_price >= upper_bound - 1e-12:
  *         return NAN             # <<<<<<<<<<<<<<
@@ -25231,7 +27328,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/options_core.pyx":417
+    /* "bz_pricing/core/options_core.pyx":604
  *     if target_price <= intrinsic + 1e-12:
  *         return NAN
  *     if target_price >= upper_bound - 1e-12:             # <<<<<<<<<<<<<<
@@ -25240,7 +27337,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
 */
   }
 
-  /* "bz_pricing/core/options_core.pyx":420
+  /* "bz_pricing/core/options_core.pyx":607
  *         return NAN
  * 
  *     cdef double low = 1e-5             # <<<<<<<<<<<<<<
@@ -25249,7 +27346,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
 */
   __pyx_v_low = 1e-5;
 
-  /* "bz_pricing/core/options_core.pyx":421
+  /* "bz_pricing/core/options_core.pyx":608
  * 
  *     cdef double low = 1e-5
  *     cdef double high = 5.0             # <<<<<<<<<<<<<<
@@ -25258,7 +27355,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
 */
   __pyx_v_high = 5.0;
 
-  /* "bz_pricing/core/options_core.pyx":422
+  /* "bz_pricing/core/options_core.pyx":609
  *     cdef double low = 1e-5
  *     cdef double high = 5.0
  *     cdef double sigma = 0.25             # <<<<<<<<<<<<<<
@@ -25267,7 +27364,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
 */
   __pyx_v_sigma = 0.25;
 
-  /* "bz_pricing/core/options_core.pyx":426
+  /* "bz_pricing/core/options_core.pyx":613
  *     cdef int it
  * 
  *     for it in range(max_iter):             # <<<<<<<<<<<<<<
@@ -25281,7 +27378,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
   for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
     __pyx_v_it = __pyx_t_6;
 
-    /* "bz_pricing/core/options_core.pyx":427
+    /* "bz_pricing/core/options_core.pyx":614
  * 
  *     for it in range(max_iter):
  *         _bsm_core(S, K, r, q, T, sigma, is_call, &price, &delta, &gamma, &vega, &theta, &rho, &vanna, &volga)             # <<<<<<<<<<<<<<
@@ -25290,7 +27387,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
 */
     __pyx_f_10bz_pricing_4core_12options_core__bsm_core(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_is_call, (&__pyx_v_price), (&__pyx_v_delta), (&__pyx_v_gamma), (&__pyx_v_vega), (&__pyx_v_theta), (&__pyx_v_rho), (&__pyx_v_vanna), (&__pyx_v_volga));
 
-    /* "bz_pricing/core/options_core.pyx":428
+    /* "bz_pricing/core/options_core.pyx":615
  *     for it in range(max_iter):
  *         _bsm_core(S, K, r, q, T, sigma, is_call, &price, &delta, &gamma, &vega, &theta, &rho, &vanna, &volga)
  *         diff = price - target_price             # <<<<<<<<<<<<<<
@@ -25299,7 +27396,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
 */
     __pyx_v_diff = (__pyx_v_price - __pyx_v_target_price);
 
-    /* "bz_pricing/core/options_core.pyx":429
+    /* "bz_pricing/core/options_core.pyx":616
  *         _bsm_core(S, K, r, q, T, sigma, is_call, &price, &delta, &gamma, &vega, &theta, &rho, &vanna, &volga)
  *         diff = price - target_price
  *         if fabs(diff) < tol:             # <<<<<<<<<<<<<<
@@ -25311,7 +27408,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
     if (__pyx_t_1) {
 
 
-      /* "bz_pricing/core/options_core.pyx":430
+      /* "bz_pricing/core/options_core.pyx":617
  *         diff = price - target_price
  *         if fabs(diff) < tol:
  *             return sigma             # <<<<<<<<<<<<<<
@@ -25324,7 +27421,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
       }
       goto __pyx_L0;
 
-      /* "bz_pricing/core/options_core.pyx":429
+      /* "bz_pricing/core/options_core.pyx":616
  *         _bsm_core(S, K, r, q, T, sigma, is_call, &price, &delta, &gamma, &vega, &theta, &rho, &vanna, &volga)
  *         diff = price - target_price
  *         if fabs(diff) < tol:             # <<<<<<<<<<<<<<
@@ -25333,7 +27430,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
 */
     }
 
-    /* "bz_pricing/core/options_core.pyx":431
+    /* "bz_pricing/core/options_core.pyx":618
  *         if fabs(diff) < tol:
  *             return sigma
  *         if diff < 0.0 and sigma > low:             # <<<<<<<<<<<<<<
@@ -25359,7 +27456,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
     if (__pyx_t_1) {
 
 
-      /* "bz_pricing/core/options_core.pyx":432
+      /* "bz_pricing/core/options_core.pyx":619
  *             return sigma
  *         if diff < 0.0 and sigma > low:
  *             low = sigma             # <<<<<<<<<<<<<<
@@ -25368,7 +27465,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
 */
       __pyx_v_low = __pyx_v_sigma;
 
-      /* "bz_pricing/core/options_core.pyx":431
+      /* "bz_pricing/core/options_core.pyx":618
  *         if fabs(diff) < tol:
  *             return sigma
  *         if diff < 0.0 and sigma > low:             # <<<<<<<<<<<<<<
@@ -25378,7 +27475,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
       goto __pyx_L12;
     }
 
-    /* "bz_pricing/core/options_core.pyx":433
+    /* "bz_pricing/core/options_core.pyx":620
  *         if diff < 0.0 and sigma > low:
  *             low = sigma
  *         elif diff > 0.0 and sigma < high:             # <<<<<<<<<<<<<<
@@ -25404,7 +27501,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
     if (__pyx_t_1) {
 
 
-      /* "bz_pricing/core/options_core.pyx":434
+      /* "bz_pricing/core/options_core.pyx":621
  *             low = sigma
  *         elif diff > 0.0 and sigma < high:
  *             high = sigma             # <<<<<<<<<<<<<<
@@ -25413,7 +27510,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
 */
       __pyx_v_high = __pyx_v_sigma;
 
-      /* "bz_pricing/core/options_core.pyx":433
+      /* "bz_pricing/core/options_core.pyx":620
  *         if diff < 0.0 and sigma > low:
  *             low = sigma
  *         elif diff > 0.0 and sigma < high:             # <<<<<<<<<<<<<<
@@ -25423,7 +27520,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
     }
     __pyx_L12:;
 
-    /* "bz_pricing/core/options_core.pyx":436
+    /* "bz_pricing/core/options_core.pyx":623
  *             high = sigma
  * 
  *         if vega > 1e-10:             # <<<<<<<<<<<<<<
@@ -25435,7 +27532,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
     if (__pyx_t_1) {
 
 
-      /* "bz_pricing/core/options_core.pyx":437
+      /* "bz_pricing/core/options_core.pyx":624
  * 
  *         if vega > 1e-10:
  *             sigma = sigma - diff / vega             # <<<<<<<<<<<<<<
@@ -25444,7 +27541,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
 */
       __pyx_v_sigma = (__pyx_v_sigma - (__pyx_v_diff / __pyx_v_vega));
 
-      /* "bz_pricing/core/options_core.pyx":438
+      /* "bz_pricing/core/options_core.pyx":625
  *         if vega > 1e-10:
  *             sigma = sigma - diff / vega
  *             if sigma <= low or sigma >= high:             # <<<<<<<<<<<<<<
@@ -25470,7 +27567,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
       if (__pyx_t_1) {
 
 
-        /* "bz_pricing/core/options_core.pyx":439
+        /* "bz_pricing/core/options_core.pyx":626
  *             sigma = sigma - diff / vega
  *             if sigma <= low or sigma >= high:
  *                 sigma = 0.5 * (low + high)             # <<<<<<<<<<<<<<
@@ -25479,7 +27576,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
 */
         __pyx_v_sigma = (0.5 * (__pyx_v_low + __pyx_v_high));
 
-        /* "bz_pricing/core/options_core.pyx":438
+        /* "bz_pricing/core/options_core.pyx":625
  *         if vega > 1e-10:
  *             sigma = sigma - diff / vega
  *             if sigma <= low or sigma >= high:             # <<<<<<<<<<<<<<
@@ -25488,7 +27585,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
 */
       }
 
-      /* "bz_pricing/core/options_core.pyx":436
+      /* "bz_pricing/core/options_core.pyx":623
  *             high = sigma
  * 
  *         if vega > 1e-10:             # <<<<<<<<<<<<<<
@@ -25498,7 +27595,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
       goto __pyx_L17;
     }
 
-    /* "bz_pricing/core/options_core.pyx":441
+    /* "bz_pricing/core/options_core.pyx":628
  *                 sigma = 0.5 * (low + high)
  *         else:
  *             sigma = 0.5 * (low + high)             # <<<<<<<<<<<<<<
@@ -25512,7 +27609,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
   }
 
 
-  /* "bz_pricing/core/options_core.pyx":443
+  /* "bz_pricing/core/options_core.pyx":630
  *             sigma = 0.5 * (low + high)
  * 
  *     for it in range(60):             # <<<<<<<<<<<<<<
@@ -25522,7 +27619,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
   for (__pyx_t_4 = 0; __pyx_t_4 < 60; __pyx_t_4+=1) {
     __pyx_v_it = __pyx_t_4;
 
-    /* "bz_pricing/core/options_core.pyx":444
+    /* "bz_pricing/core/options_core.pyx":631
  * 
  *     for it in range(60):
  *         sigma = 0.5 * (low + high)             # <<<<<<<<<<<<<<
@@ -25531,7 +27628,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
 */
     __pyx_v_sigma = (0.5 * (__pyx_v_low + __pyx_v_high));
 
-    /* "bz_pricing/core/options_core.pyx":445
+    /* "bz_pricing/core/options_core.pyx":632
  *     for it in range(60):
  *         sigma = 0.5 * (low + high)
  *         _bsm_core(S, K, r, q, T, sigma, is_call, &price, &delta, &gamma, &vega, &theta, &rho, &vanna, &volga)             # <<<<<<<<<<<<<<
@@ -25540,7 +27637,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
 */
     __pyx_f_10bz_pricing_4core_12options_core__bsm_core(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_is_call, (&__pyx_v_price), (&__pyx_v_delta), (&__pyx_v_gamma), (&__pyx_v_vega), (&__pyx_v_theta), (&__pyx_v_rho), (&__pyx_v_vanna), (&__pyx_v_volga));
 
-    /* "bz_pricing/core/options_core.pyx":446
+    /* "bz_pricing/core/options_core.pyx":633
  *         sigma = 0.5 * (low + high)
  *         _bsm_core(S, K, r, q, T, sigma, is_call, &price, &delta, &gamma, &vega, &theta, &rho, &vanna, &volga)
  *         diff = price - target_price             # <<<<<<<<<<<<<<
@@ -25549,7 +27646,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
 */
     __pyx_v_diff = (__pyx_v_price - __pyx_v_target_price);
 
-    /* "bz_pricing/core/options_core.pyx":447
+    /* "bz_pricing/core/options_core.pyx":634
  *         _bsm_core(S, K, r, q, T, sigma, is_call, &price, &delta, &gamma, &vega, &theta, &rho, &vanna, &volga)
  *         diff = price - target_price
  *         if fabs(diff) < tol or (high - low) < tol:             # <<<<<<<<<<<<<<
@@ -25575,7 +27672,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
     if (__pyx_t_1) {
 
 
-      /* "bz_pricing/core/options_core.pyx":448
+      /* "bz_pricing/core/options_core.pyx":635
  *         diff = price - target_price
  *         if fabs(diff) < tol or (high - low) < tol:
  *             return sigma             # <<<<<<<<<<<<<<
@@ -25588,7 +27685,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
       }
       goto __pyx_L0;
 
-      /* "bz_pricing/core/options_core.pyx":447
+      /* "bz_pricing/core/options_core.pyx":634
  *         _bsm_core(S, K, r, q, T, sigma, is_call, &price, &delta, &gamma, &vega, &theta, &rho, &vanna, &volga)
  *         diff = price - target_price
  *         if fabs(diff) < tol or (high - low) < tol:             # <<<<<<<<<<<<<<
@@ -25597,7 +27694,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
 */
     }
 
-    /* "bz_pricing/core/options_core.pyx":449
+    /* "bz_pricing/core/options_core.pyx":636
  *         if fabs(diff) < tol or (high - low) < tol:
  *             return sigma
  *         if diff < 0.0:             # <<<<<<<<<<<<<<
@@ -25609,7 +27706,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
     if (__pyx_t_1) {
 
 
-      /* "bz_pricing/core/options_core.pyx":450
+      /* "bz_pricing/core/options_core.pyx":637
  *             return sigma
  *         if diff < 0.0:
  *             low = sigma             # <<<<<<<<<<<<<<
@@ -25618,7 +27715,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
 */
       __pyx_v_low = __pyx_v_sigma;
 
-      /* "bz_pricing/core/options_core.pyx":449
+      /* "bz_pricing/core/options_core.pyx":636
  *         if fabs(diff) < tol or (high - low) < tol:
  *             return sigma
  *         if diff < 0.0:             # <<<<<<<<<<<<<<
@@ -25628,7 +27725,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
       goto __pyx_L26;
     }
 
-    /* "bz_pricing/core/options_core.pyx":452
+    /* "bz_pricing/core/options_core.pyx":639
  *             low = sigma
  *         else:
  *             high = sigma             # <<<<<<<<<<<<<<
@@ -25641,7 +27738,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
     __pyx_L26:;
   }
 
-  /* "bz_pricing/core/options_core.pyx":453
+  /* "bz_pricing/core/options_core.pyx":640
  *         else:
  *             high = sigma
  *     return 0.5 * (low + high)             # <<<<<<<<<<<<<<
@@ -25654,7 +27751,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/options_core.pyx":396
+  /* "bz_pricing/core/options_core.pyx":583
  * 
  * 
  * cpdef double implied_vol_bsm(             # <<<<<<<<<<<<<<
@@ -25685,16 +27782,16 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(double _
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_17implied_vol_bsm(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_19implied_vol_bsm(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_10bz_pricing_4core_12options_core_16implied_vol_bsm, "Invers\303\243o de volatilidade impl\303\255cita via Newton-Raphson com fallback por bisse\303\247\303\243o.");
-static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_17implied_vol_bsm = {"implied_vol_bsm", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_17implied_vol_bsm, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10bz_pricing_4core_12options_core_16implied_vol_bsm};
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_17implied_vol_bsm(PyObject *__pyx_self, 
+PyDoc_STRVAR(__pyx_doc_10bz_pricing_4core_12options_core_18implied_vol_bsm, "Invers\303\243o de volatilidade impl\303\255cita via Newton-Raphson com fallback por bisse\303\247\303\243o.");
+static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_19implied_vol_bsm = {"implied_vol_bsm", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_19implied_vol_bsm, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10bz_pricing_4core_12options_core_18implied_vol_bsm};
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_19implied_vol_bsm(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -25732,95 +27829,95 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_target_price,&__pyx_mstate_global->__pyx_n_u_S,&__pyx_mstate_global->__pyx_n_u_K,&__pyx_mstate_global->__pyx_n_u_r,&__pyx_mstate_global->__pyx_n_u_q,&__pyx_mstate_global->__pyx_n_u_T,&__pyx_mstate_global->__pyx_n_u_is_call,&__pyx_mstate_global->__pyx_n_u_tol,&__pyx_mstate_global->__pyx_n_u_max_iter,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 396, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 583, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  9:
         values[8] = __Pyx_ArgRef_FASTCALL(__pyx_args, 8);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 396, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 583, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  8:
         values[7] = __Pyx_ArgRef_FASTCALL(__pyx_args, 7);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 396, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 583, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  7:
         values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 396, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 583, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  6:
         values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 396, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 583, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 396, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 583, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 396, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 583, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 396, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 583, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 396, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 583, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 396, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 583, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "implied_vol_bsm", 0) < (0)) __PYX_ERR(0, 396, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "implied_vol_bsm", 0) < (0)) __PYX_ERR(0, 583, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 6; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("implied_vol_bsm", 0, 6, 9, i); __PYX_ERR(0, 396, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("implied_vol_bsm", 0, 6, 9, i); __PYX_ERR(0, 583, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  9:
         values[8] = __Pyx_ArgRef_FASTCALL(__pyx_args, 8);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 396, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 583, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  8:
         values[7] = __Pyx_ArgRef_FASTCALL(__pyx_args, 7);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 396, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 583, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  7:
         values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 396, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 583, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  6:
         values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 396, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 583, __pyx_L3_error)
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 396, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 583, __pyx_L3_error)
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 396, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 583, __pyx_L3_error)
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 396, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 583, __pyx_L3_error)
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 396, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 583, __pyx_L3_error)
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 396, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 583, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_target_price = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_target_price == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 397, __pyx_L3_error)
-    __pyx_v_S = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_S == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 398, __pyx_L3_error)
-    __pyx_v_K = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_K == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 399, __pyx_L3_error)
-    __pyx_v_r = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_r == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 400, __pyx_L3_error)
-    __pyx_v_q = __Pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_q == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 401, __pyx_L3_error)
-    __pyx_v_T = __Pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_T == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 402, __pyx_L3_error)
+    __pyx_v_target_price = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_target_price == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 584, __pyx_L3_error)
+    __pyx_v_S = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_S == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 585, __pyx_L3_error)
+    __pyx_v_K = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_K == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 586, __pyx_L3_error)
+    __pyx_v_r = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_r == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 587, __pyx_L3_error)
+    __pyx_v_q = __Pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_q == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 588, __pyx_L3_error)
+    __pyx_v_T = __Pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_T == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 589, __pyx_L3_error)
     if (values[6]) {
-      __pyx_v_is_call = __Pyx_PyObject_IsTrue(values[6]); if (unlikely((__pyx_v_is_call == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 403, __pyx_L3_error)
+      __pyx_v_is_call = __Pyx_PyObject_IsTrue(values[6]); if (unlikely((__pyx_v_is_call == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 590, __pyx_L3_error)
     } else {
 
-      /* "bz_pricing/core/options_core.pyx":403
+      /* "bz_pricing/core/options_core.pyx":590
  *     double q,
  *     double T,
  *     bint is_call=True,             # <<<<<<<<<<<<<<
@@ -25830,19 +27927,19 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       __pyx_v_is_call = ((int)1);
     }
     if (values[7]) {
-      __pyx_v_tol = __Pyx_PyFloat_AsDouble(values[7]); if (unlikely((__pyx_v_tol == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 404, __pyx_L3_error)
+      __pyx_v_tol = __Pyx_PyFloat_AsDouble(values[7]); if (unlikely((__pyx_v_tol == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 591, __pyx_L3_error)
     } else {
       __pyx_v_tol = ((double)1e-9);
     }
     if (values[8]) {
-      __pyx_v_max_iter = __Pyx_PyLong_As_int(values[8]); if (unlikely((__pyx_v_max_iter == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 405, __pyx_L3_error)
+      __pyx_v_max_iter = __Pyx_PyLong_As_int(values[8]); if (unlikely((__pyx_v_max_iter == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 592, __pyx_L3_error)
     } else {
       __pyx_v_max_iter = ((int)0x64);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("implied_vol_bsm", 0, 6, 9, __pyx_nargs); __PYX_ERR(0, 396, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("implied_vol_bsm", 0, 6, 9, __pyx_nargs); __PYX_ERR(0, 583, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -25853,9 +27950,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_16implied_vol_bsm(__pyx_self, __pyx_v_target_price, __pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_is_call, __pyx_v_tol, __pyx_v_max_iter);
+  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_18implied_vol_bsm(__pyx_self, __pyx_v_target_price, __pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_is_call, __pyx_v_tol, __pyx_v_max_iter);
 
-  /* "bz_pricing/core/options_core.pyx":396
+  /* "bz_pricing/core/options_core.pyx":583
  * 
  * 
  * cpdef double implied_vol_bsm(             # <<<<<<<<<<<<<<
@@ -25880,7 +27977,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_16implied_vol_bsm(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_target_price, double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, int __pyx_v_is_call, double __pyx_v_tol, int __pyx_v_max_iter) {
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_18implied_vol_bsm(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_target_price, double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, int __pyx_v_is_call, double __pyx_v_tol, int __pyx_v_max_iter) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   double __pyx_t_1;
@@ -25895,7 +27992,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_16implied_vol_bsm(CY
   __pyx_t_2.tol = __pyx_v_tol;
   __pyx_t_2.max_iter = __pyx_v_max_iter;
   __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bsm(__pyx_v_target_price, __pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, 1, &__pyx_t_2); 
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 396, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 583, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
   {
@@ -25920,7 +28017,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_16implied_vol_bsm(CY
   return __pyx_r;
 }
 
-/* "bz_pricing/core/options_core.pyx":456
+/* "bz_pricing/core/options_core.pyx":643
  * 
  * 
  * cpdef double implied_vol_black76(             # <<<<<<<<<<<<<<
@@ -25928,7 +28025,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_16implied_vol_bsm(CY
  *     double F,
 */
 
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_19implied_vol_black76(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_21implied_vol_black76(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -25937,7 +28034,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 ); /*proto*/
 static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_black76(double __pyx_v_target_price, double __pyx_v_F, double __pyx_v_K, double __pyx_v_r, double __pyx_v_T, CYTHON_UNUSED int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_12options_core_implied_vol_black76 *__pyx_optional_args) {
 
-  /* "bz_pricing/core/options_core.pyx":462
+  /* "bz_pricing/core/options_core.pyx":649
  *     double r,
  *     double T,
  *     bint is_call=True,             # <<<<<<<<<<<<<<
@@ -25962,7 +28059,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_black76(doub
     }
   }
 
-  /* "bz_pricing/core/options_core.pyx":466
+  /* "bz_pricing/core/options_core.pyx":653
  *     int max_iter=100,
  * ) noexcept nogil:
  *     return implied_vol_bsm(target_price, F, K, r, r, T, is_call, tol, max_iter)             # <<<<<<<<<<<<<<
@@ -25979,7 +28076,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_black76(doub
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/options_core.pyx":456
+  /* "bz_pricing/core/options_core.pyx":643
  * 
  * 
  * cpdef double implied_vol_black76(             # <<<<<<<<<<<<<<
@@ -25993,15 +28090,15 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_black76(doub
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_19implied_vol_black76(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_21implied_vol_black76(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_19implied_vol_black76 = {"implied_vol_black76", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_19implied_vol_black76, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_19implied_vol_black76(PyObject *__pyx_self, 
+static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_21implied_vol_black76 = {"implied_vol_black76", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_21implied_vol_black76, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_21implied_vol_black76(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -26038,88 +28135,88 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_target_price,&__pyx_mstate_global->__pyx_n_u_F,&__pyx_mstate_global->__pyx_n_u_K,&__pyx_mstate_global->__pyx_n_u_r,&__pyx_mstate_global->__pyx_n_u_T,&__pyx_mstate_global->__pyx_n_u_is_call,&__pyx_mstate_global->__pyx_n_u_tol,&__pyx_mstate_global->__pyx_n_u_max_iter,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 456, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 643, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  8:
         values[7] = __Pyx_ArgRef_FASTCALL(__pyx_args, 7);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 456, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 643, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  7:
         values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 456, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 643, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  6:
         values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 456, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 643, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 456, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 643, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 456, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 643, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 456, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 643, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 456, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 643, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 456, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 643, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "implied_vol_black76", 0) < (0)) __PYX_ERR(0, 456, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "implied_vol_black76", 0) < (0)) __PYX_ERR(0, 643, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 5; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("implied_vol_black76", 0, 5, 8, i); __PYX_ERR(0, 456, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("implied_vol_black76", 0, 5, 8, i); __PYX_ERR(0, 643, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  8:
         values[7] = __Pyx_ArgRef_FASTCALL(__pyx_args, 7);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 456, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 643, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  7:
         values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 456, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 643, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  6:
         values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 456, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 643, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 456, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 643, __pyx_L3_error)
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 456, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 643, __pyx_L3_error)
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 456, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 643, __pyx_L3_error)
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 456, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 643, __pyx_L3_error)
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 456, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 643, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_target_price = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_target_price == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 457, __pyx_L3_error)
-    __pyx_v_F = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_F == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 458, __pyx_L3_error)
-    __pyx_v_K = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_K == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 459, __pyx_L3_error)
-    __pyx_v_r = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_r == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 460, __pyx_L3_error)
-    __pyx_v_T = __Pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_T == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 461, __pyx_L3_error)
+    __pyx_v_target_price = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_target_price == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 644, __pyx_L3_error)
+    __pyx_v_F = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_F == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 645, __pyx_L3_error)
+    __pyx_v_K = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_K == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 646, __pyx_L3_error)
+    __pyx_v_r = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_r == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 647, __pyx_L3_error)
+    __pyx_v_T = __Pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_T == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 648, __pyx_L3_error)
     if (values[5]) {
-      __pyx_v_is_call = __Pyx_PyObject_IsTrue(values[5]); if (unlikely((__pyx_v_is_call == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 462, __pyx_L3_error)
+      __pyx_v_is_call = __Pyx_PyObject_IsTrue(values[5]); if (unlikely((__pyx_v_is_call == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 649, __pyx_L3_error)
     } else {
 
-      /* "bz_pricing/core/options_core.pyx":462
+      /* "bz_pricing/core/options_core.pyx":649
  *     double r,
  *     double T,
  *     bint is_call=True,             # <<<<<<<<<<<<<<
@@ -26129,19 +28226,19 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       __pyx_v_is_call = ((int)1);
     }
     if (values[6]) {
-      __pyx_v_tol = __Pyx_PyFloat_AsDouble(values[6]); if (unlikely((__pyx_v_tol == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 463, __pyx_L3_error)
+      __pyx_v_tol = __Pyx_PyFloat_AsDouble(values[6]); if (unlikely((__pyx_v_tol == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 650, __pyx_L3_error)
     } else {
       __pyx_v_tol = ((double)1e-9);
     }
     if (values[7]) {
-      __pyx_v_max_iter = __Pyx_PyLong_As_int(values[7]); if (unlikely((__pyx_v_max_iter == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 464, __pyx_L3_error)
+      __pyx_v_max_iter = __Pyx_PyLong_As_int(values[7]); if (unlikely((__pyx_v_max_iter == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 651, __pyx_L3_error)
     } else {
       __pyx_v_max_iter = ((int)0x64);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("implied_vol_black76", 0, 5, 8, __pyx_nargs); __PYX_ERR(0, 456, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("implied_vol_black76", 0, 5, 8, __pyx_nargs); __PYX_ERR(0, 643, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -26152,9 +28249,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_18implied_vol_black76(__pyx_self, __pyx_v_target_price, __pyx_v_F, __pyx_v_K, __pyx_v_r, __pyx_v_T, __pyx_v_is_call, __pyx_v_tol, __pyx_v_max_iter);
+  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_20implied_vol_black76(__pyx_self, __pyx_v_target_price, __pyx_v_F, __pyx_v_K, __pyx_v_r, __pyx_v_T, __pyx_v_is_call, __pyx_v_tol, __pyx_v_max_iter);
 
-  /* "bz_pricing/core/options_core.pyx":456
+  /* "bz_pricing/core/options_core.pyx":643
  * 
  * 
  * cpdef double implied_vol_black76(             # <<<<<<<<<<<<<<
@@ -26178,7 +28275,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_18implied_vol_black76(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_target_price, double __pyx_v_F, double __pyx_v_K, double __pyx_v_r, double __pyx_v_T, int __pyx_v_is_call, double __pyx_v_tol, int __pyx_v_max_iter) {
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_20implied_vol_black76(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_target_price, double __pyx_v_F, double __pyx_v_K, double __pyx_v_r, double __pyx_v_T, int __pyx_v_is_call, double __pyx_v_tol, int __pyx_v_max_iter) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   double __pyx_t_1;
@@ -26193,7 +28290,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_18implied_vol_black7
   __pyx_t_2.tol = __pyx_v_tol;
   __pyx_t_2.max_iter = __pyx_v_max_iter;
   __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_implied_vol_black76(__pyx_v_target_price, __pyx_v_F, __pyx_v_K, __pyx_v_r, __pyx_v_T, 1, &__pyx_t_2); 
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 456, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 643, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
   {
@@ -26218,7 +28315,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_18implied_vol_black7
   return __pyx_r;
 }
 
-/* "bz_pricing/core/options_core.pyx":469
+/* "bz_pricing/core/options_core.pyx":656
  * 
  * 
  * cpdef double svi_total_variance(             # <<<<<<<<<<<<<<
@@ -26226,7 +28323,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_18implied_vol_black7
  *     double a,
 */
 
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_21svi_total_variance(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_23svi_total_variance(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -26237,7 +28334,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_svi_total_variance(doubl
   double __pyx_v_dx;
   double __pyx_r;
 
-  /* "bz_pricing/core/options_core.pyx":478
+  /* "bz_pricing/core/options_core.pyx":665
  * ) noexcept nogil:
  *     """Parametrizao SVI (Gatheral / Manual B3): w(k) = a + b * (rho*(k-m) + sqrt((k-m)^2 + sigma^2))."""
  *     cdef double dx = k - m             # <<<<<<<<<<<<<<
@@ -26246,7 +28343,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_svi_total_variance(doubl
 */
   __pyx_v_dx = (__pyx_v_k - __pyx_v_m);
 
-  /* "bz_pricing/core/options_core.pyx":479
+  /* "bz_pricing/core/options_core.pyx":666
  *     """Parametrizao SVI (Gatheral / Manual B3): w(k) = a + b * (rho*(k-m) + sqrt((k-m)^2 + sigma^2))."""
  *     cdef double dx = k - m
  *     return a + b * (rho * dx + sqrt(dx * dx + sigma * sigma))             # <<<<<<<<<<<<<<
@@ -26259,7 +28356,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_svi_total_variance(doubl
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/options_core.pyx":469
+  /* "bz_pricing/core/options_core.pyx":656
  * 
  * 
  * cpdef double svi_total_variance(             # <<<<<<<<<<<<<<
@@ -26274,16 +28371,16 @@ static double __pyx_f_10bz_pricing_4core_12options_core_svi_total_variance(doubl
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_21svi_total_variance(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_23svi_total_variance(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_10bz_pricing_4core_12options_core_20svi_total_variance, "Parametriza\303\247\303\243o SVI (Gatheral / Manual B3): w(k) = a + b * (rho*(k-m) + sqrt((k-m)^2 + sigma^2)).");
-static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_21svi_total_variance = {"svi_total_variance", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_21svi_total_variance, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10bz_pricing_4core_12options_core_20svi_total_variance};
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_21svi_total_variance(PyObject *__pyx_self, 
+PyDoc_STRVAR(__pyx_doc_10bz_pricing_4core_12options_core_22svi_total_variance, "Parametriza\303\247\303\243o SVI (Gatheral / Manual B3): w(k) = a + b * (rho*(k-m) + sqrt((k-m)^2 + sigma^2)).");
+static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_23svi_total_variance = {"svi_total_variance", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_23svi_total_variance, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10bz_pricing_4core_12options_core_22svi_total_variance};
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_23svi_total_variance(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -26318,67 +28415,67 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_k,&__pyx_mstate_global->__pyx_n_u_a,&__pyx_mstate_global->__pyx_n_u_b,&__pyx_mstate_global->__pyx_n_u_rho,&__pyx_mstate_global->__pyx_n_u_m,&__pyx_mstate_global->__pyx_n_u_sigma,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 469, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 656, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  6:
         values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 469, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 656, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 469, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 656, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 469, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 656, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 469, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 656, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 469, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 656, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 469, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 656, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "svi_total_variance", 0) < (0)) __PYX_ERR(0, 469, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "svi_total_variance", 0) < (0)) __PYX_ERR(0, 656, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 6; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("svi_total_variance", 1, 6, 6, i); __PYX_ERR(0, 469, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("svi_total_variance", 1, 6, 6, i); __PYX_ERR(0, 656, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 6)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 469, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 656, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 469, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 656, __pyx_L3_error)
       values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 469, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 656, __pyx_L3_error)
       values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 469, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 656, __pyx_L3_error)
       values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 469, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 656, __pyx_L3_error)
       values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 469, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 656, __pyx_L3_error)
     }
-    __pyx_v_k = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_k == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 470, __pyx_L3_error)
-    __pyx_v_a = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_a == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 471, __pyx_L3_error)
-    __pyx_v_b = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_b == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 472, __pyx_L3_error)
-    __pyx_v_rho = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_rho == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 473, __pyx_L3_error)
-    __pyx_v_m = __Pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_m == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 474, __pyx_L3_error)
-    __pyx_v_sigma = __Pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_sigma == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 475, __pyx_L3_error)
+    __pyx_v_k = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_k == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 657, __pyx_L3_error)
+    __pyx_v_a = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_a == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 658, __pyx_L3_error)
+    __pyx_v_b = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_b == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 659, __pyx_L3_error)
+    __pyx_v_rho = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_rho == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 660, __pyx_L3_error)
+    __pyx_v_m = __Pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_m == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 661, __pyx_L3_error)
+    __pyx_v_sigma = __Pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_sigma == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 662, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("svi_total_variance", 1, 6, 6, __pyx_nargs); __PYX_ERR(0, 469, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("svi_total_variance", 1, 6, 6, __pyx_nargs); __PYX_ERR(0, 656, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -26389,7 +28486,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_20svi_total_variance(__pyx_self, __pyx_v_k, __pyx_v_a, __pyx_v_b, __pyx_v_rho, __pyx_v_m, __pyx_v_sigma);
+  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_22svi_total_variance(__pyx_self, __pyx_v_k, __pyx_v_a, __pyx_v_b, __pyx_v_rho, __pyx_v_m, __pyx_v_sigma);
 
   /* function exit code */
   for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
@@ -26405,7 +28502,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_20svi_total_variance(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_k, double __pyx_v_a, double __pyx_v_b, double __pyx_v_rho, double __pyx_v_m, double __pyx_v_sigma) {
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_22svi_total_variance(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_k, double __pyx_v_a, double __pyx_v_b, double __pyx_v_rho, double __pyx_v_m, double __pyx_v_sigma) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -26413,7 +28510,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_20svi_total_variance
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("svi_total_variance", 0);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_f_10bz_pricing_4core_12options_core_svi_total_variance(__pyx_v_k, __pyx_v_a, __pyx_v_b, __pyx_v_rho, __pyx_v_m, __pyx_v_sigma, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 469, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_f_10bz_pricing_4core_12options_core_svi_total_variance(__pyx_v_k, __pyx_v_a, __pyx_v_b, __pyx_v_rho, __pyx_v_m, __pyx_v_sigma, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 656, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   {
     PyObject *__pyx_temp;
@@ -26437,7 +28534,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_20svi_total_variance
   return __pyx_r;
 }
 
-/* "bz_pricing/core/options_core.pyx":482
+/* "bz_pricing/core/options_core.pyx":669
  * 
  * 
  * cpdef np.ndarray[np.float64_t, ndim=1] svi_eval_vec(             # <<<<<<<<<<<<<<
@@ -26445,7 +28542,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_20svi_total_variance
  *     double a,
 */
 
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_23svi_eval_vec(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_25svi_eval_vec(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -26483,7 +28580,7 @@ static PyArrayObject *__pyx_f_10bz_pricing_4core_12options_core_svi_eval_vec(__P
   __pyx_pybuffernd_out.data = NULL;
   __pyx_pybuffernd_out.rcbuffer = &__pyx_pybuffer_out;
 
-  /* "bz_pricing/core/options_core.pyx":490
+  /* "bz_pricing/core/options_core.pyx":677
  *     double sigma,
  * ):
  *     cdef Py_ssize_t n = k_arr.shape[0]             # <<<<<<<<<<<<<<
@@ -26492,7 +28589,7 @@ static PyArrayObject *__pyx_f_10bz_pricing_4core_12options_core_svi_eval_vec(__P
 */
   __pyx_v_n = (__pyx_v_k_arr.shape[0]);
 
-  /* "bz_pricing/core/options_core.pyx":492
+  /* "bz_pricing/core/options_core.pyx":679
  *     cdef Py_ssize_t n = k_arr.shape[0]
  *     cdef Py_ssize_t i
  *     cdef np.ndarray[np.float64_t, ndim=1] out = np.empty(n, dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -26500,16 +28597,16 @@ static PyArrayObject *__pyx_f_10bz_pricing_4core_12options_core_svi_eval_vec(__P
  *     with nogil:
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 492, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 679, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 492, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 679, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyLong_FromSsize_t(__pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 492, __pyx_L1_error)
+  __pyx_t_3 = PyLong_FromSsize_t(__pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 679, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 492, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 679, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 492, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 679, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_7 = 1;
@@ -26528,13 +28625,13 @@ static PyArrayObject *__pyx_f_10bz_pricing_4core_12options_core_svi_eval_vec(__P
     PyObject *__pyx_callargs[3] = {__pyx_t_2, __pyx_t_3, __pyx_t_6};
     #if CYTHON_VECTORCALL
     __pyx_t_5 = __pyx_mstate_global->__pyx_tuple[2];
-    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 492, __pyx_L1_error)
+    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 679, __pyx_L1_error)
     __Pyx_INCREF(__pyx_t_5);
     #else
     {
       PyObject *__pyx_temp[1] = {__pyx_mstate_global->__pyx_n_u_dtype};
       __pyx_t_5 = __Pyx_MakeKwargDict(__pyx_temp, __pyx_callargs+2, 1);
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 492, __pyx_L1_error)
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 679, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
     }
     #endif
@@ -26544,34 +28641,34 @@ static PyArrayObject *__pyx_f_10bz_pricing_4core_12options_core_svi_eval_vec(__P
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 492, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 679, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_mstate_global->__pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 492, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_mstate_global->__pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 679, __pyx_L1_error)
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_out.rcbuffer->pybuffer, (PyObject*)((PyArrayObject *)__pyx_t_1), &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_out = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_out.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 492, __pyx_L1_error)
+      __PYX_ERR(0, 679, __pyx_L1_error)
     } else {__pyx_pybuffernd_out.diminfo[0].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_out.diminfo[0].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[0];
     }
   }
   __pyx_v_out = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/options_core.pyx":493
+  /* "bz_pricing/core/options_core.pyx":680
  *     cdef Py_ssize_t i
  *     cdef np.ndarray[np.float64_t, ndim=1] out = np.empty(n, dtype=np.float64)
  *     cdef double[:] out_v = out             # <<<<<<<<<<<<<<
  *     with nogil:
  *         for i in range(n):
 */
-  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_out), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 493, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_out), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 680, __pyx_L1_error)
   __pyx_v_out_v = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "bz_pricing/core/options_core.pyx":494
+  /* "bz_pricing/core/options_core.pyx":681
  *     cdef np.ndarray[np.float64_t, ndim=1] out = np.empty(n, dtype=np.float64)
  *     cdef double[:] out_v = out
  *     with nogil:             # <<<<<<<<<<<<<<
@@ -26584,7 +28681,7 @@ static PyArrayObject *__pyx_f_10bz_pricing_4core_12options_core_svi_eval_vec(__P
       __Pyx_FastGIL_Remember();
       /*try:*/ {
 
-        /* "bz_pricing/core/options_core.pyx":495
+        /* "bz_pricing/core/options_core.pyx":682
  *     cdef double[:] out_v = out
  *     with nogil:
  *         for i in range(n):             # <<<<<<<<<<<<<<
@@ -26598,7 +28695,7 @@ static PyArrayObject *__pyx_f_10bz_pricing_4core_12options_core_svi_eval_vec(__P
         for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
           __pyx_v_i = __pyx_t_11;
 
-          /* "bz_pricing/core/options_core.pyx":496
+          /* "bz_pricing/core/options_core.pyx":683
  *     with nogil:
  *         for i in range(n):
  *             out_v[i] = svi_total_variance(k_arr[i], a, b, rho, m, sigma)             # <<<<<<<<<<<<<<
@@ -26612,7 +28709,7 @@ static PyArrayObject *__pyx_f_10bz_pricing_4core_12options_core_svi_eval_vec(__P
 
       }
 
-      /* "bz_pricing/core/options_core.pyx":494
+      /* "bz_pricing/core/options_core.pyx":681
  *     cdef np.ndarray[np.float64_t, ndim=1] out = np.empty(n, dtype=np.float64)
  *     cdef double[:] out_v = out
  *     with nogil:             # <<<<<<<<<<<<<<
@@ -26629,7 +28726,7 @@ static PyArrayObject *__pyx_f_10bz_pricing_4core_12options_core_svi_eval_vec(__P
       }
   }
 
-  /* "bz_pricing/core/options_core.pyx":497
+  /* "bz_pricing/core/options_core.pyx":684
  *         for i in range(n):
  *             out_v[i] = svi_total_variance(k_arr[i], a, b, rho, m, sigma)
  *     return out             # <<<<<<<<<<<<<<
@@ -26647,7 +28744,7 @@ static PyArrayObject *__pyx_f_10bz_pricing_4core_12options_core_svi_eval_vec(__P
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/options_core.pyx":482
+  /* "bz_pricing/core/options_core.pyx":669
  * 
  * 
  * cpdef np.ndarray[np.float64_t, ndim=1] svi_eval_vec(             # <<<<<<<<<<<<<<
@@ -26688,15 +28785,15 @@ static PyArrayObject *__pyx_f_10bz_pricing_4core_12options_core_svi_eval_vec(__P
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_23svi_eval_vec(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_25svi_eval_vec(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_23svi_eval_vec = {"svi_eval_vec", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_23svi_eval_vec, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_23svi_eval_vec(PyObject *__pyx_self, 
+static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_25svi_eval_vec = {"svi_eval_vec", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_25svi_eval_vec, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_25svi_eval_vec(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -26731,67 +28828,67 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_k_arr,&__pyx_mstate_global->__pyx_n_u_a,&__pyx_mstate_global->__pyx_n_u_b,&__pyx_mstate_global->__pyx_n_u_rho,&__pyx_mstate_global->__pyx_n_u_m,&__pyx_mstate_global->__pyx_n_u_sigma,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 482, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 669, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  6:
         values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 482, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 669, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 482, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 669, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 482, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 669, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 482, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 669, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 482, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 669, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 482, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 669, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "svi_eval_vec", 0) < (0)) __PYX_ERR(0, 482, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "svi_eval_vec", 0) < (0)) __PYX_ERR(0, 669, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 6; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("svi_eval_vec", 1, 6, 6, i); __PYX_ERR(0, 482, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("svi_eval_vec", 1, 6, 6, i); __PYX_ERR(0, 669, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 6)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 482, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 669, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 482, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 669, __pyx_L3_error)
       values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 482, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 669, __pyx_L3_error)
       values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 482, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 669, __pyx_L3_error)
       values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 482, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 669, __pyx_L3_error)
       values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 482, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 669, __pyx_L3_error)
     }
-    __pyx_v_k_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_k_arr.memview)) __PYX_ERR(0, 483, __pyx_L3_error)
-    __pyx_v_a = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_a == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 484, __pyx_L3_error)
-    __pyx_v_b = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_b == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 485, __pyx_L3_error)
-    __pyx_v_rho = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_rho == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 486, __pyx_L3_error)
-    __pyx_v_m = __Pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_m == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 487, __pyx_L3_error)
-    __pyx_v_sigma = __Pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_sigma == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 488, __pyx_L3_error)
+    __pyx_v_k_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_k_arr.memview)) __PYX_ERR(0, 670, __pyx_L3_error)
+    __pyx_v_a = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_a == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 671, __pyx_L3_error)
+    __pyx_v_b = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_b == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 672, __pyx_L3_error)
+    __pyx_v_rho = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_rho == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 673, __pyx_L3_error)
+    __pyx_v_m = __Pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_m == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 674, __pyx_L3_error)
+    __pyx_v_sigma = __Pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_sigma == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 675, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("svi_eval_vec", 1, 6, 6, __pyx_nargs); __PYX_ERR(0, 482, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("svi_eval_vec", 1, 6, 6, __pyx_nargs); __PYX_ERR(0, 669, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -26803,7 +28900,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_22svi_eval_vec(__pyx_self, __pyx_v_k_arr, __pyx_v_a, __pyx_v_b, __pyx_v_rho, __pyx_v_m, __pyx_v_sigma);
+  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_24svi_eval_vec(__pyx_self, __pyx_v_k_arr, __pyx_v_a, __pyx_v_b, __pyx_v_rho, __pyx_v_m, __pyx_v_sigma);
 
   /* function exit code */
   for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
@@ -26819,7 +28916,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_22svi_eval_vec(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_k_arr, double __pyx_v_a, double __pyx_v_b, double __pyx_v_rho, double __pyx_v_m, double __pyx_v_sigma) {
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_24svi_eval_vec(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_k_arr, double __pyx_v_a, double __pyx_v_b, double __pyx_v_rho, double __pyx_v_m, double __pyx_v_sigma) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -26827,8 +28924,8 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_22svi_eval_vec(CYTHO
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("svi_eval_vec", 0);
-  if (unlikely(!__pyx_v_k_arr.memview)) { __Pyx_RaiseUnboundLocalError("k_arr"); __PYX_ERR(0, 482, __pyx_L1_error) }
-  __pyx_t_1 = ((PyObject *)__pyx_f_10bz_pricing_4core_12options_core_svi_eval_vec(__pyx_v_k_arr, __pyx_v_a, __pyx_v_b, __pyx_v_rho, __pyx_v_m, __pyx_v_sigma, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 482, __pyx_L1_error)
+  if (unlikely(!__pyx_v_k_arr.memview)) { __Pyx_RaiseUnboundLocalError("k_arr"); __PYX_ERR(0, 669, __pyx_L1_error) }
+  __pyx_t_1 = ((PyObject *)__pyx_f_10bz_pricing_4core_12options_core_svi_eval_vec(__pyx_v_k_arr, __pyx_v_a, __pyx_v_b, __pyx_v_rho, __pyx_v_m, __pyx_v_sigma, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 669, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   {
     PyObject *__pyx_temp;
@@ -26852,7 +28949,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_22svi_eval_vec(CYTHO
   return __pyx_r;
 }
 
-/* "bz_pricing/core/options_core.pyx":500
+/* "bz_pricing/core/options_core.pyx":687
  * 
  * 
  * cpdef double sabr_implied_vol(             # <<<<<<<<<<<<<<
@@ -26860,7 +28957,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_22svi_eval_vec(CYTHO
  *     double K,
 */
 
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_25sabr_implied_vol(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_27sabr_implied_vol(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -26888,7 +28985,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
   int __pyx_t_2;
   double __pyx_t_3;
 
-  /* "bz_pricing/core/options_core.pyx":510
+  /* "bz_pricing/core/options_core.pyx":697
  * ) noexcept nogil:
  *     """Frmula assinttica de Hagan et al. (2002) para volatilidade implcita SABR."""
  *     if F <= 0.0 or K <= 0.0 or T <= 0.0 or alpha <= 0.0:             # <<<<<<<<<<<<<<
@@ -26934,7 +29031,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/options_core.pyx":511
+    /* "bz_pricing/core/options_core.pyx":698
  *     """Frmula assinttica de Hagan et al. (2002) para volatilidade implcita SABR."""
  *     if F <= 0.0 or K <= 0.0 or T <= 0.0 or alpha <= 0.0:
  *         return 0.0             # <<<<<<<<<<<<<<
@@ -26947,7 +29044,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/options_core.pyx":510
+    /* "bz_pricing/core/options_core.pyx":697
  * ) noexcept nogil:
  *     """Frmula assinttica de Hagan et al. (2002) para volatilidade implcita SABR."""
  *     if F <= 0.0 or K <= 0.0 or T <= 0.0 or alpha <= 0.0:             # <<<<<<<<<<<<<<
@@ -26956,7 +29053,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
 */
   }
 
-  /* "bz_pricing/core/options_core.pyx":513
+  /* "bz_pricing/core/options_core.pyx":700
  *         return 0.0
  * 
  *     cdef double one_minus_beta = 1.0 - beta             # <<<<<<<<<<<<<<
@@ -26965,7 +29062,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
 */
   __pyx_v_one_minus_beta = (1.0 - __pyx_v_beta);
 
-  /* "bz_pricing/core/options_core.pyx":516
+  /* "bz_pricing/core/options_core.pyx":703
  *     cdef double fk_pow, log_fk, z, x_z, factor_a, factor_b, term1, term2, term3
  * 
  *     if fabs(F - K) < 1e-12:             # <<<<<<<<<<<<<<
@@ -26977,7 +29074,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/options_core.pyx":517
+    /* "bz_pricing/core/options_core.pyx":704
  * 
  *     if fabs(F - K) < 1e-12:
  *         fk_pow = pow(F, one_minus_beta)             # <<<<<<<<<<<<<<
@@ -26986,7 +29083,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
 */
     __pyx_v_fk_pow = pow(__pyx_v_F, __pyx_v_one_minus_beta);
 
-    /* "bz_pricing/core/options_core.pyx":518
+    /* "bz_pricing/core/options_core.pyx":705
  *     if fabs(F - K) < 1e-12:
  *         fk_pow = pow(F, one_minus_beta)
  *         term1 = (one_minus_beta * one_minus_beta * alpha * alpha) / (24.0 * fk_pow * fk_pow)             # <<<<<<<<<<<<<<
@@ -26995,7 +29092,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
 */
     __pyx_v_term1 = ((((__pyx_v_one_minus_beta * __pyx_v_one_minus_beta) * __pyx_v_alpha) * __pyx_v_alpha) / ((24.0 * __pyx_v_fk_pow) * __pyx_v_fk_pow));
 
-    /* "bz_pricing/core/options_core.pyx":519
+    /* "bz_pricing/core/options_core.pyx":706
  *         fk_pow = pow(F, one_minus_beta)
  *         term1 = (one_minus_beta * one_minus_beta * alpha * alpha) / (24.0 * fk_pow * fk_pow)
  *         term2 = (rho * beta * nu * alpha) / (4.0 * fk_pow)             # <<<<<<<<<<<<<<
@@ -27004,7 +29101,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
 */
     __pyx_v_term2 = ((((__pyx_v_rho * __pyx_v_beta) * __pyx_v_nu) * __pyx_v_alpha) / (4.0 * __pyx_v_fk_pow));
 
-    /* "bz_pricing/core/options_core.pyx":520
+    /* "bz_pricing/core/options_core.pyx":707
  *         term1 = (one_minus_beta * one_minus_beta * alpha * alpha) / (24.0 * fk_pow * fk_pow)
  *         term2 = (rho * beta * nu * alpha) / (4.0 * fk_pow)
  *         term3 = ((2.0 - 3.0 * rho * rho) * nu * nu) / 24.0             # <<<<<<<<<<<<<<
@@ -27013,7 +29110,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
 */
     __pyx_v_term3 = ((((2.0 - ((3.0 * __pyx_v_rho) * __pyx_v_rho)) * __pyx_v_nu) * __pyx_v_nu) / 24.0);
 
-    /* "bz_pricing/core/options_core.pyx":521
+    /* "bz_pricing/core/options_core.pyx":708
  *         term2 = (rho * beta * nu * alpha) / (4.0 * fk_pow)
  *         term3 = ((2.0 - 3.0 * rho * rho) * nu * nu) / 24.0
  *         return (alpha / fk_pow) * (1.0 + (term1 + term2 + term3) * T)             # <<<<<<<<<<<<<<
@@ -27026,7 +29123,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/options_core.pyx":516
+    /* "bz_pricing/core/options_core.pyx":703
  *     cdef double fk_pow, log_fk, z, x_z, factor_a, factor_b, term1, term2, term3
  * 
  *     if fabs(F - K) < 1e-12:             # <<<<<<<<<<<<<<
@@ -27035,7 +29132,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
 */
   }
 
-  /* "bz_pricing/core/options_core.pyx":523
+  /* "bz_pricing/core/options_core.pyx":710
  *         return (alpha / fk_pow) * (1.0 + (term1 + term2 + term3) * T)
  * 
  *     log_fk = log(F / K)             # <<<<<<<<<<<<<<
@@ -27044,7 +29141,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
 */
   __pyx_v_log_fk = log((__pyx_v_F / __pyx_v_K));
 
-  /* "bz_pricing/core/options_core.pyx":524
+  /* "bz_pricing/core/options_core.pyx":711
  * 
  *     log_fk = log(F / K)
  *     fk_pow = pow(F * K, 0.5 * one_minus_beta)             # <<<<<<<<<<<<<<
@@ -27053,7 +29150,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
 */
   __pyx_v_fk_pow = pow((__pyx_v_F * __pyx_v_K), (0.5 * __pyx_v_one_minus_beta));
 
-  /* "bz_pricing/core/options_core.pyx":525
+  /* "bz_pricing/core/options_core.pyx":712
  *     log_fk = log(F / K)
  *     fk_pow = pow(F * K, 0.5 * one_minus_beta)
  *     z = (nu / alpha) * fk_pow * log_fk             # <<<<<<<<<<<<<<
@@ -27062,7 +29159,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
 */
   __pyx_v_z = (((__pyx_v_nu / __pyx_v_alpha) * __pyx_v_fk_pow) * __pyx_v_log_fk);
 
-  /* "bz_pricing/core/options_core.pyx":526
+  /* "bz_pricing/core/options_core.pyx":713
  *     fk_pow = pow(F * K, 0.5 * one_minus_beta)
  *     z = (nu / alpha) * fk_pow * log_fk
  *     cdef double rho_clamped = rho             # <<<<<<<<<<<<<<
@@ -27071,7 +29168,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
 */
   __pyx_v_rho_clamped = __pyx_v_rho;
 
-  /* "bz_pricing/core/options_core.pyx":527
+  /* "bz_pricing/core/options_core.pyx":714
  *     z = (nu / alpha) * fk_pow * log_fk
  *     cdef double rho_clamped = rho
  *     if rho_clamped > 0.999999:             # <<<<<<<<<<<<<<
@@ -27083,7 +29180,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/options_core.pyx":528
+    /* "bz_pricing/core/options_core.pyx":715
  *     cdef double rho_clamped = rho
  *     if rho_clamped > 0.999999:
  *         rho_clamped = 0.999999             # <<<<<<<<<<<<<<
@@ -27092,7 +29189,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
 */
     __pyx_v_rho_clamped = 0.999999;
 
-    /* "bz_pricing/core/options_core.pyx":527
+    /* "bz_pricing/core/options_core.pyx":714
  *     z = (nu / alpha) * fk_pow * log_fk
  *     cdef double rho_clamped = rho
  *     if rho_clamped > 0.999999:             # <<<<<<<<<<<<<<
@@ -27102,7 +29199,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
     goto __pyx_L9;
   }
 
-  /* "bz_pricing/core/options_core.pyx":529
+  /* "bz_pricing/core/options_core.pyx":716
  *     if rho_clamped > 0.999999:
  *         rho_clamped = 0.999999
  *     elif rho_clamped < -0.999999:             # <<<<<<<<<<<<<<
@@ -27114,7 +29211,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/options_core.pyx":530
+    /* "bz_pricing/core/options_core.pyx":717
  *         rho_clamped = 0.999999
  *     elif rho_clamped < -0.999999:
  *         rho_clamped = -0.999999             # <<<<<<<<<<<<<<
@@ -27123,7 +29220,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
 */
     __pyx_v_rho_clamped = -0.999999;
 
-    /* "bz_pricing/core/options_core.pyx":529
+    /* "bz_pricing/core/options_core.pyx":716
  *     if rho_clamped > 0.999999:
  *         rho_clamped = 0.999999
  *     elif rho_clamped < -0.999999:             # <<<<<<<<<<<<<<
@@ -27133,7 +29230,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
   }
   __pyx_L9:;
 
-  /* "bz_pricing/core/options_core.pyx":531
+  /* "bz_pricing/core/options_core.pyx":718
  *     elif rho_clamped < -0.999999:
  *         rho_clamped = -0.999999
  *     cdef double arg_log = fmax(1e-15, (sqrt(1.0 - 2.0 * rho_clamped * z + z * z) + z - rho_clamped) / (1.0 - rho_clamped))             # <<<<<<<<<<<<<<
@@ -27142,7 +29239,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
 */
   __pyx_v_arg_log = fmax(1e-15, (((sqrt(((1.0 - ((2.0 * __pyx_v_rho_clamped) * __pyx_v_z)) + (__pyx_v_z * __pyx_v_z))) + __pyx_v_z) - __pyx_v_rho_clamped) / (1.0 - __pyx_v_rho_clamped)));
 
-  /* "bz_pricing/core/options_core.pyx":532
+  /* "bz_pricing/core/options_core.pyx":719
  *         rho_clamped = -0.999999
  *     cdef double arg_log = fmax(1e-15, (sqrt(1.0 - 2.0 * rho_clamped * z + z * z) + z - rho_clamped) / (1.0 - rho_clamped))
  *     x_z = log(arg_log)             # <<<<<<<<<<<<<<
@@ -27151,7 +29248,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
 */
   __pyx_v_x_z = log(__pyx_v_arg_log);
 
-  /* "bz_pricing/core/options_core.pyx":534
+  /* "bz_pricing/core/options_core.pyx":721
  *     x_z = log(arg_log)
  * 
  *     cdef double log2 = log_fk * log_fk             # <<<<<<<<<<<<<<
@@ -27160,7 +29257,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
 */
   __pyx_v_log2 = (__pyx_v_log_fk * __pyx_v_log_fk);
 
-  /* "bz_pricing/core/options_core.pyx":535
+  /* "bz_pricing/core/options_core.pyx":722
  * 
  *     cdef double log2 = log_fk * log_fk
  *     cdef double log4 = log2 * log2             # <<<<<<<<<<<<<<
@@ -27169,7 +29266,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
 */
   __pyx_v_log4 = (__pyx_v_log2 * __pyx_v_log2);
 
-  /* "bz_pricing/core/options_core.pyx":536
+  /* "bz_pricing/core/options_core.pyx":723
  *     cdef double log2 = log_fk * log_fk
  *     cdef double log4 = log2 * log2
  *     cdef double denom_fk = fk_pow * (             # <<<<<<<<<<<<<<
@@ -27178,7 +29275,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
 */
   __pyx_v_denom_fk = (__pyx_v_fk_pow * ((1.0 + (((__pyx_v_one_minus_beta * __pyx_v_one_minus_beta) / 24.0) * __pyx_v_log2)) + ((pow(__pyx_v_one_minus_beta, 4.0) / 1920.0) * __pyx_v_log4)));
 
-  /* "bz_pricing/core/options_core.pyx":540
+  /* "bz_pricing/core/options_core.pyx":727
  *         + (pow(one_minus_beta, 4.0) / 1920.0) * log4
  *     )
  *     factor_a = alpha / denom_fk             # <<<<<<<<<<<<<<
@@ -27187,7 +29284,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
 */
   __pyx_v_factor_a = (__pyx_v_alpha / __pyx_v_denom_fk);
 
-  /* "bz_pricing/core/options_core.pyx":541
+  /* "bz_pricing/core/options_core.pyx":728
  *     )
  *     factor_a = alpha / denom_fk
  *     factor_b = z / x_z if fabs(x_z) > 1e-12 else 1.0             # <<<<<<<<<<<<<<
@@ -27206,7 +29303,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
 
   __pyx_v_factor_b = __pyx_t_3;
 
-  /* "bz_pricing/core/options_core.pyx":543
+  /* "bz_pricing/core/options_core.pyx":730
  *     factor_b = z / x_z if fabs(x_z) > 1e-12 else 1.0
  * 
  *     term1 = (one_minus_beta * one_minus_beta * alpha * alpha) / (24.0 * fk_pow * fk_pow)             # <<<<<<<<<<<<<<
@@ -27215,7 +29312,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
 */
   __pyx_v_term1 = ((((__pyx_v_one_minus_beta * __pyx_v_one_minus_beta) * __pyx_v_alpha) * __pyx_v_alpha) / ((24.0 * __pyx_v_fk_pow) * __pyx_v_fk_pow));
 
-  /* "bz_pricing/core/options_core.pyx":544
+  /* "bz_pricing/core/options_core.pyx":731
  * 
  *     term1 = (one_minus_beta * one_minus_beta * alpha * alpha) / (24.0 * fk_pow * fk_pow)
  *     term2 = (rho * beta * nu * alpha) / (4.0 * fk_pow)             # <<<<<<<<<<<<<<
@@ -27224,7 +29321,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
 */
   __pyx_v_term2 = ((((__pyx_v_rho * __pyx_v_beta) * __pyx_v_nu) * __pyx_v_alpha) / (4.0 * __pyx_v_fk_pow));
 
-  /* "bz_pricing/core/options_core.pyx":545
+  /* "bz_pricing/core/options_core.pyx":732
  *     term1 = (one_minus_beta * one_minus_beta * alpha * alpha) / (24.0 * fk_pow * fk_pow)
  *     term2 = (rho * beta * nu * alpha) / (4.0 * fk_pow)
  *     term3 = ((2.0 - 3.0 * rho * rho) * nu * nu) / 24.0             # <<<<<<<<<<<<<<
@@ -27233,7 +29330,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
 */
   __pyx_v_term3 = ((((2.0 - ((3.0 * __pyx_v_rho) * __pyx_v_rho)) * __pyx_v_nu) * __pyx_v_nu) / 24.0);
 
-  /* "bz_pricing/core/options_core.pyx":546
+  /* "bz_pricing/core/options_core.pyx":733
  *     term2 = (rho * beta * nu * alpha) / (4.0 * fk_pow)
  *     term3 = ((2.0 - 3.0 * rho * rho) * nu * nu) / 24.0
  *     return factor_a * factor_b * (1.0 + (term1 + term2 + term3) * T)             # <<<<<<<<<<<<<<
@@ -27246,7 +29343,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/options_core.pyx":500
+  /* "bz_pricing/core/options_core.pyx":687
  * 
  * 
  * cpdef double sabr_implied_vol(             # <<<<<<<<<<<<<<
@@ -27275,16 +29372,16 @@ static double __pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(double 
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_25sabr_implied_vol(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_27sabr_implied_vol(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_10bz_pricing_4core_12options_core_24sabr_implied_vol, "F\303\263rmula assint\303\263tica de Hagan et al. (2002) para volatilidade impl\303\255cita SABR.");
-static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_25sabr_implied_vol = {"sabr_implied_vol", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_25sabr_implied_vol, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10bz_pricing_4core_12options_core_24sabr_implied_vol};
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_25sabr_implied_vol(PyObject *__pyx_self, 
+PyDoc_STRVAR(__pyx_doc_10bz_pricing_4core_12options_core_26sabr_implied_vol, "F\303\263rmula assint\303\263tica de Hagan et al. (2002) para volatilidade impl\303\255cita SABR.");
+static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_27sabr_implied_vol = {"sabr_implied_vol", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_27sabr_implied_vol, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10bz_pricing_4core_12options_core_26sabr_implied_vol};
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_27sabr_implied_vol(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -27320,74 +29417,74 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_F,&__pyx_mstate_global->__pyx_n_u_K,&__pyx_mstate_global->__pyx_n_u_T,&__pyx_mstate_global->__pyx_n_u_alpha,&__pyx_mstate_global->__pyx_n_u_beta,&__pyx_mstate_global->__pyx_n_u_rho,&__pyx_mstate_global->__pyx_n_u_nu,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 500, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 687, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  7:
         values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 500, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 687, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  6:
         values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 500, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 687, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 500, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 687, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 500, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 687, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 500, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 687, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 500, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 687, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 500, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 687, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "sabr_implied_vol", 0) < (0)) __PYX_ERR(0, 500, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "sabr_implied_vol", 0) < (0)) __PYX_ERR(0, 687, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 7; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("sabr_implied_vol", 1, 7, 7, i); __PYX_ERR(0, 500, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("sabr_implied_vol", 1, 7, 7, i); __PYX_ERR(0, 687, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 7)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 500, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 687, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 500, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 687, __pyx_L3_error)
       values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 500, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 687, __pyx_L3_error)
       values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 500, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 687, __pyx_L3_error)
       values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 500, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 687, __pyx_L3_error)
       values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 500, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 687, __pyx_L3_error)
       values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 500, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 687, __pyx_L3_error)
     }
-    __pyx_v_F = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_F == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 501, __pyx_L3_error)
-    __pyx_v_K = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_K == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 502, __pyx_L3_error)
-    __pyx_v_T = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_T == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 503, __pyx_L3_error)
-    __pyx_v_alpha = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_alpha == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 504, __pyx_L3_error)
-    __pyx_v_beta = __Pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_beta == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 505, __pyx_L3_error)
-    __pyx_v_rho = __Pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_rho == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 506, __pyx_L3_error)
-    __pyx_v_nu = __Pyx_PyFloat_AsDouble(values[6]); if (unlikely((__pyx_v_nu == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 507, __pyx_L3_error)
+    __pyx_v_F = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_F == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 688, __pyx_L3_error)
+    __pyx_v_K = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_K == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 689, __pyx_L3_error)
+    __pyx_v_T = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_T == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 690, __pyx_L3_error)
+    __pyx_v_alpha = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_alpha == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 691, __pyx_L3_error)
+    __pyx_v_beta = __Pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_beta == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 692, __pyx_L3_error)
+    __pyx_v_rho = __Pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_rho == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 693, __pyx_L3_error)
+    __pyx_v_nu = __Pyx_PyFloat_AsDouble(values[6]); if (unlikely((__pyx_v_nu == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 694, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("sabr_implied_vol", 1, 7, 7, __pyx_nargs); __PYX_ERR(0, 500, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("sabr_implied_vol", 1, 7, 7, __pyx_nargs); __PYX_ERR(0, 687, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -27398,7 +29495,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_24sabr_implied_vol(__pyx_self, __pyx_v_F, __pyx_v_K, __pyx_v_T, __pyx_v_alpha, __pyx_v_beta, __pyx_v_rho, __pyx_v_nu);
+  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_26sabr_implied_vol(__pyx_self, __pyx_v_F, __pyx_v_K, __pyx_v_T, __pyx_v_alpha, __pyx_v_beta, __pyx_v_rho, __pyx_v_nu);
 
   /* function exit code */
   for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
@@ -27415,7 +29512,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_24sabr_implied_vol(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_F, double __pyx_v_K, double __pyx_v_T, double __pyx_v_alpha, double __pyx_v_beta, double __pyx_v_rho, double __pyx_v_nu) {
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_26sabr_implied_vol(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_F, double __pyx_v_K, double __pyx_v_T, double __pyx_v_alpha, double __pyx_v_beta, double __pyx_v_rho, double __pyx_v_nu) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -27423,7 +29520,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_24sabr_implied_vol(C
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("sabr_implied_vol", 0);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(__pyx_v_F, __pyx_v_K, __pyx_v_T, __pyx_v_alpha, __pyx_v_beta, __pyx_v_rho, __pyx_v_nu, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 500, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_f_10bz_pricing_4core_12options_core_sabr_implied_vol(__pyx_v_F, __pyx_v_K, __pyx_v_T, __pyx_v_alpha, __pyx_v_beta, __pyx_v_rho, __pyx_v_nu, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 687, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   {
     PyObject *__pyx_temp;
@@ -27447,7 +29544,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_24sabr_implied_vol(C
   return __pyx_r;
 }
 
-/* "bz_pricing/core/options_core.pyx":549
+/* "bz_pricing/core/options_core.pyx":736
  * 
  * 
  * cpdef tuple price_options_batch(             # <<<<<<<<<<<<<<
@@ -27455,7 +29552,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_24sabr_implied_vol(C
  *     int[:] is_american_arr,
 */
 
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_27price_options_batch(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_29price_options_batch(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -27572,7 +29669,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
   __pyx_pybuffernd_out_rho.data = NULL;
   __pyx_pybuffernd_out_rho.rcbuffer = &__pyx_pybuffer_out_rho;
 
-  /* "bz_pricing/core/options_core.pyx":561
+  /* "bz_pricing/core/options_core.pyx":748
  * ):
  *     """Precifica um lote de opes em Cython, retornando preos e gregas."""
  *     cdef Py_ssize_t n = S_arr.shape[0]             # <<<<<<<<<<<<<<
@@ -27581,7 +29678,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
 */
   __pyx_v_n = (__pyx_v_S_arr.shape[0]);
 
-  /* "bz_pricing/core/options_core.pyx":564
+  /* "bz_pricing/core/options_core.pyx":751
  *     cdef Py_ssize_t i
  * 
  *     cdef np.ndarray[np.float64_t, ndim=1] out_price = np.empty(n, dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -27589,16 +29686,16 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
  *     cdef np.ndarray[np.float64_t, ndim=1] out_gamma = np.empty(n, dtype=np.float64)
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 564, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 751, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 564, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 751, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyLong_FromSsize_t(__pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 564, __pyx_L1_error)
+  __pyx_t_3 = PyLong_FromSsize_t(__pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 751, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 564, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 751, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 564, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 751, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_7 = 1;
@@ -27617,13 +29714,13 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
     PyObject *__pyx_callargs[3] = {__pyx_t_2, __pyx_t_3, __pyx_t_6};
     #if CYTHON_VECTORCALL
     __pyx_t_5 = __pyx_mstate_global->__pyx_tuple[2];
-    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 564, __pyx_L1_error)
+    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 751, __pyx_L1_error)
     __Pyx_INCREF(__pyx_t_5);
     #else
     {
       PyObject *__pyx_temp[1] = {__pyx_mstate_global->__pyx_n_u_dtype};
       __pyx_t_5 = __Pyx_MakeKwargDict(__pyx_temp, __pyx_callargs+2, 1);
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 564, __pyx_L1_error)
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 751, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
     }
     #endif
@@ -27633,22 +29730,22 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 564, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 751, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_mstate_global->__pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 564, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_mstate_global->__pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 751, __pyx_L1_error)
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_out_price.rcbuffer->pybuffer, (PyObject*)((PyArrayObject *)__pyx_t_1), &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_out_price = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_out_price.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 564, __pyx_L1_error)
+      __PYX_ERR(0, 751, __pyx_L1_error)
     } else {__pyx_pybuffernd_out_price.diminfo[0].strides = __pyx_pybuffernd_out_price.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_out_price.diminfo[0].shape = __pyx_pybuffernd_out_price.rcbuffer->pybuffer.shape[0];
     }
   }
   __pyx_v_out_price = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/options_core.pyx":565
+  /* "bz_pricing/core/options_core.pyx":752
  * 
  *     cdef np.ndarray[np.float64_t, ndim=1] out_price = np.empty(n, dtype=np.float64)
  *     cdef np.ndarray[np.float64_t, ndim=1] out_delta = np.empty(n, dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -27656,16 +29753,16 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
  *     cdef np.ndarray[np.float64_t, ndim=1] out_vega = np.empty(n, dtype=np.float64)
 */
   __pyx_t_4 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 565, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 752, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 565, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 752, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = PyLong_FromSsize_t(__pyx_v_n); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 565, __pyx_L1_error)
+  __pyx_t_5 = PyLong_FromSsize_t(__pyx_v_n); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 752, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 565, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 752, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 565, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 752, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_7 = 1;
@@ -27684,13 +29781,13 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
     PyObject *__pyx_callargs[3] = {__pyx_t_4, __pyx_t_5, __pyx_t_2};
     #if CYTHON_VECTORCALL
     __pyx_t_3 = __pyx_mstate_global->__pyx_tuple[2];
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 565, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 752, __pyx_L1_error)
     __Pyx_INCREF(__pyx_t_3);
     #else
     {
       PyObject *__pyx_temp[1] = {__pyx_mstate_global->__pyx_n_u_dtype};
       __pyx_t_3 = __Pyx_MakeKwargDict(__pyx_temp, __pyx_callargs+2, 1);
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 565, __pyx_L1_error)
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 752, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
     }
     #endif
@@ -27700,22 +29797,22 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 565, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 752, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_mstate_global->__pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 565, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_mstate_global->__pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 752, __pyx_L1_error)
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_out_delta.rcbuffer->pybuffer, (PyObject*)((PyArrayObject *)__pyx_t_1), &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_out_delta = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_out_delta.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 565, __pyx_L1_error)
+      __PYX_ERR(0, 752, __pyx_L1_error)
     } else {__pyx_pybuffernd_out_delta.diminfo[0].strides = __pyx_pybuffernd_out_delta.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_out_delta.diminfo[0].shape = __pyx_pybuffernd_out_delta.rcbuffer->pybuffer.shape[0];
     }
   }
   __pyx_v_out_delta = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/options_core.pyx":566
+  /* "bz_pricing/core/options_core.pyx":753
  *     cdef np.ndarray[np.float64_t, ndim=1] out_price = np.empty(n, dtype=np.float64)
  *     cdef np.ndarray[np.float64_t, ndim=1] out_delta = np.empty(n, dtype=np.float64)
  *     cdef np.ndarray[np.float64_t, ndim=1] out_gamma = np.empty(n, dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -27723,16 +29820,16 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
  *     cdef np.ndarray[np.float64_t, ndim=1] out_theta = np.empty(n, dtype=np.float64)
 */
   __pyx_t_6 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 566, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 753, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 566, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 753, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyLong_FromSsize_t(__pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 566, __pyx_L1_error)
+  __pyx_t_3 = PyLong_FromSsize_t(__pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 753, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 566, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 753, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 566, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 753, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_7 = 1;
@@ -27751,13 +29848,13 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
     PyObject *__pyx_callargs[3] = {__pyx_t_6, __pyx_t_3, __pyx_t_4};
     #if CYTHON_VECTORCALL
     __pyx_t_5 = __pyx_mstate_global->__pyx_tuple[2];
-    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 566, __pyx_L1_error)
+    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 753, __pyx_L1_error)
     __Pyx_INCREF(__pyx_t_5);
     #else
     {
       PyObject *__pyx_temp[1] = {__pyx_mstate_global->__pyx_n_u_dtype};
       __pyx_t_5 = __Pyx_MakeKwargDict(__pyx_temp, __pyx_callargs+2, 1);
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 566, __pyx_L1_error)
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 753, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
     }
     #endif
@@ -27767,22 +29864,22 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 566, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 753, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_mstate_global->__pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 566, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_mstate_global->__pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 753, __pyx_L1_error)
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_out_gamma.rcbuffer->pybuffer, (PyObject*)((PyArrayObject *)__pyx_t_1), &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_out_gamma = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_out_gamma.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 566, __pyx_L1_error)
+      __PYX_ERR(0, 753, __pyx_L1_error)
     } else {__pyx_pybuffernd_out_gamma.diminfo[0].strides = __pyx_pybuffernd_out_gamma.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_out_gamma.diminfo[0].shape = __pyx_pybuffernd_out_gamma.rcbuffer->pybuffer.shape[0];
     }
   }
   __pyx_v_out_gamma = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/options_core.pyx":567
+  /* "bz_pricing/core/options_core.pyx":754
  *     cdef np.ndarray[np.float64_t, ndim=1] out_delta = np.empty(n, dtype=np.float64)
  *     cdef np.ndarray[np.float64_t, ndim=1] out_gamma = np.empty(n, dtype=np.float64)
  *     cdef np.ndarray[np.float64_t, ndim=1] out_vega = np.empty(n, dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -27790,16 +29887,16 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
  *     cdef np.ndarray[np.float64_t, ndim=1] out_rho = np.empty(n, dtype=np.float64)
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 567, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 754, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 567, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 754, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = PyLong_FromSsize_t(__pyx_v_n); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 567, __pyx_L1_error)
+  __pyx_t_5 = PyLong_FromSsize_t(__pyx_v_n); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 754, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 567, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 754, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 567, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 754, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_7 = 1;
@@ -27818,13 +29915,13 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
     PyObject *__pyx_callargs[3] = {__pyx_t_2, __pyx_t_5, __pyx_t_6};
     #if CYTHON_VECTORCALL
     __pyx_t_3 = __pyx_mstate_global->__pyx_tuple[2];
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 567, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 754, __pyx_L1_error)
     __Pyx_INCREF(__pyx_t_3);
     #else
     {
       PyObject *__pyx_temp[1] = {__pyx_mstate_global->__pyx_n_u_dtype};
       __pyx_t_3 = __Pyx_MakeKwargDict(__pyx_temp, __pyx_callargs+2, 1);
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 567, __pyx_L1_error)
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 754, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
     }
     #endif
@@ -27834,22 +29931,22 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 567, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 754, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_mstate_global->__pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 567, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_mstate_global->__pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 754, __pyx_L1_error)
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_out_vega.rcbuffer->pybuffer, (PyObject*)((PyArrayObject *)__pyx_t_1), &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_out_vega = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_out_vega.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 567, __pyx_L1_error)
+      __PYX_ERR(0, 754, __pyx_L1_error)
     } else {__pyx_pybuffernd_out_vega.diminfo[0].strides = __pyx_pybuffernd_out_vega.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_out_vega.diminfo[0].shape = __pyx_pybuffernd_out_vega.rcbuffer->pybuffer.shape[0];
     }
   }
   __pyx_v_out_vega = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/options_core.pyx":568
+  /* "bz_pricing/core/options_core.pyx":755
  *     cdef np.ndarray[np.float64_t, ndim=1] out_gamma = np.empty(n, dtype=np.float64)
  *     cdef np.ndarray[np.float64_t, ndim=1] out_vega = np.empty(n, dtype=np.float64)
  *     cdef np.ndarray[np.float64_t, ndim=1] out_theta = np.empty(n, dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -27857,16 +29954,16 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
  * 
 */
   __pyx_t_4 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 568, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 755, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 568, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 755, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyLong_FromSsize_t(__pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 568, __pyx_L1_error)
+  __pyx_t_3 = PyLong_FromSsize_t(__pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 755, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 568, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 755, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 568, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 755, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_7 = 1;
@@ -27885,13 +29982,13 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
     PyObject *__pyx_callargs[3] = {__pyx_t_4, __pyx_t_3, __pyx_t_2};
     #if CYTHON_VECTORCALL
     __pyx_t_5 = __pyx_mstate_global->__pyx_tuple[2];
-    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 568, __pyx_L1_error)
+    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 755, __pyx_L1_error)
     __Pyx_INCREF(__pyx_t_5);
     #else
     {
       PyObject *__pyx_temp[1] = {__pyx_mstate_global->__pyx_n_u_dtype};
       __pyx_t_5 = __Pyx_MakeKwargDict(__pyx_temp, __pyx_callargs+2, 1);
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 568, __pyx_L1_error)
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 755, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
     }
     #endif
@@ -27901,22 +29998,22 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 568, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 755, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_mstate_global->__pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 568, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_mstate_global->__pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 755, __pyx_L1_error)
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_out_theta.rcbuffer->pybuffer, (PyObject*)((PyArrayObject *)__pyx_t_1), &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_out_theta = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_out_theta.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 568, __pyx_L1_error)
+      __PYX_ERR(0, 755, __pyx_L1_error)
     } else {__pyx_pybuffernd_out_theta.diminfo[0].strides = __pyx_pybuffernd_out_theta.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_out_theta.diminfo[0].shape = __pyx_pybuffernd_out_theta.rcbuffer->pybuffer.shape[0];
     }
   }
   __pyx_v_out_theta = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/options_core.pyx":569
+  /* "bz_pricing/core/options_core.pyx":756
  *     cdef np.ndarray[np.float64_t, ndim=1] out_vega = np.empty(n, dtype=np.float64)
  *     cdef np.ndarray[np.float64_t, ndim=1] out_theta = np.empty(n, dtype=np.float64)
  *     cdef np.ndarray[np.float64_t, ndim=1] out_rho = np.empty(n, dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -27924,16 +30021,16 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
  *     cdef double[:] pv = out_price
 */
   __pyx_t_6 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 569, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 756, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 569, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 756, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = PyLong_FromSsize_t(__pyx_v_n); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 569, __pyx_L1_error)
+  __pyx_t_5 = PyLong_FromSsize_t(__pyx_v_n); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 756, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 569, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 756, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 569, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 756, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_7 = 1;
@@ -27952,13 +30049,13 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
     PyObject *__pyx_callargs[3] = {__pyx_t_6, __pyx_t_5, __pyx_t_4};
     #if CYTHON_VECTORCALL
     __pyx_t_3 = __pyx_mstate_global->__pyx_tuple[2];
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 569, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 756, __pyx_L1_error)
     __Pyx_INCREF(__pyx_t_3);
     #else
     {
       PyObject *__pyx_temp[1] = {__pyx_mstate_global->__pyx_n_u_dtype};
       __pyx_t_3 = __Pyx_MakeKwargDict(__pyx_temp, __pyx_callargs+2, 1);
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 569, __pyx_L1_error)
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 756, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
     }
     #endif
@@ -27968,94 +30065,94 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 569, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 756, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_mstate_global->__pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 569, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_mstate_global->__pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 756, __pyx_L1_error)
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_out_rho.rcbuffer->pybuffer, (PyObject*)((PyArrayObject *)__pyx_t_1), &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_out_rho = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_out_rho.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 569, __pyx_L1_error)
+      __PYX_ERR(0, 756, __pyx_L1_error)
     } else {__pyx_pybuffernd_out_rho.diminfo[0].strides = __pyx_pybuffernd_out_rho.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_out_rho.diminfo[0].shape = __pyx_pybuffernd_out_rho.rcbuffer->pybuffer.shape[0];
     }
   }
   __pyx_v_out_rho = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/options_core.pyx":571
+  /* "bz_pricing/core/options_core.pyx":758
  *     cdef np.ndarray[np.float64_t, ndim=1] out_rho = np.empty(n, dtype=np.float64)
  * 
  *     cdef double[:] pv = out_price             # <<<<<<<<<<<<<<
  *     cdef double[:] dv = out_delta
  *     cdef double[:] gv = out_gamma
 */
-  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_out_price), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 571, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_out_price), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 758, __pyx_L1_error)
   __pyx_v_pv = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "bz_pricing/core/options_core.pyx":572
+  /* "bz_pricing/core/options_core.pyx":759
  * 
  *     cdef double[:] pv = out_price
  *     cdef double[:] dv = out_delta             # <<<<<<<<<<<<<<
  *     cdef double[:] gv = out_gamma
  *     cdef double[:] vv = out_vega
 */
-  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_out_delta), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 572, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_out_delta), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 759, __pyx_L1_error)
   __pyx_v_dv = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "bz_pricing/core/options_core.pyx":573
+  /* "bz_pricing/core/options_core.pyx":760
  *     cdef double[:] pv = out_price
  *     cdef double[:] dv = out_delta
  *     cdef double[:] gv = out_gamma             # <<<<<<<<<<<<<<
  *     cdef double[:] vv = out_vega
  *     cdef double[:] tv = out_theta
 */
-  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_out_gamma), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 573, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_out_gamma), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 760, __pyx_L1_error)
   __pyx_v_gv = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "bz_pricing/core/options_core.pyx":574
+  /* "bz_pricing/core/options_core.pyx":761
  *     cdef double[:] dv = out_delta
  *     cdef double[:] gv = out_gamma
  *     cdef double[:] vv = out_vega             # <<<<<<<<<<<<<<
  *     cdef double[:] tv = out_theta
  *     cdef double[:] rv = out_rho
 */
-  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_out_vega), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 574, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_out_vega), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 761, __pyx_L1_error)
   __pyx_v_vv = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "bz_pricing/core/options_core.pyx":575
+  /* "bz_pricing/core/options_core.pyx":762
  *     cdef double[:] gv = out_gamma
  *     cdef double[:] vv = out_vega
  *     cdef double[:] tv = out_theta             # <<<<<<<<<<<<<<
  *     cdef double[:] rv = out_rho
  * 
 */
-  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_out_theta), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 575, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_out_theta), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 762, __pyx_L1_error)
   __pyx_v_tv = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "bz_pricing/core/options_core.pyx":576
+  /* "bz_pricing/core/options_core.pyx":763
  *     cdef double[:] vv = out_vega
  *     cdef double[:] tv = out_theta
  *     cdef double[:] rv = out_rho             # <<<<<<<<<<<<<<
  * 
  *     cdef double price, delta, gamma, vega, theta, rho, vanna, volga
 */
-  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_out_rho), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 576, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_out_rho), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 763, __pyx_L1_error)
   __pyx_v_rv = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "bz_pricing/core/options_core.pyx":581
+  /* "bz_pricing/core/options_core.pyx":768
  *     cdef double d_tmp, g_tmp, t_tmp, p_v_up, p_v_dn, p_r_up, p_r_dn
  *     cdef double p1_am, d1_am, g1_am, t1_am, p2_am, d2_am, g2_am, t2_am
  *     cdef double d_vol = 1e-4             # <<<<<<<<<<<<<<
@@ -28064,7 +30161,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
 */
   __pyx_v_d_vol = 1e-4;
 
-  /* "bz_pricing/core/options_core.pyx":582
+  /* "bz_pricing/core/options_core.pyx":769
  *     cdef double p1_am, d1_am, g1_am, t1_am, p2_am, d2_am, g2_am, t2_am
  *     cdef double d_vol = 1e-4
  *     cdef double d_rate = 1e-4             # <<<<<<<<<<<<<<
@@ -28073,7 +30170,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
 */
   __pyx_v_d_rate = 1e-4;
 
-  /* "bz_pricing/core/options_core.pyx":585
+  /* "bz_pricing/core/options_core.pyx":772
  * 
  *     cdef bint call_flag
  *     with nogil:             # <<<<<<<<<<<<<<
@@ -28086,7 +30183,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
       __Pyx_FastGIL_Remember();
       /*try:*/ {
 
-        /* "bz_pricing/core/options_core.pyx":586
+        /* "bz_pricing/core/options_core.pyx":773
  *     cdef bint call_flag
  *     with nogil:
  *         for i in range(n):             # <<<<<<<<<<<<<<
@@ -28100,7 +30197,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
         for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
           __pyx_v_i = __pyx_t_11;
 
-          /* "bz_pricing/core/options_core.pyx":587
+          /* "bz_pricing/core/options_core.pyx":774
  *     with nogil:
  *         for i in range(n):
  *             call_flag = (is_call_arr[i] != 0)             # <<<<<<<<<<<<<<
@@ -28110,7 +30207,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
           __pyx_t_12 = __pyx_v_i;
           __pyx_v_call_flag = ((*((int *) ( /* dim=0 */ (__pyx_v_is_call_arr.data + __pyx_t_12 * __pyx_v_is_call_arr.strides[0]) ))) != 0);
 
-          /* "bz_pricing/core/options_core.pyx":588
+          /* "bz_pricing/core/options_core.pyx":775
  *         for i in range(n):
  *             call_flag = (is_call_arr[i] != 0)
  *             if is_american_arr[i]:             # <<<<<<<<<<<<<<
@@ -28123,7 +30220,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
           if (__pyx_t_13) {
 
 
-            /* "bz_pricing/core/options_core.pyx":589
+            /* "bz_pricing/core/options_core.pyx":776
  *             call_flag = (is_call_arr[i] != 0)
  *             if is_american_arr[i]:
  *                 if crr_steps >= 2:             # <<<<<<<<<<<<<<
@@ -28135,7 +30232,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
             if (__pyx_t_13) {
 
 
-              /* "bz_pricing/core/options_core.pyx":591
+              /* "bz_pricing/core/options_core.pyx":778
  *                 if crr_steps >= 2:
  *                     p1_am = _crr_american_core(
  *                         S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i],             # <<<<<<<<<<<<<<
@@ -28149,7 +30246,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
               __pyx_t_17 = __pyx_v_i;
               __pyx_t_18 = __pyx_v_i;
 
-              /* "bz_pricing/core/options_core.pyx":590
+              /* "bz_pricing/core/options_core.pyx":777
  *             if is_american_arr[i]:
  *                 if crr_steps >= 2:
  *                     p1_am = _crr_american_core(             # <<<<<<<<<<<<<<
@@ -28158,7 +30255,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
 */
               __pyx_v_p1_am = __pyx_f_10bz_pricing_4core_12options_core__crr_american_core((*((double *) ( /* dim=0 */ (__pyx_v_S_arr.data + __pyx_t_12 * __pyx_v_S_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_K_arr.data + __pyx_t_14 * __pyx_v_K_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_r_arr.data + __pyx_t_15 * __pyx_v_r_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_q_arr.data + __pyx_t_16 * __pyx_v_q_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_T_arr.data + __pyx_t_17 * __pyx_v_T_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_sigma_arr.data + __pyx_t_18 * __pyx_v_sigma_arr.strides[0]) ))), __pyx_v_call_flag, __pyx_v_crr_steps, (&__pyx_v_d1_am), (&__pyx_v_g1_am), (&__pyx_v_t1_am));
 
-              /* "bz_pricing/core/options_core.pyx":595
+              /* "bz_pricing/core/options_core.pyx":782
  *                     )
  *                     p2_am = _crr_american_core(
  *                         S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i],             # <<<<<<<<<<<<<<
@@ -28172,7 +30269,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
               __pyx_t_14 = __pyx_v_i;
               __pyx_t_12 = __pyx_v_i;
 
-              /* "bz_pricing/core/options_core.pyx":594
+              /* "bz_pricing/core/options_core.pyx":781
  *                         call_flag, crr_steps, &d1_am, &g1_am, &t1_am,
  *                     )
  *                     p2_am = _crr_american_core(             # <<<<<<<<<<<<<<
@@ -28181,7 +30278,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
 */
               __pyx_v_p2_am = __pyx_f_10bz_pricing_4core_12options_core__crr_american_core((*((double *) ( /* dim=0 */ (__pyx_v_S_arr.data + __pyx_t_18 * __pyx_v_S_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_K_arr.data + __pyx_t_17 * __pyx_v_K_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_r_arr.data + __pyx_t_16 * __pyx_v_r_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_q_arr.data + __pyx_t_15 * __pyx_v_q_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_T_arr.data + __pyx_t_14 * __pyx_v_T_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_sigma_arr.data + __pyx_t_12 * __pyx_v_sigma_arr.strides[0]) ))), __pyx_v_call_flag, (__pyx_v_crr_steps + 1), (&__pyx_v_d2_am), (&__pyx_v_g2_am), (&__pyx_v_t2_am));
 
-              /* "bz_pricing/core/options_core.pyx":598
+              /* "bz_pricing/core/options_core.pyx":785
  *                         call_flag, crr_steps + 1, &d2_am, &g2_am, &t2_am,
  *                     )
  *                     pv[i] = 0.5 * (p1_am + p2_am)             # <<<<<<<<<<<<<<
@@ -28191,7 +30288,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
               __pyx_t_12 = __pyx_v_i;
               *((double *) ( /* dim=0 */ (__pyx_v_pv.data + __pyx_t_12 * __pyx_v_pv.strides[0]) )) = (0.5 * (__pyx_v_p1_am + __pyx_v_p2_am));
 
-              /* "bz_pricing/core/options_core.pyx":599
+              /* "bz_pricing/core/options_core.pyx":786
  *                     )
  *                     pv[i] = 0.5 * (p1_am + p2_am)
  *                     dv[i] = 0.5 * (d1_am + d2_am)             # <<<<<<<<<<<<<<
@@ -28201,7 +30298,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
               __pyx_t_12 = __pyx_v_i;
               *((double *) ( /* dim=0 */ (__pyx_v_dv.data + __pyx_t_12 * __pyx_v_dv.strides[0]) )) = (0.5 * (__pyx_v_d1_am + __pyx_v_d2_am));
 
-              /* "bz_pricing/core/options_core.pyx":600
+              /* "bz_pricing/core/options_core.pyx":787
  *                     pv[i] = 0.5 * (p1_am + p2_am)
  *                     dv[i] = 0.5 * (d1_am + d2_am)
  *                     gv[i] = 0.5 * (g1_am + g2_am)             # <<<<<<<<<<<<<<
@@ -28211,7 +30308,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
               __pyx_t_12 = __pyx_v_i;
               *((double *) ( /* dim=0 */ (__pyx_v_gv.data + __pyx_t_12 * __pyx_v_gv.strides[0]) )) = (0.5 * (__pyx_v_g1_am + __pyx_v_g2_am));
 
-              /* "bz_pricing/core/options_core.pyx":601
+              /* "bz_pricing/core/options_core.pyx":788
  *                     dv[i] = 0.5 * (d1_am + d2_am)
  *                     gv[i] = 0.5 * (g1_am + g2_am)
  *                     tv[i] = 0.5 * (t1_am + t2_am)             # <<<<<<<<<<<<<<
@@ -28221,7 +30318,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
               __pyx_t_12 = __pyx_v_i;
               *((double *) ( /* dim=0 */ (__pyx_v_tv.data + __pyx_t_12 * __pyx_v_tv.strides[0]) )) = (0.5 * (__pyx_v_t1_am + __pyx_v_t2_am));
 
-              /* "bz_pricing/core/options_core.pyx":589
+              /* "bz_pricing/core/options_core.pyx":776
  *             call_flag = (is_call_arr[i] != 0)
  *             if is_american_arr[i]:
  *                 if crr_steps >= 2:             # <<<<<<<<<<<<<<
@@ -28231,7 +30328,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
               goto __pyx_L9;
             }
 
-            /* "bz_pricing/core/options_core.pyx":603
+            /* "bz_pricing/core/options_core.pyx":790
  *                     tv[i] = 0.5 * (t1_am + t2_am)
  *                 else:
  *                     pv[i] = _crr_american_core(             # <<<<<<<<<<<<<<
@@ -28240,7 +30337,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
 */
             /*else*/ {
 
-              /* "bz_pricing/core/options_core.pyx":604
+              /* "bz_pricing/core/options_core.pyx":791
  *                 else:
  *                     pv[i] = _crr_american_core(
  *                         S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i],             # <<<<<<<<<<<<<<
@@ -28254,7 +30351,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
               __pyx_t_17 = __pyx_v_i;
               __pyx_t_18 = __pyx_v_i;
 
-              /* "bz_pricing/core/options_core.pyx":603
+              /* "bz_pricing/core/options_core.pyx":790
  *                     tv[i] = 0.5 * (t1_am + t2_am)
  *                 else:
  *                     pv[i] = _crr_american_core(             # <<<<<<<<<<<<<<
@@ -28264,7 +30361,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
               __pyx_t_19 = __pyx_v_i;
               *((double *) ( /* dim=0 */ (__pyx_v_pv.data + __pyx_t_19 * __pyx_v_pv.strides[0]) )) = __pyx_f_10bz_pricing_4core_12options_core__crr_american_core((*((double *) ( /* dim=0 */ (__pyx_v_S_arr.data + __pyx_t_12 * __pyx_v_S_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_K_arr.data + __pyx_t_14 * __pyx_v_K_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_r_arr.data + __pyx_t_15 * __pyx_v_r_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_q_arr.data + __pyx_t_16 * __pyx_v_q_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_T_arr.data + __pyx_t_17 * __pyx_v_T_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_sigma_arr.data + __pyx_t_18 * __pyx_v_sigma_arr.strides[0]) ))), __pyx_v_call_flag, __pyx_v_crr_steps, (&__pyx_v_delta), (&__pyx_v_gamma), (&__pyx_v_theta));
 
-              /* "bz_pricing/core/options_core.pyx":607
+              /* "bz_pricing/core/options_core.pyx":794
  *                         call_flag, crr_steps, &delta, &gamma, &theta,
  *                     )
  *                     dv[i] = delta             # <<<<<<<<<<<<<<
@@ -28274,7 +30371,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
               __pyx_t_18 = __pyx_v_i;
               *((double *) ( /* dim=0 */ (__pyx_v_dv.data + __pyx_t_18 * __pyx_v_dv.strides[0]) )) = __pyx_v_delta;
 
-              /* "bz_pricing/core/options_core.pyx":608
+              /* "bz_pricing/core/options_core.pyx":795
  *                     )
  *                     dv[i] = delta
  *                     gv[i] = gamma             # <<<<<<<<<<<<<<
@@ -28284,7 +30381,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
               __pyx_t_18 = __pyx_v_i;
               *((double *) ( /* dim=0 */ (__pyx_v_gv.data + __pyx_t_18 * __pyx_v_gv.strides[0]) )) = __pyx_v_gamma;
 
-              /* "bz_pricing/core/options_core.pyx":609
+              /* "bz_pricing/core/options_core.pyx":796
  *                     dv[i] = delta
  *                     gv[i] = gamma
  *                     tv[i] = theta             # <<<<<<<<<<<<<<
@@ -28296,7 +30393,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
             }
             __pyx_L9:;
 
-            /* "bz_pricing/core/options_core.pyx":610
+            /* "bz_pricing/core/options_core.pyx":797
  *                     gv[i] = gamma
  *                     tv[i] = theta
  *                 if T_arr[i] > 0.0 and sigma_arr[i] > d_vol and S_arr[i] > 0.0 and K_arr[i] > 0.0:             # <<<<<<<<<<<<<<
@@ -28346,7 +30443,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
             if (__pyx_t_13) {
 
 
-              /* "bz_pricing/core/options_core.pyx":611
+              /* "bz_pricing/core/options_core.pyx":798
  *                     tv[i] = theta
  *                 if T_arr[i] > 0.0 and sigma_arr[i] > d_vol and S_arr[i] > 0.0 and K_arr[i] > 0.0:
  *                     p_v_up = _crr_american_core(S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i] + d_vol, call_flag, crr_steps, &d_tmp, &g_tmp, &t_tmp)             # <<<<<<<<<<<<<<
@@ -28361,7 +30458,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
               __pyx_t_12 = __pyx_v_i;
               __pyx_v_p_v_up = __pyx_f_10bz_pricing_4core_12options_core__crr_american_core((*((double *) ( /* dim=0 */ (__pyx_v_S_arr.data + __pyx_t_18 * __pyx_v_S_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_K_arr.data + __pyx_t_17 * __pyx_v_K_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_r_arr.data + __pyx_t_16 * __pyx_v_r_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_q_arr.data + __pyx_t_15 * __pyx_v_q_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_T_arr.data + __pyx_t_14 * __pyx_v_T_arr.strides[0]) ))), ((*((double *) ( /* dim=0 */ (__pyx_v_sigma_arr.data + __pyx_t_12 * __pyx_v_sigma_arr.strides[0]) ))) + __pyx_v_d_vol), __pyx_v_call_flag, __pyx_v_crr_steps, (&__pyx_v_d_tmp), (&__pyx_v_g_tmp), (&__pyx_v_t_tmp));
 
-              /* "bz_pricing/core/options_core.pyx":612
+              /* "bz_pricing/core/options_core.pyx":799
  *                 if T_arr[i] > 0.0 and sigma_arr[i] > d_vol and S_arr[i] > 0.0 and K_arr[i] > 0.0:
  *                     p_v_up = _crr_american_core(S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i] + d_vol, call_flag, crr_steps, &d_tmp, &g_tmp, &t_tmp)
  *                     p_v_dn = _crr_american_core(S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i] - d_vol, call_flag, crr_steps, &d_tmp, &g_tmp, &t_tmp)             # <<<<<<<<<<<<<<
@@ -28376,7 +30473,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
               __pyx_t_18 = __pyx_v_i;
               __pyx_v_p_v_dn = __pyx_f_10bz_pricing_4core_12options_core__crr_american_core((*((double *) ( /* dim=0 */ (__pyx_v_S_arr.data + __pyx_t_12 * __pyx_v_S_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_K_arr.data + __pyx_t_14 * __pyx_v_K_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_r_arr.data + __pyx_t_15 * __pyx_v_r_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_q_arr.data + __pyx_t_16 * __pyx_v_q_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_T_arr.data + __pyx_t_17 * __pyx_v_T_arr.strides[0]) ))), ((*((double *) ( /* dim=0 */ (__pyx_v_sigma_arr.data + __pyx_t_18 * __pyx_v_sigma_arr.strides[0]) ))) - __pyx_v_d_vol), __pyx_v_call_flag, __pyx_v_crr_steps, (&__pyx_v_d_tmp), (&__pyx_v_g_tmp), (&__pyx_v_t_tmp));
 
-              /* "bz_pricing/core/options_core.pyx":613
+              /* "bz_pricing/core/options_core.pyx":800
  *                     p_v_up = _crr_american_core(S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i] + d_vol, call_flag, crr_steps, &d_tmp, &g_tmp, &t_tmp)
  *                     p_v_dn = _crr_american_core(S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i] - d_vol, call_flag, crr_steps, &d_tmp, &g_tmp, &t_tmp)
  *                     if crr_steps >= 2:             # <<<<<<<<<<<<<<
@@ -28388,7 +30485,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
               if (__pyx_t_13) {
 
 
-                /* "bz_pricing/core/options_core.pyx":614
+                /* "bz_pricing/core/options_core.pyx":801
  *                     p_v_dn = _crr_american_core(S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i] - d_vol, call_flag, crr_steps, &d_tmp, &g_tmp, &t_tmp)
  *                     if crr_steps >= 2:
  *                         p_v_up = 0.5 * (p_v_up + _crr_american_core(S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i] + d_vol, call_flag, crr_steps + 1, &d_tmp, &g_tmp, &t_tmp))             # <<<<<<<<<<<<<<
@@ -28403,7 +30500,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
                 __pyx_t_12 = __pyx_v_i;
                 __pyx_v_p_v_up = (0.5 * (__pyx_v_p_v_up + __pyx_f_10bz_pricing_4core_12options_core__crr_american_core((*((double *) ( /* dim=0 */ (__pyx_v_S_arr.data + __pyx_t_18 * __pyx_v_S_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_K_arr.data + __pyx_t_17 * __pyx_v_K_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_r_arr.data + __pyx_t_16 * __pyx_v_r_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_q_arr.data + __pyx_t_15 * __pyx_v_q_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_T_arr.data + __pyx_t_14 * __pyx_v_T_arr.strides[0]) ))), ((*((double *) ( /* dim=0 */ (__pyx_v_sigma_arr.data + __pyx_t_12 * __pyx_v_sigma_arr.strides[0]) ))) + __pyx_v_d_vol), __pyx_v_call_flag, (__pyx_v_crr_steps + 1), (&__pyx_v_d_tmp), (&__pyx_v_g_tmp), (&__pyx_v_t_tmp))));
 
-                /* "bz_pricing/core/options_core.pyx":615
+                /* "bz_pricing/core/options_core.pyx":802
  *                     if crr_steps >= 2:
  *                         p_v_up = 0.5 * (p_v_up + _crr_american_core(S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i] + d_vol, call_flag, crr_steps + 1, &d_tmp, &g_tmp, &t_tmp))
  *                         p_v_dn = 0.5 * (p_v_dn + _crr_american_core(S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i] - d_vol, call_flag, crr_steps + 1, &d_tmp, &g_tmp, &t_tmp))             # <<<<<<<<<<<<<<
@@ -28418,7 +30515,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
                 __pyx_t_18 = __pyx_v_i;
                 __pyx_v_p_v_dn = (0.5 * (__pyx_v_p_v_dn + __pyx_f_10bz_pricing_4core_12options_core__crr_american_core((*((double *) ( /* dim=0 */ (__pyx_v_S_arr.data + __pyx_t_12 * __pyx_v_S_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_K_arr.data + __pyx_t_14 * __pyx_v_K_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_r_arr.data + __pyx_t_15 * __pyx_v_r_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_q_arr.data + __pyx_t_16 * __pyx_v_q_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_T_arr.data + __pyx_t_17 * __pyx_v_T_arr.strides[0]) ))), ((*((double *) ( /* dim=0 */ (__pyx_v_sigma_arr.data + __pyx_t_18 * __pyx_v_sigma_arr.strides[0]) ))) - __pyx_v_d_vol), __pyx_v_call_flag, (__pyx_v_crr_steps + 1), (&__pyx_v_d_tmp), (&__pyx_v_g_tmp), (&__pyx_v_t_tmp))));
 
-                /* "bz_pricing/core/options_core.pyx":613
+                /* "bz_pricing/core/options_core.pyx":800
  *                     p_v_up = _crr_american_core(S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i] + d_vol, call_flag, crr_steps, &d_tmp, &g_tmp, &t_tmp)
  *                     p_v_dn = _crr_american_core(S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i] - d_vol, call_flag, crr_steps, &d_tmp, &g_tmp, &t_tmp)
  *                     if crr_steps >= 2:             # <<<<<<<<<<<<<<
@@ -28427,7 +30524,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
 */
               }
 
-              /* "bz_pricing/core/options_core.pyx":616
+              /* "bz_pricing/core/options_core.pyx":803
  *                         p_v_up = 0.5 * (p_v_up + _crr_american_core(S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i] + d_vol, call_flag, crr_steps + 1, &d_tmp, &g_tmp, &t_tmp))
  *                         p_v_dn = 0.5 * (p_v_dn + _crr_american_core(S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i] - d_vol, call_flag, crr_steps + 1, &d_tmp, &g_tmp, &t_tmp))
  *                     vv[i] = (p_v_up - p_v_dn) / (2.0 * d_vol)             # <<<<<<<<<<<<<<
@@ -28437,7 +30534,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
               __pyx_t_18 = __pyx_v_i;
               *((double *) ( /* dim=0 */ (__pyx_v_vv.data + __pyx_t_18 * __pyx_v_vv.strides[0]) )) = ((__pyx_v_p_v_up - __pyx_v_p_v_dn) / (2.0 * __pyx_v_d_vol));
 
-              /* "bz_pricing/core/options_core.pyx":617
+              /* "bz_pricing/core/options_core.pyx":804
  *                         p_v_dn = 0.5 * (p_v_dn + _crr_american_core(S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i] - d_vol, call_flag, crr_steps + 1, &d_tmp, &g_tmp, &t_tmp))
  *                     vv[i] = (p_v_up - p_v_dn) / (2.0 * d_vol)
  *                     p_r_up = _crr_american_core(S_arr[i], K_arr[i], r_arr[i] + d_rate, q_arr[i], T_arr[i], sigma_arr[i], call_flag, crr_steps, &d_tmp, &g_tmp, &t_tmp)             # <<<<<<<<<<<<<<
@@ -28452,7 +30549,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
               __pyx_t_12 = __pyx_v_i;
               __pyx_v_p_r_up = __pyx_f_10bz_pricing_4core_12options_core__crr_american_core((*((double *) ( /* dim=0 */ (__pyx_v_S_arr.data + __pyx_t_18 * __pyx_v_S_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_K_arr.data + __pyx_t_17 * __pyx_v_K_arr.strides[0]) ))), ((*((double *) ( /* dim=0 */ (__pyx_v_r_arr.data + __pyx_t_16 * __pyx_v_r_arr.strides[0]) ))) + __pyx_v_d_rate), (*((double *) ( /* dim=0 */ (__pyx_v_q_arr.data + __pyx_t_15 * __pyx_v_q_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_T_arr.data + __pyx_t_14 * __pyx_v_T_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_sigma_arr.data + __pyx_t_12 * __pyx_v_sigma_arr.strides[0]) ))), __pyx_v_call_flag, __pyx_v_crr_steps, (&__pyx_v_d_tmp), (&__pyx_v_g_tmp), (&__pyx_v_t_tmp));
 
-              /* "bz_pricing/core/options_core.pyx":618
+              /* "bz_pricing/core/options_core.pyx":805
  *                     vv[i] = (p_v_up - p_v_dn) / (2.0 * d_vol)
  *                     p_r_up = _crr_american_core(S_arr[i], K_arr[i], r_arr[i] + d_rate, q_arr[i], T_arr[i], sigma_arr[i], call_flag, crr_steps, &d_tmp, &g_tmp, &t_tmp)
  *                     p_r_dn = _crr_american_core(S_arr[i], K_arr[i], r_arr[i] - d_rate, q_arr[i], T_arr[i], sigma_arr[i], call_flag, crr_steps, &d_tmp, &g_tmp, &t_tmp)             # <<<<<<<<<<<<<<
@@ -28467,7 +30564,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
               __pyx_t_18 = __pyx_v_i;
               __pyx_v_p_r_dn = __pyx_f_10bz_pricing_4core_12options_core__crr_american_core((*((double *) ( /* dim=0 */ (__pyx_v_S_arr.data + __pyx_t_12 * __pyx_v_S_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_K_arr.data + __pyx_t_14 * __pyx_v_K_arr.strides[0]) ))), ((*((double *) ( /* dim=0 */ (__pyx_v_r_arr.data + __pyx_t_15 * __pyx_v_r_arr.strides[0]) ))) - __pyx_v_d_rate), (*((double *) ( /* dim=0 */ (__pyx_v_q_arr.data + __pyx_t_16 * __pyx_v_q_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_T_arr.data + __pyx_t_17 * __pyx_v_T_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_sigma_arr.data + __pyx_t_18 * __pyx_v_sigma_arr.strides[0]) ))), __pyx_v_call_flag, __pyx_v_crr_steps, (&__pyx_v_d_tmp), (&__pyx_v_g_tmp), (&__pyx_v_t_tmp));
 
-              /* "bz_pricing/core/options_core.pyx":619
+              /* "bz_pricing/core/options_core.pyx":806
  *                     p_r_up = _crr_american_core(S_arr[i], K_arr[i], r_arr[i] + d_rate, q_arr[i], T_arr[i], sigma_arr[i], call_flag, crr_steps, &d_tmp, &g_tmp, &t_tmp)
  *                     p_r_dn = _crr_american_core(S_arr[i], K_arr[i], r_arr[i] - d_rate, q_arr[i], T_arr[i], sigma_arr[i], call_flag, crr_steps, &d_tmp, &g_tmp, &t_tmp)
  *                     if crr_steps >= 2:             # <<<<<<<<<<<<<<
@@ -28479,7 +30576,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
               if (__pyx_t_13) {
 
 
-                /* "bz_pricing/core/options_core.pyx":620
+                /* "bz_pricing/core/options_core.pyx":807
  *                     p_r_dn = _crr_american_core(S_arr[i], K_arr[i], r_arr[i] - d_rate, q_arr[i], T_arr[i], sigma_arr[i], call_flag, crr_steps, &d_tmp, &g_tmp, &t_tmp)
  *                     if crr_steps >= 2:
  *                         p_r_up = 0.5 * (p_r_up + _crr_american_core(S_arr[i], K_arr[i], r_arr[i] + d_rate, q_arr[i], T_arr[i], sigma_arr[i], call_flag, crr_steps + 1, &d_tmp, &g_tmp, &t_tmp))             # <<<<<<<<<<<<<<
@@ -28494,7 +30591,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
                 __pyx_t_12 = __pyx_v_i;
                 __pyx_v_p_r_up = (0.5 * (__pyx_v_p_r_up + __pyx_f_10bz_pricing_4core_12options_core__crr_american_core((*((double *) ( /* dim=0 */ (__pyx_v_S_arr.data + __pyx_t_18 * __pyx_v_S_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_K_arr.data + __pyx_t_17 * __pyx_v_K_arr.strides[0]) ))), ((*((double *) ( /* dim=0 */ (__pyx_v_r_arr.data + __pyx_t_16 * __pyx_v_r_arr.strides[0]) ))) + __pyx_v_d_rate), (*((double *) ( /* dim=0 */ (__pyx_v_q_arr.data + __pyx_t_15 * __pyx_v_q_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_T_arr.data + __pyx_t_14 * __pyx_v_T_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_sigma_arr.data + __pyx_t_12 * __pyx_v_sigma_arr.strides[0]) ))), __pyx_v_call_flag, (__pyx_v_crr_steps + 1), (&__pyx_v_d_tmp), (&__pyx_v_g_tmp), (&__pyx_v_t_tmp))));
 
-                /* "bz_pricing/core/options_core.pyx":621
+                /* "bz_pricing/core/options_core.pyx":808
  *                     if crr_steps >= 2:
  *                         p_r_up = 0.5 * (p_r_up + _crr_american_core(S_arr[i], K_arr[i], r_arr[i] + d_rate, q_arr[i], T_arr[i], sigma_arr[i], call_flag, crr_steps + 1, &d_tmp, &g_tmp, &t_tmp))
  *                         p_r_dn = 0.5 * (p_r_dn + _crr_american_core(S_arr[i], K_arr[i], r_arr[i] - d_rate, q_arr[i], T_arr[i], sigma_arr[i], call_flag, crr_steps + 1, &d_tmp, &g_tmp, &t_tmp))             # <<<<<<<<<<<<<<
@@ -28509,7 +30606,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
                 __pyx_t_18 = __pyx_v_i;
                 __pyx_v_p_r_dn = (0.5 * (__pyx_v_p_r_dn + __pyx_f_10bz_pricing_4core_12options_core__crr_american_core((*((double *) ( /* dim=0 */ (__pyx_v_S_arr.data + __pyx_t_12 * __pyx_v_S_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_K_arr.data + __pyx_t_14 * __pyx_v_K_arr.strides[0]) ))), ((*((double *) ( /* dim=0 */ (__pyx_v_r_arr.data + __pyx_t_15 * __pyx_v_r_arr.strides[0]) ))) - __pyx_v_d_rate), (*((double *) ( /* dim=0 */ (__pyx_v_q_arr.data + __pyx_t_16 * __pyx_v_q_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_T_arr.data + __pyx_t_17 * __pyx_v_T_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_sigma_arr.data + __pyx_t_18 * __pyx_v_sigma_arr.strides[0]) ))), __pyx_v_call_flag, (__pyx_v_crr_steps + 1), (&__pyx_v_d_tmp), (&__pyx_v_g_tmp), (&__pyx_v_t_tmp))));
 
-                /* "bz_pricing/core/options_core.pyx":619
+                /* "bz_pricing/core/options_core.pyx":806
  *                     p_r_up = _crr_american_core(S_arr[i], K_arr[i], r_arr[i] + d_rate, q_arr[i], T_arr[i], sigma_arr[i], call_flag, crr_steps, &d_tmp, &g_tmp, &t_tmp)
  *                     p_r_dn = _crr_american_core(S_arr[i], K_arr[i], r_arr[i] - d_rate, q_arr[i], T_arr[i], sigma_arr[i], call_flag, crr_steps, &d_tmp, &g_tmp, &t_tmp)
  *                     if crr_steps >= 2:             # <<<<<<<<<<<<<<
@@ -28518,7 +30615,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
 */
               }
 
-              /* "bz_pricing/core/options_core.pyx":622
+              /* "bz_pricing/core/options_core.pyx":809
  *                         p_r_up = 0.5 * (p_r_up + _crr_american_core(S_arr[i], K_arr[i], r_arr[i] + d_rate, q_arr[i], T_arr[i], sigma_arr[i], call_flag, crr_steps + 1, &d_tmp, &g_tmp, &t_tmp))
  *                         p_r_dn = 0.5 * (p_r_dn + _crr_american_core(S_arr[i], K_arr[i], r_arr[i] - d_rate, q_arr[i], T_arr[i], sigma_arr[i], call_flag, crr_steps + 1, &d_tmp, &g_tmp, &t_tmp))
  *                     rv[i] = (p_r_up - p_r_dn) / (2.0 * d_rate)             # <<<<<<<<<<<<<<
@@ -28528,7 +30625,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
               __pyx_t_18 = __pyx_v_i;
               *((double *) ( /* dim=0 */ (__pyx_v_rv.data + __pyx_t_18 * __pyx_v_rv.strides[0]) )) = ((__pyx_v_p_r_up - __pyx_v_p_r_dn) / (2.0 * __pyx_v_d_rate));
 
-              /* "bz_pricing/core/options_core.pyx":610
+              /* "bz_pricing/core/options_core.pyx":797
  *                     gv[i] = gamma
  *                     tv[i] = theta
  *                 if T_arr[i] > 0.0 and sigma_arr[i] > d_vol and S_arr[i] > 0.0 and K_arr[i] > 0.0:             # <<<<<<<<<<<<<<
@@ -28538,7 +30635,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
               goto __pyx_L10;
             }
 
-            /* "bz_pricing/core/options_core.pyx":624
+            /* "bz_pricing/core/options_core.pyx":811
  *                     rv[i] = (p_r_up - p_r_dn) / (2.0 * d_rate)
  *                 else:
  *                     vv[i] = 0.0             # <<<<<<<<<<<<<<
@@ -28549,7 +30646,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
               __pyx_t_18 = __pyx_v_i;
               *((double *) ( /* dim=0 */ (__pyx_v_vv.data + __pyx_t_18 * __pyx_v_vv.strides[0]) )) = 0.0;
 
-              /* "bz_pricing/core/options_core.pyx":625
+              /* "bz_pricing/core/options_core.pyx":812
  *                 else:
  *                     vv[i] = 0.0
  *                     rv[i] = 0.0             # <<<<<<<<<<<<<<
@@ -28561,7 +30658,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
             }
             __pyx_L10:;
 
-            /* "bz_pricing/core/options_core.pyx":588
+            /* "bz_pricing/core/options_core.pyx":775
  *         for i in range(n):
  *             call_flag = (is_call_arr[i] != 0)
  *             if is_american_arr[i]:             # <<<<<<<<<<<<<<
@@ -28571,7 +30668,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
             goto __pyx_L8;
           }
 
-          /* "bz_pricing/core/options_core.pyx":627
+          /* "bz_pricing/core/options_core.pyx":814
  *                     rv[i] = 0.0
  *             else:
  *                 _bsm_core(             # <<<<<<<<<<<<<<
@@ -28580,7 +30677,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
 */
           /*else*/ {
 
-            /* "bz_pricing/core/options_core.pyx":628
+            /* "bz_pricing/core/options_core.pyx":815
  *             else:
  *                 _bsm_core(
  *                     S_arr[i], K_arr[i], r_arr[i], q_arr[i], T_arr[i], sigma_arr[i],             # <<<<<<<<<<<<<<
@@ -28594,7 +30691,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
             __pyx_t_14 = __pyx_v_i;
             __pyx_t_12 = __pyx_v_i;
 
-            /* "bz_pricing/core/options_core.pyx":627
+            /* "bz_pricing/core/options_core.pyx":814
  *                     rv[i] = 0.0
  *             else:
  *                 _bsm_core(             # <<<<<<<<<<<<<<
@@ -28603,7 +30700,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
 */
             __pyx_f_10bz_pricing_4core_12options_core__bsm_core((*((double *) ( /* dim=0 */ (__pyx_v_S_arr.data + __pyx_t_18 * __pyx_v_S_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_K_arr.data + __pyx_t_17 * __pyx_v_K_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_r_arr.data + __pyx_t_16 * __pyx_v_r_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_q_arr.data + __pyx_t_15 * __pyx_v_q_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_T_arr.data + __pyx_t_14 * __pyx_v_T_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_sigma_arr.data + __pyx_t_12 * __pyx_v_sigma_arr.strides[0]) ))), __pyx_v_call_flag, (&__pyx_v_price), (&__pyx_v_delta), (&__pyx_v_gamma), (&__pyx_v_vega), (&__pyx_v_theta), (&__pyx_v_rho), (&__pyx_v_vanna), (&__pyx_v_volga));
 
-            /* "bz_pricing/core/options_core.pyx":632
+            /* "bz_pricing/core/options_core.pyx":819
  *                     &price, &delta, &gamma, &vega, &theta, &rho, &vanna, &volga,
  *                 )
  *                 pv[i] = price             # <<<<<<<<<<<<<<
@@ -28613,7 +30710,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
             __pyx_t_12 = __pyx_v_i;
             *((double *) ( /* dim=0 */ (__pyx_v_pv.data + __pyx_t_12 * __pyx_v_pv.strides[0]) )) = __pyx_v_price;
 
-            /* "bz_pricing/core/options_core.pyx":633
+            /* "bz_pricing/core/options_core.pyx":820
  *                 )
  *                 pv[i] = price
  *                 dv[i] = delta             # <<<<<<<<<<<<<<
@@ -28623,7 +30720,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
             __pyx_t_12 = __pyx_v_i;
             *((double *) ( /* dim=0 */ (__pyx_v_dv.data + __pyx_t_12 * __pyx_v_dv.strides[0]) )) = __pyx_v_delta;
 
-            /* "bz_pricing/core/options_core.pyx":634
+            /* "bz_pricing/core/options_core.pyx":821
  *                 pv[i] = price
  *                 dv[i] = delta
  *                 gv[i] = gamma             # <<<<<<<<<<<<<<
@@ -28633,7 +30730,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
             __pyx_t_12 = __pyx_v_i;
             *((double *) ( /* dim=0 */ (__pyx_v_gv.data + __pyx_t_12 * __pyx_v_gv.strides[0]) )) = __pyx_v_gamma;
 
-            /* "bz_pricing/core/options_core.pyx":635
+            /* "bz_pricing/core/options_core.pyx":822
  *                 dv[i] = delta
  *                 gv[i] = gamma
  *                 vv[i] = vega             # <<<<<<<<<<<<<<
@@ -28643,7 +30740,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
             __pyx_t_12 = __pyx_v_i;
             *((double *) ( /* dim=0 */ (__pyx_v_vv.data + __pyx_t_12 * __pyx_v_vv.strides[0]) )) = __pyx_v_vega;
 
-            /* "bz_pricing/core/options_core.pyx":636
+            /* "bz_pricing/core/options_core.pyx":823
  *                 gv[i] = gamma
  *                 vv[i] = vega
  *                 tv[i] = theta             # <<<<<<<<<<<<<<
@@ -28653,7 +30750,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
             __pyx_t_12 = __pyx_v_i;
             *((double *) ( /* dim=0 */ (__pyx_v_tv.data + __pyx_t_12 * __pyx_v_tv.strides[0]) )) = __pyx_v_theta;
 
-            /* "bz_pricing/core/options_core.pyx":637
+            /* "bz_pricing/core/options_core.pyx":824
  *                 vv[i] = vega
  *                 tv[i] = theta
  *                 rv[i] = rho             # <<<<<<<<<<<<<<
@@ -28668,7 +30765,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
 
       }
 
-      /* "bz_pricing/core/options_core.pyx":585
+      /* "bz_pricing/core/options_core.pyx":772
  * 
  *     cdef bint call_flag
  *     with nogil:             # <<<<<<<<<<<<<<
@@ -28685,33 +30782,33 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
       }
   }
 
-  /* "bz_pricing/core/options_core.pyx":639
+  /* "bz_pricing/core/options_core.pyx":826
  *                 rv[i] = rho
  * 
  *     return (out_price, out_delta, out_gamma, out_vega, out_theta, out_rho)             # <<<<<<<<<<<<<<
  * 
  * 
 */
-  __pyx_t_1 = PyTuple_New(6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 639, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 826, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF((PyObject *)__pyx_v_out_price);
   __Pyx_GIVEREF((PyObject *)__pyx_v_out_price);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_out_price)) != (0)) __PYX_ERR(0, 639, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_out_price)) != (0)) __PYX_ERR(0, 826, __pyx_L1_error);
   __Pyx_INCREF((PyObject *)__pyx_v_out_delta);
   __Pyx_GIVEREF((PyObject *)__pyx_v_out_delta);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_1, 1, ((PyObject *)__pyx_v_out_delta)) != (0)) __PYX_ERR(0, 639, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_1, 1, ((PyObject *)__pyx_v_out_delta)) != (0)) __PYX_ERR(0, 826, __pyx_L1_error);
   __Pyx_INCREF((PyObject *)__pyx_v_out_gamma);
   __Pyx_GIVEREF((PyObject *)__pyx_v_out_gamma);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_1, 2, ((PyObject *)__pyx_v_out_gamma)) != (0)) __PYX_ERR(0, 639, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_1, 2, ((PyObject *)__pyx_v_out_gamma)) != (0)) __PYX_ERR(0, 826, __pyx_L1_error);
   __Pyx_INCREF((PyObject *)__pyx_v_out_vega);
   __Pyx_GIVEREF((PyObject *)__pyx_v_out_vega);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_1, 3, ((PyObject *)__pyx_v_out_vega)) != (0)) __PYX_ERR(0, 639, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_1, 3, ((PyObject *)__pyx_v_out_vega)) != (0)) __PYX_ERR(0, 826, __pyx_L1_error);
   __Pyx_INCREF((PyObject *)__pyx_v_out_theta);
   __Pyx_GIVEREF((PyObject *)__pyx_v_out_theta);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_1, 4, ((PyObject *)__pyx_v_out_theta)) != (0)) __PYX_ERR(0, 639, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_1, 4, ((PyObject *)__pyx_v_out_theta)) != (0)) __PYX_ERR(0, 826, __pyx_L1_error);
   __Pyx_INCREF((PyObject *)__pyx_v_out_rho);
   __Pyx_GIVEREF((PyObject *)__pyx_v_out_rho);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_1, 5, ((PyObject *)__pyx_v_out_rho)) != (0)) __PYX_ERR(0, 639, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_1, 5, ((PyObject *)__pyx_v_out_rho)) != (0)) __PYX_ERR(0, 826, __pyx_L1_error);
   {
     PyObject *__pyx_temp;
     {
@@ -28723,7 +30820,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bz_pricing/core/options_core.pyx":549
+  /* "bz_pricing/core/options_core.pyx":736
  * 
  * 
  * cpdef tuple price_options_batch(             # <<<<<<<<<<<<<<
@@ -28820,16 +30917,16 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_options_batch(_
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_27price_options_batch(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_29price_options_batch(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_10bz_pricing_4core_12options_core_26price_options_batch, "Precifica um lote de op\303\247\303\265es em Cython, retornando pre\303\247os e gregas.");
-static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_27price_options_batch = {"price_options_batch", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_27price_options_batch, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10bz_pricing_4core_12options_core_26price_options_batch};
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_27price_options_batch(PyObject *__pyx_self, 
+PyDoc_STRVAR(__pyx_doc_10bz_pricing_4core_12options_core_28price_options_batch, "Precifica um lote de op\303\247\303\265es em Cython, retornando pre\303\247os e gregas.");
+static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_29price_options_batch = {"price_options_batch", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_29price_options_batch, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10bz_pricing_4core_12options_core_28price_options_batch};
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_29price_options_batch(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -28867,97 +30964,97 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_is_call_arr,&__pyx_mstate_global->__pyx_n_u_is_american_arr,&__pyx_mstate_global->__pyx_n_u_S_arr,&__pyx_mstate_global->__pyx_n_u_K_arr,&__pyx_mstate_global->__pyx_n_u_r_arr,&__pyx_mstate_global->__pyx_n_u_q_arr,&__pyx_mstate_global->__pyx_n_u_T_arr,&__pyx_mstate_global->__pyx_n_u_sigma_arr,&__pyx_mstate_global->__pyx_n_u_crr_steps,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 549, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 736, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  9:
         values[8] = __Pyx_ArgRef_FASTCALL(__pyx_args, 8);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 549, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 736, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  8:
         values[7] = __Pyx_ArgRef_FASTCALL(__pyx_args, 7);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 549, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 736, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  7:
         values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 549, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 736, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  6:
         values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 549, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 736, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 549, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 736, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 549, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 736, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 549, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 736, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 549, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 736, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 549, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 736, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "price_options_batch", 0) < (0)) __PYX_ERR(0, 549, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "price_options_batch", 0) < (0)) __PYX_ERR(0, 736, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 8; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("price_options_batch", 0, 8, 9, i); __PYX_ERR(0, 549, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("price_options_batch", 0, 8, 9, i); __PYX_ERR(0, 736, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  9:
         values[8] = __Pyx_ArgRef_FASTCALL(__pyx_args, 8);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 549, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 736, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  8:
         values[7] = __Pyx_ArgRef_FASTCALL(__pyx_args, 7);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 549, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 736, __pyx_L3_error)
         values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 549, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 736, __pyx_L3_error)
         values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 549, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 736, __pyx_L3_error)
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 549, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 736, __pyx_L3_error)
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 549, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 736, __pyx_L3_error)
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 549, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 736, __pyx_L3_error)
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 549, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 736, __pyx_L3_error)
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 549, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 736, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_is_call_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_int(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_is_call_arr.memview)) __PYX_ERR(0, 550, __pyx_L3_error)
-    __pyx_v_is_american_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_int(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_is_american_arr.memview)) __PYX_ERR(0, 551, __pyx_L3_error)
-    __pyx_v_S_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[2], PyBUF_WRITABLE); if (unlikely(!__pyx_v_S_arr.memview)) __PYX_ERR(0, 552, __pyx_L3_error)
-    __pyx_v_K_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_K_arr.memview)) __PYX_ERR(0, 553, __pyx_L3_error)
-    __pyx_v_r_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[4], PyBUF_WRITABLE); if (unlikely(!__pyx_v_r_arr.memview)) __PYX_ERR(0, 554, __pyx_L3_error)
-    __pyx_v_q_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[5], PyBUF_WRITABLE); if (unlikely(!__pyx_v_q_arr.memview)) __PYX_ERR(0, 555, __pyx_L3_error)
-    __pyx_v_T_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[6], PyBUF_WRITABLE); if (unlikely(!__pyx_v_T_arr.memview)) __PYX_ERR(0, 556, __pyx_L3_error)
-    __pyx_v_sigma_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[7], PyBUF_WRITABLE); if (unlikely(!__pyx_v_sigma_arr.memview)) __PYX_ERR(0, 557, __pyx_L3_error)
+    __pyx_v_is_call_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_int(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_is_call_arr.memview)) __PYX_ERR(0, 737, __pyx_L3_error)
+    __pyx_v_is_american_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_int(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_is_american_arr.memview)) __PYX_ERR(0, 738, __pyx_L3_error)
+    __pyx_v_S_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[2], PyBUF_WRITABLE); if (unlikely(!__pyx_v_S_arr.memview)) __PYX_ERR(0, 739, __pyx_L3_error)
+    __pyx_v_K_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_K_arr.memview)) __PYX_ERR(0, 740, __pyx_L3_error)
+    __pyx_v_r_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[4], PyBUF_WRITABLE); if (unlikely(!__pyx_v_r_arr.memview)) __PYX_ERR(0, 741, __pyx_L3_error)
+    __pyx_v_q_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[5], PyBUF_WRITABLE); if (unlikely(!__pyx_v_q_arr.memview)) __PYX_ERR(0, 742, __pyx_L3_error)
+    __pyx_v_T_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[6], PyBUF_WRITABLE); if (unlikely(!__pyx_v_T_arr.memview)) __PYX_ERR(0, 743, __pyx_L3_error)
+    __pyx_v_sigma_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[7], PyBUF_WRITABLE); if (unlikely(!__pyx_v_sigma_arr.memview)) __PYX_ERR(0, 744, __pyx_L3_error)
     if (values[8]) {
-      __pyx_v_crr_steps = __Pyx_PyLong_As_int(values[8]); if (unlikely((__pyx_v_crr_steps == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 558, __pyx_L3_error)
+      __pyx_v_crr_steps = __Pyx_PyLong_As_int(values[8]); if (unlikely((__pyx_v_crr_steps == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 745, __pyx_L3_error)
     } else {
       __pyx_v_crr_steps = ((int)0x96);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("price_options_batch", 0, 8, 9, __pyx_nargs); __PYX_ERR(0, 549, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("price_options_batch", 0, 8, 9, __pyx_nargs); __PYX_ERR(0, 736, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -28976,7 +31073,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_26price_options_batch(__pyx_self, __pyx_v_is_call_arr, __pyx_v_is_american_arr, __pyx_v_S_arr, __pyx_v_K_arr, __pyx_v_r_arr, __pyx_v_q_arr, __pyx_v_T_arr, __pyx_v_sigma_arr, __pyx_v_crr_steps);
+  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_28price_options_batch(__pyx_self, __pyx_v_is_call_arr, __pyx_v_is_american_arr, __pyx_v_S_arr, __pyx_v_K_arr, __pyx_v_r_arr, __pyx_v_q_arr, __pyx_v_T_arr, __pyx_v_sigma_arr, __pyx_v_crr_steps);
 
   /* function exit code */
   for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
@@ -28995,7 +31092,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_26price_options_batch(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_is_call_arr, __Pyx_memviewslice __pyx_v_is_american_arr, __Pyx_memviewslice __pyx_v_S_arr, __Pyx_memviewslice __pyx_v_K_arr, __Pyx_memviewslice __pyx_v_r_arr, __Pyx_memviewslice __pyx_v_q_arr, __Pyx_memviewslice __pyx_v_T_arr, __Pyx_memviewslice __pyx_v_sigma_arr, int __pyx_v_crr_steps) {
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_28price_options_batch(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_is_call_arr, __Pyx_memviewslice __pyx_v_is_american_arr, __Pyx_memviewslice __pyx_v_S_arr, __Pyx_memviewslice __pyx_v_K_arr, __Pyx_memviewslice __pyx_v_r_arr, __Pyx_memviewslice __pyx_v_q_arr, __Pyx_memviewslice __pyx_v_T_arr, __Pyx_memviewslice __pyx_v_sigma_arr, int __pyx_v_crr_steps) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -29004,17 +31101,17 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_26price_options_batc
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("price_options_batch", 0);
-  if (unlikely(!__pyx_v_is_call_arr.memview)) { __Pyx_RaiseUnboundLocalError("is_call_arr"); __PYX_ERR(0, 549, __pyx_L1_error) }
-  if (unlikely(!__pyx_v_is_american_arr.memview)) { __Pyx_RaiseUnboundLocalError("is_american_arr"); __PYX_ERR(0, 549, __pyx_L1_error) }
-  if (unlikely(!__pyx_v_S_arr.memview)) { __Pyx_RaiseUnboundLocalError("S_arr"); __PYX_ERR(0, 549, __pyx_L1_error) }
-  if (unlikely(!__pyx_v_K_arr.memview)) { __Pyx_RaiseUnboundLocalError("K_arr"); __PYX_ERR(0, 549, __pyx_L1_error) }
-  if (unlikely(!__pyx_v_r_arr.memview)) { __Pyx_RaiseUnboundLocalError("r_arr"); __PYX_ERR(0, 549, __pyx_L1_error) }
-  if (unlikely(!__pyx_v_q_arr.memview)) { __Pyx_RaiseUnboundLocalError("q_arr"); __PYX_ERR(0, 549, __pyx_L1_error) }
-  if (unlikely(!__pyx_v_T_arr.memview)) { __Pyx_RaiseUnboundLocalError("T_arr"); __PYX_ERR(0, 549, __pyx_L1_error) }
-  if (unlikely(!__pyx_v_sigma_arr.memview)) { __Pyx_RaiseUnboundLocalError("sigma_arr"); __PYX_ERR(0, 549, __pyx_L1_error) }
+  if (unlikely(!__pyx_v_is_call_arr.memview)) { __Pyx_RaiseUnboundLocalError("is_call_arr"); __PYX_ERR(0, 736, __pyx_L1_error) }
+  if (unlikely(!__pyx_v_is_american_arr.memview)) { __Pyx_RaiseUnboundLocalError("is_american_arr"); __PYX_ERR(0, 736, __pyx_L1_error) }
+  if (unlikely(!__pyx_v_S_arr.memview)) { __Pyx_RaiseUnboundLocalError("S_arr"); __PYX_ERR(0, 736, __pyx_L1_error) }
+  if (unlikely(!__pyx_v_K_arr.memview)) { __Pyx_RaiseUnboundLocalError("K_arr"); __PYX_ERR(0, 736, __pyx_L1_error) }
+  if (unlikely(!__pyx_v_r_arr.memview)) { __Pyx_RaiseUnboundLocalError("r_arr"); __PYX_ERR(0, 736, __pyx_L1_error) }
+  if (unlikely(!__pyx_v_q_arr.memview)) { __Pyx_RaiseUnboundLocalError("q_arr"); __PYX_ERR(0, 736, __pyx_L1_error) }
+  if (unlikely(!__pyx_v_T_arr.memview)) { __Pyx_RaiseUnboundLocalError("T_arr"); __PYX_ERR(0, 736, __pyx_L1_error) }
+  if (unlikely(!__pyx_v_sigma_arr.memview)) { __Pyx_RaiseUnboundLocalError("sigma_arr"); __PYX_ERR(0, 736, __pyx_L1_error) }
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.crr_steps = __pyx_v_crr_steps;
-  __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_price_options_batch(__pyx_v_is_call_arr, __pyx_v_is_american_arr, __pyx_v_S_arr, __pyx_v_K_arr, __pyx_v_r_arr, __pyx_v_q_arr, __pyx_v_T_arr, __pyx_v_sigma_arr, 1, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 549, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_price_options_batch(__pyx_v_is_call_arr, __pyx_v_is_american_arr, __pyx_v_S_arr, __pyx_v_K_arr, __pyx_v_r_arr, __pyx_v_q_arr, __pyx_v_T_arr, __pyx_v_sigma_arr, 1, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 736, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   {
     PyObject *__pyx_temp;
@@ -29038,7 +31135,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_26price_options_batc
   return __pyx_r;
 }
 
-/* "bz_pricing/core/options_core.pyx":642
+/* "bz_pricing/core/options_core.pyx":829
  * 
  * 
  * cdef void _bachelier_core(             # <<<<<<<<<<<<<<
@@ -29056,7 +31153,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
   int __pyx_t_2;
   double __pyx_t_3;
 
-  /* "bz_pricing/core/options_core.pyx":655
+  /* "bz_pricing/core/options_core.pyx":842
  *     double* out_theta,
  * ) noexcept nogil:
  *     if T <= 0.0 or sigma_n <= 0.0:             # <<<<<<<<<<<<<<
@@ -29082,7 +31179,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/options_core.pyx":656
+    /* "bz_pricing/core/options_core.pyx":843
  * ) noexcept nogil:
  *     if T <= 0.0 or sigma_n <= 0.0:
  *         if is_call:             # <<<<<<<<<<<<<<
@@ -29091,7 +31188,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
 */
     if (__pyx_v_is_call) {
 
-      /* "bz_pricing/core/options_core.pyx":657
+      /* "bz_pricing/core/options_core.pyx":844
  *     if T <= 0.0 or sigma_n <= 0.0:
  *         if is_call:
  *             out_price[0] = df_r * fmax(F - K, 0.0)             # <<<<<<<<<<<<<<
@@ -29100,7 +31197,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
 */
       (__pyx_v_out_price[0]) = (__pyx_v_df_r * fmax((__pyx_v_F - __pyx_v_K), 0.0));
 
-      /* "bz_pricing/core/options_core.pyx":658
+      /* "bz_pricing/core/options_core.pyx":845
  *         if is_call:
  *             out_price[0] = df_r * fmax(F - K, 0.0)
  *             out_delta[0] = df_r if F > K else 0.0             # <<<<<<<<<<<<<<
@@ -29120,7 +31217,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
       (__pyx_v_out_delta[0]) = __pyx_t_3;
 
 
-      /* "bz_pricing/core/options_core.pyx":656
+      /* "bz_pricing/core/options_core.pyx":843
  * ) noexcept nogil:
  *     if T <= 0.0 or sigma_n <= 0.0:
  *         if is_call:             # <<<<<<<<<<<<<<
@@ -29130,7 +31227,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
       goto __pyx_L6;
     }
 
-    /* "bz_pricing/core/options_core.pyx":660
+    /* "bz_pricing/core/options_core.pyx":847
  *             out_delta[0] = df_r if F > K else 0.0
  *         else:
  *             out_price[0] = df_r * fmax(K - F, 0.0)             # <<<<<<<<<<<<<<
@@ -29140,7 +31237,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
     /*else*/ {
       (__pyx_v_out_price[0]) = (__pyx_v_df_r * fmax((__pyx_v_K - __pyx_v_F), 0.0));
 
-      /* "bz_pricing/core/options_core.pyx":661
+      /* "bz_pricing/core/options_core.pyx":848
  *         else:
  *             out_price[0] = df_r * fmax(K - F, 0.0)
  *             out_delta[0] = -df_r if K > F else 0.0             # <<<<<<<<<<<<<<
@@ -29162,7 +31259,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
     }
     __pyx_L6:;
 
-    /* "bz_pricing/core/options_core.pyx":662
+    /* "bz_pricing/core/options_core.pyx":849
  *             out_price[0] = df_r * fmax(K - F, 0.0)
  *             out_delta[0] = -df_r if K > F else 0.0
  *         out_gamma[0] = 0.0             # <<<<<<<<<<<<<<
@@ -29171,7 +31268,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
 */
     (__pyx_v_out_gamma[0]) = 0.0;
 
-    /* "bz_pricing/core/options_core.pyx":663
+    /* "bz_pricing/core/options_core.pyx":850
  *             out_delta[0] = -df_r if K > F else 0.0
  *         out_gamma[0] = 0.0
  *         out_vega[0] = 0.0             # <<<<<<<<<<<<<<
@@ -29180,7 +31277,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
 */
     (__pyx_v_out_vega[0]) = 0.0;
 
-    /* "bz_pricing/core/options_core.pyx":664
+    /* "bz_pricing/core/options_core.pyx":851
  *         out_gamma[0] = 0.0
  *         out_vega[0] = 0.0
  *         out_theta[0] = 0.0             # <<<<<<<<<<<<<<
@@ -29189,7 +31286,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
 */
     (__pyx_v_out_theta[0]) = 0.0;
 
-    /* "bz_pricing/core/options_core.pyx":665
+    /* "bz_pricing/core/options_core.pyx":852
  *         out_vega[0] = 0.0
  *         out_theta[0] = 0.0
  *         return             # <<<<<<<<<<<<<<
@@ -29200,7 +31297,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/options_core.pyx":655
+    /* "bz_pricing/core/options_core.pyx":842
  *     double* out_theta,
  * ) noexcept nogil:
  *     if T <= 0.0 or sigma_n <= 0.0:             # <<<<<<<<<<<<<<
@@ -29209,7 +31306,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
 */
   }
 
-  /* "bz_pricing/core/options_core.pyx":667
+  /* "bz_pricing/core/options_core.pyx":854
  *         return
  * 
  *     cdef double sqrt_T = sqrt(T)             # <<<<<<<<<<<<<<
@@ -29218,7 +31315,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
 */
   __pyx_v_sqrt_T = sqrt(__pyx_v_T);
 
-  /* "bz_pricing/core/options_core.pyx":668
+  /* "bz_pricing/core/options_core.pyx":855
  * 
  *     cdef double sqrt_T = sqrt(T)
  *     cdef double std_dev = sigma_n * sqrt_T             # <<<<<<<<<<<<<<
@@ -29227,7 +31324,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
 */
   __pyx_v_std_dev = (__pyx_v_sigma_n * __pyx_v_sqrt_T);
 
-  /* "bz_pricing/core/options_core.pyx":669
+  /* "bz_pricing/core/options_core.pyx":856
  *     cdef double sqrt_T = sqrt(T)
  *     cdef double std_dev = sigma_n * sqrt_T
  *     cdef double d = (F - K) / std_dev             # <<<<<<<<<<<<<<
@@ -29236,7 +31333,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
 */
   __pyx_v_d = ((__pyx_v_F - __pyx_v_K) / __pyx_v_std_dev);
 
-  /* "bz_pricing/core/options_core.pyx":670
+  /* "bz_pricing/core/options_core.pyx":857
  *     cdef double std_dev = sigma_n * sqrt_T
  *     cdef double d = (F - K) / std_dev
  *     cdef double pdf_d = _norm_pdf(d)             # <<<<<<<<<<<<<<
@@ -29245,7 +31342,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
 */
   __pyx_v_pdf_d = __pyx_f_10bz_pricing_4core_12options_core__norm_pdf(__pyx_v_d);
 
-  /* "bz_pricing/core/options_core.pyx":671
+  /* "bz_pricing/core/options_core.pyx":858
  *     cdef double d = (F - K) / std_dev
  *     cdef double pdf_d = _norm_pdf(d)
  *     cdef double cdf_d = _norm_cdf(d)             # <<<<<<<<<<<<<<
@@ -29254,7 +31351,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
 */
   __pyx_v_cdf_d = __pyx_f_10bz_pricing_4core_12options_core__norm_cdf(__pyx_v_d);
 
-  /* "bz_pricing/core/options_core.pyx":673
+  /* "bz_pricing/core/options_core.pyx":860
  *     cdef double cdf_d = _norm_cdf(d)
  * 
  *     if is_call:             # <<<<<<<<<<<<<<
@@ -29263,7 +31360,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
 */
   if (__pyx_v_is_call) {
 
-    /* "bz_pricing/core/options_core.pyx":674
+    /* "bz_pricing/core/options_core.pyx":861
  * 
  *     if is_call:
  *         out_price[0] = df_r * ((F - K) * cdf_d + std_dev * pdf_d)             # <<<<<<<<<<<<<<
@@ -29272,7 +31369,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
 */
     (__pyx_v_out_price[0]) = (__pyx_v_df_r * (((__pyx_v_F - __pyx_v_K) * __pyx_v_cdf_d) + (__pyx_v_std_dev * __pyx_v_pdf_d)));
 
-    /* "bz_pricing/core/options_core.pyx":675
+    /* "bz_pricing/core/options_core.pyx":862
  *     if is_call:
  *         out_price[0] = df_r * ((F - K) * cdf_d + std_dev * pdf_d)
  *         out_delta[0] = df_r * cdf_d             # <<<<<<<<<<<<<<
@@ -29281,7 +31378,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
 */
     (__pyx_v_out_delta[0]) = (__pyx_v_df_r * __pyx_v_cdf_d);
 
-    /* "bz_pricing/core/options_core.pyx":673
+    /* "bz_pricing/core/options_core.pyx":860
  *     cdef double cdf_d = _norm_cdf(d)
  * 
  *     if is_call:             # <<<<<<<<<<<<<<
@@ -29291,7 +31388,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
     goto __pyx_L7;
   }
 
-  /* "bz_pricing/core/options_core.pyx":677
+  /* "bz_pricing/core/options_core.pyx":864
  *         out_delta[0] = df_r * cdf_d
  *     else:
  *         out_price[0] = df_r * ((K - F) * (1.0 - cdf_d) + std_dev * pdf_d)             # <<<<<<<<<<<<<<
@@ -29301,7 +31398,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
   /*else*/ {
     (__pyx_v_out_price[0]) = (__pyx_v_df_r * (((__pyx_v_K - __pyx_v_F) * (1.0 - __pyx_v_cdf_d)) + (__pyx_v_std_dev * __pyx_v_pdf_d)));
 
-    /* "bz_pricing/core/options_core.pyx":678
+    /* "bz_pricing/core/options_core.pyx":865
  *     else:
  *         out_price[0] = df_r * ((K - F) * (1.0 - cdf_d) + std_dev * pdf_d)
  *         out_delta[0] = -df_r * (1.0 - cdf_d)             # <<<<<<<<<<<<<<
@@ -29312,7 +31409,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
   }
   __pyx_L7:;
 
-  /* "bz_pricing/core/options_core.pyx":680
+  /* "bz_pricing/core/options_core.pyx":867
  *         out_delta[0] = -df_r * (1.0 - cdf_d)
  * 
  *     out_gamma[0] = df_r * pdf_d / std_dev             # <<<<<<<<<<<<<<
@@ -29321,7 +31418,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
 */
   (__pyx_v_out_gamma[0]) = ((__pyx_v_df_r * __pyx_v_pdf_d) / __pyx_v_std_dev);
 
-  /* "bz_pricing/core/options_core.pyx":681
+  /* "bz_pricing/core/options_core.pyx":868
  * 
  *     out_gamma[0] = df_r * pdf_d / std_dev
  *     out_vega[0] = df_r * sqrt_T * pdf_d             # <<<<<<<<<<<<<<
@@ -29330,7 +31427,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
 */
   (__pyx_v_out_vega[0]) = ((__pyx_v_df_r * __pyx_v_sqrt_T) * __pyx_v_pdf_d);
 
-  /* "bz_pricing/core/options_core.pyx":682
+  /* "bz_pricing/core/options_core.pyx":869
  *     out_gamma[0] = df_r * pdf_d / std_dev
  *     out_vega[0] = df_r * sqrt_T * pdf_d
  *     out_theta[0] = -df_r * sigma_n * pdf_d / (2.0 * sqrt_T)             # <<<<<<<<<<<<<<
@@ -29339,7 +31436,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
 */
   (__pyx_v_out_theta[0]) = ((((-__pyx_v_df_r) * __pyx_v_sigma_n) * __pyx_v_pdf_d) / (2.0 * __pyx_v_sqrt_T));
 
-  /* "bz_pricing/core/options_core.pyx":642
+  /* "bz_pricing/core/options_core.pyx":829
  * 
  * 
  * cdef void _bachelier_core(             # <<<<<<<<<<<<<<
@@ -29356,7 +31453,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
 
 }
 
-/* "bz_pricing/core/options_core.pyx":685
+/* "bz_pricing/core/options_core.pyx":872
  * 
  * 
  * cpdef tuple bachelier_price_greeks(             # <<<<<<<<<<<<<<
@@ -29364,7 +31461,7 @@ static void __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(double __p
  *     double K,
 */
 
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_29bachelier_price_greeks(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_31bachelier_price_greeks(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -29373,7 +31470,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 ); /*proto*/
 static PyObject *__pyx_f_10bz_pricing_4core_12options_core_bachelier_price_greeks(double __pyx_v_F, double __pyx_v_K, double __pyx_v_df_r, double __pyx_v_T, double __pyx_v_sigma_n, CYTHON_UNUSED int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_12options_core_bachelier_price_greeks *__pyx_optional_args) {
 
-  /* "bz_pricing/core/options_core.pyx":691
+  /* "bz_pricing/core/options_core.pyx":878
  *     double T,
  *     double sigma_n,
  *     bint is_call=True,             # <<<<<<<<<<<<<<
@@ -29404,7 +31501,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_bachelier_price_greek
     }
   }
 
-  /* "bz_pricing/core/options_core.pyx":695
+  /* "bz_pricing/core/options_core.pyx":882
  *     """Modelo Normal de Bachelier para taxas/swaptions/caplets."""
  *     cdef double price, delta, gamma, vega, theta
  *     with nogil:             # <<<<<<<<<<<<<<
@@ -29417,7 +31514,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_bachelier_price_greek
       __Pyx_FastGIL_Remember();
       /*try:*/ {
 
-        /* "bz_pricing/core/options_core.pyx":696
+        /* "bz_pricing/core/options_core.pyx":883
  *     cdef double price, delta, gamma, vega, theta
  *     with nogil:
  *         _bachelier_core(F, K, df_r, T, sigma_n, is_call, &price, &delta, &gamma, &vega, &theta)             # <<<<<<<<<<<<<<
@@ -29427,7 +31524,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_bachelier_price_greek
         __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(__pyx_v_F, __pyx_v_K, __pyx_v_df_r, __pyx_v_T, __pyx_v_sigma_n, __pyx_v_is_call, (&__pyx_v_price), (&__pyx_v_delta), (&__pyx_v_gamma), (&__pyx_v_vega), (&__pyx_v_theta));
       }
 
-      /* "bz_pricing/core/options_core.pyx":695
+      /* "bz_pricing/core/options_core.pyx":882
  *     """Modelo Normal de Bachelier para taxas/swaptions/caplets."""
  *     cdef double price, delta, gamma, vega, theta
  *     with nogil:             # <<<<<<<<<<<<<<
@@ -29444,35 +31541,35 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_bachelier_price_greek
       }
   }
 
-  /* "bz_pricing/core/options_core.pyx":697
+  /* "bz_pricing/core/options_core.pyx":884
  *     with nogil:
  *         _bachelier_core(F, K, df_r, T, sigma_n, is_call, &price, &delta, &gamma, &vega, &theta)
  *     return (price, delta, gamma, vega, theta)             # <<<<<<<<<<<<<<
  * 
  * 
 */
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_price); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 697, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_price); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 884, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_delta); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 697, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_delta); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 884, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_gamma); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 697, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_gamma); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 884, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_vega); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 697, __pyx_L1_error)
+  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_vega); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 884, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = PyFloat_FromDouble(__pyx_v_theta); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 697, __pyx_L1_error)
+  __pyx_t_5 = PyFloat_FromDouble(__pyx_v_theta); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 884, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = PyTuple_New(5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 697, __pyx_L1_error)
+  __pyx_t_6 = PyTuple_New(5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 884, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_GIVEREF(__pyx_t_1);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_1) != (0)) __PYX_ERR(0, 697, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_1) != (0)) __PYX_ERR(0, 884, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_2);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_t_2) != (0)) __PYX_ERR(0, 697, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_t_2) != (0)) __PYX_ERR(0, 884, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_3);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_6, 2, __pyx_t_3) != (0)) __PYX_ERR(0, 697, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_6, 2, __pyx_t_3) != (0)) __PYX_ERR(0, 884, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_4);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_6, 3, __pyx_t_4) != (0)) __PYX_ERR(0, 697, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_6, 3, __pyx_t_4) != (0)) __PYX_ERR(0, 884, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_5);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_6, 4, __pyx_t_5) != (0)) __PYX_ERR(0, 697, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_6, 4, __pyx_t_5) != (0)) __PYX_ERR(0, 884, __pyx_L1_error);
   __pyx_t_1 = 0;
   __pyx_t_2 = 0;
   __pyx_t_3 = 0;
@@ -29489,7 +31586,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_bachelier_price_greek
   __pyx_t_6 = 0;
   goto __pyx_L0;
 
-  /* "bz_pricing/core/options_core.pyx":685
+  /* "bz_pricing/core/options_core.pyx":872
  * 
  * 
  * cpdef tuple bachelier_price_greeks(             # <<<<<<<<<<<<<<
@@ -29519,16 +31616,16 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_bachelier_price_greek
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_29bachelier_price_greeks(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_31bachelier_price_greeks(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_10bz_pricing_4core_12options_core_28bachelier_price_greeks, "Modelo Normal de Bachelier para taxas/swaptions/caplets.");
-static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_29bachelier_price_greeks = {"bachelier_price_greeks", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_29bachelier_price_greeks, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10bz_pricing_4core_12options_core_28bachelier_price_greeks};
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_29bachelier_price_greeks(PyObject *__pyx_self, 
+PyDoc_STRVAR(__pyx_doc_10bz_pricing_4core_12options_core_30bachelier_price_greeks, "Modelo Normal de Bachelier para taxas/swaptions/caplets.");
+static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_31bachelier_price_greeks = {"bachelier_price_greeks", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_31bachelier_price_greeks, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10bz_pricing_4core_12options_core_30bachelier_price_greeks};
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_31bachelier_price_greeks(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -29563,72 +31660,72 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_F,&__pyx_mstate_global->__pyx_n_u_K,&__pyx_mstate_global->__pyx_n_u_df_r,&__pyx_mstate_global->__pyx_n_u_T,&__pyx_mstate_global->__pyx_n_u_sigma_n,&__pyx_mstate_global->__pyx_n_u_is_call,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 685, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 872, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  6:
         values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 685, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 872, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 685, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 872, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 685, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 872, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 685, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 872, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 685, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 872, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 685, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 872, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "bachelier_price_greeks", 0) < (0)) __PYX_ERR(0, 685, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "bachelier_price_greeks", 0) < (0)) __PYX_ERR(0, 872, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 5; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("bachelier_price_greeks", 0, 5, 6, i); __PYX_ERR(0, 685, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("bachelier_price_greeks", 0, 5, 6, i); __PYX_ERR(0, 872, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  6:
         values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 685, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 872, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 685, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 872, __pyx_L3_error)
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 685, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 872, __pyx_L3_error)
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 685, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 872, __pyx_L3_error)
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 685, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 872, __pyx_L3_error)
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 685, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 872, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_F = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_F == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 686, __pyx_L3_error)
-    __pyx_v_K = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_K == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 687, __pyx_L3_error)
-    __pyx_v_df_r = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_df_r == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 688, __pyx_L3_error)
-    __pyx_v_T = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_T == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 689, __pyx_L3_error)
-    __pyx_v_sigma_n = __Pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_sigma_n == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 690, __pyx_L3_error)
+    __pyx_v_F = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_F == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 873, __pyx_L3_error)
+    __pyx_v_K = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_K == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 874, __pyx_L3_error)
+    __pyx_v_df_r = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_df_r == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 875, __pyx_L3_error)
+    __pyx_v_T = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_T == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 876, __pyx_L3_error)
+    __pyx_v_sigma_n = __Pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_sigma_n == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 877, __pyx_L3_error)
     if (values[5]) {
-      __pyx_v_is_call = __Pyx_PyObject_IsTrue(values[5]); if (unlikely((__pyx_v_is_call == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 691, __pyx_L3_error)
+      __pyx_v_is_call = __Pyx_PyObject_IsTrue(values[5]); if (unlikely((__pyx_v_is_call == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 878, __pyx_L3_error)
     } else {
 
-      /* "bz_pricing/core/options_core.pyx":691
+      /* "bz_pricing/core/options_core.pyx":878
  *     double T,
  *     double sigma_n,
  *     bint is_call=True,             # <<<<<<<<<<<<<<
@@ -29640,7 +31737,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("bachelier_price_greeks", 0, 5, 6, __pyx_nargs); __PYX_ERR(0, 685, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("bachelier_price_greeks", 0, 5, 6, __pyx_nargs); __PYX_ERR(0, 872, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -29651,9 +31748,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_28bachelier_price_greeks(__pyx_self, __pyx_v_F, __pyx_v_K, __pyx_v_df_r, __pyx_v_T, __pyx_v_sigma_n, __pyx_v_is_call);
+  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_30bachelier_price_greeks(__pyx_self, __pyx_v_F, __pyx_v_K, __pyx_v_df_r, __pyx_v_T, __pyx_v_sigma_n, __pyx_v_is_call);
 
-  /* "bz_pricing/core/options_core.pyx":685
+  /* "bz_pricing/core/options_core.pyx":872
  * 
  * 
  * cpdef tuple bachelier_price_greeks(             # <<<<<<<<<<<<<<
@@ -29675,7 +31772,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_28bachelier_price_greeks(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_F, double __pyx_v_K, double __pyx_v_df_r, double __pyx_v_T, double __pyx_v_sigma_n, int __pyx_v_is_call) {
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_30bachelier_price_greeks(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_F, double __pyx_v_K, double __pyx_v_df_r, double __pyx_v_T, double __pyx_v_sigma_n, int __pyx_v_is_call) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -29686,7 +31783,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_28bachelier_price_gr
   __Pyx_RefNannySetupContext("bachelier_price_greeks", 0);
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.is_call = __pyx_v_is_call;
-  __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_bachelier_price_greeks(__pyx_v_F, __pyx_v_K, __pyx_v_df_r, __pyx_v_T, __pyx_v_sigma_n, 1, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 685, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_bachelier_price_greeks(__pyx_v_F, __pyx_v_K, __pyx_v_df_r, __pyx_v_T, __pyx_v_sigma_n, 1, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 872, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   {
     PyObject *__pyx_temp;
@@ -29710,7 +31807,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_28bachelier_price_gr
   return __pyx_r;
 }
 
-/* "bz_pricing/core/options_core.pyx":700
+/* "bz_pricing/core/options_core.pyx":887
  * 
  * 
  * cpdef double implied_vol_bachelier(             # <<<<<<<<<<<<<<
@@ -29718,7 +31815,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_28bachelier_price_gr
  *     double F,
 */
 
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_31implied_vol_bachelier(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_33implied_vol_bachelier(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -29727,7 +31824,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 ); /*proto*/
 static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(double __pyx_v_target_price, double __pyx_v_F, double __pyx_v_K, double __pyx_v_df_r, double __pyx_v_T, CYTHON_UNUSED int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_12options_core_implied_vol_bachelier *__pyx_optional_args) {
 
-  /* "bz_pricing/core/options_core.pyx":706
+  /* "bz_pricing/core/options_core.pyx":893
  *     double df_r,
  *     double T,
  *     bint is_call=True,             # <<<<<<<<<<<<<<
@@ -29767,7 +31864,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
     }
   }
 
-  /* "bz_pricing/core/options_core.pyx":711
+  /* "bz_pricing/core/options_core.pyx":898
  * ) noexcept nogil:
  *     """Inverso de volatilidade normal (Bachelier) via Newton-Raphson com fallback por bisseo."""
  *     if T <= 0.0 or df_r <= 0.0:             # <<<<<<<<<<<<<<
@@ -29793,7 +31890,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/options_core.pyx":712
+    /* "bz_pricing/core/options_core.pyx":899
  *     """Inverso de volatilidade normal (Bachelier) via Newton-Raphson com fallback por bisseo."""
  *     if T <= 0.0 or df_r <= 0.0:
  *         return 0.0             # <<<<<<<<<<<<<<
@@ -29806,7 +31903,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/options_core.pyx":711
+    /* "bz_pricing/core/options_core.pyx":898
  * ) noexcept nogil:
  *     """Inverso de volatilidade normal (Bachelier) via Newton-Raphson com fallback por bisseo."""
  *     if T <= 0.0 or df_r <= 0.0:             # <<<<<<<<<<<<<<
@@ -29815,7 +31912,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
 */
   }
 
-  /* "bz_pricing/core/options_core.pyx":713
+  /* "bz_pricing/core/options_core.pyx":900
  *     if T <= 0.0 or df_r <= 0.0:
  *         return 0.0
  *     cdef double intrinsic = df_r * (fmax(F - K, 0.0) if is_call else fmax(K - F, 0.0))             # <<<<<<<<<<<<<<
@@ -29832,7 +31929,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
   __pyx_v_intrinsic = (__pyx_v_df_r * __pyx_t_3);
 
 
-  /* "bz_pricing/core/options_core.pyx":714
+  /* "bz_pricing/core/options_core.pyx":901
  *         return 0.0
  *     cdef double intrinsic = df_r * (fmax(F - K, 0.0) if is_call else fmax(K - F, 0.0))
  *     if target_price <= intrinsic + 1e-12:             # <<<<<<<<<<<<<<
@@ -29844,7 +31941,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/options_core.pyx":715
+    /* "bz_pricing/core/options_core.pyx":902
  *     cdef double intrinsic = df_r * (fmax(F - K, 0.0) if is_call else fmax(K - F, 0.0))
  *     if target_price <= intrinsic + 1e-12:
  *         return 1e-8             # <<<<<<<<<<<<<<
@@ -29857,7 +31954,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/options_core.pyx":714
+    /* "bz_pricing/core/options_core.pyx":901
  *         return 0.0
  *     cdef double intrinsic = df_r * (fmax(F - K, 0.0) if is_call else fmax(K - F, 0.0))
  *     if target_price <= intrinsic + 1e-12:             # <<<<<<<<<<<<<<
@@ -29866,7 +31963,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
 */
   }
 
-  /* "bz_pricing/core/options_core.pyx":717
+  /* "bz_pricing/core/options_core.pyx":904
  *         return 1e-8
  * 
  *     cdef double low = 1e-7             # <<<<<<<<<<<<<<
@@ -29875,7 +31972,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
 */
   __pyx_v_low = 1e-7;
 
-  /* "bz_pricing/core/options_core.pyx":718
+  /* "bz_pricing/core/options_core.pyx":905
  * 
  *     cdef double low = 1e-7
  *     cdef double high = 1.0             # <<<<<<<<<<<<<<
@@ -29884,7 +31981,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
 */
   __pyx_v_high = 1.0;
 
-  /* "bz_pricing/core/options_core.pyx":719
+  /* "bz_pricing/core/options_core.pyx":906
  *     cdef double low = 1e-7
  *     cdef double high = 1.0
  *     cdef double sigma_n = 0.01             # <<<<<<<<<<<<<<
@@ -29893,7 +31990,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
 */
   __pyx_v_sigma_n = 0.01;
 
-  /* "bz_pricing/core/options_core.pyx":723
+  /* "bz_pricing/core/options_core.pyx":910
  *     cdef int it
  * 
  *     for it in range(max_iter):             # <<<<<<<<<<<<<<
@@ -29907,7 +32004,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
   for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
     __pyx_v_it = __pyx_t_6;
 
-    /* "bz_pricing/core/options_core.pyx":724
+    /* "bz_pricing/core/options_core.pyx":911
  * 
  *     for it in range(max_iter):
  *         _bachelier_core(F, K, df_r, T, sigma_n, is_call, &price, &delta, &gamma, &vega, &theta)             # <<<<<<<<<<<<<<
@@ -29916,7 +32013,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
 */
     __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(__pyx_v_F, __pyx_v_K, __pyx_v_df_r, __pyx_v_T, __pyx_v_sigma_n, __pyx_v_is_call, (&__pyx_v_price), (&__pyx_v_delta), (&__pyx_v_gamma), (&__pyx_v_vega), (&__pyx_v_theta));
 
-    /* "bz_pricing/core/options_core.pyx":725
+    /* "bz_pricing/core/options_core.pyx":912
  *     for it in range(max_iter):
  *         _bachelier_core(F, K, df_r, T, sigma_n, is_call, &price, &delta, &gamma, &vega, &theta)
  *         diff = price - target_price             # <<<<<<<<<<<<<<
@@ -29925,7 +32022,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
 */
     __pyx_v_diff = (__pyx_v_price - __pyx_v_target_price);
 
-    /* "bz_pricing/core/options_core.pyx":726
+    /* "bz_pricing/core/options_core.pyx":913
  *         _bachelier_core(F, K, df_r, T, sigma_n, is_call, &price, &delta, &gamma, &vega, &theta)
  *         diff = price - target_price
  *         if fabs(diff) < tol:             # <<<<<<<<<<<<<<
@@ -29937,7 +32034,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
     if (__pyx_t_1) {
 
 
-      /* "bz_pricing/core/options_core.pyx":727
+      /* "bz_pricing/core/options_core.pyx":914
  *         diff = price - target_price
  *         if fabs(diff) < tol:
  *             return sigma_n             # <<<<<<<<<<<<<<
@@ -29950,7 +32047,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
       }
       goto __pyx_L0;
 
-      /* "bz_pricing/core/options_core.pyx":726
+      /* "bz_pricing/core/options_core.pyx":913
  *         _bachelier_core(F, K, df_r, T, sigma_n, is_call, &price, &delta, &gamma, &vega, &theta)
  *         diff = price - target_price
  *         if fabs(diff) < tol:             # <<<<<<<<<<<<<<
@@ -29959,7 +32056,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
 */
     }
 
-    /* "bz_pricing/core/options_core.pyx":728
+    /* "bz_pricing/core/options_core.pyx":915
  *         if fabs(diff) < tol:
  *             return sigma_n
  *         if diff < 0.0 and sigma_n > low:             # <<<<<<<<<<<<<<
@@ -29985,7 +32082,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
     if (__pyx_t_1) {
 
 
-      /* "bz_pricing/core/options_core.pyx":729
+      /* "bz_pricing/core/options_core.pyx":916
  *             return sigma_n
  *         if diff < 0.0 and sigma_n > low:
  *             low = sigma_n             # <<<<<<<<<<<<<<
@@ -29994,7 +32091,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
 */
       __pyx_v_low = __pyx_v_sigma_n;
 
-      /* "bz_pricing/core/options_core.pyx":728
+      /* "bz_pricing/core/options_core.pyx":915
  *         if fabs(diff) < tol:
  *             return sigma_n
  *         if diff < 0.0 and sigma_n > low:             # <<<<<<<<<<<<<<
@@ -30004,7 +32101,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
       goto __pyx_L10;
     }
 
-    /* "bz_pricing/core/options_core.pyx":730
+    /* "bz_pricing/core/options_core.pyx":917
  *         if diff < 0.0 and sigma_n > low:
  *             low = sigma_n
  *         elif diff > 0.0 and sigma_n < high:             # <<<<<<<<<<<<<<
@@ -30030,7 +32127,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
     if (__pyx_t_1) {
 
 
-      /* "bz_pricing/core/options_core.pyx":731
+      /* "bz_pricing/core/options_core.pyx":918
  *             low = sigma_n
  *         elif diff > 0.0 and sigma_n < high:
  *             high = sigma_n             # <<<<<<<<<<<<<<
@@ -30039,7 +32136,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
 */
       __pyx_v_high = __pyx_v_sigma_n;
 
-      /* "bz_pricing/core/options_core.pyx":730
+      /* "bz_pricing/core/options_core.pyx":917
  *         if diff < 0.0 and sigma_n > low:
  *             low = sigma_n
  *         elif diff > 0.0 and sigma_n < high:             # <<<<<<<<<<<<<<
@@ -30049,7 +32146,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
     }
     __pyx_L10:;
 
-    /* "bz_pricing/core/options_core.pyx":732
+    /* "bz_pricing/core/options_core.pyx":919
  *         elif diff > 0.0 and sigma_n < high:
  *             high = sigma_n
  *         if vega > 1e-12:             # <<<<<<<<<<<<<<
@@ -30061,7 +32158,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
     if (__pyx_t_1) {
 
 
-      /* "bz_pricing/core/options_core.pyx":733
+      /* "bz_pricing/core/options_core.pyx":920
  *             high = sigma_n
  *         if vega > 1e-12:
  *             sigma_n = sigma_n - diff / vega             # <<<<<<<<<<<<<<
@@ -30070,7 +32167,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
 */
       __pyx_v_sigma_n = (__pyx_v_sigma_n - (__pyx_v_diff / __pyx_v_vega));
 
-      /* "bz_pricing/core/options_core.pyx":734
+      /* "bz_pricing/core/options_core.pyx":921
  *         if vega > 1e-12:
  *             sigma_n = sigma_n - diff / vega
  *             if sigma_n <= low or sigma_n >= high:             # <<<<<<<<<<<<<<
@@ -30096,7 +32193,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
       if (__pyx_t_1) {
 
 
-        /* "bz_pricing/core/options_core.pyx":735
+        /* "bz_pricing/core/options_core.pyx":922
  *             sigma_n = sigma_n - diff / vega
  *             if sigma_n <= low or sigma_n >= high:
  *                 sigma_n = 0.5 * (low + high)             # <<<<<<<<<<<<<<
@@ -30105,7 +32202,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
 */
         __pyx_v_sigma_n = (0.5 * (__pyx_v_low + __pyx_v_high));
 
-        /* "bz_pricing/core/options_core.pyx":734
+        /* "bz_pricing/core/options_core.pyx":921
  *         if vega > 1e-12:
  *             sigma_n = sigma_n - diff / vega
  *             if sigma_n <= low or sigma_n >= high:             # <<<<<<<<<<<<<<
@@ -30114,7 +32211,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
 */
       }
 
-      /* "bz_pricing/core/options_core.pyx":732
+      /* "bz_pricing/core/options_core.pyx":919
  *         elif diff > 0.0 and sigma_n < high:
  *             high = sigma_n
  *         if vega > 1e-12:             # <<<<<<<<<<<<<<
@@ -30124,7 +32221,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
       goto __pyx_L15;
     }
 
-    /* "bz_pricing/core/options_core.pyx":737
+    /* "bz_pricing/core/options_core.pyx":924
  *                 sigma_n = 0.5 * (low + high)
  *         else:
  *             sigma_n = 0.5 * (low + high)             # <<<<<<<<<<<<<<
@@ -30138,7 +32235,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
   }
 
 
-  /* "bz_pricing/core/options_core.pyx":739
+  /* "bz_pricing/core/options_core.pyx":926
  *             sigma_n = 0.5 * (low + high)
  * 
  *     for it in range(60):             # <<<<<<<<<<<<<<
@@ -30148,7 +32245,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
   for (__pyx_t_4 = 0; __pyx_t_4 < 60; __pyx_t_4+=1) {
     __pyx_v_it = __pyx_t_4;
 
-    /* "bz_pricing/core/options_core.pyx":740
+    /* "bz_pricing/core/options_core.pyx":927
  * 
  *     for it in range(60):
  *         sigma_n = 0.5 * (low + high)             # <<<<<<<<<<<<<<
@@ -30157,7 +32254,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
 */
     __pyx_v_sigma_n = (0.5 * (__pyx_v_low + __pyx_v_high));
 
-    /* "bz_pricing/core/options_core.pyx":741
+    /* "bz_pricing/core/options_core.pyx":928
  *     for it in range(60):
  *         sigma_n = 0.5 * (low + high)
  *         _bachelier_core(F, K, df_r, T, sigma_n, is_call, &price, &delta, &gamma, &vega, &theta)             # <<<<<<<<<<<<<<
@@ -30166,7 +32263,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
 */
     __pyx_f_10bz_pricing_4core_12options_core__bachelier_core(__pyx_v_F, __pyx_v_K, __pyx_v_df_r, __pyx_v_T, __pyx_v_sigma_n, __pyx_v_is_call, (&__pyx_v_price), (&__pyx_v_delta), (&__pyx_v_gamma), (&__pyx_v_vega), (&__pyx_v_theta));
 
-    /* "bz_pricing/core/options_core.pyx":742
+    /* "bz_pricing/core/options_core.pyx":929
  *         sigma_n = 0.5 * (low + high)
  *         _bachelier_core(F, K, df_r, T, sigma_n, is_call, &price, &delta, &gamma, &vega, &theta)
  *         diff = price - target_price             # <<<<<<<<<<<<<<
@@ -30175,7 +32272,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
 */
     __pyx_v_diff = (__pyx_v_price - __pyx_v_target_price);
 
-    /* "bz_pricing/core/options_core.pyx":743
+    /* "bz_pricing/core/options_core.pyx":930
  *         _bachelier_core(F, K, df_r, T, sigma_n, is_call, &price, &delta, &gamma, &vega, &theta)
  *         diff = price - target_price
  *         if fabs(diff) < tol or (high - low) < tol:             # <<<<<<<<<<<<<<
@@ -30201,7 +32298,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
     if (__pyx_t_1) {
 
 
-      /* "bz_pricing/core/options_core.pyx":744
+      /* "bz_pricing/core/options_core.pyx":931
  *         diff = price - target_price
  *         if fabs(diff) < tol or (high - low) < tol:
  *             return sigma_n             # <<<<<<<<<<<<<<
@@ -30214,7 +32311,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
       }
       goto __pyx_L0;
 
-      /* "bz_pricing/core/options_core.pyx":743
+      /* "bz_pricing/core/options_core.pyx":930
  *         _bachelier_core(F, K, df_r, T, sigma_n, is_call, &price, &delta, &gamma, &vega, &theta)
  *         diff = price - target_price
  *         if fabs(diff) < tol or (high - low) < tol:             # <<<<<<<<<<<<<<
@@ -30223,7 +32320,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
 */
     }
 
-    /* "bz_pricing/core/options_core.pyx":745
+    /* "bz_pricing/core/options_core.pyx":932
  *         if fabs(diff) < tol or (high - low) < tol:
  *             return sigma_n
  *         if diff < 0.0:             # <<<<<<<<<<<<<<
@@ -30235,7 +32332,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
     if (__pyx_t_1) {
 
 
-      /* "bz_pricing/core/options_core.pyx":746
+      /* "bz_pricing/core/options_core.pyx":933
  *             return sigma_n
  *         if diff < 0.0:
  *             low = sigma_n             # <<<<<<<<<<<<<<
@@ -30244,7 +32341,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
 */
       __pyx_v_low = __pyx_v_sigma_n;
 
-      /* "bz_pricing/core/options_core.pyx":745
+      /* "bz_pricing/core/options_core.pyx":932
  *         if fabs(diff) < tol or (high - low) < tol:
  *             return sigma_n
  *         if diff < 0.0:             # <<<<<<<<<<<<<<
@@ -30254,7 +32351,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
       goto __pyx_L24;
     }
 
-    /* "bz_pricing/core/options_core.pyx":748
+    /* "bz_pricing/core/options_core.pyx":935
  *             low = sigma_n
  *         else:
  *             high = sigma_n             # <<<<<<<<<<<<<<
@@ -30267,7 +32364,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
     __pyx_L24:;
   }
 
-  /* "bz_pricing/core/options_core.pyx":749
+  /* "bz_pricing/core/options_core.pyx":936
  *         else:
  *             high = sigma_n
  *     return 0.5 * (low + high)             # <<<<<<<<<<<<<<
@@ -30280,7 +32377,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/options_core.pyx":700
+  /* "bz_pricing/core/options_core.pyx":887
  * 
  * 
  * cpdef double implied_vol_bachelier(             # <<<<<<<<<<<<<<
@@ -30305,16 +32402,16 @@ static double __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(do
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_31implied_vol_bachelier(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_33implied_vol_bachelier(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_10bz_pricing_4core_12options_core_30implied_vol_bachelier, "Invers\303\243o de volatilidade normal (Bachelier) via Newton-Raphson com fallback por bisse\303\247\303\243o.");
-static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_31implied_vol_bachelier = {"implied_vol_bachelier", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_31implied_vol_bachelier, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10bz_pricing_4core_12options_core_30implied_vol_bachelier};
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_31implied_vol_bachelier(PyObject *__pyx_self, 
+PyDoc_STRVAR(__pyx_doc_10bz_pricing_4core_12options_core_32implied_vol_bachelier, "Invers\303\243o de volatilidade normal (Bachelier) via Newton-Raphson com fallback por bisse\303\247\303\243o.");
+static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_33implied_vol_bachelier = {"implied_vol_bachelier", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_33implied_vol_bachelier, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10bz_pricing_4core_12options_core_32implied_vol_bachelier};
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_33implied_vol_bachelier(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -30351,88 +32448,88 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_target_price,&__pyx_mstate_global->__pyx_n_u_F,&__pyx_mstate_global->__pyx_n_u_K,&__pyx_mstate_global->__pyx_n_u_df_r,&__pyx_mstate_global->__pyx_n_u_T,&__pyx_mstate_global->__pyx_n_u_is_call,&__pyx_mstate_global->__pyx_n_u_tol,&__pyx_mstate_global->__pyx_n_u_max_iter,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 700, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 887, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  8:
         values[7] = __Pyx_ArgRef_FASTCALL(__pyx_args, 7);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 700, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 887, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  7:
         values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 700, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 887, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  6:
         values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 700, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 887, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 700, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 887, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 700, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 887, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 700, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 887, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 700, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 887, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 700, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 887, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "implied_vol_bachelier", 0) < (0)) __PYX_ERR(0, 700, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "implied_vol_bachelier", 0) < (0)) __PYX_ERR(0, 887, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 5; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("implied_vol_bachelier", 0, 5, 8, i); __PYX_ERR(0, 700, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("implied_vol_bachelier", 0, 5, 8, i); __PYX_ERR(0, 887, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  8:
         values[7] = __Pyx_ArgRef_FASTCALL(__pyx_args, 7);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 700, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 887, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  7:
         values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 700, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 887, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  6:
         values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 700, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 887, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 700, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 887, __pyx_L3_error)
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 700, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 887, __pyx_L3_error)
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 700, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 887, __pyx_L3_error)
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 700, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 887, __pyx_L3_error)
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 700, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 887, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_target_price = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_target_price == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 701, __pyx_L3_error)
-    __pyx_v_F = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_F == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 702, __pyx_L3_error)
-    __pyx_v_K = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_K == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 703, __pyx_L3_error)
-    __pyx_v_df_r = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_df_r == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 704, __pyx_L3_error)
-    __pyx_v_T = __Pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_T == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 705, __pyx_L3_error)
+    __pyx_v_target_price = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_target_price == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 888, __pyx_L3_error)
+    __pyx_v_F = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_F == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 889, __pyx_L3_error)
+    __pyx_v_K = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_K == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 890, __pyx_L3_error)
+    __pyx_v_df_r = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_df_r == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 891, __pyx_L3_error)
+    __pyx_v_T = __Pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_T == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 892, __pyx_L3_error)
     if (values[5]) {
-      __pyx_v_is_call = __Pyx_PyObject_IsTrue(values[5]); if (unlikely((__pyx_v_is_call == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 706, __pyx_L3_error)
+      __pyx_v_is_call = __Pyx_PyObject_IsTrue(values[5]); if (unlikely((__pyx_v_is_call == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 893, __pyx_L3_error)
     } else {
 
-      /* "bz_pricing/core/options_core.pyx":706
+      /* "bz_pricing/core/options_core.pyx":893
  *     double df_r,
  *     double T,
  *     bint is_call=True,             # <<<<<<<<<<<<<<
@@ -30442,19 +32539,19 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       __pyx_v_is_call = ((int)1);
     }
     if (values[6]) {
-      __pyx_v_tol = __Pyx_PyFloat_AsDouble(values[6]); if (unlikely((__pyx_v_tol == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 707, __pyx_L3_error)
+      __pyx_v_tol = __Pyx_PyFloat_AsDouble(values[6]); if (unlikely((__pyx_v_tol == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 894, __pyx_L3_error)
     } else {
       __pyx_v_tol = ((double)1e-9);
     }
     if (values[7]) {
-      __pyx_v_max_iter = __Pyx_PyLong_As_int(values[7]); if (unlikely((__pyx_v_max_iter == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 708, __pyx_L3_error)
+      __pyx_v_max_iter = __Pyx_PyLong_As_int(values[7]); if (unlikely((__pyx_v_max_iter == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 895, __pyx_L3_error)
     } else {
       __pyx_v_max_iter = ((int)0x64);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("implied_vol_bachelier", 0, 5, 8, __pyx_nargs); __PYX_ERR(0, 700, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("implied_vol_bachelier", 0, 5, 8, __pyx_nargs); __PYX_ERR(0, 887, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -30465,9 +32562,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_30implied_vol_bachelier(__pyx_self, __pyx_v_target_price, __pyx_v_F, __pyx_v_K, __pyx_v_df_r, __pyx_v_T, __pyx_v_is_call, __pyx_v_tol, __pyx_v_max_iter);
+  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_32implied_vol_bachelier(__pyx_self, __pyx_v_target_price, __pyx_v_F, __pyx_v_K, __pyx_v_df_r, __pyx_v_T, __pyx_v_is_call, __pyx_v_tol, __pyx_v_max_iter);
 
-  /* "bz_pricing/core/options_core.pyx":700
+  /* "bz_pricing/core/options_core.pyx":887
  * 
  * 
  * cpdef double implied_vol_bachelier(             # <<<<<<<<<<<<<<
@@ -30491,7 +32588,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_30implied_vol_bachelier(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_target_price, double __pyx_v_F, double __pyx_v_K, double __pyx_v_df_r, double __pyx_v_T, int __pyx_v_is_call, double __pyx_v_tol, int __pyx_v_max_iter) {
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_32implied_vol_bachelier(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_target_price, double __pyx_v_F, double __pyx_v_K, double __pyx_v_df_r, double __pyx_v_T, int __pyx_v_is_call, double __pyx_v_tol, int __pyx_v_max_iter) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   double __pyx_t_1;
@@ -30506,7 +32603,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_30implied_vol_bachel
   __pyx_t_2.tol = __pyx_v_tol;
   __pyx_t_2.max_iter = __pyx_v_max_iter;
   __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_implied_vol_bachelier(__pyx_v_target_price, __pyx_v_F, __pyx_v_K, __pyx_v_df_r, __pyx_v_T, 1, &__pyx_t_2); 
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 700, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 887, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
   {
@@ -30531,7 +32628,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_30implied_vol_bachel
   return __pyx_r;
 }
 
-/* "bz_pricing/core/options_core.pyx":752
+/* "bz_pricing/core/options_core.pyx":939
  * 
  * 
  * cpdef double barrier_bsm_price(             # <<<<<<<<<<<<<<
@@ -30539,7 +32636,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_30implied_vol_bachel
  *     double K,
 */
 
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_33barrier_bsm_price(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_35barrier_bsm_price(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -30548,7 +32645,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 ); /*proto*/
 static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double __pyx_v_S, double __pyx_v_K, double __pyx_v_H, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, CYTHON_UNUSED int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_12options_core_barrier_bsm_price *__pyx_optional_args) {
 
-  /* "bz_pricing/core/options_core.pyx":760
+  /* "bz_pricing/core/options_core.pyx":947
  *     double T,
  *     double sigma,
  *     bint is_call=True,             # <<<<<<<<<<<<<<
@@ -30557,7 +32654,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
   int __pyx_v_is_call = ((int)1);
 
-  /* "bz_pricing/core/options_core.pyx":761
+  /* "bz_pricing/core/options_core.pyx":948
  *     double sigma,
  *     bint is_call=True,
  *     bint is_up=False,             # <<<<<<<<<<<<<<
@@ -30566,7 +32663,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
   int __pyx_v_is_up = ((int)0);
 
-  /* "bz_pricing/core/options_core.pyx":762
+  /* "bz_pricing/core/options_core.pyx":949
  *     bint is_call=True,
  *     bint is_up=False,
  *     bint is_out=True,             # <<<<<<<<<<<<<<
@@ -30623,7 +32720,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
     }
   }
 
-  /* "bz_pricing/core/options_core.pyx":769
+  /* "bz_pricing/core/options_core.pyx":956
  *     Suporta down-and-out, down-and-in, up-and-out e up-and-in (call e put) com rebate opcional.
  *     """
  *     if T <= 0.0 or sigma <= 0.0 or S <= 0.0 or K <= 0.0 or H <= 0.0:             # <<<<<<<<<<<<<<
@@ -30679,7 +32776,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/options_core.pyx":770
+    /* "bz_pricing/core/options_core.pyx":957
  *     """
  *     if T <= 0.0 or sigma <= 0.0 or S <= 0.0 or K <= 0.0 or H <= 0.0:
  *         return 0.0             # <<<<<<<<<<<<<<
@@ -30692,7 +32789,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/options_core.pyx":769
+    /* "bz_pricing/core/options_core.pyx":956
  *     Suporta down-and-out, down-and-in, up-and-out e up-and-in (call e put) com rebate opcional.
  *     """
  *     if T <= 0.0 or sigma <= 0.0 or S <= 0.0 or K <= 0.0 or H <= 0.0:             # <<<<<<<<<<<<<<
@@ -30701,7 +32798,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
   }
 
-  /* "bz_pricing/core/options_core.pyx":772
+  /* "bz_pricing/core/options_core.pyx":959
  *         return 0.0
  * 
  *     cdef double df_r = exp(-r * T)             # <<<<<<<<<<<<<<
@@ -30710,7 +32807,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
   __pyx_v_df_r = exp(((-__pyx_v_r) * __pyx_v_T));
 
-  /* "bz_pricing/core/options_core.pyx":773
+  /* "bz_pricing/core/options_core.pyx":960
  * 
  *     cdef double df_r = exp(-r * T)
  *     cdef double df_q = exp(-q * T)             # <<<<<<<<<<<<<<
@@ -30719,7 +32816,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
   __pyx_v_df_q = exp(((-__pyx_v_q) * __pyx_v_T));
 
-  /* "bz_pricing/core/options_core.pyx":777
+  /* "bz_pricing/core/options_core.pyx":964
  * 
  *     # Verifica violao imediata da barreira na data-base
  *     if (is_up and S >= H) or ((not is_up) and S <= H):             # <<<<<<<<<<<<<<
@@ -30760,7 +32857,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/options_core.pyx":778
+    /* "bz_pricing/core/options_core.pyx":965
  *     # Verifica violao imediata da barreira na data-base
  *     if (is_up and S >= H) or ((not is_up) and S <= H):
  *         if is_out:             # <<<<<<<<<<<<<<
@@ -30769,7 +32866,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
     if (__pyx_v_is_out) {
 
-      /* "bz_pricing/core/options_core.pyx":779
+      /* "bz_pricing/core/options_core.pyx":966
  *     if (is_up and S >= H) or ((not is_up) and S <= H):
  *         if is_out:
  *             return rebate             # <<<<<<<<<<<<<<
@@ -30782,7 +32879,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
       }
       goto __pyx_L0;
 
-      /* "bz_pricing/core/options_core.pyx":778
+      /* "bz_pricing/core/options_core.pyx":965
  *     # Verifica violao imediata da barreira na data-base
  *     if (is_up and S >= H) or ((not is_up) and S <= H):
  *         if is_out:             # <<<<<<<<<<<<<<
@@ -30791,7 +32888,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
     }
 
-    /* "bz_pricing/core/options_core.pyx":780
+    /* "bz_pricing/core/options_core.pyx":967
  *         if is_out:
  *             return rebate
  *         _bsm_core(S, K, r, q, T, sigma, is_call, &p_bsm, &d_tmp, &g_tmp, &v_tmp, &th_tmp, &rh_tmp, &va_tmp, &vo_tmp)             # <<<<<<<<<<<<<<
@@ -30800,7 +32897,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
     __pyx_f_10bz_pricing_4core_12options_core__bsm_core(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_is_call, (&__pyx_v_p_bsm), (&__pyx_v_d_tmp), (&__pyx_v_g_tmp), (&__pyx_v_v_tmp), (&__pyx_v_th_tmp), (&__pyx_v_rh_tmp), (&__pyx_v_va_tmp), (&__pyx_v_vo_tmp));
 
-    /* "bz_pricing/core/options_core.pyx":781
+    /* "bz_pricing/core/options_core.pyx":968
  *             return rebate
  *         _bsm_core(S, K, r, q, T, sigma, is_call, &p_bsm, &d_tmp, &g_tmp, &v_tmp, &th_tmp, &rh_tmp, &va_tmp, &vo_tmp)
  *         return p_bsm             # <<<<<<<<<<<<<<
@@ -30813,7 +32910,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/options_core.pyx":777
+    /* "bz_pricing/core/options_core.pyx":964
  * 
  *     # Verifica violao imediata da barreira na data-base
  *     if (is_up and S >= H) or ((not is_up) and S <= H):             # <<<<<<<<<<<<<<
@@ -30822,7 +32919,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
   }
 
-  /* "bz_pricing/core/options_core.pyx":783
+  /* "bz_pricing/core/options_core.pyx":970
  *         return p_bsm
  * 
  *     cdef double b = r - q             # <<<<<<<<<<<<<<
@@ -30831,7 +32928,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
   __pyx_v_b = (__pyx_v_r - __pyx_v_q);
 
-  /* "bz_pricing/core/options_core.pyx":784
+  /* "bz_pricing/core/options_core.pyx":971
  * 
  *     cdef double b = r - q
  *     cdef double sig2 = sigma * sigma             # <<<<<<<<<<<<<<
@@ -30840,7 +32937,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
   __pyx_v_sig2 = (__pyx_v_sigma * __pyx_v_sigma);
 
-  /* "bz_pricing/core/options_core.pyx":785
+  /* "bz_pricing/core/options_core.pyx":972
  *     cdef double b = r - q
  *     cdef double sig2 = sigma * sigma
  *     cdef double sig_sqrt_T = sigma * sqrt(T)             # <<<<<<<<<<<<<<
@@ -30849,7 +32946,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
   __pyx_v_sig_sqrt_T = (__pyx_v_sigma * sqrt(__pyx_v_T));
 
-  /* "bz_pricing/core/options_core.pyx":786
+  /* "bz_pricing/core/options_core.pyx":973
  *     cdef double sig2 = sigma * sigma
  *     cdef double sig_sqrt_T = sigma * sqrt(T)
  *     cdef double mu = (b - 0.5 * sig2) / sig2             # <<<<<<<<<<<<<<
@@ -30858,7 +32955,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
   __pyx_v_mu = ((__pyx_v_b - (0.5 * __pyx_v_sig2)) / __pyx_v_sig2);
 
-  /* "bz_pricing/core/options_core.pyx":787
+  /* "bz_pricing/core/options_core.pyx":974
  *     cdef double sig_sqrt_T = sigma * sqrt(T)
  *     cdef double mu = (b - 0.5 * sig2) / sig2
  *     cdef double lam = sqrt(mu * mu + 2.0 * r / sig2)             # <<<<<<<<<<<<<<
@@ -30867,7 +32964,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
   __pyx_v_lam = sqrt(((__pyx_v_mu * __pyx_v_mu) + ((2.0 * __pyx_v_r) / __pyx_v_sig2)));
 
-  /* "bz_pricing/core/options_core.pyx":789
+  /* "bz_pricing/core/options_core.pyx":976
  *     cdef double lam = sqrt(mu * mu + 2.0 * r / sig2)
  * 
  *     cdef double x1 = log(S / K) / sig_sqrt_T + (1.0 + mu) * sig_sqrt_T             # <<<<<<<<<<<<<<
@@ -30876,7 +32973,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
   __pyx_v_x1 = ((log((__pyx_v_S / __pyx_v_K)) / __pyx_v_sig_sqrt_T) + ((1.0 + __pyx_v_mu) * __pyx_v_sig_sqrt_T));
 
-  /* "bz_pricing/core/options_core.pyx":790
+  /* "bz_pricing/core/options_core.pyx":977
  * 
  *     cdef double x1 = log(S / K) / sig_sqrt_T + (1.0 + mu) * sig_sqrt_T
  *     cdef double x2 = log(S / H) / sig_sqrt_T + (1.0 + mu) * sig_sqrt_T             # <<<<<<<<<<<<<<
@@ -30885,7 +32982,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
   __pyx_v_x2 = ((log((__pyx_v_S / __pyx_v_H)) / __pyx_v_sig_sqrt_T) + ((1.0 + __pyx_v_mu) * __pyx_v_sig_sqrt_T));
 
-  /* "bz_pricing/core/options_core.pyx":791
+  /* "bz_pricing/core/options_core.pyx":978
  *     cdef double x1 = log(S / K) / sig_sqrt_T + (1.0 + mu) * sig_sqrt_T
  *     cdef double x2 = log(S / H) / sig_sqrt_T + (1.0 + mu) * sig_sqrt_T
  *     cdef double y1 = log((H * H) / (S * K)) / sig_sqrt_T + (1.0 + mu) * sig_sqrt_T             # <<<<<<<<<<<<<<
@@ -30894,7 +32991,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
   __pyx_v_y1 = ((log(((__pyx_v_H * __pyx_v_H) / (__pyx_v_S * __pyx_v_K))) / __pyx_v_sig_sqrt_T) + ((1.0 + __pyx_v_mu) * __pyx_v_sig_sqrt_T));
 
-  /* "bz_pricing/core/options_core.pyx":792
+  /* "bz_pricing/core/options_core.pyx":979
  *     cdef double x2 = log(S / H) / sig_sqrt_T + (1.0 + mu) * sig_sqrt_T
  *     cdef double y1 = log((H * H) / (S * K)) / sig_sqrt_T + (1.0 + mu) * sig_sqrt_T
  *     cdef double y2 = log(H / S) / sig_sqrt_T + (1.0 + mu) * sig_sqrt_T             # <<<<<<<<<<<<<<
@@ -30903,7 +33000,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
   __pyx_v_y2 = ((log((__pyx_v_H / __pyx_v_S)) / __pyx_v_sig_sqrt_T) + ((1.0 + __pyx_v_mu) * __pyx_v_sig_sqrt_T));
 
-  /* "bz_pricing/core/options_core.pyx":793
+  /* "bz_pricing/core/options_core.pyx":980
  *     cdef double y1 = log((H * H) / (S * K)) / sig_sqrt_T + (1.0 + mu) * sig_sqrt_T
  *     cdef double y2 = log(H / S) / sig_sqrt_T + (1.0 + mu) * sig_sqrt_T
  *     cdef double z = log(H / S) / sig_sqrt_T + lam * sig_sqrt_T             # <<<<<<<<<<<<<<
@@ -30912,7 +33009,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
   __pyx_v_z = ((log((__pyx_v_H / __pyx_v_S)) / __pyx_v_sig_sqrt_T) + (__pyx_v_lam * __pyx_v_sig_sqrt_T));
 
-  /* "bz_pricing/core/options_core.pyx":795
+  /* "bz_pricing/core/options_core.pyx":982
  *     cdef double z = log(H / S) / sig_sqrt_T + lam * sig_sqrt_T
  * 
  *     cdef double phi = 1.0 if is_call else -1.0             # <<<<<<<<<<<<<<
@@ -30928,7 +33025,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
   }
   __pyx_v_phi = __pyx_t_3;
 
-  /* "bz_pricing/core/options_core.pyx":796
+  /* "bz_pricing/core/options_core.pyx":983
  * 
  *     cdef double phi = 1.0 if is_call else -1.0
  *     cdef double eta = -1.0 if is_up else 1.0             # <<<<<<<<<<<<<<
@@ -30944,7 +33041,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
   }
   __pyx_v_eta = __pyx_t_3;
 
-  /* "bz_pricing/core/options_core.pyx":798
+  /* "bz_pricing/core/options_core.pyx":985
  *     cdef double eta = -1.0 if is_up else 1.0
  * 
  *     cdef double A = phi * (S * df_q * _norm_cdf(phi * x1) - K * df_r * _norm_cdf(phi * (x1 - sig_sqrt_T)))             # <<<<<<<<<<<<<<
@@ -30953,7 +33050,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
   __pyx_v_A = (__pyx_v_phi * (((__pyx_v_S * __pyx_v_df_q) * __pyx_f_10bz_pricing_4core_12options_core__norm_cdf((__pyx_v_phi * __pyx_v_x1))) - ((__pyx_v_K * __pyx_v_df_r) * __pyx_f_10bz_pricing_4core_12options_core__norm_cdf((__pyx_v_phi * (__pyx_v_x1 - __pyx_v_sig_sqrt_T))))));
 
-  /* "bz_pricing/core/options_core.pyx":799
+  /* "bz_pricing/core/options_core.pyx":986
  * 
  *     cdef double A = phi * (S * df_q * _norm_cdf(phi * x1) - K * df_r * _norm_cdf(phi * (x1 - sig_sqrt_T)))
  *     cdef double B = phi * (S * df_q * _norm_cdf(phi * x2) - K * df_r * _norm_cdf(phi * (x2 - sig_sqrt_T)))             # <<<<<<<<<<<<<<
@@ -30962,7 +33059,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
   __pyx_v_B = (__pyx_v_phi * (((__pyx_v_S * __pyx_v_df_q) * __pyx_f_10bz_pricing_4core_12options_core__norm_cdf((__pyx_v_phi * __pyx_v_x2))) - ((__pyx_v_K * __pyx_v_df_r) * __pyx_f_10bz_pricing_4core_12options_core__norm_cdf((__pyx_v_phi * (__pyx_v_x2 - __pyx_v_sig_sqrt_T))))));
 
-  /* "bz_pricing/core/options_core.pyx":800
+  /* "bz_pricing/core/options_core.pyx":987
  *     cdef double A = phi * (S * df_q * _norm_cdf(phi * x1) - K * df_r * _norm_cdf(phi * (x1 - sig_sqrt_T)))
  *     cdef double B = phi * (S * df_q * _norm_cdf(phi * x2) - K * df_r * _norm_cdf(phi * (x2 - sig_sqrt_T)))
  *     cdef double C = phi * (             # <<<<<<<<<<<<<<
@@ -30971,7 +33068,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
   __pyx_v_C = (__pyx_v_phi * ((((__pyx_v_S * __pyx_v_df_q) * pow((__pyx_v_H / __pyx_v_S), (2.0 * (__pyx_v_mu + 1.0)))) * __pyx_f_10bz_pricing_4core_12options_core__norm_cdf((__pyx_v_eta * __pyx_v_y1))) - (((__pyx_v_K * __pyx_v_df_r) * pow((__pyx_v_H / __pyx_v_S), (2.0 * __pyx_v_mu))) * __pyx_f_10bz_pricing_4core_12options_core__norm_cdf((__pyx_v_eta * (__pyx_v_y1 - __pyx_v_sig_sqrt_T))))));
 
-  /* "bz_pricing/core/options_core.pyx":804
+  /* "bz_pricing/core/options_core.pyx":991
  *         - K * df_r * pow(H / S, 2.0 * mu) * _norm_cdf(eta * (y1 - sig_sqrt_T))
  *     )
  *     cdef double D = phi * (             # <<<<<<<<<<<<<<
@@ -30980,7 +33077,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
   __pyx_v_D = (__pyx_v_phi * ((((__pyx_v_S * __pyx_v_df_q) * pow((__pyx_v_H / __pyx_v_S), (2.0 * (__pyx_v_mu + 1.0)))) * __pyx_f_10bz_pricing_4core_12options_core__norm_cdf((__pyx_v_eta * __pyx_v_y2))) - (((__pyx_v_K * __pyx_v_df_r) * pow((__pyx_v_H / __pyx_v_S), (2.0 * __pyx_v_mu))) * __pyx_f_10bz_pricing_4core_12options_core__norm_cdf((__pyx_v_eta * (__pyx_v_y2 - __pyx_v_sig_sqrt_T))))));
 
-  /* "bz_pricing/core/options_core.pyx":808
+  /* "bz_pricing/core/options_core.pyx":995
  *         - K * df_r * pow(H / S, 2.0 * mu) * _norm_cdf(eta * (y2 - sig_sqrt_T))
  *     )
  *     cdef double E = rebate * df_r * (             # <<<<<<<<<<<<<<
@@ -30989,7 +33086,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
   __pyx_v_E = ((__pyx_v_rebate * __pyx_v_df_r) * (__pyx_f_10bz_pricing_4core_12options_core__norm_cdf((__pyx_v_eta * (__pyx_v_x2 - __pyx_v_sig_sqrt_T))) - (pow((__pyx_v_H / __pyx_v_S), (2.0 * __pyx_v_mu)) * __pyx_f_10bz_pricing_4core_12options_core__norm_cdf((__pyx_v_eta * (__pyx_v_y2 - __pyx_v_sig_sqrt_T))))));
 
-  /* "bz_pricing/core/options_core.pyx":811
+  /* "bz_pricing/core/options_core.pyx":998
  *         _norm_cdf(eta * (x2 - sig_sqrt_T)) - pow(H / S, 2.0 * mu) * _norm_cdf(eta * (y2 - sig_sqrt_T))
  *     )
  *     cdef double F = rebate * (             # <<<<<<<<<<<<<<
@@ -30998,7 +33095,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
   __pyx_v_F = (__pyx_v_rebate * ((pow((__pyx_v_H / __pyx_v_S), (__pyx_v_mu + __pyx_v_lam)) * __pyx_f_10bz_pricing_4core_12options_core__norm_cdf((__pyx_v_eta * __pyx_v_z))) + (pow((__pyx_v_H / __pyx_v_S), (__pyx_v_mu - __pyx_v_lam)) * __pyx_f_10bz_pricing_4core_12options_core__norm_cdf((__pyx_v_eta * (__pyx_v_z - ((2.0 * __pyx_v_lam) * __pyx_v_sig_sqrt_T)))))));
 
-  /* "bz_pricing/core/options_core.pyx":816
+  /* "bz_pricing/core/options_core.pyx":1003
  *     )
  * 
  *     cdef double val = 0.0             # <<<<<<<<<<<<<<
@@ -31007,7 +33104,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
   __pyx_v_val = 0.0;
 
-  /* "bz_pricing/core/options_core.pyx":817
+  /* "bz_pricing/core/options_core.pyx":1004
  * 
  *     cdef double val = 0.0
  *     if is_call and (not is_up):  # Down Call             # <<<<<<<<<<<<<<
@@ -31029,7 +33126,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/options_core.pyx":818
+    /* "bz_pricing/core/options_core.pyx":1005
  *     cdef double val = 0.0
  *     if is_call and (not is_up):  # Down Call
  *         if is_out:             # <<<<<<<<<<<<<<
@@ -31038,7 +33135,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
     if (__pyx_v_is_out) {
 
-      /* "bz_pricing/core/options_core.pyx":819
+      /* "bz_pricing/core/options_core.pyx":1006
  *     if is_call and (not is_up):  # Down Call
  *         if is_out:
  *             val = (A - C + F) if K >= H else (B - D + F)             # <<<<<<<<<<<<<<
@@ -31057,7 +33154,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 
       __pyx_v_val = __pyx_t_3;
 
-      /* "bz_pricing/core/options_core.pyx":818
+      /* "bz_pricing/core/options_core.pyx":1005
  *     cdef double val = 0.0
  *     if is_call and (not is_up):  # Down Call
  *         if is_out:             # <<<<<<<<<<<<<<
@@ -31067,7 +33164,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
       goto __pyx_L18;
     }
 
-    /* "bz_pricing/core/options_core.pyx":821
+    /* "bz_pricing/core/options_core.pyx":1008
  *             val = (A - C + F) if K >= H else (B - D + F)
  *         else:
  *             val = (C + E) if K >= H else (A - B + D + E)             # <<<<<<<<<<<<<<
@@ -31089,7 +33186,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
     }
     __pyx_L18:;
 
-    /* "bz_pricing/core/options_core.pyx":817
+    /* "bz_pricing/core/options_core.pyx":1004
  * 
  *     cdef double val = 0.0
  *     if is_call and (not is_up):  # Down Call             # <<<<<<<<<<<<<<
@@ -31099,7 +33196,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
     goto __pyx_L15;
   }
 
-  /* "bz_pricing/core/options_core.pyx":822
+  /* "bz_pricing/core/options_core.pyx":1009
  *         else:
  *             val = (C + E) if K >= H else (A - B + D + E)
  *     elif is_call and is_up:  # Up Call             # <<<<<<<<<<<<<<
@@ -31118,7 +33215,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/options_core.pyx":823
+    /* "bz_pricing/core/options_core.pyx":1010
  *             val = (C + E) if K >= H else (A - B + D + E)
  *     elif is_call and is_up:  # Up Call
  *         if is_out:             # <<<<<<<<<<<<<<
@@ -31127,7 +33224,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
     if (__pyx_v_is_out) {
 
-      /* "bz_pricing/core/options_core.pyx":824
+      /* "bz_pricing/core/options_core.pyx":1011
  *     elif is_call and is_up:  # Up Call
  *         if is_out:
  *             val = F if K >= H else (A - B + C - D + F)             # <<<<<<<<<<<<<<
@@ -31146,7 +33243,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 
       __pyx_v_val = __pyx_t_3;
 
-      /* "bz_pricing/core/options_core.pyx":823
+      /* "bz_pricing/core/options_core.pyx":1010
  *             val = (C + E) if K >= H else (A - B + D + E)
  *     elif is_call and is_up:  # Up Call
  *         if is_out:             # <<<<<<<<<<<<<<
@@ -31156,7 +33253,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
       goto __pyx_L21;
     }
 
-    /* "bz_pricing/core/options_core.pyx":826
+    /* "bz_pricing/core/options_core.pyx":1013
  *             val = F if K >= H else (A - B + C - D + F)
  *         else:
  *             val = (A + E) if K >= H else (B - C + D + E)             # <<<<<<<<<<<<<<
@@ -31178,7 +33275,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
     }
     __pyx_L21:;
 
-    /* "bz_pricing/core/options_core.pyx":822
+    /* "bz_pricing/core/options_core.pyx":1009
  *         else:
  *             val = (C + E) if K >= H else (A - B + D + E)
  *     elif is_call and is_up:  # Up Call             # <<<<<<<<<<<<<<
@@ -31188,7 +33285,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
     goto __pyx_L15;
   }
 
-  /* "bz_pricing/core/options_core.pyx":827
+  /* "bz_pricing/core/options_core.pyx":1014
  *         else:
  *             val = (A + E) if K >= H else (B - C + D + E)
  *     elif (not is_call) and (not is_up):  # Down Put             # <<<<<<<<<<<<<<
@@ -31214,7 +33311,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/options_core.pyx":828
+    /* "bz_pricing/core/options_core.pyx":1015
  *             val = (A + E) if K >= H else (B - C + D + E)
  *     elif (not is_call) and (not is_up):  # Down Put
  *         if is_out:             # <<<<<<<<<<<<<<
@@ -31223,7 +33320,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 */
     if (__pyx_v_is_out) {
 
-      /* "bz_pricing/core/options_core.pyx":829
+      /* "bz_pricing/core/options_core.pyx":1016
  *     elif (not is_call) and (not is_up):  # Down Put
  *         if is_out:
  *             val = (A - B + C - D + F) if K >= H else F             # <<<<<<<<<<<<<<
@@ -31242,7 +33339,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 
       __pyx_v_val = __pyx_t_3;
 
-      /* "bz_pricing/core/options_core.pyx":828
+      /* "bz_pricing/core/options_core.pyx":1015
  *             val = (A + E) if K >= H else (B - C + D + E)
  *     elif (not is_call) and (not is_up):  # Down Put
  *         if is_out:             # <<<<<<<<<<<<<<
@@ -31252,7 +33349,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
       goto __pyx_L24;
     }
 
-    /* "bz_pricing/core/options_core.pyx":831
+    /* "bz_pricing/core/options_core.pyx":1018
  *             val = (A - B + C - D + F) if K >= H else F
  *         else:
  *             val = (B - C + D + E) if K >= H else (A + E)             # <<<<<<<<<<<<<<
@@ -31274,7 +33371,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
     }
     __pyx_L24:;
 
-    /* "bz_pricing/core/options_core.pyx":827
+    /* "bz_pricing/core/options_core.pyx":1014
  *         else:
  *             val = (A + E) if K >= H else (B - C + D + E)
  *     elif (not is_call) and (not is_up):  # Down Put             # <<<<<<<<<<<<<<
@@ -31284,7 +33381,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
     goto __pyx_L15;
   }
 
-  /* "bz_pricing/core/options_core.pyx":833
+  /* "bz_pricing/core/options_core.pyx":1020
  *             val = (B - C + D + E) if K >= H else (A + E)
  *     else:  # Up Put
  *         if is_out:             # <<<<<<<<<<<<<<
@@ -31294,7 +33391,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
   /*else*/ {
     if (__pyx_v_is_out) {
 
-      /* "bz_pricing/core/options_core.pyx":834
+      /* "bz_pricing/core/options_core.pyx":1021
  *     else:  # Up Put
  *         if is_out:
  *             val = (B - D + F) if K >= H else (A - C + F)             # <<<<<<<<<<<<<<
@@ -31313,7 +33410,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 
       __pyx_v_val = __pyx_t_3;
 
-      /* "bz_pricing/core/options_core.pyx":833
+      /* "bz_pricing/core/options_core.pyx":1020
  *             val = (B - C + D + E) if K >= H else (A + E)
  *     else:  # Up Put
  *         if is_out:             # <<<<<<<<<<<<<<
@@ -31323,7 +33420,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
       goto __pyx_L25;
     }
 
-    /* "bz_pricing/core/options_core.pyx":836
+    /* "bz_pricing/core/options_core.pyx":1023
  *             val = (B - D + F) if K >= H else (A - C + F)
  *         else:
  *             val = (A - B + D + E) if K >= H else (C + E)             # <<<<<<<<<<<<<<
@@ -31347,7 +33444,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
   }
   __pyx_L15:;
 
-  /* "bz_pricing/core/options_core.pyx":838
+  /* "bz_pricing/core/options_core.pyx":1025
  *             val = (A - B + D + E) if K >= H else (C + E)
  * 
  *     return val if val > 0.0 else 0.0             # <<<<<<<<<<<<<<
@@ -31369,7 +33466,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/options_core.pyx":752
+  /* "bz_pricing/core/options_core.pyx":939
  * 
  * 
  * cpdef double barrier_bsm_price(             # <<<<<<<<<<<<<<
@@ -31412,16 +33509,16 @@ static double __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(double
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_33barrier_bsm_price(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_35barrier_bsm_price(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_10bz_pricing_4core_12options_core_32barrier_bsm_price, "\n    Precifica\303\247\303\243o anal\303\255tica de op\303\247\303\265es europeias com barreira cont\303\255nua (Reiner & Rubinstein, 1991).\n    Suporta down-and-out, down-and-in, up-and-out e up-and-in (call e put) com rebate opcional.\n    ");
-static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_33barrier_bsm_price = {"barrier_bsm_price", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_33barrier_bsm_price, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10bz_pricing_4core_12options_core_32barrier_bsm_price};
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_33barrier_bsm_price(PyObject *__pyx_self, 
+PyDoc_STRVAR(__pyx_doc_10bz_pricing_4core_12options_core_34barrier_bsm_price, "\n    Precifica\303\247\303\243o anal\303\255tica de op\303\247\303\265es europeias com barreira cont\303\255nua (Reiner & Rubinstein, 1991).\n    Suporta down-and-out, down-and-in, up-and-out e up-and-in (call e put) com rebate opcional.\n    ");
+static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_35barrier_bsm_price = {"barrier_bsm_price", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_35barrier_bsm_price, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10bz_pricing_4core_12options_core_34barrier_bsm_price};
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_35barrier_bsm_price(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -31461,110 +33558,110 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_S,&__pyx_mstate_global->__pyx_n_u_K,&__pyx_mstate_global->__pyx_n_u_H,&__pyx_mstate_global->__pyx_n_u_r,&__pyx_mstate_global->__pyx_n_u_q,&__pyx_mstate_global->__pyx_n_u_T,&__pyx_mstate_global->__pyx_n_u_sigma,&__pyx_mstate_global->__pyx_n_u_is_call,&__pyx_mstate_global->__pyx_n_u_is_up,&__pyx_mstate_global->__pyx_n_u_is_out,&__pyx_mstate_global->__pyx_n_u_rebate,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 752, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 939, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case 11:
         values[10] = __Pyx_ArgRef_FASTCALL(__pyx_args, 10);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[10])) __PYX_ERR(0, 752, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[10])) __PYX_ERR(0, 939, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case 10:
         values[9] = __Pyx_ArgRef_FASTCALL(__pyx_args, 9);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[9])) __PYX_ERR(0, 752, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[9])) __PYX_ERR(0, 939, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  9:
         values[8] = __Pyx_ArgRef_FASTCALL(__pyx_args, 8);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 752, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 939, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  8:
         values[7] = __Pyx_ArgRef_FASTCALL(__pyx_args, 7);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 752, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 939, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  7:
         values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 752, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 939, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  6:
         values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 752, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 939, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 752, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 939, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 752, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 939, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 752, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 939, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 752, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 939, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 752, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 939, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "barrier_bsm_price", 0) < (0)) __PYX_ERR(0, 752, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "barrier_bsm_price", 0) < (0)) __PYX_ERR(0, 939, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 7; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("barrier_bsm_price", 0, 7, 11, i); __PYX_ERR(0, 752, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("barrier_bsm_price", 0, 7, 11, i); __PYX_ERR(0, 939, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case 11:
         values[10] = __Pyx_ArgRef_FASTCALL(__pyx_args, 10);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[10])) __PYX_ERR(0, 752, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[10])) __PYX_ERR(0, 939, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case 10:
         values[9] = __Pyx_ArgRef_FASTCALL(__pyx_args, 9);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[9])) __PYX_ERR(0, 752, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[9])) __PYX_ERR(0, 939, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  9:
         values[8] = __Pyx_ArgRef_FASTCALL(__pyx_args, 8);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 752, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 939, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  8:
         values[7] = __Pyx_ArgRef_FASTCALL(__pyx_args, 7);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 752, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 939, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  7:
         values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 752, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 939, __pyx_L3_error)
         values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 752, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 939, __pyx_L3_error)
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 752, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 939, __pyx_L3_error)
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 752, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 939, __pyx_L3_error)
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 752, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 939, __pyx_L3_error)
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 752, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 939, __pyx_L3_error)
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 752, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 939, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_S = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_S == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 753, __pyx_L3_error)
-    __pyx_v_K = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_K == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 754, __pyx_L3_error)
-    __pyx_v_H = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_H == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 755, __pyx_L3_error)
-    __pyx_v_r = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_r == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 756, __pyx_L3_error)
-    __pyx_v_q = __Pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_q == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 757, __pyx_L3_error)
-    __pyx_v_T = __Pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_T == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 758, __pyx_L3_error)
-    __pyx_v_sigma = __Pyx_PyFloat_AsDouble(values[6]); if (unlikely((__pyx_v_sigma == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 759, __pyx_L3_error)
+    __pyx_v_S = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_S == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 940, __pyx_L3_error)
+    __pyx_v_K = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_K == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 941, __pyx_L3_error)
+    __pyx_v_H = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_H == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 942, __pyx_L3_error)
+    __pyx_v_r = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_r == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 943, __pyx_L3_error)
+    __pyx_v_q = __Pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_q == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 944, __pyx_L3_error)
+    __pyx_v_T = __Pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_T == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 945, __pyx_L3_error)
+    __pyx_v_sigma = __Pyx_PyFloat_AsDouble(values[6]); if (unlikely((__pyx_v_sigma == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 946, __pyx_L3_error)
     if (values[7]) {
-      __pyx_v_is_call = __Pyx_PyObject_IsTrue(values[7]); if (unlikely((__pyx_v_is_call == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 760, __pyx_L3_error)
+      __pyx_v_is_call = __Pyx_PyObject_IsTrue(values[7]); if (unlikely((__pyx_v_is_call == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 947, __pyx_L3_error)
     } else {
 
-      /* "bz_pricing/core/options_core.pyx":760
+      /* "bz_pricing/core/options_core.pyx":947
  *     double T,
  *     double sigma,
  *     bint is_call=True,             # <<<<<<<<<<<<<<
@@ -31574,10 +33671,10 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       __pyx_v_is_call = ((int)1);
     }
     if (values[8]) {
-      __pyx_v_is_up = __Pyx_PyObject_IsTrue(values[8]); if (unlikely((__pyx_v_is_up == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 761, __pyx_L3_error)
+      __pyx_v_is_up = __Pyx_PyObject_IsTrue(values[8]); if (unlikely((__pyx_v_is_up == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 948, __pyx_L3_error)
     } else {
 
-      /* "bz_pricing/core/options_core.pyx":761
+      /* "bz_pricing/core/options_core.pyx":948
  *     double sigma,
  *     bint is_call=True,
  *     bint is_up=False,             # <<<<<<<<<<<<<<
@@ -31587,10 +33684,10 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       __pyx_v_is_up = ((int)0);
     }
     if (values[9]) {
-      __pyx_v_is_out = __Pyx_PyObject_IsTrue(values[9]); if (unlikely((__pyx_v_is_out == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 762, __pyx_L3_error)
+      __pyx_v_is_out = __Pyx_PyObject_IsTrue(values[9]); if (unlikely((__pyx_v_is_out == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 949, __pyx_L3_error)
     } else {
 
-      /* "bz_pricing/core/options_core.pyx":762
+      /* "bz_pricing/core/options_core.pyx":949
  *     bint is_call=True,
  *     bint is_up=False,
  *     bint is_out=True,             # <<<<<<<<<<<<<<
@@ -31600,14 +33697,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       __pyx_v_is_out = ((int)1);
     }
     if (values[10]) {
-      __pyx_v_rebate = __Pyx_PyFloat_AsDouble(values[10]); if (unlikely((__pyx_v_rebate == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 763, __pyx_L3_error)
+      __pyx_v_rebate = __Pyx_PyFloat_AsDouble(values[10]); if (unlikely((__pyx_v_rebate == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 950, __pyx_L3_error)
     } else {
       __pyx_v_rebate = ((double)0.0);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("barrier_bsm_price", 0, 7, 11, __pyx_nargs); __PYX_ERR(0, 752, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("barrier_bsm_price", 0, 7, 11, __pyx_nargs); __PYX_ERR(0, 939, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -31618,9 +33715,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_32barrier_bsm_price(__pyx_self, __pyx_v_S, __pyx_v_K, __pyx_v_H, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_is_call, __pyx_v_is_up, __pyx_v_is_out, __pyx_v_rebate);
+  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_34barrier_bsm_price(__pyx_self, __pyx_v_S, __pyx_v_K, __pyx_v_H, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_is_call, __pyx_v_is_up, __pyx_v_is_out, __pyx_v_rebate);
 
-  /* "bz_pricing/core/options_core.pyx":752
+  /* "bz_pricing/core/options_core.pyx":939
  * 
  * 
  * cpdef double barrier_bsm_price(             # <<<<<<<<<<<<<<
@@ -31647,7 +33744,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_32barrier_bsm_price(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_S, double __pyx_v_K, double __pyx_v_H, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, int __pyx_v_is_call, int __pyx_v_is_up, int __pyx_v_is_out, double __pyx_v_rebate) {
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_34barrier_bsm_price(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_S, double __pyx_v_K, double __pyx_v_H, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, int __pyx_v_is_call, int __pyx_v_is_up, int __pyx_v_is_out, double __pyx_v_rebate) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   double __pyx_t_1;
@@ -31663,7 +33760,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_32barrier_bsm_price(
   __pyx_t_2.is_out = __pyx_v_is_out;
   __pyx_t_2.rebate = __pyx_v_rebate;
   __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(__pyx_v_S, __pyx_v_K, __pyx_v_H, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, 1, &__pyx_t_2); 
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 752, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 939, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
   {
@@ -31688,7 +33785,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_32barrier_bsm_price(
   return __pyx_r;
 }
 
-/* "bz_pricing/core/options_core.pyx":841
+/* "bz_pricing/core/options_core.pyx":1028
  * 
  * 
  * cpdef double asian_geometric_price(             # <<<<<<<<<<<<<<
@@ -31696,7 +33793,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_32barrier_bsm_price(
  *     double K,
 */
 
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_35asian_geometric_price(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_37asian_geometric_price(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -31705,7 +33802,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 ); /*proto*/
 static double __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, CYTHON_UNUSED int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_12options_core_asian_geometric_price *__pyx_optional_args) {
 
-  /* "bz_pricing/core/options_core.pyx":848
+  /* "bz_pricing/core/options_core.pyx":1035
  *     double T,
  *     double sigma,
  *     bint is_call=True,             # <<<<<<<<<<<<<<
@@ -31743,7 +33840,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(do
     }
   }
 
-  /* "bz_pricing/core/options_core.pyx":855
+  /* "bz_pricing/core/options_core.pyx":1042
  *     Quando `n_fixings > 0`, utiliza momentos exatos para fixings discretos em (0, T].
  *     """
  *     if T <= 0.0 or sigma <= 0.0 or S <= 0.0 or K <= 0.0:             # <<<<<<<<<<<<<<
@@ -31789,7 +33886,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(do
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/options_core.pyx":856
+    /* "bz_pricing/core/options_core.pyx":1043
  *     """
  *     if T <= 0.0 or sigma <= 0.0 or S <= 0.0 or K <= 0.0:
  *         return fmax(S - K, 0.0) if is_call else fmax(K - S, 0.0)             # <<<<<<<<<<<<<<
@@ -31808,7 +33905,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(do
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/options_core.pyx":855
+    /* "bz_pricing/core/options_core.pyx":1042
  *     Quando `n_fixings > 0`, utiliza momentos exatos para fixings discretos em (0, T].
  *     """
  *     if T <= 0.0 or sigma <= 0.0 or S <= 0.0 or K <= 0.0:             # <<<<<<<<<<<<<<
@@ -31817,7 +33914,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(do
 */
   }
 
-  /* "bz_pricing/core/options_core.pyx":857
+  /* "bz_pricing/core/options_core.pyx":1044
  *     if T <= 0.0 or sigma <= 0.0 or S <= 0.0 or K <= 0.0:
  *         return fmax(S - K, 0.0) if is_call else fmax(K - S, 0.0)
  *     cdef double b = r - q             # <<<<<<<<<<<<<<
@@ -31826,7 +33923,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(do
 */
   __pyx_v_b = (__pyx_v_r - __pyx_v_q);
 
-  /* "bz_pricing/core/options_core.pyx":858
+  /* "bz_pricing/core/options_core.pyx":1045
  *         return fmax(S - K, 0.0) if is_call else fmax(K - S, 0.0)
  *     cdef double b = r - q
  *     cdef double sig2 = sigma * sigma             # <<<<<<<<<<<<<<
@@ -31835,7 +33932,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(do
 */
   __pyx_v_sig2 = (__pyx_v_sigma * __pyx_v_sigma);
 
-  /* "bz_pricing/core/options_core.pyx":860
+  /* "bz_pricing/core/options_core.pyx":1047
  *     cdef double sig2 = sigma * sigma
  *     cdef double m_f, t_bar, var_sum, sig_g, b_g, q_g
  *     if n_fixings > 0:             # <<<<<<<<<<<<<<
@@ -31847,7 +33944,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(do
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/options_core.pyx":861
+    /* "bz_pricing/core/options_core.pyx":1048
  *     cdef double m_f, t_bar, var_sum, sig_g, b_g, q_g
  *     if n_fixings > 0:
  *         m_f = <double>n_fixings             # <<<<<<<<<<<<<<
@@ -31856,7 +33953,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(do
 */
     __pyx_v_m_f = ((double)__pyx_v_n_fixings);
 
-    /* "bz_pricing/core/options_core.pyx":862
+    /* "bz_pricing/core/options_core.pyx":1049
  *     if n_fixings > 0:
  *         m_f = <double>n_fixings
  *         t_bar = T * (m_f + 1.0) / (2.0 * m_f)             # <<<<<<<<<<<<<<
@@ -31865,7 +33962,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(do
 */
     __pyx_v_t_bar = ((__pyx_v_T * (__pyx_v_m_f + 1.0)) / (2.0 * __pyx_v_m_f));
 
-    /* "bz_pricing/core/options_core.pyx":863
+    /* "bz_pricing/core/options_core.pyx":1050
  *         m_f = <double>n_fixings
  *         t_bar = T * (m_f + 1.0) / (2.0 * m_f)
  *         var_sum = sig2 * T * (m_f + 1.0) * (2.0 * m_f + 1.0) / (6.0 * m_f * m_f)             # <<<<<<<<<<<<<<
@@ -31874,7 +33971,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(do
 */
     __pyx_v_var_sum = ((((__pyx_v_sig2 * __pyx_v_T) * (__pyx_v_m_f + 1.0)) * ((2.0 * __pyx_v_m_f) + 1.0)) / ((6.0 * __pyx_v_m_f) * __pyx_v_m_f));
 
-    /* "bz_pricing/core/options_core.pyx":864
+    /* "bz_pricing/core/options_core.pyx":1051
  *         t_bar = T * (m_f + 1.0) / (2.0 * m_f)
  *         var_sum = sig2 * T * (m_f + 1.0) * (2.0 * m_f + 1.0) / (6.0 * m_f * m_f)
  *         sig_g = sqrt(var_sum / T)             # <<<<<<<<<<<<<<
@@ -31883,7 +33980,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(do
 */
     __pyx_v_sig_g = sqrt((__pyx_v_var_sum / __pyx_v_T));
 
-    /* "bz_pricing/core/options_core.pyx":865
+    /* "bz_pricing/core/options_core.pyx":1052
  *         var_sum = sig2 * T * (m_f + 1.0) * (2.0 * m_f + 1.0) / (6.0 * m_f * m_f)
  *         sig_g = sqrt(var_sum / T)
  *         b_g = ((b - 0.5 * sig2) * t_bar + 0.5 * var_sum) / T             # <<<<<<<<<<<<<<
@@ -31892,7 +33989,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(do
 */
     __pyx_v_b_g = ((((__pyx_v_b - (0.5 * __pyx_v_sig2)) * __pyx_v_t_bar) + (0.5 * __pyx_v_var_sum)) / __pyx_v_T);
 
-    /* "bz_pricing/core/options_core.pyx":866
+    /* "bz_pricing/core/options_core.pyx":1053
  *         sig_g = sqrt(var_sum / T)
  *         b_g = ((b - 0.5 * sig2) * t_bar + 0.5 * var_sum) / T
  *         q_g = r - b_g             # <<<<<<<<<<<<<<
@@ -31901,7 +33998,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(do
 */
     __pyx_v_q_g = (__pyx_v_r - __pyx_v_b_g);
 
-    /* "bz_pricing/core/options_core.pyx":860
+    /* "bz_pricing/core/options_core.pyx":1047
  *     cdef double sig2 = sigma * sigma
  *     cdef double m_f, t_bar, var_sum, sig_g, b_g, q_g
  *     if n_fixings > 0:             # <<<<<<<<<<<<<<
@@ -31911,7 +34008,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(do
     goto __pyx_L8;
   }
 
-  /* "bz_pricing/core/options_core.pyx":868
+  /* "bz_pricing/core/options_core.pyx":1055
  *         q_g = r - b_g
  *     else:
  *         sig_g = sigma / sqrt(3.0)             # <<<<<<<<<<<<<<
@@ -31921,7 +34018,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(do
   /*else*/ {
     __pyx_v_sig_g = (__pyx_v_sigma / sqrt(3.0));
 
-    /* "bz_pricing/core/options_core.pyx":869
+    /* "bz_pricing/core/options_core.pyx":1056
  *     else:
  *         sig_g = sigma / sqrt(3.0)
  *         b_g = 0.5 * (b - sig2 / 6.0)             # <<<<<<<<<<<<<<
@@ -31930,7 +34027,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(do
 */
     __pyx_v_b_g = (0.5 * (__pyx_v_b - (__pyx_v_sig2 / 6.0)));
 
-    /* "bz_pricing/core/options_core.pyx":870
+    /* "bz_pricing/core/options_core.pyx":1057
  *         sig_g = sigma / sqrt(3.0)
  *         b_g = 0.5 * (b - sig2 / 6.0)
  *         q_g = r - b_g             # <<<<<<<<<<<<<<
@@ -31941,7 +34038,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(do
   }
   __pyx_L8:;
 
-  /* "bz_pricing/core/options_core.pyx":872
+  /* "bz_pricing/core/options_core.pyx":1059
  *         q_g = r - b_g
  *     cdef double price, d_tmp, g_tmp, v_tmp, th_tmp, rh_tmp, va_tmp, vo_tmp
  *     _bsm_core(S, K, r, q_g, T, sig_g, is_call, &price, &d_tmp, &g_tmp, &v_tmp, &th_tmp, &rh_tmp, &va_tmp, &vo_tmp)             # <<<<<<<<<<<<<<
@@ -31950,7 +34047,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(do
 */
   __pyx_f_10bz_pricing_4core_12options_core__bsm_core(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q_g, __pyx_v_T, __pyx_v_sig_g, __pyx_v_is_call, (&__pyx_v_price), (&__pyx_v_d_tmp), (&__pyx_v_g_tmp), (&__pyx_v_v_tmp), (&__pyx_v_th_tmp), (&__pyx_v_rh_tmp), (&__pyx_v_va_tmp), (&__pyx_v_vo_tmp));
 
-  /* "bz_pricing/core/options_core.pyx":873
+  /* "bz_pricing/core/options_core.pyx":1060
  *     cdef double price, d_tmp, g_tmp, v_tmp, th_tmp, rh_tmp, va_tmp, vo_tmp
  *     _bsm_core(S, K, r, q_g, T, sig_g, is_call, &price, &d_tmp, &g_tmp, &v_tmp, &th_tmp, &rh_tmp, &va_tmp, &vo_tmp)
  *     return price             # <<<<<<<<<<<<<<
@@ -31963,7 +34060,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(do
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/options_core.pyx":841
+  /* "bz_pricing/core/options_core.pyx":1028
  * 
  * 
  * cpdef double asian_geometric_price(             # <<<<<<<<<<<<<<
@@ -31993,16 +34090,16 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(do
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_35asian_geometric_price(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_37asian_geometric_price(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_10bz_pricing_4core_12options_core_34asian_geometric_price, "\n    Op\303\247\303\243o asi\303\241tica de m\303\251dia geom\303\251trica (Kemna & Vorst, 1990).\n    Quando `n_fixings > 0`, utiliza momentos exatos para fixings discretos em (0, T].\n    ");
-static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_35asian_geometric_price = {"asian_geometric_price", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_35asian_geometric_price, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10bz_pricing_4core_12options_core_34asian_geometric_price};
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_35asian_geometric_price(PyObject *__pyx_self, 
+PyDoc_STRVAR(__pyx_doc_10bz_pricing_4core_12options_core_36asian_geometric_price, "\n    Op\303\247\303\243o asi\303\241tica de m\303\251dia geom\303\251trica (Kemna & Vorst, 1990).\n    Quando `n_fixings > 0`, utiliza momentos exatos para fixings discretos em (0, T].\n    ");
+static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_37asian_geometric_price = {"asian_geometric_price", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_37asian_geometric_price, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10bz_pricing_4core_12options_core_36asian_geometric_price};
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_37asian_geometric_price(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -32039,87 +34136,87 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_S,&__pyx_mstate_global->__pyx_n_u_K,&__pyx_mstate_global->__pyx_n_u_r,&__pyx_mstate_global->__pyx_n_u_q,&__pyx_mstate_global->__pyx_n_u_T,&__pyx_mstate_global->__pyx_n_u_sigma,&__pyx_mstate_global->__pyx_n_u_is_call,&__pyx_mstate_global->__pyx_n_u_n_fixings,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 841, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 1028, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  8:
         values[7] = __Pyx_ArgRef_FASTCALL(__pyx_args, 7);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 841, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 1028, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  7:
         values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 841, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 1028, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  6:
         values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 841, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 1028, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 841, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 1028, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 841, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 1028, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 841, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 1028, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 841, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 1028, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 841, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 1028, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "asian_geometric_price", 0) < (0)) __PYX_ERR(0, 841, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "asian_geometric_price", 0) < (0)) __PYX_ERR(0, 1028, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 6; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("asian_geometric_price", 0, 6, 8, i); __PYX_ERR(0, 841, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("asian_geometric_price", 0, 6, 8, i); __PYX_ERR(0, 1028, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  8:
         values[7] = __Pyx_ArgRef_FASTCALL(__pyx_args, 7);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 841, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 1028, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  7:
         values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 841, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 1028, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  6:
         values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 841, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 1028, __pyx_L3_error)
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 841, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 1028, __pyx_L3_error)
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 841, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 1028, __pyx_L3_error)
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 841, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 1028, __pyx_L3_error)
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 841, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 1028, __pyx_L3_error)
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 841, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 1028, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_S = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_S == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 842, __pyx_L3_error)
-    __pyx_v_K = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_K == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 843, __pyx_L3_error)
-    __pyx_v_r = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_r == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 844, __pyx_L3_error)
-    __pyx_v_q = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_q == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 845, __pyx_L3_error)
-    __pyx_v_T = __Pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_T == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 846, __pyx_L3_error)
-    __pyx_v_sigma = __Pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_sigma == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 847, __pyx_L3_error)
+    __pyx_v_S = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_S == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1029, __pyx_L3_error)
+    __pyx_v_K = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_K == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1030, __pyx_L3_error)
+    __pyx_v_r = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_r == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1031, __pyx_L3_error)
+    __pyx_v_q = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_q == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1032, __pyx_L3_error)
+    __pyx_v_T = __Pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_T == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1033, __pyx_L3_error)
+    __pyx_v_sigma = __Pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_sigma == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1034, __pyx_L3_error)
     if (values[6]) {
-      __pyx_v_is_call = __Pyx_PyObject_IsTrue(values[6]); if (unlikely((__pyx_v_is_call == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 848, __pyx_L3_error)
+      __pyx_v_is_call = __Pyx_PyObject_IsTrue(values[6]); if (unlikely((__pyx_v_is_call == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1035, __pyx_L3_error)
     } else {
 
-      /* "bz_pricing/core/options_core.pyx":848
+      /* "bz_pricing/core/options_core.pyx":1035
  *     double T,
  *     double sigma,
  *     bint is_call=True,             # <<<<<<<<<<<<<<
@@ -32129,14 +34226,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       __pyx_v_is_call = ((int)1);
     }
     if (values[7]) {
-      __pyx_v_n_fixings = __Pyx_PyLong_As_int(values[7]); if (unlikely((__pyx_v_n_fixings == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 849, __pyx_L3_error)
+      __pyx_v_n_fixings = __Pyx_PyLong_As_int(values[7]); if (unlikely((__pyx_v_n_fixings == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1036, __pyx_L3_error)
     } else {
       __pyx_v_n_fixings = ((int)0);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("asian_geometric_price", 0, 6, 8, __pyx_nargs); __PYX_ERR(0, 841, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("asian_geometric_price", 0, 6, 8, __pyx_nargs); __PYX_ERR(0, 1028, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -32147,9 +34244,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_34asian_geometric_price(__pyx_self, __pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_is_call, __pyx_v_n_fixings);
+  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_36asian_geometric_price(__pyx_self, __pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_is_call, __pyx_v_n_fixings);
 
-  /* "bz_pricing/core/options_core.pyx":841
+  /* "bz_pricing/core/options_core.pyx":1028
  * 
  * 
  * cpdef double asian_geometric_price(             # <<<<<<<<<<<<<<
@@ -32173,7 +34270,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_34asian_geometric_price(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, int __pyx_v_is_call, int __pyx_v_n_fixings) {
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_36asian_geometric_price(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, int __pyx_v_is_call, int __pyx_v_n_fixings) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   double __pyx_t_1;
@@ -32187,7 +34284,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_34asian_geometric_pr
   __pyx_t_2.is_call = __pyx_v_is_call;
   __pyx_t_2.n_fixings = __pyx_v_n_fixings;
   __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, 1, &__pyx_t_2); 
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 841, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1028, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
   {
@@ -32212,7 +34309,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_34asian_geometric_pr
   return __pyx_r;
 }
 
-/* "bz_pricing/core/options_core.pyx":876
+/* "bz_pricing/core/options_core.pyx":1063
  * 
  * 
  * cpdef double asian_arithmetic_tw_price(             # <<<<<<<<<<<<<<
@@ -32220,7 +34317,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_34asian_geometric_pr
  *     double K,
 */
 
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_37asian_arithmetic_tw_price(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_39asian_arithmetic_tw_price(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -32229,7 +34326,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 ); /*proto*/
 static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_price(double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, CYTHON_UNUSED int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_12options_core_asian_arithmetic_tw_price *__pyx_optional_args) {
 
-  /* "bz_pricing/core/options_core.pyx":883
+  /* "bz_pricing/core/options_core.pyx":1070
  *     double T,
  *     double sigma,
  *     bint is_call=True,             # <<<<<<<<<<<<<<
@@ -32275,7 +34372,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
     }
   }
 
-  /* "bz_pricing/core/options_core.pyx":891
+  /* "bz_pricing/core/options_core.pyx":1078
  *     observaes discretas igualmente espaadas em (0, T].
  *     """
  *     if T <= 0.0 or sigma <= 0.0 or S <= 0.0 or K <= 0.0:             # <<<<<<<<<<<<<<
@@ -32321,7 +34418,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/options_core.pyx":892
+    /* "bz_pricing/core/options_core.pyx":1079
  *     """
  *     if T <= 0.0 or sigma <= 0.0 or S <= 0.0 or K <= 0.0:
  *         return fmax(S - K, 0.0) if is_call else fmax(K - S, 0.0)             # <<<<<<<<<<<<<<
@@ -32340,7 +34437,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
     }
     goto __pyx_L0;
 
-    /* "bz_pricing/core/options_core.pyx":891
+    /* "bz_pricing/core/options_core.pyx":1078
  *     observaes discretas igualmente espaadas em (0, T].
  *     """
  *     if T <= 0.0 or sigma <= 0.0 or S <= 0.0 or K <= 0.0:             # <<<<<<<<<<<<<<
@@ -32349,7 +34446,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
 */
   }
 
-  /* "bz_pricing/core/options_core.pyx":894
+  /* "bz_pricing/core/options_core.pyx":1081
  *         return fmax(S - K, 0.0) if is_call else fmax(K - S, 0.0)
  * 
  *     cdef double b = r - q             # <<<<<<<<<<<<<<
@@ -32358,7 +34455,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
 */
   __pyx_v_b = (__pyx_v_r - __pyx_v_q);
 
-  /* "bz_pricing/core/options_core.pyx":895
+  /* "bz_pricing/core/options_core.pyx":1082
  * 
  *     cdef double b = r - q
  *     cdef double sig2 = sigma * sigma             # <<<<<<<<<<<<<<
@@ -32367,7 +34464,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
 */
   __pyx_v_sig2 = (__pyx_v_sigma * __pyx_v_sigma);
 
-  /* "bz_pricing/core/options_core.pyx":896
+  /* "bz_pricing/core/options_core.pyx":1083
  *     cdef double b = r - q
  *     cdef double sig2 = sigma * sigma
  *     cdef double m1 = 0.0             # <<<<<<<<<<<<<<
@@ -32376,7 +34473,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
 */
   __pyx_v_m1 = 0.0;
 
-  /* "bz_pricing/core/options_core.pyx":897
+  /* "bz_pricing/core/options_core.pyx":1084
  *     cdef double sig2 = sigma * sigma
  *     cdef double m1 = 0.0
  *     cdef double m2 = 0.0             # <<<<<<<<<<<<<<
@@ -32385,7 +34482,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
 */
   __pyx_v_m2 = 0.0;
 
-  /* "bz_pricing/core/options_core.pyx":901
+  /* "bz_pricing/core/options_core.pyx":1088
  *     cdef int i
  * 
  *     if n_fixings > 0:             # <<<<<<<<<<<<<<
@@ -32397,7 +34494,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
   if (__pyx_t_1) {
 
 
-    /* "bz_pricing/core/options_core.pyx":902
+    /* "bz_pricing/core/options_core.pyx":1089
  * 
  *     if n_fixings > 0:
  *         dt_fix = T / (<double>n_fixings)             # <<<<<<<<<<<<<<
@@ -32406,7 +34503,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
 */
     __pyx_v_dt_fix = (__pyx_v_T / ((double)__pyx_v_n_fixings));
 
-    /* "bz_pricing/core/options_core.pyx":903
+    /* "bz_pricing/core/options_core.pyx":1090
  *     if n_fixings > 0:
  *         dt_fix = T / (<double>n_fixings)
  *         suffix_sum = 0.0             # <<<<<<<<<<<<<<
@@ -32415,7 +34512,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
 */
     __pyx_v_suffix_sum = 0.0;
 
-    /* "bz_pricing/core/options_core.pyx":904
+    /* "bz_pricing/core/options_core.pyx":1091
  *         dt_fix = T / (<double>n_fixings)
  *         suffix_sum = 0.0
  *         sum_m1 = 0.0             # <<<<<<<<<<<<<<
@@ -32424,7 +34521,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
 */
     __pyx_v_sum_m1 = 0.0;
 
-    /* "bz_pricing/core/options_core.pyx":905
+    /* "bz_pricing/core/options_core.pyx":1092
  *         suffix_sum = 0.0
  *         sum_m1 = 0.0
  *         sum_m2 = 0.0             # <<<<<<<<<<<<<<
@@ -32433,7 +34530,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
 */
     __pyx_v_sum_m2 = 0.0;
 
-    /* "bz_pricing/core/options_core.pyx":906
+    /* "bz_pricing/core/options_core.pyx":1093
  *         sum_m1 = 0.0
  *         sum_m2 = 0.0
  *         for i in range(n_fixings, 0, -1):             # <<<<<<<<<<<<<<
@@ -32443,7 +34540,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
     for (__pyx_t_4 = __pyx_v_n_fixings; __pyx_t_4 > 0; __pyx_t_4-=1) {
       __pyx_v_i = __pyx_t_4;
 
-      /* "bz_pricing/core/options_core.pyx":907
+      /* "bz_pricing/core/options_core.pyx":1094
  *         sum_m2 = 0.0
  *         for i in range(n_fixings, 0, -1):
  *             t_i = (<double>i) * dt_fix             # <<<<<<<<<<<<<<
@@ -32452,7 +34549,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
 */
       __pyx_v_t_i = (((double)__pyx_v_i) * __pyx_v_dt_fix);
 
-      /* "bz_pricing/core/options_core.pyx":908
+      /* "bz_pricing/core/options_core.pyx":1095
  *         for i in range(n_fixings, 0, -1):
  *             t_i = (<double>i) * dt_fix
  *             s_i = exp(b * t_i)             # <<<<<<<<<<<<<<
@@ -32461,7 +34558,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
 */
       __pyx_v_s_i = exp((__pyx_v_b * __pyx_v_t_i));
 
-      /* "bz_pricing/core/options_core.pyx":909
+      /* "bz_pricing/core/options_core.pyx":1096
  *             t_i = (<double>i) * dt_fix
  *             s_i = exp(b * t_i)
  *             sum_m1 += s_i             # <<<<<<<<<<<<<<
@@ -32470,7 +34567,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
 */
       __pyx_v_sum_m1 = (__pyx_v_sum_m1 + __pyx_v_s_i);
 
-      /* "bz_pricing/core/options_core.pyx":910
+      /* "bz_pricing/core/options_core.pyx":1097
  *             s_i = exp(b * t_i)
  *             sum_m1 += s_i
  *             sum_m2 += exp((b + sig2) * t_i) * (s_i + 2.0 * suffix_sum)             # <<<<<<<<<<<<<<
@@ -32479,7 +34576,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
 */
       __pyx_v_sum_m2 = (__pyx_v_sum_m2 + (exp(((__pyx_v_b + __pyx_v_sig2) * __pyx_v_t_i)) * (__pyx_v_s_i + (2.0 * __pyx_v_suffix_sum))));
 
-      /* "bz_pricing/core/options_core.pyx":911
+      /* "bz_pricing/core/options_core.pyx":1098
  *             sum_m1 += s_i
  *             sum_m2 += exp((b + sig2) * t_i) * (s_i + 2.0 * suffix_sum)
  *             suffix_sum += s_i             # <<<<<<<<<<<<<<
@@ -32489,7 +34586,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
       __pyx_v_suffix_sum = (__pyx_v_suffix_sum + __pyx_v_s_i);
     }
 
-    /* "bz_pricing/core/options_core.pyx":912
+    /* "bz_pricing/core/options_core.pyx":1099
  *             sum_m2 += exp((b + sig2) * t_i) * (s_i + 2.0 * suffix_sum)
  *             suffix_sum += s_i
  *         m1 = sum_m1 / (<double>n_fixings)             # <<<<<<<<<<<<<<
@@ -32498,7 +34595,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
 */
     __pyx_v_m1 = (__pyx_v_sum_m1 / ((double)__pyx_v_n_fixings));
 
-    /* "bz_pricing/core/options_core.pyx":913
+    /* "bz_pricing/core/options_core.pyx":1100
  *             suffix_sum += s_i
  *         m1 = sum_m1 / (<double>n_fixings)
  *         m2 = sum_m2 / ((<double>n_fixings) * (<double>n_fixings))             # <<<<<<<<<<<<<<
@@ -32507,7 +34604,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
 */
     __pyx_v_m2 = (__pyx_v_sum_m2 / (((double)__pyx_v_n_fixings) * ((double)__pyx_v_n_fixings)));
 
-    /* "bz_pricing/core/options_core.pyx":901
+    /* "bz_pricing/core/options_core.pyx":1088
  *     cdef int i
  * 
  *     if n_fixings > 0:             # <<<<<<<<<<<<<<
@@ -32517,7 +34614,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
     goto __pyx_L8;
   }
 
-  /* "bz_pricing/core/options_core.pyx":915
+  /* "bz_pricing/core/options_core.pyx":1102
  *         m2 = sum_m2 / ((<double>n_fixings) * (<double>n_fixings))
  *     else:
  *         if fabs(b) < 1e-8:             # <<<<<<<<<<<<<<
@@ -32530,7 +34627,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
     if (__pyx_t_1) {
 
 
-      /* "bz_pricing/core/options_core.pyx":916
+      /* "bz_pricing/core/options_core.pyx":1103
  *     else:
  *         if fabs(b) < 1e-8:
  *             m1 = 1.0             # <<<<<<<<<<<<<<
@@ -32539,7 +34636,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
 */
       __pyx_v_m1 = 1.0;
 
-      /* "bz_pricing/core/options_core.pyx":917
+      /* "bz_pricing/core/options_core.pyx":1104
  *         if fabs(b) < 1e-8:
  *             m1 = 1.0
  *             if sig2 * T > 1e-8:             # <<<<<<<<<<<<<<
@@ -32551,7 +34648,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
       if (__pyx_t_1) {
 
 
-        /* "bz_pricing/core/options_core.pyx":918
+        /* "bz_pricing/core/options_core.pyx":1105
  *             m1 = 1.0
  *             if sig2 * T > 1e-8:
  *                 m2 = (2.0 * exp(sig2 * T) - 2.0 * (1.0 + sig2 * T)) / (sig2 * sig2 * T * T)             # <<<<<<<<<<<<<<
@@ -32560,7 +34657,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
 */
         __pyx_v_m2 = (((2.0 * exp((__pyx_v_sig2 * __pyx_v_T))) - (2.0 * (1.0 + (__pyx_v_sig2 * __pyx_v_T)))) / (((__pyx_v_sig2 * __pyx_v_sig2) * __pyx_v_T) * __pyx_v_T));
 
-        /* "bz_pricing/core/options_core.pyx":917
+        /* "bz_pricing/core/options_core.pyx":1104
  *         if fabs(b) < 1e-8:
  *             m1 = 1.0
  *             if sig2 * T > 1e-8:             # <<<<<<<<<<<<<<
@@ -32570,7 +34667,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
         goto __pyx_L12;
       }
 
-      /* "bz_pricing/core/options_core.pyx":920
+      /* "bz_pricing/core/options_core.pyx":1107
  *                 m2 = (2.0 * exp(sig2 * T) - 2.0 * (1.0 + sig2 * T)) / (sig2 * sig2 * T * T)
  *             else:
  *                 m2 = 1.0             # <<<<<<<<<<<<<<
@@ -32582,7 +34679,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
       }
       __pyx_L12:;
 
-      /* "bz_pricing/core/options_core.pyx":915
+      /* "bz_pricing/core/options_core.pyx":1102
  *         m2 = sum_m2 / ((<double>n_fixings) * (<double>n_fixings))
  *     else:
  *         if fabs(b) < 1e-8:             # <<<<<<<<<<<<<<
@@ -32592,7 +34689,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
       goto __pyx_L11;
     }
 
-    /* "bz_pricing/core/options_core.pyx":921
+    /* "bz_pricing/core/options_core.pyx":1108
  *             else:
  *                 m2 = 1.0
  *         elif fabs(b + sig2) < 1e-8:             # <<<<<<<<<<<<<<
@@ -32604,7 +34701,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
     if (__pyx_t_1) {
 
 
-      /* "bz_pricing/core/options_core.pyx":922
+      /* "bz_pricing/core/options_core.pyx":1109
  *                 m2 = 1.0
  *         elif fabs(b + sig2) < 1e-8:
  *             m1 = (exp(b * T) - 1.0) / (b * T)             # <<<<<<<<<<<<<<
@@ -32613,7 +34710,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
 */
       __pyx_v_m1 = ((exp((__pyx_v_b * __pyx_v_T)) - 1.0) / (__pyx_v_b * __pyx_v_T));
 
-      /* "bz_pricing/core/options_core.pyx":923
+      /* "bz_pricing/core/options_core.pyx":1110
  *         elif fabs(b + sig2) < 1e-8:
  *             m1 = (exp(b * T) - 1.0) / (b * T)
  *             m2 = (2.0 * (exp(b * T) * (b * T - 1.0) + 1.0)) / (b * b * T * T)             # <<<<<<<<<<<<<<
@@ -32622,7 +34719,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
 */
       __pyx_v_m2 = ((2.0 * ((exp((__pyx_v_b * __pyx_v_T)) * ((__pyx_v_b * __pyx_v_T) - 1.0)) + 1.0)) / (((__pyx_v_b * __pyx_v_b) * __pyx_v_T) * __pyx_v_T));
 
-      /* "bz_pricing/core/options_core.pyx":921
+      /* "bz_pricing/core/options_core.pyx":1108
  *             else:
  *                 m2 = 1.0
  *         elif fabs(b + sig2) < 1e-8:             # <<<<<<<<<<<<<<
@@ -32632,7 +34729,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
       goto __pyx_L11;
     }
 
-    /* "bz_pricing/core/options_core.pyx":924
+    /* "bz_pricing/core/options_core.pyx":1111
  *             m1 = (exp(b * T) - 1.0) / (b * T)
  *             m2 = (2.0 * (exp(b * T) * (b * T - 1.0) + 1.0)) / (b * b * T * T)
  *         elif fabs(2.0 * b + sig2) < 1e-8:             # <<<<<<<<<<<<<<
@@ -32644,7 +34741,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
     if (__pyx_t_1) {
 
 
-      /* "bz_pricing/core/options_core.pyx":925
+      /* "bz_pricing/core/options_core.pyx":1112
  *             m2 = (2.0 * (exp(b * T) * (b * T - 1.0) + 1.0)) / (b * b * T * T)
  *         elif fabs(2.0 * b + sig2) < 1e-8:
  *             m1 = (exp(b * T) - 1.0) / (b * T)             # <<<<<<<<<<<<<<
@@ -32653,7 +34750,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
 */
       __pyx_v_m1 = ((exp((__pyx_v_b * __pyx_v_T)) - 1.0) / (__pyx_v_b * __pyx_v_T));
 
-      /* "bz_pricing/core/options_core.pyx":926
+      /* "bz_pricing/core/options_core.pyx":1113
  *         elif fabs(2.0 * b + sig2) < 1e-8:
  *             m1 = (exp(b * T) - 1.0) / (b * T)
  *             m2 = (2.0 / ((b + sig2) * T * T)) * (T - (exp(b * T) - 1.0) / b)             # <<<<<<<<<<<<<<
@@ -32662,7 +34759,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
 */
       __pyx_v_m2 = ((2.0 / (((__pyx_v_b + __pyx_v_sig2) * __pyx_v_T) * __pyx_v_T)) * (__pyx_v_T - ((exp((__pyx_v_b * __pyx_v_T)) - 1.0) / __pyx_v_b)));
 
-      /* "bz_pricing/core/options_core.pyx":924
+      /* "bz_pricing/core/options_core.pyx":1111
  *             m1 = (exp(b * T) - 1.0) / (b * T)
  *             m2 = (2.0 * (exp(b * T) * (b * T - 1.0) + 1.0)) / (b * b * T * T)
  *         elif fabs(2.0 * b + sig2) < 1e-8:             # <<<<<<<<<<<<<<
@@ -32672,7 +34769,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
       goto __pyx_L11;
     }
 
-    /* "bz_pricing/core/options_core.pyx":928
+    /* "bz_pricing/core/options_core.pyx":1115
  *             m2 = (2.0 / ((b + sig2) * T * T)) * (T - (exp(b * T) - 1.0) / b)
  *         else:
  *             m1 = (exp(b * T) - 1.0) / (b * T)             # <<<<<<<<<<<<<<
@@ -32682,7 +34779,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
     /*else*/ {
       __pyx_v_m1 = ((exp((__pyx_v_b * __pyx_v_T)) - 1.0) / (__pyx_v_b * __pyx_v_T));
 
-      /* "bz_pricing/core/options_core.pyx":931
+      /* "bz_pricing/core/options_core.pyx":1118
  *             m2 = (
  *                 (2.0 * exp((2.0 * b + sig2) * T)) / ((b + sig2) * (2.0 * b + sig2) * T * T)
  *                 + (2.0 / (b * T * T)) * ((1.0 / (2.0 * b + sig2)) - (exp(b * T) / (b + sig2)))             # <<<<<<<<<<<<<<
@@ -32695,7 +34792,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
   }
   __pyx_L8:;
 
-  /* "bz_pricing/core/options_core.pyx":934
+  /* "bz_pricing/core/options_core.pyx":1121
  *             )
  * 
  *     cdef double b_eff = log(fmax(1e-12, m1)) / T             # <<<<<<<<<<<<<<
@@ -32704,7 +34801,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
 */
   __pyx_v_b_eff = (log(fmax(1e-12, __pyx_v_m1)) / __pyx_v_T);
 
-  /* "bz_pricing/core/options_core.pyx":935
+  /* "bz_pricing/core/options_core.pyx":1122
  * 
  *     cdef double b_eff = log(fmax(1e-12, m1)) / T
  *     cdef double var_eff = log(fmax(1.0 + 1e-12, m2 / (m1 * m1)))             # <<<<<<<<<<<<<<
@@ -32713,7 +34810,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
 */
   __pyx_v_var_eff = log(fmax((1.0 + 1e-12), (__pyx_v_m2 / (__pyx_v_m1 * __pyx_v_m1))));
 
-  /* "bz_pricing/core/options_core.pyx":936
+  /* "bz_pricing/core/options_core.pyx":1123
  *     cdef double b_eff = log(fmax(1e-12, m1)) / T
  *     cdef double var_eff = log(fmax(1.0 + 1e-12, m2 / (m1 * m1)))
  *     cdef double sig_eff = sqrt(var_eff / T)             # <<<<<<<<<<<<<<
@@ -32722,7 +34819,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
 */
   __pyx_v_sig_eff = sqrt((__pyx_v_var_eff / __pyx_v_T));
 
-  /* "bz_pricing/core/options_core.pyx":937
+  /* "bz_pricing/core/options_core.pyx":1124
  *     cdef double var_eff = log(fmax(1.0 + 1e-12, m2 / (m1 * m1)))
  *     cdef double sig_eff = sqrt(var_eff / T)
  *     cdef double q_eff = r - b_eff             # <<<<<<<<<<<<<<
@@ -32731,7 +34828,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
 */
   __pyx_v_q_eff = (__pyx_v_r - __pyx_v_b_eff);
 
-  /* "bz_pricing/core/options_core.pyx":940
+  /* "bz_pricing/core/options_core.pyx":1127
  * 
  *     cdef double price, d_tmp, g_tmp, v_tmp, th_tmp, rh_tmp, va_tmp, vo_tmp
  *     _bsm_core(S, K, r, q_eff, T, sig_eff, is_call, &price, &d_tmp, &g_tmp, &v_tmp, &th_tmp, &rh_tmp, &va_tmp, &vo_tmp)             # <<<<<<<<<<<<<<
@@ -32740,7 +34837,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
 */
   __pyx_f_10bz_pricing_4core_12options_core__bsm_core(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q_eff, __pyx_v_T, __pyx_v_sig_eff, __pyx_v_is_call, (&__pyx_v_price), (&__pyx_v_d_tmp), (&__pyx_v_g_tmp), (&__pyx_v_v_tmp), (&__pyx_v_th_tmp), (&__pyx_v_rh_tmp), (&__pyx_v_va_tmp), (&__pyx_v_vo_tmp));
 
-  /* "bz_pricing/core/options_core.pyx":941
+  /* "bz_pricing/core/options_core.pyx":1128
  *     cdef double price, d_tmp, g_tmp, v_tmp, th_tmp, rh_tmp, va_tmp, vo_tmp
  *     _bsm_core(S, K, r, q_eff, T, sig_eff, is_call, &price, &d_tmp, &g_tmp, &v_tmp, &th_tmp, &rh_tmp, &va_tmp, &vo_tmp)
  *     return price             # <<<<<<<<<<<<<<
@@ -32753,7 +34850,7 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
   }
   goto __pyx_L0;
 
-  /* "bz_pricing/core/options_core.pyx":876
+  /* "bz_pricing/core/options_core.pyx":1063
  * 
  * 
  * cpdef double asian_arithmetic_tw_price(             # <<<<<<<<<<<<<<
@@ -32790,16 +34887,16 @@ static double __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_pric
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_37asian_arithmetic_tw_price(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_39asian_arithmetic_tw_price(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_10bz_pricing_4core_12options_core_36asian_arithmetic_tw_price, "\n    Op\303\247\303\243o asi\303\241tica de m\303\251dia aritm\303\251tica rec\303\251m-iniciada via aproxima\303\247\303\243o lognormal de dois momentos\n    (Levy, 1992 / Turnbull & Wakeman, 1991). Quando `n_fixings > 0`, calcula M1 e M2 para\n    observa\303\247\303\265es discretas igualmente espa\303\247adas em (0, T].\n    ");
-static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_37asian_arithmetic_tw_price = {"asian_arithmetic_tw_price", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_37asian_arithmetic_tw_price, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10bz_pricing_4core_12options_core_36asian_arithmetic_tw_price};
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_37asian_arithmetic_tw_price(PyObject *__pyx_self, 
+PyDoc_STRVAR(__pyx_doc_10bz_pricing_4core_12options_core_38asian_arithmetic_tw_price, "\n    Op\303\247\303\243o asi\303\241tica de m\303\251dia aritm\303\251tica rec\303\251m-iniciada via aproxima\303\247\303\243o lognormal de dois momentos\n    (Levy, 1992 / Turnbull & Wakeman, 1991). Quando `n_fixings > 0`, calcula M1 e M2 para\n    observa\303\247\303\265es discretas igualmente espa\303\247adas em (0, T].\n    ");
+static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_39asian_arithmetic_tw_price = {"asian_arithmetic_tw_price", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_39asian_arithmetic_tw_price, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10bz_pricing_4core_12options_core_38asian_arithmetic_tw_price};
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_39asian_arithmetic_tw_price(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -32836,87 +34933,87 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_S,&__pyx_mstate_global->__pyx_n_u_K,&__pyx_mstate_global->__pyx_n_u_r,&__pyx_mstate_global->__pyx_n_u_q,&__pyx_mstate_global->__pyx_n_u_T,&__pyx_mstate_global->__pyx_n_u_sigma,&__pyx_mstate_global->__pyx_n_u_is_call,&__pyx_mstate_global->__pyx_n_u_n_fixings,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 876, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 1063, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  8:
         values[7] = __Pyx_ArgRef_FASTCALL(__pyx_args, 7);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 876, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 1063, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  7:
         values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 876, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 1063, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  6:
         values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 876, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 1063, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 876, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 1063, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 876, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 1063, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 876, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 1063, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 876, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 1063, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 876, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 1063, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "asian_arithmetic_tw_price", 0) < (0)) __PYX_ERR(0, 876, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "asian_arithmetic_tw_price", 0) < (0)) __PYX_ERR(0, 1063, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 6; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("asian_arithmetic_tw_price", 0, 6, 8, i); __PYX_ERR(0, 876, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("asian_arithmetic_tw_price", 0, 6, 8, i); __PYX_ERR(0, 1063, __pyx_L3_error) }
       }
     } else {
       switch (__pyx_nargs) {
         case  8:
         values[7] = __Pyx_ArgRef_FASTCALL(__pyx_args, 7);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 876, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 1063, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  7:
         values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 876, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 1063, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  6:
         values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 876, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 1063, __pyx_L3_error)
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 876, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 1063, __pyx_L3_error)
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 876, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 1063, __pyx_L3_error)
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 876, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 1063, __pyx_L3_error)
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 876, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 1063, __pyx_L3_error)
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 876, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 1063, __pyx_L3_error)
         break;
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_S = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_S == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 877, __pyx_L3_error)
-    __pyx_v_K = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_K == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 878, __pyx_L3_error)
-    __pyx_v_r = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_r == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 879, __pyx_L3_error)
-    __pyx_v_q = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_q == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 880, __pyx_L3_error)
-    __pyx_v_T = __Pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_T == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 881, __pyx_L3_error)
-    __pyx_v_sigma = __Pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_sigma == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 882, __pyx_L3_error)
+    __pyx_v_S = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_S == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1064, __pyx_L3_error)
+    __pyx_v_K = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_K == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1065, __pyx_L3_error)
+    __pyx_v_r = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_r == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1066, __pyx_L3_error)
+    __pyx_v_q = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_q == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1067, __pyx_L3_error)
+    __pyx_v_T = __Pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_T == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1068, __pyx_L3_error)
+    __pyx_v_sigma = __Pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_sigma == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1069, __pyx_L3_error)
     if (values[6]) {
-      __pyx_v_is_call = __Pyx_PyObject_IsTrue(values[6]); if (unlikely((__pyx_v_is_call == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 883, __pyx_L3_error)
+      __pyx_v_is_call = __Pyx_PyObject_IsTrue(values[6]); if (unlikely((__pyx_v_is_call == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1070, __pyx_L3_error)
     } else {
 
-      /* "bz_pricing/core/options_core.pyx":883
+      /* "bz_pricing/core/options_core.pyx":1070
  *     double T,
  *     double sigma,
  *     bint is_call=True,             # <<<<<<<<<<<<<<
@@ -32926,14 +35023,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       __pyx_v_is_call = ((int)1);
     }
     if (values[7]) {
-      __pyx_v_n_fixings = __Pyx_PyLong_As_int(values[7]); if (unlikely((__pyx_v_n_fixings == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 884, __pyx_L3_error)
+      __pyx_v_n_fixings = __Pyx_PyLong_As_int(values[7]); if (unlikely((__pyx_v_n_fixings == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1071, __pyx_L3_error)
     } else {
       __pyx_v_n_fixings = ((int)0);
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("asian_arithmetic_tw_price", 0, 6, 8, __pyx_nargs); __PYX_ERR(0, 876, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("asian_arithmetic_tw_price", 0, 6, 8, __pyx_nargs); __PYX_ERR(0, 1063, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -32944,9 +35041,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_36asian_arithmetic_tw_price(__pyx_self, __pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_is_call, __pyx_v_n_fixings);
+  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_38asian_arithmetic_tw_price(__pyx_self, __pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_is_call, __pyx_v_n_fixings);
 
-  /* "bz_pricing/core/options_core.pyx":876
+  /* "bz_pricing/core/options_core.pyx":1063
  * 
  * 
  * cpdef double asian_arithmetic_tw_price(             # <<<<<<<<<<<<<<
@@ -32970,7 +35067,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_36asian_arithmetic_tw_price(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, int __pyx_v_is_call, int __pyx_v_n_fixings) {
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_38asian_arithmetic_tw_price(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, int __pyx_v_is_call, int __pyx_v_n_fixings) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   double __pyx_t_1;
@@ -32984,7 +35081,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_36asian_arithmetic_t
   __pyx_t_2.is_call = __pyx_v_is_call;
   __pyx_t_2.n_fixings = __pyx_v_n_fixings;
   __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_price(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, 1, &__pyx_t_2); 
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 876, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1063, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
   {
@@ -33009,7 +35106,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_36asian_arithmetic_t
   return __pyx_r;
 }
 
-/* "bz_pricing/core/options_core.pyx":944
+/* "bz_pricing/core/options_core.pyx":1131
  * 
  * 
  * cpdef tuple price_black76_batch(             # <<<<<<<<<<<<<<
@@ -33017,7 +35114,7 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_36asian_arithmetic_t
  *     double[:] F_arr,
 */
 
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_39price_black76_batch(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_41price_black76_batch(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -33109,7 +35206,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
   __pyx_pybuffernd_out_rho.data = NULL;
   __pyx_pybuffernd_out_rho.rcbuffer = &__pyx_pybuffer_out_rho;
 
-  /* "bz_pricing/core/options_core.pyx":954
+  /* "bz_pricing/core/options_core.pyx":1141
  * ):
  *     """Precifica em lote opes Black-76 (IDI, DI1, Swaptions) em Cython (`nogil`)."""
  *     cdef Py_ssize_t n = F_arr.shape[0]             # <<<<<<<<<<<<<<
@@ -33118,7 +35215,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
 */
   __pyx_v_n = (__pyx_v_F_arr.shape[0]);
 
-  /* "bz_pricing/core/options_core.pyx":957
+  /* "bz_pricing/core/options_core.pyx":1144
  *     cdef Py_ssize_t i
  * 
  *     cdef np.ndarray[np.float64_t, ndim=1] out_price = np.empty(n, dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -33126,16 +35223,16 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
  *     cdef np.ndarray[np.float64_t, ndim=1] out_gamma = np.empty(n, dtype=np.float64)
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 957, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1144, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 957, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1144, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyLong_FromSsize_t(__pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 957, __pyx_L1_error)
+  __pyx_t_3 = PyLong_FromSsize_t(__pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1144, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 957, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1144, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 957, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1144, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_7 = 1;
@@ -33154,13 +35251,13 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
     PyObject *__pyx_callargs[3] = {__pyx_t_2, __pyx_t_3, __pyx_t_6};
     #if CYTHON_VECTORCALL
     __pyx_t_5 = __pyx_mstate_global->__pyx_tuple[2];
-    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 957, __pyx_L1_error)
+    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1144, __pyx_L1_error)
     __Pyx_INCREF(__pyx_t_5);
     #else
     {
       PyObject *__pyx_temp[1] = {__pyx_mstate_global->__pyx_n_u_dtype};
       __pyx_t_5 = __Pyx_MakeKwargDict(__pyx_temp, __pyx_callargs+2, 1);
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 957, __pyx_L1_error)
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1144, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
     }
     #endif
@@ -33170,22 +35267,22 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 957, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1144, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_mstate_global->__pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 957, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_mstate_global->__pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 1144, __pyx_L1_error)
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_out_price.rcbuffer->pybuffer, (PyObject*)((PyArrayObject *)__pyx_t_1), &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_out_price = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_out_price.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 957, __pyx_L1_error)
+      __PYX_ERR(0, 1144, __pyx_L1_error)
     } else {__pyx_pybuffernd_out_price.diminfo[0].strides = __pyx_pybuffernd_out_price.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_out_price.diminfo[0].shape = __pyx_pybuffernd_out_price.rcbuffer->pybuffer.shape[0];
     }
   }
   __pyx_v_out_price = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/options_core.pyx":958
+  /* "bz_pricing/core/options_core.pyx":1145
  * 
  *     cdef np.ndarray[np.float64_t, ndim=1] out_price = np.empty(n, dtype=np.float64)
  *     cdef np.ndarray[np.float64_t, ndim=1] out_delta = np.empty(n, dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -33193,16 +35290,16 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
  *     cdef np.ndarray[np.float64_t, ndim=1] out_vega = np.empty(n, dtype=np.float64)
 */
   __pyx_t_4 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 958, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1145, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 958, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1145, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = PyLong_FromSsize_t(__pyx_v_n); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 958, __pyx_L1_error)
+  __pyx_t_5 = PyLong_FromSsize_t(__pyx_v_n); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1145, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 958, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1145, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 958, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1145, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_7 = 1;
@@ -33221,13 +35318,13 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
     PyObject *__pyx_callargs[3] = {__pyx_t_4, __pyx_t_5, __pyx_t_2};
     #if CYTHON_VECTORCALL
     __pyx_t_3 = __pyx_mstate_global->__pyx_tuple[2];
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 958, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1145, __pyx_L1_error)
     __Pyx_INCREF(__pyx_t_3);
     #else
     {
       PyObject *__pyx_temp[1] = {__pyx_mstate_global->__pyx_n_u_dtype};
       __pyx_t_3 = __Pyx_MakeKwargDict(__pyx_temp, __pyx_callargs+2, 1);
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 958, __pyx_L1_error)
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1145, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
     }
     #endif
@@ -33237,22 +35334,22 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 958, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1145, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_mstate_global->__pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 958, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_mstate_global->__pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 1145, __pyx_L1_error)
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_out_delta.rcbuffer->pybuffer, (PyObject*)((PyArrayObject *)__pyx_t_1), &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_out_delta = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_out_delta.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 958, __pyx_L1_error)
+      __PYX_ERR(0, 1145, __pyx_L1_error)
     } else {__pyx_pybuffernd_out_delta.diminfo[0].strides = __pyx_pybuffernd_out_delta.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_out_delta.diminfo[0].shape = __pyx_pybuffernd_out_delta.rcbuffer->pybuffer.shape[0];
     }
   }
   __pyx_v_out_delta = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/options_core.pyx":959
+  /* "bz_pricing/core/options_core.pyx":1146
  *     cdef np.ndarray[np.float64_t, ndim=1] out_price = np.empty(n, dtype=np.float64)
  *     cdef np.ndarray[np.float64_t, ndim=1] out_delta = np.empty(n, dtype=np.float64)
  *     cdef np.ndarray[np.float64_t, ndim=1] out_gamma = np.empty(n, dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -33260,16 +35357,16 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
  *     cdef np.ndarray[np.float64_t, ndim=1] out_theta = np.empty(n, dtype=np.float64)
 */
   __pyx_t_6 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 959, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1146, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 959, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1146, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyLong_FromSsize_t(__pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 959, __pyx_L1_error)
+  __pyx_t_3 = PyLong_FromSsize_t(__pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1146, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 959, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1146, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 959, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1146, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_7 = 1;
@@ -33288,13 +35385,13 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
     PyObject *__pyx_callargs[3] = {__pyx_t_6, __pyx_t_3, __pyx_t_4};
     #if CYTHON_VECTORCALL
     __pyx_t_5 = __pyx_mstate_global->__pyx_tuple[2];
-    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 959, __pyx_L1_error)
+    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1146, __pyx_L1_error)
     __Pyx_INCREF(__pyx_t_5);
     #else
     {
       PyObject *__pyx_temp[1] = {__pyx_mstate_global->__pyx_n_u_dtype};
       __pyx_t_5 = __Pyx_MakeKwargDict(__pyx_temp, __pyx_callargs+2, 1);
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 959, __pyx_L1_error)
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1146, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
     }
     #endif
@@ -33304,22 +35401,22 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 959, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1146, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_mstate_global->__pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 959, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_mstate_global->__pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 1146, __pyx_L1_error)
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_out_gamma.rcbuffer->pybuffer, (PyObject*)((PyArrayObject *)__pyx_t_1), &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_out_gamma = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_out_gamma.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 959, __pyx_L1_error)
+      __PYX_ERR(0, 1146, __pyx_L1_error)
     } else {__pyx_pybuffernd_out_gamma.diminfo[0].strides = __pyx_pybuffernd_out_gamma.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_out_gamma.diminfo[0].shape = __pyx_pybuffernd_out_gamma.rcbuffer->pybuffer.shape[0];
     }
   }
   __pyx_v_out_gamma = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/options_core.pyx":960
+  /* "bz_pricing/core/options_core.pyx":1147
  *     cdef np.ndarray[np.float64_t, ndim=1] out_delta = np.empty(n, dtype=np.float64)
  *     cdef np.ndarray[np.float64_t, ndim=1] out_gamma = np.empty(n, dtype=np.float64)
  *     cdef np.ndarray[np.float64_t, ndim=1] out_vega = np.empty(n, dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -33327,16 +35424,16 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
  *     cdef np.ndarray[np.float64_t, ndim=1] out_rho = np.empty(n, dtype=np.float64)
 */
   __pyx_t_2 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 960, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1147, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 960, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1147, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = PyLong_FromSsize_t(__pyx_v_n); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 960, __pyx_L1_error)
+  __pyx_t_5 = PyLong_FromSsize_t(__pyx_v_n); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1147, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 960, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1147, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 960, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1147, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_7 = 1;
@@ -33355,13 +35452,13 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
     PyObject *__pyx_callargs[3] = {__pyx_t_2, __pyx_t_5, __pyx_t_6};
     #if CYTHON_VECTORCALL
     __pyx_t_3 = __pyx_mstate_global->__pyx_tuple[2];
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 960, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1147, __pyx_L1_error)
     __Pyx_INCREF(__pyx_t_3);
     #else
     {
       PyObject *__pyx_temp[1] = {__pyx_mstate_global->__pyx_n_u_dtype};
       __pyx_t_3 = __Pyx_MakeKwargDict(__pyx_temp, __pyx_callargs+2, 1);
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 960, __pyx_L1_error)
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1147, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
     }
     #endif
@@ -33371,22 +35468,22 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 960, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1147, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_mstate_global->__pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 960, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_mstate_global->__pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 1147, __pyx_L1_error)
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_out_vega.rcbuffer->pybuffer, (PyObject*)((PyArrayObject *)__pyx_t_1), &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_out_vega = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_out_vega.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 960, __pyx_L1_error)
+      __PYX_ERR(0, 1147, __pyx_L1_error)
     } else {__pyx_pybuffernd_out_vega.diminfo[0].strides = __pyx_pybuffernd_out_vega.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_out_vega.diminfo[0].shape = __pyx_pybuffernd_out_vega.rcbuffer->pybuffer.shape[0];
     }
   }
   __pyx_v_out_vega = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/options_core.pyx":961
+  /* "bz_pricing/core/options_core.pyx":1148
  *     cdef np.ndarray[np.float64_t, ndim=1] out_gamma = np.empty(n, dtype=np.float64)
  *     cdef np.ndarray[np.float64_t, ndim=1] out_vega = np.empty(n, dtype=np.float64)
  *     cdef np.ndarray[np.float64_t, ndim=1] out_theta = np.empty(n, dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -33394,16 +35491,16 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
  * 
 */
   __pyx_t_4 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 961, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1148, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 961, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1148, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyLong_FromSsize_t(__pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 961, __pyx_L1_error)
+  __pyx_t_3 = PyLong_FromSsize_t(__pyx_v_n); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1148, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 961, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1148, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 961, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1148, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_7 = 1;
@@ -33422,13 +35519,13 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
     PyObject *__pyx_callargs[3] = {__pyx_t_4, __pyx_t_3, __pyx_t_2};
     #if CYTHON_VECTORCALL
     __pyx_t_5 = __pyx_mstate_global->__pyx_tuple[2];
-    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 961, __pyx_L1_error)
+    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1148, __pyx_L1_error)
     __Pyx_INCREF(__pyx_t_5);
     #else
     {
       PyObject *__pyx_temp[1] = {__pyx_mstate_global->__pyx_n_u_dtype};
       __pyx_t_5 = __Pyx_MakeKwargDict(__pyx_temp, __pyx_callargs+2, 1);
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 961, __pyx_L1_error)
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1148, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
     }
     #endif
@@ -33438,22 +35535,22 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 961, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1148, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_mstate_global->__pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 961, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_mstate_global->__pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 1148, __pyx_L1_error)
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_out_theta.rcbuffer->pybuffer, (PyObject*)((PyArrayObject *)__pyx_t_1), &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_out_theta = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_out_theta.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 961, __pyx_L1_error)
+      __PYX_ERR(0, 1148, __pyx_L1_error)
     } else {__pyx_pybuffernd_out_theta.diminfo[0].strides = __pyx_pybuffernd_out_theta.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_out_theta.diminfo[0].shape = __pyx_pybuffernd_out_theta.rcbuffer->pybuffer.shape[0];
     }
   }
   __pyx_v_out_theta = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/options_core.pyx":962
+  /* "bz_pricing/core/options_core.pyx":1149
  *     cdef np.ndarray[np.float64_t, ndim=1] out_vega = np.empty(n, dtype=np.float64)
  *     cdef np.ndarray[np.float64_t, ndim=1] out_theta = np.empty(n, dtype=np.float64)
  *     cdef np.ndarray[np.float64_t, ndim=1] out_rho = np.empty(n, dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -33461,16 +35558,16 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
  *     cdef double[:] pv = out_price
 */
   __pyx_t_6 = NULL;
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1149, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_empty); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1149, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = PyLong_FromSsize_t(__pyx_v_n); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __pyx_t_5 = PyLong_FromSsize_t(__pyx_v_n); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1149, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1149, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 962, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_mstate_global->__pyx_n_u_float64); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1149, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_7 = 1;
@@ -33489,13 +35586,13 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
     PyObject *__pyx_callargs[3] = {__pyx_t_6, __pyx_t_5, __pyx_t_4};
     #if CYTHON_VECTORCALL
     __pyx_t_3 = __pyx_mstate_global->__pyx_tuple[2];
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 962, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1149, __pyx_L1_error)
     __Pyx_INCREF(__pyx_t_3);
     #else
     {
       PyObject *__pyx_temp[1] = {__pyx_mstate_global->__pyx_n_u_dtype};
       __pyx_t_3 = __Pyx_MakeKwargDict(__pyx_temp, __pyx_callargs+2, 1);
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 962, __pyx_L1_error)
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1149, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
     }
     #endif
@@ -33505,94 +35602,94 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 962, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1149, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   }
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_mstate_global->__pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 962, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_mstate_global->__pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 1149, __pyx_L1_error)
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_out_rho.rcbuffer->pybuffer, (PyObject*)((PyArrayObject *)__pyx_t_1), &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_out_rho = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_out_rho.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 962, __pyx_L1_error)
+      __PYX_ERR(0, 1149, __pyx_L1_error)
     } else {__pyx_pybuffernd_out_rho.diminfo[0].strides = __pyx_pybuffernd_out_rho.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_out_rho.diminfo[0].shape = __pyx_pybuffernd_out_rho.rcbuffer->pybuffer.shape[0];
     }
   }
   __pyx_v_out_rho = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "bz_pricing/core/options_core.pyx":964
+  /* "bz_pricing/core/options_core.pyx":1151
  *     cdef np.ndarray[np.float64_t, ndim=1] out_rho = np.empty(n, dtype=np.float64)
  * 
  *     cdef double[:] pv = out_price             # <<<<<<<<<<<<<<
  *     cdef double[:] dv = out_delta
  *     cdef double[:] gv = out_gamma
 */
-  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_out_price), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 964, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_out_price), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 1151, __pyx_L1_error)
   __pyx_v_pv = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "bz_pricing/core/options_core.pyx":965
+  /* "bz_pricing/core/options_core.pyx":1152
  * 
  *     cdef double[:] pv = out_price
  *     cdef double[:] dv = out_delta             # <<<<<<<<<<<<<<
  *     cdef double[:] gv = out_gamma
  *     cdef double[:] vv = out_vega
 */
-  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_out_delta), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 965, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_out_delta), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 1152, __pyx_L1_error)
   __pyx_v_dv = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "bz_pricing/core/options_core.pyx":966
+  /* "bz_pricing/core/options_core.pyx":1153
  *     cdef double[:] pv = out_price
  *     cdef double[:] dv = out_delta
  *     cdef double[:] gv = out_gamma             # <<<<<<<<<<<<<<
  *     cdef double[:] vv = out_vega
  *     cdef double[:] tv = out_theta
 */
-  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_out_gamma), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 966, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_out_gamma), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 1153, __pyx_L1_error)
   __pyx_v_gv = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "bz_pricing/core/options_core.pyx":967
+  /* "bz_pricing/core/options_core.pyx":1154
  *     cdef double[:] dv = out_delta
  *     cdef double[:] gv = out_gamma
  *     cdef double[:] vv = out_vega             # <<<<<<<<<<<<<<
  *     cdef double[:] tv = out_theta
  *     cdef double[:] rv = out_rho
 */
-  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_out_vega), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 967, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_out_vega), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 1154, __pyx_L1_error)
   __pyx_v_vv = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "bz_pricing/core/options_core.pyx":968
+  /* "bz_pricing/core/options_core.pyx":1155
  *     cdef double[:] gv = out_gamma
  *     cdef double[:] vv = out_vega
  *     cdef double[:] tv = out_theta             # <<<<<<<<<<<<<<
  *     cdef double[:] rv = out_rho
  * 
 */
-  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_out_theta), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 968, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_out_theta), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 1155, __pyx_L1_error)
   __pyx_v_tv = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "bz_pricing/core/options_core.pyx":969
+  /* "bz_pricing/core/options_core.pyx":1156
  *     cdef double[:] vv = out_vega
  *     cdef double[:] tv = out_theta
  *     cdef double[:] rv = out_rho             # <<<<<<<<<<<<<<
  * 
  *     cdef double price, delta, gamma, vega, theta, rho, vanna, volga, sc
 */
-  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_out_rho), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 969, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(((PyObject *)__pyx_v_out_rho), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 1156, __pyx_L1_error)
   __pyx_v_rv = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "bz_pricing/core/options_core.pyx":974
+  /* "bz_pricing/core/options_core.pyx":1161
  *     cdef bint call_flag
  * 
  *     with nogil:             # <<<<<<<<<<<<<<
@@ -33605,7 +35702,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
       __Pyx_FastGIL_Remember();
       /*try:*/ {
 
-        /* "bz_pricing/core/options_core.pyx":975
+        /* "bz_pricing/core/options_core.pyx":1162
  * 
  *     with nogil:
  *         for i in range(n):             # <<<<<<<<<<<<<<
@@ -33619,7 +35716,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
         for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
           __pyx_v_i = __pyx_t_11;
 
-          /* "bz_pricing/core/options_core.pyx":976
+          /* "bz_pricing/core/options_core.pyx":1163
  *     with nogil:
  *         for i in range(n):
  *             call_flag = (is_call_arr[i] != 0)             # <<<<<<<<<<<<<<
@@ -33629,7 +35726,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
           __pyx_t_12 = __pyx_v_i;
           __pyx_v_call_flag = ((*((int *) ( /* dim=0 */ (__pyx_v_is_call_arr.data + __pyx_t_12 * __pyx_v_is_call_arr.strides[0]) ))) != 0);
 
-          /* "bz_pricing/core/options_core.pyx":977
+          /* "bz_pricing/core/options_core.pyx":1164
  *         for i in range(n):
  *             call_flag = (is_call_arr[i] != 0)
  *             sc = scale_arr[i]             # <<<<<<<<<<<<<<
@@ -33639,7 +35736,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
           __pyx_t_12 = __pyx_v_i;
           __pyx_v_sc = (*((double *) ( /* dim=0 */ (__pyx_v_scale_arr.data + __pyx_t_12 * __pyx_v_scale_arr.strides[0]) )));
 
-          /* "bz_pricing/core/options_core.pyx":979
+          /* "bz_pricing/core/options_core.pyx":1166
  *             sc = scale_arr[i]
  *             _bsm_core(
  *                 F_arr[i], K_arr[i], r_arr[i], r_arr[i], T_arr[i], sigma_arr[i],             # <<<<<<<<<<<<<<
@@ -33653,7 +35750,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
           __pyx_t_16 = __pyx_v_i;
           __pyx_t_17 = __pyx_v_i;
 
-          /* "bz_pricing/core/options_core.pyx":978
+          /* "bz_pricing/core/options_core.pyx":1165
  *             call_flag = (is_call_arr[i] != 0)
  *             sc = scale_arr[i]
  *             _bsm_core(             # <<<<<<<<<<<<<<
@@ -33662,7 +35759,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
 */
           __pyx_f_10bz_pricing_4core_12options_core__bsm_core((*((double *) ( /* dim=0 */ (__pyx_v_F_arr.data + __pyx_t_12 * __pyx_v_F_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_K_arr.data + __pyx_t_13 * __pyx_v_K_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_r_arr.data + __pyx_t_14 * __pyx_v_r_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_r_arr.data + __pyx_t_15 * __pyx_v_r_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_T_arr.data + __pyx_t_16 * __pyx_v_T_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_sigma_arr.data + __pyx_t_17 * __pyx_v_sigma_arr.strides[0]) ))), __pyx_v_call_flag, (&__pyx_v_price), (&__pyx_v_delta), (&__pyx_v_gamma), (&__pyx_v_vega), (&__pyx_v_theta), (&__pyx_v_rho), (&__pyx_v_vanna), (&__pyx_v_volga));
 
-          /* "bz_pricing/core/options_core.pyx":982
+          /* "bz_pricing/core/options_core.pyx":1169
  *                 call_flag, &price, &delta, &gamma, &vega, &theta, &rho, &vanna, &volga,
  *             )
  *             pv[i] = price * sc             # <<<<<<<<<<<<<<
@@ -33672,7 +35769,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
           __pyx_t_17 = __pyx_v_i;
           *((double *) ( /* dim=0 */ (__pyx_v_pv.data + __pyx_t_17 * __pyx_v_pv.strides[0]) )) = (__pyx_v_price * __pyx_v_sc);
 
-          /* "bz_pricing/core/options_core.pyx":983
+          /* "bz_pricing/core/options_core.pyx":1170
  *             )
  *             pv[i] = price * sc
  *             dv[i] = delta * sc             # <<<<<<<<<<<<<<
@@ -33682,7 +35779,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
           __pyx_t_17 = __pyx_v_i;
           *((double *) ( /* dim=0 */ (__pyx_v_dv.data + __pyx_t_17 * __pyx_v_dv.strides[0]) )) = (__pyx_v_delta * __pyx_v_sc);
 
-          /* "bz_pricing/core/options_core.pyx":984
+          /* "bz_pricing/core/options_core.pyx":1171
  *             pv[i] = price * sc
  *             dv[i] = delta * sc
  *             gv[i] = gamma * sc             # <<<<<<<<<<<<<<
@@ -33692,7 +35789,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
           __pyx_t_17 = __pyx_v_i;
           *((double *) ( /* dim=0 */ (__pyx_v_gv.data + __pyx_t_17 * __pyx_v_gv.strides[0]) )) = (__pyx_v_gamma * __pyx_v_sc);
 
-          /* "bz_pricing/core/options_core.pyx":985
+          /* "bz_pricing/core/options_core.pyx":1172
  *             dv[i] = delta * sc
  *             gv[i] = gamma * sc
  *             vv[i] = vega * sc             # <<<<<<<<<<<<<<
@@ -33702,7 +35799,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
           __pyx_t_17 = __pyx_v_i;
           *((double *) ( /* dim=0 */ (__pyx_v_vv.data + __pyx_t_17 * __pyx_v_vv.strides[0]) )) = (__pyx_v_vega * __pyx_v_sc);
 
-          /* "bz_pricing/core/options_core.pyx":986
+          /* "bz_pricing/core/options_core.pyx":1173
  *             gv[i] = gamma * sc
  *             vv[i] = vega * sc
  *             tv[i] = theta * sc             # <<<<<<<<<<<<<<
@@ -33712,7 +35809,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
           __pyx_t_17 = __pyx_v_i;
           *((double *) ( /* dim=0 */ (__pyx_v_tv.data + __pyx_t_17 * __pyx_v_tv.strides[0]) )) = (__pyx_v_theta * __pyx_v_sc);
 
-          /* "bz_pricing/core/options_core.pyx":987
+          /* "bz_pricing/core/options_core.pyx":1174
  *             vv[i] = vega * sc
  *             tv[i] = theta * sc
  *             rv[i] = rho * sc             # <<<<<<<<<<<<<<
@@ -33725,7 +35822,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
 
       }
 
-      /* "bz_pricing/core/options_core.pyx":974
+      /* "bz_pricing/core/options_core.pyx":1161
  *     cdef bint call_flag
  * 
  *     with nogil:             # <<<<<<<<<<<<<<
@@ -33742,32 +35839,33 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
       }
   }
 
-  /* "bz_pricing/core/options_core.pyx":989
+  /* "bz_pricing/core/options_core.pyx":1176
  *             rv[i] = rho * sc
  * 
  *     return (out_price, out_delta, out_gamma, out_vega, out_theta, out_rho)             # <<<<<<<<<<<<<<
  * 
+ * 
 */
-  __pyx_t_1 = PyTuple_New(6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 989, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1176, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF((PyObject *)__pyx_v_out_price);
   __Pyx_GIVEREF((PyObject *)__pyx_v_out_price);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_out_price)) != (0)) __PYX_ERR(0, 989, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_out_price)) != (0)) __PYX_ERR(0, 1176, __pyx_L1_error);
   __Pyx_INCREF((PyObject *)__pyx_v_out_delta);
   __Pyx_GIVEREF((PyObject *)__pyx_v_out_delta);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_1, 1, ((PyObject *)__pyx_v_out_delta)) != (0)) __PYX_ERR(0, 989, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_1, 1, ((PyObject *)__pyx_v_out_delta)) != (0)) __PYX_ERR(0, 1176, __pyx_L1_error);
   __Pyx_INCREF((PyObject *)__pyx_v_out_gamma);
   __Pyx_GIVEREF((PyObject *)__pyx_v_out_gamma);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_1, 2, ((PyObject *)__pyx_v_out_gamma)) != (0)) __PYX_ERR(0, 989, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_1, 2, ((PyObject *)__pyx_v_out_gamma)) != (0)) __PYX_ERR(0, 1176, __pyx_L1_error);
   __Pyx_INCREF((PyObject *)__pyx_v_out_vega);
   __Pyx_GIVEREF((PyObject *)__pyx_v_out_vega);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_1, 3, ((PyObject *)__pyx_v_out_vega)) != (0)) __PYX_ERR(0, 989, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_1, 3, ((PyObject *)__pyx_v_out_vega)) != (0)) __PYX_ERR(0, 1176, __pyx_L1_error);
   __Pyx_INCREF((PyObject *)__pyx_v_out_theta);
   __Pyx_GIVEREF((PyObject *)__pyx_v_out_theta);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_1, 4, ((PyObject *)__pyx_v_out_theta)) != (0)) __PYX_ERR(0, 989, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_1, 4, ((PyObject *)__pyx_v_out_theta)) != (0)) __PYX_ERR(0, 1176, __pyx_L1_error);
   __Pyx_INCREF((PyObject *)__pyx_v_out_rho);
   __Pyx_GIVEREF((PyObject *)__pyx_v_out_rho);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_1, 5, ((PyObject *)__pyx_v_out_rho)) != (0)) __PYX_ERR(0, 989, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_1, 5, ((PyObject *)__pyx_v_out_rho)) != (0)) __PYX_ERR(0, 1176, __pyx_L1_error);
   {
     PyObject *__pyx_temp;
     {
@@ -33779,7 +35877,7 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "bz_pricing/core/options_core.pyx":944
+  /* "bz_pricing/core/options_core.pyx":1131
  * 
  * 
  * cpdef tuple price_black76_batch(             # <<<<<<<<<<<<<<
@@ -33860,16 +35958,16 @@ static PyObject *__pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(_
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_39price_black76_batch(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_41price_black76_batch(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_10bz_pricing_4core_12options_core_38price_black76_batch, "Precifica em lote op\303\247\303\265es Black-76 (IDI, DI1, Swaptions) em Cython (`nogil`).");
-static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_39price_black76_batch = {"price_black76_batch", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_39price_black76_batch, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10bz_pricing_4core_12options_core_38price_black76_batch};
-static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_39price_black76_batch(PyObject *__pyx_self, 
+PyDoc_STRVAR(__pyx_doc_10bz_pricing_4core_12options_core_40price_black76_batch, "Precifica em lote op\303\247\303\265es Black-76 (IDI, DI1, Swaptions) em Cython (`nogil`).");
+static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_41price_black76_batch = {"price_black76_batch", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_41price_black76_batch, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10bz_pricing_4core_12options_core_40price_black76_batch};
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_41price_black76_batch(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -33905,74 +36003,74 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   {
     PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_is_call_arr,&__pyx_mstate_global->__pyx_n_u_F_arr,&__pyx_mstate_global->__pyx_n_u_K_arr,&__pyx_mstate_global->__pyx_n_u_r_arr,&__pyx_mstate_global->__pyx_n_u_T_arr,&__pyx_mstate_global->__pyx_n_u_sigma_arr,&__pyx_mstate_global->__pyx_n_u_scale_arr,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 944, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 1131, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
         case  7:
         values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 944, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 1131, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  6:
         values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 944, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 1131, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 944, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 1131, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 944, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 1131, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 944, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 1131, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 944, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 1131, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 944, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 1131, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "price_black76_batch", 0) < (0)) __PYX_ERR(0, 944, __pyx_L3_error)
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "price_black76_batch", 0) < (0)) __PYX_ERR(0, 1131, __pyx_L3_error)
       for (Py_ssize_t i = __pyx_nargs; i < 7; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("price_black76_batch", 1, 7, 7, i); __PYX_ERR(0, 944, __pyx_L3_error) }
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("price_black76_batch", 1, 7, 7, i); __PYX_ERR(0, 1131, __pyx_L3_error) }
       }
     } else if (unlikely(__pyx_nargs != 7)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 944, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 1131, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 944, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 1131, __pyx_L3_error)
       values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 944, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 1131, __pyx_L3_error)
       values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 944, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 1131, __pyx_L3_error)
       values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 944, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 1131, __pyx_L3_error)
       values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 944, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 1131, __pyx_L3_error)
       values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 944, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 1131, __pyx_L3_error)
     }
-    __pyx_v_is_call_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_int(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_is_call_arr.memview)) __PYX_ERR(0, 945, __pyx_L3_error)
-    __pyx_v_F_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_F_arr.memview)) __PYX_ERR(0, 946, __pyx_L3_error)
-    __pyx_v_K_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[2], PyBUF_WRITABLE); if (unlikely(!__pyx_v_K_arr.memview)) __PYX_ERR(0, 947, __pyx_L3_error)
-    __pyx_v_r_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_r_arr.memview)) __PYX_ERR(0, 948, __pyx_L3_error)
-    __pyx_v_T_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[4], PyBUF_WRITABLE); if (unlikely(!__pyx_v_T_arr.memview)) __PYX_ERR(0, 949, __pyx_L3_error)
-    __pyx_v_sigma_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[5], PyBUF_WRITABLE); if (unlikely(!__pyx_v_sigma_arr.memview)) __PYX_ERR(0, 950, __pyx_L3_error)
-    __pyx_v_scale_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[6], PyBUF_WRITABLE); if (unlikely(!__pyx_v_scale_arr.memview)) __PYX_ERR(0, 951, __pyx_L3_error)
+    __pyx_v_is_call_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_int(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_is_call_arr.memview)) __PYX_ERR(0, 1132, __pyx_L3_error)
+    __pyx_v_F_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_F_arr.memview)) __PYX_ERR(0, 1133, __pyx_L3_error)
+    __pyx_v_K_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[2], PyBUF_WRITABLE); if (unlikely(!__pyx_v_K_arr.memview)) __PYX_ERR(0, 1134, __pyx_L3_error)
+    __pyx_v_r_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_r_arr.memview)) __PYX_ERR(0, 1135, __pyx_L3_error)
+    __pyx_v_T_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[4], PyBUF_WRITABLE); if (unlikely(!__pyx_v_T_arr.memview)) __PYX_ERR(0, 1136, __pyx_L3_error)
+    __pyx_v_sigma_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[5], PyBUF_WRITABLE); if (unlikely(!__pyx_v_sigma_arr.memview)) __PYX_ERR(0, 1137, __pyx_L3_error)
+    __pyx_v_scale_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[6], PyBUF_WRITABLE); if (unlikely(!__pyx_v_scale_arr.memview)) __PYX_ERR(0, 1138, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("price_black76_batch", 1, 7, 7, __pyx_nargs); __PYX_ERR(0, 944, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("price_black76_batch", 1, 7, 7, __pyx_nargs); __PYX_ERR(0, 1131, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -33990,7 +36088,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_38price_black76_batch(__pyx_self, __pyx_v_is_call_arr, __pyx_v_F_arr, __pyx_v_K_arr, __pyx_v_r_arr, __pyx_v_T_arr, __pyx_v_sigma_arr, __pyx_v_scale_arr);
+  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_40price_black76_batch(__pyx_self, __pyx_v_is_call_arr, __pyx_v_F_arr, __pyx_v_K_arr, __pyx_v_r_arr, __pyx_v_T_arr, __pyx_v_sigma_arr, __pyx_v_scale_arr);
 
   /* function exit code */
   for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
@@ -34007,7 +36105,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_38price_black76_batch(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_is_call_arr, __Pyx_memviewslice __pyx_v_F_arr, __Pyx_memviewslice __pyx_v_K_arr, __Pyx_memviewslice __pyx_v_r_arr, __Pyx_memviewslice __pyx_v_T_arr, __Pyx_memviewslice __pyx_v_sigma_arr, __Pyx_memviewslice __pyx_v_scale_arr) {
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_40price_black76_batch(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_is_call_arr, __Pyx_memviewslice __pyx_v_F_arr, __Pyx_memviewslice __pyx_v_K_arr, __Pyx_memviewslice __pyx_v_r_arr, __Pyx_memviewslice __pyx_v_T_arr, __Pyx_memviewslice __pyx_v_sigma_arr, __Pyx_memviewslice __pyx_v_scale_arr) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -34015,14 +36113,14 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_38price_black76_batc
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("price_black76_batch", 0);
-  if (unlikely(!__pyx_v_is_call_arr.memview)) { __Pyx_RaiseUnboundLocalError("is_call_arr"); __PYX_ERR(0, 944, __pyx_L1_error) }
-  if (unlikely(!__pyx_v_F_arr.memview)) { __Pyx_RaiseUnboundLocalError("F_arr"); __PYX_ERR(0, 944, __pyx_L1_error) }
-  if (unlikely(!__pyx_v_K_arr.memview)) { __Pyx_RaiseUnboundLocalError("K_arr"); __PYX_ERR(0, 944, __pyx_L1_error) }
-  if (unlikely(!__pyx_v_r_arr.memview)) { __Pyx_RaiseUnboundLocalError("r_arr"); __PYX_ERR(0, 944, __pyx_L1_error) }
-  if (unlikely(!__pyx_v_T_arr.memview)) { __Pyx_RaiseUnboundLocalError("T_arr"); __PYX_ERR(0, 944, __pyx_L1_error) }
-  if (unlikely(!__pyx_v_sigma_arr.memview)) { __Pyx_RaiseUnboundLocalError("sigma_arr"); __PYX_ERR(0, 944, __pyx_L1_error) }
-  if (unlikely(!__pyx_v_scale_arr.memview)) { __Pyx_RaiseUnboundLocalError("scale_arr"); __PYX_ERR(0, 944, __pyx_L1_error) }
-  __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(__pyx_v_is_call_arr, __pyx_v_F_arr, __pyx_v_K_arr, __pyx_v_r_arr, __pyx_v_T_arr, __pyx_v_sigma_arr, __pyx_v_scale_arr, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 944, __pyx_L1_error)
+  if (unlikely(!__pyx_v_is_call_arr.memview)) { __Pyx_RaiseUnboundLocalError("is_call_arr"); __PYX_ERR(0, 1131, __pyx_L1_error) }
+  if (unlikely(!__pyx_v_F_arr.memview)) { __Pyx_RaiseUnboundLocalError("F_arr"); __PYX_ERR(0, 1131, __pyx_L1_error) }
+  if (unlikely(!__pyx_v_K_arr.memview)) { __Pyx_RaiseUnboundLocalError("K_arr"); __PYX_ERR(0, 1131, __pyx_L1_error) }
+  if (unlikely(!__pyx_v_r_arr.memview)) { __Pyx_RaiseUnboundLocalError("r_arr"); __PYX_ERR(0, 1131, __pyx_L1_error) }
+  if (unlikely(!__pyx_v_T_arr.memview)) { __Pyx_RaiseUnboundLocalError("T_arr"); __PYX_ERR(0, 1131, __pyx_L1_error) }
+  if (unlikely(!__pyx_v_sigma_arr.memview)) { __Pyx_RaiseUnboundLocalError("sigma_arr"); __PYX_ERR(0, 1131, __pyx_L1_error) }
+  if (unlikely(!__pyx_v_scale_arr.memview)) { __Pyx_RaiseUnboundLocalError("scale_arr"); __PYX_ERR(0, 1131, __pyx_L1_error) }
+  __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_price_black76_batch(__pyx_v_is_call_arr, __pyx_v_F_arr, __pyx_v_K_arr, __pyx_v_r_arr, __pyx_v_T_arr, __pyx_v_sigma_arr, __pyx_v_scale_arr, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1131, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   {
     PyObject *__pyx_temp;
@@ -34039,6 +36137,2506 @@ static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_38price_black76_batc
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("bz_pricing.core.options_core.price_black76_batch", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "bz_pricing/core/options_core.pyx":1179
+ * 
+ * 
+ * cpdef tuple corrado_su_price_greeks(             # <<<<<<<<<<<<<<
+ *     double S,
+ *     double K,
+*/
+
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_43corrado_su_price_greeks(PyObject *__pyx_self, 
+#if CYTHON_VECTORCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+); /*proto*/
+static PyObject *__pyx_f_10bz_pricing_4core_12options_core_corrado_su_price_greeks(double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, double __pyx_v_kappa3, double __pyx_v_kappa4, CYTHON_UNUSED int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_12options_core_corrado_su_price_greeks *__pyx_optional_args) {
+
+  /* "bz_pricing/core/options_core.pyx":1188
+ *     double kappa3,
+ *     double kappa4,
+ *     bint is_call=True,             # <<<<<<<<<<<<<<
+ * ):
+ *     """Preo e gregas numricas centrais de Corrado & Su (1996) em Cython (`nogil`)."""
+*/
+  int __pyx_v_is_call = ((int)1);
+  double __pyx_v_price;
+  double __pyx_v_delta;
+  double __pyx_v_gamma;
+  double __pyx_v_vega;
+  double __pyx_v_theta;
+  double __pyx_v_rho;
+  double __pyx_v_dS;
+  double __pyx_v_dv;
+  double __pyx_v_dr;
+  double __pyx_v_dT;
+  double __pyx_v_p_su;
+  double __pyx_v_p_sd;
+  double __pyx_v_p_vu;
+  double __pyx_v_p_vd;
+  double __pyx_v_p_ru;
+  double __pyx_v_p_rd;
+  double __pyx_v_p_td;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  double __pyx_t_1;
+  struct __pyx_opt_args_10bz_pricing_4core_12options_core_corrado_su_price __pyx_t_2;
+  int __pyx_t_3;
+  int __pyx_t_4;
+  double __pyx_t_5;
+  PyObject *__pyx_t_6 = NULL;
+  PyObject *__pyx_t_7 = NULL;
+  PyObject *__pyx_t_8 = NULL;
+  PyObject *__pyx_t_9 = NULL;
+  PyObject *__pyx_t_10 = NULL;
+  PyObject *__pyx_t_11 = NULL;
+  PyObject *__pyx_t_12 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("corrado_su_price_greeks", 0);
+  if (__pyx_optional_args) {
+    if (__pyx_optional_args->__pyx_n > 0) {
+      __pyx_v_is_call = __pyx_optional_args->is_call;
+    }
+  }
+
+  /* "bz_pricing/core/options_core.pyx":1191
+ * ):
+ *     """Preo e gregas numricas centrais de Corrado & Su (1996) em Cython (`nogil`)."""
+ *     cdef double price = 0.0, delta = 0.0, gamma = 0.0, vega = 0.0, theta = 0.0, rho = 0.0             # <<<<<<<<<<<<<<
+ *     cdef double dS = fmax(1e-5, 1e-4 * S)
+ *     cdef double dv = 1e-4
+*/
+  __pyx_v_price = 0.0;
+  __pyx_v_delta = 0.0;
+  __pyx_v_gamma = 0.0;
+  __pyx_v_vega = 0.0;
+  __pyx_v_theta = 0.0;
+  __pyx_v_rho = 0.0;
+
+  /* "bz_pricing/core/options_core.pyx":1192
+ *     """Preo e gregas numricas centrais de Corrado & Su (1996) em Cython (`nogil`)."""
+ *     cdef double price = 0.0, delta = 0.0, gamma = 0.0, vega = 0.0, theta = 0.0, rho = 0.0
+ *     cdef double dS = fmax(1e-5, 1e-4 * S)             # <<<<<<<<<<<<<<
+ *     cdef double dv = 1e-4
+ *     cdef double dr = 1e-4
+*/
+  __pyx_v_dS = fmax(1e-5, (1e-4 * __pyx_v_S));
+
+  /* "bz_pricing/core/options_core.pyx":1193
+ *     cdef double price = 0.0, delta = 0.0, gamma = 0.0, vega = 0.0, theta = 0.0, rho = 0.0
+ *     cdef double dS = fmax(1e-5, 1e-4 * S)
+ *     cdef double dv = 1e-4             # <<<<<<<<<<<<<<
+ *     cdef double dr = 1e-4
+ *     cdef double dT = fmin(1e-4, 0.1 * T)
+*/
+  __pyx_v_dv = 1e-4;
+
+  /* "bz_pricing/core/options_core.pyx":1194
+ *     cdef double dS = fmax(1e-5, 1e-4 * S)
+ *     cdef double dv = 1e-4
+ *     cdef double dr = 1e-4             # <<<<<<<<<<<<<<
+ *     cdef double dT = fmin(1e-4, 0.1 * T)
+ *     cdef double p_su, p_sd, p_vu, p_vd, p_ru, p_rd, p_td
+*/
+  __pyx_v_dr = 1e-4;
+
+  /* "bz_pricing/core/options_core.pyx":1195
+ *     cdef double dv = 1e-4
+ *     cdef double dr = 1e-4
+ *     cdef double dT = fmin(1e-4, 0.1 * T)             # <<<<<<<<<<<<<<
+ *     cdef double p_su, p_sd, p_vu, p_vd, p_ru, p_rd, p_td
+ * 
+*/
+  __pyx_v_dT = fmin(1e-4, (0.1 * __pyx_v_T));
+
+  /* "bz_pricing/core/options_core.pyx":1198
+ *     cdef double p_su, p_sd, p_vu, p_vd, p_ru, p_rd, p_td
+ * 
+ *     with nogil:             # <<<<<<<<<<<<<<
+ *         price = corrado_su_price(S, K, r, q, T, sigma, kappa3, kappa4, is_call)
+ *         if T > 0.0 and sigma > dv and S > dS and K > 0.0:
+*/
+  {
+      PyThreadState * _save;
+      _save = PyEval_SaveThread();
+      __Pyx_FastGIL_Remember();
+      /*try:*/ {
+
+        /* "bz_pricing/core/options_core.pyx":1199
+ * 
+ *     with nogil:
+ *         price = corrado_su_price(S, K, r, q, T, sigma, kappa3, kappa4, is_call)             # <<<<<<<<<<<<<<
+ *         if T > 0.0 and sigma > dv and S > dS and K > 0.0:
+ *             p_su = corrado_su_price(S + dS, K, r, q, T, sigma, kappa3, kappa4, is_call)
+*/
+        __pyx_t_2.__pyx_n = 1;
+        __pyx_t_2.is_call = __pyx_v_is_call;
+        __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_kappa3, __pyx_v_kappa4, 0, &__pyx_t_2); 
+        __pyx_v_price = __pyx_t_1;
+
+        /* "bz_pricing/core/options_core.pyx":1200
+ *     with nogil:
+ *         price = corrado_su_price(S, K, r, q, T, sigma, kappa3, kappa4, is_call)
+ *         if T > 0.0 and sigma > dv and S > dS and K > 0.0:             # <<<<<<<<<<<<<<
+ *             p_su = corrado_su_price(S + dS, K, r, q, T, sigma, kappa3, kappa4, is_call)
+ *             p_sd = corrado_su_price(S - dS, K, r, q, T, sigma, kappa3, kappa4, is_call)
+*/
+        __pyx_t_4 = (__pyx_v_T > 0.0);
+
+        if (__pyx_t_4) {
+
+        } else {
+
+          __pyx_t_3 = __pyx_t_4;
+
+          goto __pyx_L7_bool_binop_done;
+        }
+        __pyx_t_4 = (__pyx_v_sigma > __pyx_v_dv);
+
+        if (__pyx_t_4) {
+
+        } else {
+
+          __pyx_t_3 = __pyx_t_4;
+
+          goto __pyx_L7_bool_binop_done;
+        }
+        __pyx_t_4 = (__pyx_v_S > __pyx_v_dS);
+
+        if (__pyx_t_4) {
+
+        } else {
+
+          __pyx_t_3 = __pyx_t_4;
+
+          goto __pyx_L7_bool_binop_done;
+        }
+        __pyx_t_4 = (__pyx_v_K > 0.0);
+
+
+        __pyx_t_3 = __pyx_t_4;
+
+        __pyx_L7_bool_binop_done:;
+        if (__pyx_t_3) {
+
+
+          /* "bz_pricing/core/options_core.pyx":1201
+ *         price = corrado_su_price(S, K, r, q, T, sigma, kappa3, kappa4, is_call)
+ *         if T > 0.0 and sigma > dv and S > dS and K > 0.0:
+ *             p_su = corrado_su_price(S + dS, K, r, q, T, sigma, kappa3, kappa4, is_call)             # <<<<<<<<<<<<<<
+ *             p_sd = corrado_su_price(S - dS, K, r, q, T, sigma, kappa3, kappa4, is_call)
+ *             delta = (p_su - p_sd) / (2.0 * dS)
+*/
+          __pyx_t_2.__pyx_n = 1;
+          __pyx_t_2.is_call = __pyx_v_is_call;
+          __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price((__pyx_v_S + __pyx_v_dS), __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_kappa3, __pyx_v_kappa4, 0, &__pyx_t_2); 
+          __pyx_v_p_su = __pyx_t_1;
+
+          /* "bz_pricing/core/options_core.pyx":1202
+ *         if T > 0.0 and sigma > dv and S > dS and K > 0.0:
+ *             p_su = corrado_su_price(S + dS, K, r, q, T, sigma, kappa3, kappa4, is_call)
+ *             p_sd = corrado_su_price(S - dS, K, r, q, T, sigma, kappa3, kappa4, is_call)             # <<<<<<<<<<<<<<
+ *             delta = (p_su - p_sd) / (2.0 * dS)
+ *             gamma = (p_su - 2.0 * price + p_sd) / (dS * dS)
+*/
+          __pyx_t_2.__pyx_n = 1;
+          __pyx_t_2.is_call = __pyx_v_is_call;
+          __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price((__pyx_v_S - __pyx_v_dS), __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_kappa3, __pyx_v_kappa4, 0, &__pyx_t_2); 
+          __pyx_v_p_sd = __pyx_t_1;
+
+          /* "bz_pricing/core/options_core.pyx":1203
+ *             p_su = corrado_su_price(S + dS, K, r, q, T, sigma, kappa3, kappa4, is_call)
+ *             p_sd = corrado_su_price(S - dS, K, r, q, T, sigma, kappa3, kappa4, is_call)
+ *             delta = (p_su - p_sd) / (2.0 * dS)             # <<<<<<<<<<<<<<
+ *             gamma = (p_su - 2.0 * price + p_sd) / (dS * dS)
+ * 
+*/
+          __pyx_v_delta = ((__pyx_v_p_su - __pyx_v_p_sd) / (2.0 * __pyx_v_dS));
+
+          /* "bz_pricing/core/options_core.pyx":1204
+ *             p_sd = corrado_su_price(S - dS, K, r, q, T, sigma, kappa3, kappa4, is_call)
+ *             delta = (p_su - p_sd) / (2.0 * dS)
+ *             gamma = (p_su - 2.0 * price + p_sd) / (dS * dS)             # <<<<<<<<<<<<<<
+ * 
+ *             p_vu = corrado_su_price(S, K, r, q, T, sigma + dv, kappa3, kappa4, is_call)
+*/
+          __pyx_v_gamma = (((__pyx_v_p_su - (2.0 * __pyx_v_price)) + __pyx_v_p_sd) / (__pyx_v_dS * __pyx_v_dS));
+
+          /* "bz_pricing/core/options_core.pyx":1206
+ *             gamma = (p_su - 2.0 * price + p_sd) / (dS * dS)
+ * 
+ *             p_vu = corrado_su_price(S, K, r, q, T, sigma + dv, kappa3, kappa4, is_call)             # <<<<<<<<<<<<<<
+ *             p_vd = corrado_su_price(S, K, r, q, T, sigma - dv, kappa3, kappa4, is_call)
+ *             vega = (p_vu - p_vd) / (2.0 * dv)
+*/
+          __pyx_t_2.__pyx_n = 1;
+          __pyx_t_2.is_call = __pyx_v_is_call;
+          __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, (__pyx_v_sigma + __pyx_v_dv), __pyx_v_kappa3, __pyx_v_kappa4, 0, &__pyx_t_2); 
+          __pyx_v_p_vu = __pyx_t_1;
+
+          /* "bz_pricing/core/options_core.pyx":1207
+ * 
+ *             p_vu = corrado_su_price(S, K, r, q, T, sigma + dv, kappa3, kappa4, is_call)
+ *             p_vd = corrado_su_price(S, K, r, q, T, sigma - dv, kappa3, kappa4, is_call)             # <<<<<<<<<<<<<<
+ *             vega = (p_vu - p_vd) / (2.0 * dv)
+ * 
+*/
+          __pyx_t_2.__pyx_n = 1;
+          __pyx_t_2.is_call = __pyx_v_is_call;
+          __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, (__pyx_v_sigma - __pyx_v_dv), __pyx_v_kappa3, __pyx_v_kappa4, 0, &__pyx_t_2); 
+          __pyx_v_p_vd = __pyx_t_1;
+
+          /* "bz_pricing/core/options_core.pyx":1208
+ *             p_vu = corrado_su_price(S, K, r, q, T, sigma + dv, kappa3, kappa4, is_call)
+ *             p_vd = corrado_su_price(S, K, r, q, T, sigma - dv, kappa3, kappa4, is_call)
+ *             vega = (p_vu - p_vd) / (2.0 * dv)             # <<<<<<<<<<<<<<
+ * 
+ *             p_ru = corrado_su_price(S, K, r + dr, q, T, sigma, kappa3, kappa4, is_call)
+*/
+          __pyx_v_vega = ((__pyx_v_p_vu - __pyx_v_p_vd) / (2.0 * __pyx_v_dv));
+
+          /* "bz_pricing/core/options_core.pyx":1210
+ *             vega = (p_vu - p_vd) / (2.0 * dv)
+ * 
+ *             p_ru = corrado_su_price(S, K, r + dr, q, T, sigma, kappa3, kappa4, is_call)             # <<<<<<<<<<<<<<
+ *             p_rd = corrado_su_price(S, K, r - dr, q, T, sigma, kappa3, kappa4, is_call)
+ *             rho = (p_ru - p_rd) / (2.0 * dr)
+*/
+          __pyx_t_2.__pyx_n = 1;
+          __pyx_t_2.is_call = __pyx_v_is_call;
+          __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(__pyx_v_S, __pyx_v_K, (__pyx_v_r + __pyx_v_dr), __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_kappa3, __pyx_v_kappa4, 0, &__pyx_t_2); 
+          __pyx_v_p_ru = __pyx_t_1;
+
+          /* "bz_pricing/core/options_core.pyx":1211
+ * 
+ *             p_ru = corrado_su_price(S, K, r + dr, q, T, sigma, kappa3, kappa4, is_call)
+ *             p_rd = corrado_su_price(S, K, r - dr, q, T, sigma, kappa3, kappa4, is_call)             # <<<<<<<<<<<<<<
+ *             rho = (p_ru - p_rd) / (2.0 * dr)
+ * 
+*/
+          __pyx_t_2.__pyx_n = 1;
+          __pyx_t_2.is_call = __pyx_v_is_call;
+          __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(__pyx_v_S, __pyx_v_K, (__pyx_v_r - __pyx_v_dr), __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_kappa3, __pyx_v_kappa4, 0, &__pyx_t_2); 
+          __pyx_v_p_rd = __pyx_t_1;
+
+          /* "bz_pricing/core/options_core.pyx":1212
+ *             p_ru = corrado_su_price(S, K, r + dr, q, T, sigma, kappa3, kappa4, is_call)
+ *             p_rd = corrado_su_price(S, K, r - dr, q, T, sigma, kappa3, kappa4, is_call)
+ *             rho = (p_ru - p_rd) / (2.0 * dr)             # <<<<<<<<<<<<<<
+ * 
+ *             if T > dT:
+*/
+          __pyx_v_rho = ((__pyx_v_p_ru - __pyx_v_p_rd) / (2.0 * __pyx_v_dr));
+
+          /* "bz_pricing/core/options_core.pyx":1214
+ *             rho = (p_ru - p_rd) / (2.0 * dr)
+ * 
+ *             if T > dT:             # <<<<<<<<<<<<<<
+ *                 p_td = corrado_su_price(S, K, r, q, T - dT, sigma, kappa3, kappa4, is_call)
+ *                 theta = (p_td - price) / dT
+*/
+          __pyx_t_3 = (__pyx_v_T > __pyx_v_dT);
+
+          if (__pyx_t_3) {
+
+
+            /* "bz_pricing/core/options_core.pyx":1215
+ * 
+ *             if T > dT:
+ *                 p_td = corrado_su_price(S, K, r, q, T - dT, sigma, kappa3, kappa4, is_call)             # <<<<<<<<<<<<<<
+ *                 theta = (p_td - price) / dT
+ *         else:
+*/
+            __pyx_t_2.__pyx_n = 1;
+            __pyx_t_2.is_call = __pyx_v_is_call;
+            __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, (__pyx_v_T - __pyx_v_dT), __pyx_v_sigma, __pyx_v_kappa3, __pyx_v_kappa4, 0, &__pyx_t_2); 
+            __pyx_v_p_td = __pyx_t_1;
+
+            /* "bz_pricing/core/options_core.pyx":1216
+ *             if T > dT:
+ *                 p_td = corrado_su_price(S, K, r, q, T - dT, sigma, kappa3, kappa4, is_call)
+ *                 theta = (p_td - price) / dT             # <<<<<<<<<<<<<<
+ *         else:
+ *             delta = (1.0 if S > K else 0.0) if is_call else (-1.0 if K > S else 0.0)
+*/
+            __pyx_v_theta = ((__pyx_v_p_td - __pyx_v_price) / __pyx_v_dT);
+
+            /* "bz_pricing/core/options_core.pyx":1214
+ *             rho = (p_ru - p_rd) / (2.0 * dr)
+ * 
+ *             if T > dT:             # <<<<<<<<<<<<<<
+ *                 p_td = corrado_su_price(S, K, r, q, T - dT, sigma, kappa3, kappa4, is_call)
+ *                 theta = (p_td - price) / dT
+*/
+          }
+
+          /* "bz_pricing/core/options_core.pyx":1200
+ *     with nogil:
+ *         price = corrado_su_price(S, K, r, q, T, sigma, kappa3, kappa4, is_call)
+ *         if T > 0.0 and sigma > dv and S > dS and K > 0.0:             # <<<<<<<<<<<<<<
+ *             p_su = corrado_su_price(S + dS, K, r, q, T, sigma, kappa3, kappa4, is_call)
+ *             p_sd = corrado_su_price(S - dS, K, r, q, T, sigma, kappa3, kappa4, is_call)
+*/
+          goto __pyx_L6;
+        }
+
+        /* "bz_pricing/core/options_core.pyx":1218
+ *                 theta = (p_td - price) / dT
+ *         else:
+ *             delta = (1.0 if S > K else 0.0) if is_call else (-1.0 if K > S else 0.0)             # <<<<<<<<<<<<<<
+ * 
+ *     return (price, delta, gamma, vega, theta, rho)
+*/
+        /*else*/ {
+          if (__pyx_v_is_call) {
+            __pyx_t_3 = (__pyx_v_S > __pyx_v_K);
+
+            if (__pyx_t_3) {
+
+              __pyx_t_5 = 1.0;
+            } else {
+
+              __pyx_t_5 = 0.0;
+            }
+
+            __pyx_t_1 = __pyx_t_5;
+          } else {
+            __pyx_t_3 = (__pyx_v_K > __pyx_v_S);
+
+            if (__pyx_t_3) {
+
+              __pyx_t_5 = -1.0;
+            } else {
+
+              __pyx_t_5 = 0.0;
+            }
+
+            __pyx_t_1 = __pyx_t_5;
+          }
+          __pyx_v_delta = __pyx_t_1;
+        }
+        __pyx_L6:;
+      }
+
+      /* "bz_pricing/core/options_core.pyx":1198
+ *     cdef double p_su, p_sd, p_vu, p_vd, p_ru, p_rd, p_td
+ * 
+ *     with nogil:             # <<<<<<<<<<<<<<
+ *         price = corrado_su_price(S, K, r, q, T, sigma, kappa3, kappa4, is_call)
+ *         if T > 0.0 and sigma > dv and S > dS and K > 0.0:
+*/
+      /*finally:*/ {
+        /*normal exit:*/{
+          __Pyx_FastGIL_Forget();
+          PyEval_RestoreThread(_save);
+          goto __pyx_L5;
+        }
+        __pyx_L5:;
+      }
+  }
+
+  /* "bz_pricing/core/options_core.pyx":1220
+ *             delta = (1.0 if S > K else 0.0) if is_call else (-1.0 if K > S else 0.0)
+ * 
+ *     return (price, delta, gamma, vega, theta, rho)             # <<<<<<<<<<<<<<
+ * 
+ * 
+*/
+  __pyx_t_6 = PyFloat_FromDouble(__pyx_v_price); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1220, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_7 = PyFloat_FromDouble(__pyx_v_delta); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1220, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_8 = PyFloat_FromDouble(__pyx_v_gamma); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 1220, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_9 = PyFloat_FromDouble(__pyx_v_vega); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 1220, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_9);
+  __pyx_t_10 = PyFloat_FromDouble(__pyx_v_theta); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 1220, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_10);
+  __pyx_t_11 = PyFloat_FromDouble(__pyx_v_rho); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 1220, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_11);
+  __pyx_t_12 = PyTuple_New(6); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 1220, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_12);
+  __Pyx_GIVEREF(__pyx_t_6);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_6) != (0)) __PYX_ERR(0, 1220, __pyx_L1_error);
+  __Pyx_GIVEREF(__pyx_t_7);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_12, 1, __pyx_t_7) != (0)) __PYX_ERR(0, 1220, __pyx_L1_error);
+  __Pyx_GIVEREF(__pyx_t_8);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_12, 2, __pyx_t_8) != (0)) __PYX_ERR(0, 1220, __pyx_L1_error);
+  __Pyx_GIVEREF(__pyx_t_9);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_12, 3, __pyx_t_9) != (0)) __PYX_ERR(0, 1220, __pyx_L1_error);
+  __Pyx_GIVEREF(__pyx_t_10);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_12, 4, __pyx_t_10) != (0)) __PYX_ERR(0, 1220, __pyx_L1_error);
+  __Pyx_GIVEREF(__pyx_t_11);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_12, 5, __pyx_t_11) != (0)) __PYX_ERR(0, 1220, __pyx_L1_error);
+  __pyx_t_6 = 0;
+  __pyx_t_7 = 0;
+  __pyx_t_8 = 0;
+  __pyx_t_9 = 0;
+  __pyx_t_10 = 0;
+  __pyx_t_11 = 0;
+  {
+    PyObject *__pyx_temp;
+    {
+      __pyx_temp = __pyx_r;
+      __pyx_r = ((PyObject*)__pyx_t_12);
+    }
+    __Pyx_XDECREF(__pyx_temp);
+  }
+  __pyx_t_12 = 0;
+  goto __pyx_L0;
+
+  /* "bz_pricing/core/options_core.pyx":1179
+ * 
+ * 
+ * cpdef tuple corrado_su_price_greeks(             # <<<<<<<<<<<<<<
+ *     double S,
+ *     double K,
+*/
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_XDECREF(__pyx_t_8);
+  __Pyx_XDECREF(__pyx_t_9);
+  __Pyx_XDECREF(__pyx_t_10);
+  __Pyx_XDECREF(__pyx_t_11);
+  __Pyx_XDECREF(__pyx_t_12);
+  __Pyx_AddTraceback("bz_pricing.core.options_core.corrado_su_price_greeks", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_43corrado_su_price_greeks(PyObject *__pyx_self, 
+#if CYTHON_VECTORCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+); /*proto*/
+PyDoc_STRVAR(__pyx_doc_10bz_pricing_4core_12options_core_42corrado_su_price_greeks, "Pre\303\247o e gregas num\303\251ricas centrais de Corrado & Su (1996) em Cython (`nogil`).");
+static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_43corrado_su_price_greeks = {"corrado_su_price_greeks", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_43corrado_su_price_greeks, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10bz_pricing_4core_12options_core_42corrado_su_price_greeks};
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_43corrado_su_price_greeks(PyObject *__pyx_self, 
+#if CYTHON_VECTORCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+) {
+  double __pyx_v_S;
+  double __pyx_v_K;
+  double __pyx_v_r;
+  double __pyx_v_q;
+  double __pyx_v_T;
+  double __pyx_v_sigma;
+  double __pyx_v_kappa3;
+  double __pyx_v_kappa4;
+  int __pyx_v_is_call;
+  #if !CYTHON_VECTORCALL
+  CYTHON_UNUSED Py_ssize_t __pyx_nargs;
+  #endif
+  CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
+  PyObject* values[9] = {0,0,0,0,0,0,0,0,0};
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("corrado_su_price_greeks (wrapper)", 0);
+  #if !CYTHON_VECTORCALL
+  #if CYTHON_ASSUME_SAFE_SIZE
+  __pyx_nargs = PyTuple_GET_SIZE(__pyx_args);
+  #else
+  __pyx_nargs = PyTuple_Size(__pyx_args); if (unlikely(__pyx_nargs < 0)) return NULL;
+  #endif
+  #endif
+  __pyx_kwvalues = __Pyx_KwValues_FASTCALL(__pyx_args, __pyx_nargs);
+  {
+    PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_S,&__pyx_mstate_global->__pyx_n_u_K,&__pyx_mstate_global->__pyx_n_u_r,&__pyx_mstate_global->__pyx_n_u_q,&__pyx_mstate_global->__pyx_n_u_T,&__pyx_mstate_global->__pyx_n_u_sigma,&__pyx_mstate_global->__pyx_n_u_kappa3,&__pyx_mstate_global->__pyx_n_u_kappa4,&__pyx_mstate_global->__pyx_n_u_is_call,0};
+    const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 1179, __pyx_L3_error)
+    if (__pyx_kwds_len > 0) {
+      switch (__pyx_nargs) {
+        case  9:
+        values[8] = __Pyx_ArgRef_FASTCALL(__pyx_args, 8);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 1179, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  8:
+        values[7] = __Pyx_ArgRef_FASTCALL(__pyx_args, 7);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 1179, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  7:
+        values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 1179, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  6:
+        values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 1179, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  5:
+        values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 1179, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  4:
+        values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 1179, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  3:
+        values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 1179, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  2:
+        values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 1179, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  1:
+        values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 1179, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      const Py_ssize_t kwd_pos_args = __pyx_nargs;
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "corrado_su_price_greeks", 0) < (0)) __PYX_ERR(0, 1179, __pyx_L3_error)
+      for (Py_ssize_t i = __pyx_nargs; i < 8; i++) {
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("corrado_su_price_greeks", 0, 8, 9, i); __PYX_ERR(0, 1179, __pyx_L3_error) }
+      }
+    } else {
+      switch (__pyx_nargs) {
+        case  9:
+        values[8] = __Pyx_ArgRef_FASTCALL(__pyx_args, 8);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 1179, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  8:
+        values[7] = __Pyx_ArgRef_FASTCALL(__pyx_args, 7);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 1179, __pyx_L3_error)
+        values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 1179, __pyx_L3_error)
+        values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 1179, __pyx_L3_error)
+        values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 1179, __pyx_L3_error)
+        values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 1179, __pyx_L3_error)
+        values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 1179, __pyx_L3_error)
+        values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 1179, __pyx_L3_error)
+        values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 1179, __pyx_L3_error)
+        break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+    }
+    __pyx_v_S = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_S == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1180, __pyx_L3_error)
+    __pyx_v_K = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_K == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1181, __pyx_L3_error)
+    __pyx_v_r = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_r == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1182, __pyx_L3_error)
+    __pyx_v_q = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_q == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1183, __pyx_L3_error)
+    __pyx_v_T = __Pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_T == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1184, __pyx_L3_error)
+    __pyx_v_sigma = __Pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_sigma == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1185, __pyx_L3_error)
+    __pyx_v_kappa3 = __Pyx_PyFloat_AsDouble(values[6]); if (unlikely((__pyx_v_kappa3 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1186, __pyx_L3_error)
+    __pyx_v_kappa4 = __Pyx_PyFloat_AsDouble(values[7]); if (unlikely((__pyx_v_kappa4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1187, __pyx_L3_error)
+    if (values[8]) {
+      __pyx_v_is_call = __Pyx_PyObject_IsTrue(values[8]); if (unlikely((__pyx_v_is_call == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1188, __pyx_L3_error)
+    } else {
+
+      /* "bz_pricing/core/options_core.pyx":1188
+ *     double kappa3,
+ *     double kappa4,
+ *     bint is_call=True,             # <<<<<<<<<<<<<<
+ * ):
+ *     """Preo e gregas numricas centrais de Corrado & Su (1996) em Cython (`nogil`)."""
+*/
+      __pyx_v_is_call = ((int)1);
+    }
+  }
+  goto __pyx_L6_skip;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("corrado_su_price_greeks", 0, 8, 9, __pyx_nargs); __PYX_ERR(0, 1179, __pyx_L3_error)
+  __pyx_L6_skip:;
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L3_error:;
+  for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+    Py_XDECREF(values[__pyx_temp]);
+  }
+  __Pyx_AddTraceback("bz_pricing.core.options_core.corrado_su_price_greeks", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_42corrado_su_price_greeks(__pyx_self, __pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_kappa3, __pyx_v_kappa4, __pyx_v_is_call);
+
+  /* "bz_pricing/core/options_core.pyx":1179
+ * 
+ * 
+ * cpdef tuple corrado_su_price_greeks(             # <<<<<<<<<<<<<<
+ *     double S,
+ *     double K,
+*/
+
+  /* function exit code */
+  for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+    Py_XDECREF(values[__pyx_temp]);
+  }
+
+
+
+
+
+
+
+
+
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_42corrado_su_price_greeks(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, double __pyx_v_kappa3, double __pyx_v_kappa4, int __pyx_v_is_call) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  struct __pyx_opt_args_10bz_pricing_4core_12options_core_corrado_su_price_greeks __pyx_t_2;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("corrado_su_price_greeks", 0);
+  __pyx_t_2.__pyx_n = 1;
+  __pyx_t_2.is_call = __pyx_v_is_call;
+  __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_corrado_su_price_greeks(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_kappa3, __pyx_v_kappa4, 1, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1179, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  {
+    PyObject *__pyx_temp;
+    {
+      __pyx_temp = __pyx_r;
+      __pyx_r = __pyx_t_1;
+    }
+    __Pyx_XDECREF(__pyx_temp);
+  }
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("bz_pricing.core.options_core.corrado_su_price_greeks", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "bz_pricing/core/options_core.pyx":1223
+ * 
+ * 
+ * cpdef tuple barrier_bsm_price_greeks(             # <<<<<<<<<<<<<<
+ *     double S,
+ *     double K,
+*/
+
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_45barrier_bsm_price_greeks(PyObject *__pyx_self, 
+#if CYTHON_VECTORCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+); /*proto*/
+static PyObject *__pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price_greeks(double __pyx_v_S, double __pyx_v_K, double __pyx_v_H, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, CYTHON_UNUSED int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_12options_core_barrier_bsm_price_greeks *__pyx_optional_args) {
+
+  /* "bz_pricing/core/options_core.pyx":1231
+ *     double T,
+ *     double sigma,
+ *     bint is_call=True,             # <<<<<<<<<<<<<<
+ *     bint is_up=False,
+ *     bint is_out=True,
+*/
+  int __pyx_v_is_call = ((int)1);
+
+  /* "bz_pricing/core/options_core.pyx":1232
+ *     double sigma,
+ *     bint is_call=True,
+ *     bint is_up=False,             # <<<<<<<<<<<<<<
+ *     bint is_out=True,
+ *     double rebate=0.0,
+*/
+  int __pyx_v_is_up = ((int)0);
+
+  /* "bz_pricing/core/options_core.pyx":1233
+ *     bint is_call=True,
+ *     bint is_up=False,
+ *     bint is_out=True,             # <<<<<<<<<<<<<<
+ *     double rebate=0.0,
+ * ):
+*/
+  int __pyx_v_is_out = ((int)1);
+  double __pyx_v_rebate = ((double)0.0);
+  double __pyx_v_price;
+  double __pyx_v_delta;
+  double __pyx_v_gamma;
+  double __pyx_v_vega;
+  double __pyx_v_theta;
+  double __pyx_v_rho;
+  double __pyx_v_dist;
+  double __pyx_v_dS;
+  double __pyx_v_dv;
+  double __pyx_v_dr;
+  double __pyx_v_dT;
+  double __pyx_v_p_su;
+  double __pyx_v_p_sd;
+  double __pyx_v_p_vu;
+  double __pyx_v_p_vd;
+  double __pyx_v_p_ru;
+  double __pyx_v_p_rd;
+  double __pyx_v_p_td;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  double __pyx_t_1;
+  int __pyx_t_2;
+  struct __pyx_opt_args_10bz_pricing_4core_12options_core_barrier_bsm_price __pyx_t_3;
+  int __pyx_t_4;
+  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_6 = NULL;
+  PyObject *__pyx_t_7 = NULL;
+  PyObject *__pyx_t_8 = NULL;
+  PyObject *__pyx_t_9 = NULL;
+  PyObject *__pyx_t_10 = NULL;
+  PyObject *__pyx_t_11 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("barrier_bsm_price_greeks", 0);
+  if (__pyx_optional_args) {
+    if (__pyx_optional_args->__pyx_n > 0) {
+      __pyx_v_is_call = __pyx_optional_args->is_call;
+      if (__pyx_optional_args->__pyx_n > 1) {
+        __pyx_v_is_up = __pyx_optional_args->is_up;
+        if (__pyx_optional_args->__pyx_n > 2) {
+          __pyx_v_is_out = __pyx_optional_args->is_out;
+          if (__pyx_optional_args->__pyx_n > 3) {
+            __pyx_v_rebate = __pyx_optional_args->rebate;
+          }
+        }
+      }
+    }
+  }
+
+  /* "bz_pricing/core/options_core.pyx":1237
+ * ):
+ *     """Preo e gregas numricas centrais de opes com barreira (Reiner-Rubinstein) em Cython."""
+ *     cdef double price = 0.0, delta = 0.0, gamma = 0.0, vega = 0.0, theta = 0.0, rho = 0.0             # <<<<<<<<<<<<<<
+ *     cdef double dist = fabs(S - H)
+ *     cdef double dS = fmin(1e-4 * S, 0.25 * dist) if dist > 1e-6 else 1e-4 * S
+*/
+  __pyx_v_price = 0.0;
+  __pyx_v_delta = 0.0;
+  __pyx_v_gamma = 0.0;
+  __pyx_v_vega = 0.0;
+  __pyx_v_theta = 0.0;
+  __pyx_v_rho = 0.0;
+
+  /* "bz_pricing/core/options_core.pyx":1238
+ *     """Preo e gregas numricas centrais de opes com barreira (Reiner-Rubinstein) em Cython."""
+ *     cdef double price = 0.0, delta = 0.0, gamma = 0.0, vega = 0.0, theta = 0.0, rho = 0.0
+ *     cdef double dist = fabs(S - H)             # <<<<<<<<<<<<<<
+ *     cdef double dS = fmin(1e-4 * S, 0.25 * dist) if dist > 1e-6 else 1e-4 * S
+ *     cdef double dv = 1e-4
+*/
+  __pyx_v_dist = fabs((__pyx_v_S - __pyx_v_H));
+
+  /* "bz_pricing/core/options_core.pyx":1239
+ *     cdef double price = 0.0, delta = 0.0, gamma = 0.0, vega = 0.0, theta = 0.0, rho = 0.0
+ *     cdef double dist = fabs(S - H)
+ *     cdef double dS = fmin(1e-4 * S, 0.25 * dist) if dist > 1e-6 else 1e-4 * S             # <<<<<<<<<<<<<<
+ *     cdef double dv = 1e-4
+ *     cdef double dr = 1e-4
+*/
+  __pyx_t_2 = (__pyx_v_dist > 1e-6);
+
+  if (__pyx_t_2) {
+
+    __pyx_t_1 = fmin((1e-4 * __pyx_v_S), (0.25 * __pyx_v_dist));
+  } else {
+
+    __pyx_t_1 = (1e-4 * __pyx_v_S);
+  }
+
+  __pyx_v_dS = __pyx_t_1;
+
+  /* "bz_pricing/core/options_core.pyx":1240
+ *     cdef double dist = fabs(S - H)
+ *     cdef double dS = fmin(1e-4 * S, 0.25 * dist) if dist > 1e-6 else 1e-4 * S
+ *     cdef double dv = 1e-4             # <<<<<<<<<<<<<<
+ *     cdef double dr = 1e-4
+ *     cdef double dT = fmin(1e-4, 0.1 * T)
+*/
+  __pyx_v_dv = 1e-4;
+
+  /* "bz_pricing/core/options_core.pyx":1241
+ *     cdef double dS = fmin(1e-4 * S, 0.25 * dist) if dist > 1e-6 else 1e-4 * S
+ *     cdef double dv = 1e-4
+ *     cdef double dr = 1e-4             # <<<<<<<<<<<<<<
+ *     cdef double dT = fmin(1e-4, 0.1 * T)
+ *     cdef double p_su, p_sd, p_vu, p_vd, p_ru, p_rd, p_td
+*/
+  __pyx_v_dr = 1e-4;
+
+  /* "bz_pricing/core/options_core.pyx":1242
+ *     cdef double dv = 1e-4
+ *     cdef double dr = 1e-4
+ *     cdef double dT = fmin(1e-4, 0.1 * T)             # <<<<<<<<<<<<<<
+ *     cdef double p_su, p_sd, p_vu, p_vd, p_ru, p_rd, p_td
+ * 
+*/
+  __pyx_v_dT = fmin(1e-4, (0.1 * __pyx_v_T));
+
+  /* "bz_pricing/core/options_core.pyx":1245
+ *     cdef double p_su, p_sd, p_vu, p_vd, p_ru, p_rd, p_td
+ * 
+ *     with nogil:             # <<<<<<<<<<<<<<
+ *         price = barrier_bsm_price(S, K, H, r, q, T, sigma, is_call, is_up, is_out, rebate)
+ *         if T > 0.0 and sigma > dv and S > dS and K > 0.0 and dist > 1e-6:
+*/
+  {
+      PyThreadState * _save;
+      _save = PyEval_SaveThread();
+      __Pyx_FastGIL_Remember();
+      /*try:*/ {
+
+        /* "bz_pricing/core/options_core.pyx":1246
+ * 
+ *     with nogil:
+ *         price = barrier_bsm_price(S, K, H, r, q, T, sigma, is_call, is_up, is_out, rebate)             # <<<<<<<<<<<<<<
+ *         if T > 0.0 and sigma > dv and S > dS and K > 0.0 and dist > 1e-6:
+ *             p_su = barrier_bsm_price(S + dS, K, H, r, q, T, sigma, is_call, is_up, is_out, rebate)
+*/
+        __pyx_t_3.__pyx_n = 4;
+        __pyx_t_3.is_call = __pyx_v_is_call;
+        __pyx_t_3.is_up = __pyx_v_is_up;
+        __pyx_t_3.is_out = __pyx_v_is_out;
+        __pyx_t_3.rebate = __pyx_v_rebate;
+        __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(__pyx_v_S, __pyx_v_K, __pyx_v_H, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, 0, &__pyx_t_3); 
+        __pyx_v_price = __pyx_t_1;
+
+        /* "bz_pricing/core/options_core.pyx":1247
+ *     with nogil:
+ *         price = barrier_bsm_price(S, K, H, r, q, T, sigma, is_call, is_up, is_out, rebate)
+ *         if T > 0.0 and sigma > dv and S > dS and K > 0.0 and dist > 1e-6:             # <<<<<<<<<<<<<<
+ *             p_su = barrier_bsm_price(S + dS, K, H, r, q, T, sigma, is_call, is_up, is_out, rebate)
+ *             p_sd = barrier_bsm_price(S - dS, K, H, r, q, T, sigma, is_call, is_up, is_out, rebate)
+*/
+        __pyx_t_4 = (__pyx_v_T > 0.0);
+
+        if (__pyx_t_4) {
+
+        } else {
+
+          __pyx_t_2 = __pyx_t_4;
+
+          goto __pyx_L7_bool_binop_done;
+        }
+        __pyx_t_4 = (__pyx_v_sigma > __pyx_v_dv);
+
+        if (__pyx_t_4) {
+
+        } else {
+
+          __pyx_t_2 = __pyx_t_4;
+
+          goto __pyx_L7_bool_binop_done;
+        }
+        __pyx_t_4 = (__pyx_v_S > __pyx_v_dS);
+
+        if (__pyx_t_4) {
+
+        } else {
+
+          __pyx_t_2 = __pyx_t_4;
+
+          goto __pyx_L7_bool_binop_done;
+        }
+        __pyx_t_4 = (__pyx_v_K > 0.0);
+
+        if (__pyx_t_4) {
+
+        } else {
+
+          __pyx_t_2 = __pyx_t_4;
+
+          goto __pyx_L7_bool_binop_done;
+        }
+        __pyx_t_4 = (__pyx_v_dist > 1e-6);
+
+
+        __pyx_t_2 = __pyx_t_4;
+
+        __pyx_L7_bool_binop_done:;
+        if (__pyx_t_2) {
+
+
+          /* "bz_pricing/core/options_core.pyx":1248
+ *         price = barrier_bsm_price(S, K, H, r, q, T, sigma, is_call, is_up, is_out, rebate)
+ *         if T > 0.0 and sigma > dv and S > dS and K > 0.0 and dist > 1e-6:
+ *             p_su = barrier_bsm_price(S + dS, K, H, r, q, T, sigma, is_call, is_up, is_out, rebate)             # <<<<<<<<<<<<<<
+ *             p_sd = barrier_bsm_price(S - dS, K, H, r, q, T, sigma, is_call, is_up, is_out, rebate)
+ *             delta = (p_su - p_sd) / (2.0 * dS)
+*/
+          __pyx_t_3.__pyx_n = 4;
+          __pyx_t_3.is_call = __pyx_v_is_call;
+          __pyx_t_3.is_up = __pyx_v_is_up;
+          __pyx_t_3.is_out = __pyx_v_is_out;
+          __pyx_t_3.rebate = __pyx_v_rebate;
+          __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price((__pyx_v_S + __pyx_v_dS), __pyx_v_K, __pyx_v_H, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, 0, &__pyx_t_3); 
+          __pyx_v_p_su = __pyx_t_1;
+
+          /* "bz_pricing/core/options_core.pyx":1249
+ *         if T > 0.0 and sigma > dv and S > dS and K > 0.0 and dist > 1e-6:
+ *             p_su = barrier_bsm_price(S + dS, K, H, r, q, T, sigma, is_call, is_up, is_out, rebate)
+ *             p_sd = barrier_bsm_price(S - dS, K, H, r, q, T, sigma, is_call, is_up, is_out, rebate)             # <<<<<<<<<<<<<<
+ *             delta = (p_su - p_sd) / (2.0 * dS)
+ *             gamma = (p_su - 2.0 * price + p_sd) / (dS * dS)
+*/
+          __pyx_t_3.__pyx_n = 4;
+          __pyx_t_3.is_call = __pyx_v_is_call;
+          __pyx_t_3.is_up = __pyx_v_is_up;
+          __pyx_t_3.is_out = __pyx_v_is_out;
+          __pyx_t_3.rebate = __pyx_v_rebate;
+          __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price((__pyx_v_S - __pyx_v_dS), __pyx_v_K, __pyx_v_H, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, 0, &__pyx_t_3); 
+          __pyx_v_p_sd = __pyx_t_1;
+
+          /* "bz_pricing/core/options_core.pyx":1250
+ *             p_su = barrier_bsm_price(S + dS, K, H, r, q, T, sigma, is_call, is_up, is_out, rebate)
+ *             p_sd = barrier_bsm_price(S - dS, K, H, r, q, T, sigma, is_call, is_up, is_out, rebate)
+ *             delta = (p_su - p_sd) / (2.0 * dS)             # <<<<<<<<<<<<<<
+ *             gamma = (p_su - 2.0 * price + p_sd) / (dS * dS)
+ * 
+*/
+          __pyx_v_delta = ((__pyx_v_p_su - __pyx_v_p_sd) / (2.0 * __pyx_v_dS));
+
+          /* "bz_pricing/core/options_core.pyx":1251
+ *             p_sd = barrier_bsm_price(S - dS, K, H, r, q, T, sigma, is_call, is_up, is_out, rebate)
+ *             delta = (p_su - p_sd) / (2.0 * dS)
+ *             gamma = (p_su - 2.0 * price + p_sd) / (dS * dS)             # <<<<<<<<<<<<<<
+ * 
+ *             p_vu = barrier_bsm_price(S, K, H, r, q, T, sigma + dv, is_call, is_up, is_out, rebate)
+*/
+          __pyx_v_gamma = (((__pyx_v_p_su - (2.0 * __pyx_v_price)) + __pyx_v_p_sd) / (__pyx_v_dS * __pyx_v_dS));
+
+          /* "bz_pricing/core/options_core.pyx":1253
+ *             gamma = (p_su - 2.0 * price + p_sd) / (dS * dS)
+ * 
+ *             p_vu = barrier_bsm_price(S, K, H, r, q, T, sigma + dv, is_call, is_up, is_out, rebate)             # <<<<<<<<<<<<<<
+ *             p_vd = barrier_bsm_price(S, K, H, r, q, T, sigma - dv, is_call, is_up, is_out, rebate)
+ *             vega = (p_vu - p_vd) / (2.0 * dv)
+*/
+          __pyx_t_3.__pyx_n = 4;
+          __pyx_t_3.is_call = __pyx_v_is_call;
+          __pyx_t_3.is_up = __pyx_v_is_up;
+          __pyx_t_3.is_out = __pyx_v_is_out;
+          __pyx_t_3.rebate = __pyx_v_rebate;
+          __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(__pyx_v_S, __pyx_v_K, __pyx_v_H, __pyx_v_r, __pyx_v_q, __pyx_v_T, (__pyx_v_sigma + __pyx_v_dv), 0, &__pyx_t_3); 
+          __pyx_v_p_vu = __pyx_t_1;
+
+          /* "bz_pricing/core/options_core.pyx":1254
+ * 
+ *             p_vu = barrier_bsm_price(S, K, H, r, q, T, sigma + dv, is_call, is_up, is_out, rebate)
+ *             p_vd = barrier_bsm_price(S, K, H, r, q, T, sigma - dv, is_call, is_up, is_out, rebate)             # <<<<<<<<<<<<<<
+ *             vega = (p_vu - p_vd) / (2.0 * dv)
+ * 
+*/
+          __pyx_t_3.__pyx_n = 4;
+          __pyx_t_3.is_call = __pyx_v_is_call;
+          __pyx_t_3.is_up = __pyx_v_is_up;
+          __pyx_t_3.is_out = __pyx_v_is_out;
+          __pyx_t_3.rebate = __pyx_v_rebate;
+          __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(__pyx_v_S, __pyx_v_K, __pyx_v_H, __pyx_v_r, __pyx_v_q, __pyx_v_T, (__pyx_v_sigma - __pyx_v_dv), 0, &__pyx_t_3); 
+          __pyx_v_p_vd = __pyx_t_1;
+
+          /* "bz_pricing/core/options_core.pyx":1255
+ *             p_vu = barrier_bsm_price(S, K, H, r, q, T, sigma + dv, is_call, is_up, is_out, rebate)
+ *             p_vd = barrier_bsm_price(S, K, H, r, q, T, sigma - dv, is_call, is_up, is_out, rebate)
+ *             vega = (p_vu - p_vd) / (2.0 * dv)             # <<<<<<<<<<<<<<
+ * 
+ *             p_ru = barrier_bsm_price(S, K, H, r + dr, q, T, sigma, is_call, is_up, is_out, rebate)
+*/
+          __pyx_v_vega = ((__pyx_v_p_vu - __pyx_v_p_vd) / (2.0 * __pyx_v_dv));
+
+          /* "bz_pricing/core/options_core.pyx":1257
+ *             vega = (p_vu - p_vd) / (2.0 * dv)
+ * 
+ *             p_ru = barrier_bsm_price(S, K, H, r + dr, q, T, sigma, is_call, is_up, is_out, rebate)             # <<<<<<<<<<<<<<
+ *             p_rd = barrier_bsm_price(S, K, H, r - dr, q, T, sigma, is_call, is_up, is_out, rebate)
+ *             rho = (p_ru - p_rd) / (2.0 * dr)
+*/
+          __pyx_t_3.__pyx_n = 4;
+          __pyx_t_3.is_call = __pyx_v_is_call;
+          __pyx_t_3.is_up = __pyx_v_is_up;
+          __pyx_t_3.is_out = __pyx_v_is_out;
+          __pyx_t_3.rebate = __pyx_v_rebate;
+          __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(__pyx_v_S, __pyx_v_K, __pyx_v_H, (__pyx_v_r + __pyx_v_dr), __pyx_v_q, __pyx_v_T, __pyx_v_sigma, 0, &__pyx_t_3); 
+          __pyx_v_p_ru = __pyx_t_1;
+
+          /* "bz_pricing/core/options_core.pyx":1258
+ * 
+ *             p_ru = barrier_bsm_price(S, K, H, r + dr, q, T, sigma, is_call, is_up, is_out, rebate)
+ *             p_rd = barrier_bsm_price(S, K, H, r - dr, q, T, sigma, is_call, is_up, is_out, rebate)             # <<<<<<<<<<<<<<
+ *             rho = (p_ru - p_rd) / (2.0 * dr)
+ * 
+*/
+          __pyx_t_3.__pyx_n = 4;
+          __pyx_t_3.is_call = __pyx_v_is_call;
+          __pyx_t_3.is_up = __pyx_v_is_up;
+          __pyx_t_3.is_out = __pyx_v_is_out;
+          __pyx_t_3.rebate = __pyx_v_rebate;
+          __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(__pyx_v_S, __pyx_v_K, __pyx_v_H, (__pyx_v_r - __pyx_v_dr), __pyx_v_q, __pyx_v_T, __pyx_v_sigma, 0, &__pyx_t_3); 
+          __pyx_v_p_rd = __pyx_t_1;
+
+          /* "bz_pricing/core/options_core.pyx":1259
+ *             p_ru = barrier_bsm_price(S, K, H, r + dr, q, T, sigma, is_call, is_up, is_out, rebate)
+ *             p_rd = barrier_bsm_price(S, K, H, r - dr, q, T, sigma, is_call, is_up, is_out, rebate)
+ *             rho = (p_ru - p_rd) / (2.0 * dr)             # <<<<<<<<<<<<<<
+ * 
+ *             if T > dT:
+*/
+          __pyx_v_rho = ((__pyx_v_p_ru - __pyx_v_p_rd) / (2.0 * __pyx_v_dr));
+
+          /* "bz_pricing/core/options_core.pyx":1261
+ *             rho = (p_ru - p_rd) / (2.0 * dr)
+ * 
+ *             if T > dT:             # <<<<<<<<<<<<<<
+ *                 p_td = barrier_bsm_price(S, K, H, r, q, T - dT, sigma, is_call, is_up, is_out, rebate)
+ *                 theta = (p_td - price) / dT
+*/
+          __pyx_t_2 = (__pyx_v_T > __pyx_v_dT);
+
+          if (__pyx_t_2) {
+
+
+            /* "bz_pricing/core/options_core.pyx":1262
+ * 
+ *             if T > dT:
+ *                 p_td = barrier_bsm_price(S, K, H, r, q, T - dT, sigma, is_call, is_up, is_out, rebate)             # <<<<<<<<<<<<<<
+ *                 theta = (p_td - price) / dT
+ * 
+*/
+            __pyx_t_3.__pyx_n = 4;
+            __pyx_t_3.is_call = __pyx_v_is_call;
+            __pyx_t_3.is_up = __pyx_v_is_up;
+            __pyx_t_3.is_out = __pyx_v_is_out;
+            __pyx_t_3.rebate = __pyx_v_rebate;
+            __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price(__pyx_v_S, __pyx_v_K, __pyx_v_H, __pyx_v_r, __pyx_v_q, (__pyx_v_T - __pyx_v_dT), __pyx_v_sigma, 0, &__pyx_t_3); 
+            __pyx_v_p_td = __pyx_t_1;
+
+            /* "bz_pricing/core/options_core.pyx":1263
+ *             if T > dT:
+ *                 p_td = barrier_bsm_price(S, K, H, r, q, T - dT, sigma, is_call, is_up, is_out, rebate)
+ *                 theta = (p_td - price) / dT             # <<<<<<<<<<<<<<
+ * 
+ *     return (price, delta, gamma, vega, theta, rho)
+*/
+            __pyx_v_theta = ((__pyx_v_p_td - __pyx_v_price) / __pyx_v_dT);
+
+            /* "bz_pricing/core/options_core.pyx":1261
+ *             rho = (p_ru - p_rd) / (2.0 * dr)
+ * 
+ *             if T > dT:             # <<<<<<<<<<<<<<
+ *                 p_td = barrier_bsm_price(S, K, H, r, q, T - dT, sigma, is_call, is_up, is_out, rebate)
+ *                 theta = (p_td - price) / dT
+*/
+          }
+
+          /* "bz_pricing/core/options_core.pyx":1247
+ *     with nogil:
+ *         price = barrier_bsm_price(S, K, H, r, q, T, sigma, is_call, is_up, is_out, rebate)
+ *         if T > 0.0 and sigma > dv and S > dS and K > 0.0 and dist > 1e-6:             # <<<<<<<<<<<<<<
+ *             p_su = barrier_bsm_price(S + dS, K, H, r, q, T, sigma, is_call, is_up, is_out, rebate)
+ *             p_sd = barrier_bsm_price(S - dS, K, H, r, q, T, sigma, is_call, is_up, is_out, rebate)
+*/
+        }
+      }
+
+      /* "bz_pricing/core/options_core.pyx":1245
+ *     cdef double p_su, p_sd, p_vu, p_vd, p_ru, p_rd, p_td
+ * 
+ *     with nogil:             # <<<<<<<<<<<<<<
+ *         price = barrier_bsm_price(S, K, H, r, q, T, sigma, is_call, is_up, is_out, rebate)
+ *         if T > 0.0 and sigma > dv and S > dS and K > 0.0 and dist > 1e-6:
+*/
+      /*finally:*/ {
+        /*normal exit:*/{
+          __Pyx_FastGIL_Forget();
+          PyEval_RestoreThread(_save);
+          goto __pyx_L5;
+        }
+        __pyx_L5:;
+      }
+  }
+
+  /* "bz_pricing/core/options_core.pyx":1265
+ *                 theta = (p_td - price) / dT
+ * 
+ *     return (price, delta, gamma, vega, theta, rho)             # <<<<<<<<<<<<<<
+ * 
+ * 
+*/
+  __pyx_t_5 = PyFloat_FromDouble(__pyx_v_price); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1265, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_6 = PyFloat_FromDouble(__pyx_v_delta); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1265, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_7 = PyFloat_FromDouble(__pyx_v_gamma); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1265, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_8 = PyFloat_FromDouble(__pyx_v_vega); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 1265, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_9 = PyFloat_FromDouble(__pyx_v_theta); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 1265, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_9);
+  __pyx_t_10 = PyFloat_FromDouble(__pyx_v_rho); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 1265, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_10);
+  __pyx_t_11 = PyTuple_New(6); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 1265, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_11);
+  __Pyx_GIVEREF(__pyx_t_5);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_t_5) != (0)) __PYX_ERR(0, 1265, __pyx_L1_error);
+  __Pyx_GIVEREF(__pyx_t_6);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_11, 1, __pyx_t_6) != (0)) __PYX_ERR(0, 1265, __pyx_L1_error);
+  __Pyx_GIVEREF(__pyx_t_7);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_11, 2, __pyx_t_7) != (0)) __PYX_ERR(0, 1265, __pyx_L1_error);
+  __Pyx_GIVEREF(__pyx_t_8);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_11, 3, __pyx_t_8) != (0)) __PYX_ERR(0, 1265, __pyx_L1_error);
+  __Pyx_GIVEREF(__pyx_t_9);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_11, 4, __pyx_t_9) != (0)) __PYX_ERR(0, 1265, __pyx_L1_error);
+  __Pyx_GIVEREF(__pyx_t_10);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_11, 5, __pyx_t_10) != (0)) __PYX_ERR(0, 1265, __pyx_L1_error);
+  __pyx_t_5 = 0;
+  __pyx_t_6 = 0;
+  __pyx_t_7 = 0;
+  __pyx_t_8 = 0;
+  __pyx_t_9 = 0;
+  __pyx_t_10 = 0;
+  {
+    PyObject *__pyx_temp;
+    {
+      __pyx_temp = __pyx_r;
+      __pyx_r = ((PyObject*)__pyx_t_11);
+    }
+    __Pyx_XDECREF(__pyx_temp);
+  }
+  __pyx_t_11 = 0;
+  goto __pyx_L0;
+
+  /* "bz_pricing/core/options_core.pyx":1223
+ * 
+ * 
+ * cpdef tuple barrier_bsm_price_greeks(             # <<<<<<<<<<<<<<
+ *     double S,
+ *     double K,
+*/
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_XDECREF(__pyx_t_8);
+  __Pyx_XDECREF(__pyx_t_9);
+  __Pyx_XDECREF(__pyx_t_10);
+  __Pyx_XDECREF(__pyx_t_11);
+  __Pyx_AddTraceback("bz_pricing.core.options_core.barrier_bsm_price_greeks", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_45barrier_bsm_price_greeks(PyObject *__pyx_self, 
+#if CYTHON_VECTORCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+); /*proto*/
+PyDoc_STRVAR(__pyx_doc_10bz_pricing_4core_12options_core_44barrier_bsm_price_greeks, "Pre\303\247o e gregas num\303\251ricas centrais de op\303\247\303\265es com barreira (Reiner-Rubinstein) em Cython.");
+static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_45barrier_bsm_price_greeks = {"barrier_bsm_price_greeks", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_45barrier_bsm_price_greeks, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10bz_pricing_4core_12options_core_44barrier_bsm_price_greeks};
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_45barrier_bsm_price_greeks(PyObject *__pyx_self, 
+#if CYTHON_VECTORCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+) {
+  double __pyx_v_S;
+  double __pyx_v_K;
+  double __pyx_v_H;
+  double __pyx_v_r;
+  double __pyx_v_q;
+  double __pyx_v_T;
+  double __pyx_v_sigma;
+  int __pyx_v_is_call;
+  int __pyx_v_is_up;
+  int __pyx_v_is_out;
+  double __pyx_v_rebate;
+  #if !CYTHON_VECTORCALL
+  CYTHON_UNUSED Py_ssize_t __pyx_nargs;
+  #endif
+  CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
+  PyObject* values[11] = {0,0,0,0,0,0,0,0,0,0,0};
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("barrier_bsm_price_greeks (wrapper)", 0);
+  #if !CYTHON_VECTORCALL
+  #if CYTHON_ASSUME_SAFE_SIZE
+  __pyx_nargs = PyTuple_GET_SIZE(__pyx_args);
+  #else
+  __pyx_nargs = PyTuple_Size(__pyx_args); if (unlikely(__pyx_nargs < 0)) return NULL;
+  #endif
+  #endif
+  __pyx_kwvalues = __Pyx_KwValues_FASTCALL(__pyx_args, __pyx_nargs);
+  {
+    PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_S,&__pyx_mstate_global->__pyx_n_u_K,&__pyx_mstate_global->__pyx_n_u_H,&__pyx_mstate_global->__pyx_n_u_r,&__pyx_mstate_global->__pyx_n_u_q,&__pyx_mstate_global->__pyx_n_u_T,&__pyx_mstate_global->__pyx_n_u_sigma,&__pyx_mstate_global->__pyx_n_u_is_call,&__pyx_mstate_global->__pyx_n_u_is_up,&__pyx_mstate_global->__pyx_n_u_is_out,&__pyx_mstate_global->__pyx_n_u_rebate,0};
+    const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 1223, __pyx_L3_error)
+    if (__pyx_kwds_len > 0) {
+      switch (__pyx_nargs) {
+        case 11:
+        values[10] = __Pyx_ArgRef_FASTCALL(__pyx_args, 10);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[10])) __PYX_ERR(0, 1223, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case 10:
+        values[9] = __Pyx_ArgRef_FASTCALL(__pyx_args, 9);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[9])) __PYX_ERR(0, 1223, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  9:
+        values[8] = __Pyx_ArgRef_FASTCALL(__pyx_args, 8);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 1223, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  8:
+        values[7] = __Pyx_ArgRef_FASTCALL(__pyx_args, 7);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 1223, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  7:
+        values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 1223, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  6:
+        values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 1223, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  5:
+        values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 1223, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  4:
+        values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 1223, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  3:
+        values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 1223, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  2:
+        values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 1223, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  1:
+        values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 1223, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      const Py_ssize_t kwd_pos_args = __pyx_nargs;
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "barrier_bsm_price_greeks", 0) < (0)) __PYX_ERR(0, 1223, __pyx_L3_error)
+      for (Py_ssize_t i = __pyx_nargs; i < 7; i++) {
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("barrier_bsm_price_greeks", 0, 7, 11, i); __PYX_ERR(0, 1223, __pyx_L3_error) }
+      }
+    } else {
+      switch (__pyx_nargs) {
+        case 11:
+        values[10] = __Pyx_ArgRef_FASTCALL(__pyx_args, 10);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[10])) __PYX_ERR(0, 1223, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case 10:
+        values[9] = __Pyx_ArgRef_FASTCALL(__pyx_args, 9);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[9])) __PYX_ERR(0, 1223, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  9:
+        values[8] = __Pyx_ArgRef_FASTCALL(__pyx_args, 8);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 1223, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  8:
+        values[7] = __Pyx_ArgRef_FASTCALL(__pyx_args, 7);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 1223, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  7:
+        values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 1223, __pyx_L3_error)
+        values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 1223, __pyx_L3_error)
+        values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 1223, __pyx_L3_error)
+        values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 1223, __pyx_L3_error)
+        values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 1223, __pyx_L3_error)
+        values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 1223, __pyx_L3_error)
+        values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 1223, __pyx_L3_error)
+        break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+    }
+    __pyx_v_S = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_S == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1224, __pyx_L3_error)
+    __pyx_v_K = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_K == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1225, __pyx_L3_error)
+    __pyx_v_H = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_H == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1226, __pyx_L3_error)
+    __pyx_v_r = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_r == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1227, __pyx_L3_error)
+    __pyx_v_q = __Pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_q == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1228, __pyx_L3_error)
+    __pyx_v_T = __Pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_T == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1229, __pyx_L3_error)
+    __pyx_v_sigma = __Pyx_PyFloat_AsDouble(values[6]); if (unlikely((__pyx_v_sigma == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1230, __pyx_L3_error)
+    if (values[7]) {
+      __pyx_v_is_call = __Pyx_PyObject_IsTrue(values[7]); if (unlikely((__pyx_v_is_call == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1231, __pyx_L3_error)
+    } else {
+
+      /* "bz_pricing/core/options_core.pyx":1231
+ *     double T,
+ *     double sigma,
+ *     bint is_call=True,             # <<<<<<<<<<<<<<
+ *     bint is_up=False,
+ *     bint is_out=True,
+*/
+      __pyx_v_is_call = ((int)1);
+    }
+    if (values[8]) {
+      __pyx_v_is_up = __Pyx_PyObject_IsTrue(values[8]); if (unlikely((__pyx_v_is_up == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1232, __pyx_L3_error)
+    } else {
+
+      /* "bz_pricing/core/options_core.pyx":1232
+ *     double sigma,
+ *     bint is_call=True,
+ *     bint is_up=False,             # <<<<<<<<<<<<<<
+ *     bint is_out=True,
+ *     double rebate=0.0,
+*/
+      __pyx_v_is_up = ((int)0);
+    }
+    if (values[9]) {
+      __pyx_v_is_out = __Pyx_PyObject_IsTrue(values[9]); if (unlikely((__pyx_v_is_out == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1233, __pyx_L3_error)
+    } else {
+
+      /* "bz_pricing/core/options_core.pyx":1233
+ *     bint is_call=True,
+ *     bint is_up=False,
+ *     bint is_out=True,             # <<<<<<<<<<<<<<
+ *     double rebate=0.0,
+ * ):
+*/
+      __pyx_v_is_out = ((int)1);
+    }
+    if (values[10]) {
+      __pyx_v_rebate = __Pyx_PyFloat_AsDouble(values[10]); if (unlikely((__pyx_v_rebate == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1234, __pyx_L3_error)
+    } else {
+      __pyx_v_rebate = ((double)0.0);
+    }
+  }
+  goto __pyx_L6_skip;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("barrier_bsm_price_greeks", 0, 7, 11, __pyx_nargs); __PYX_ERR(0, 1223, __pyx_L3_error)
+  __pyx_L6_skip:;
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L3_error:;
+  for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+    Py_XDECREF(values[__pyx_temp]);
+  }
+  __Pyx_AddTraceback("bz_pricing.core.options_core.barrier_bsm_price_greeks", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_44barrier_bsm_price_greeks(__pyx_self, __pyx_v_S, __pyx_v_K, __pyx_v_H, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_is_call, __pyx_v_is_up, __pyx_v_is_out, __pyx_v_rebate);
+
+  /* "bz_pricing/core/options_core.pyx":1223
+ * 
+ * 
+ * cpdef tuple barrier_bsm_price_greeks(             # <<<<<<<<<<<<<<
+ *     double S,
+ *     double K,
+*/
+
+  /* function exit code */
+  for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+    Py_XDECREF(values[__pyx_temp]);
+  }
+
+
+
+
+
+
+
+
+
+
+
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_44barrier_bsm_price_greeks(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_S, double __pyx_v_K, double __pyx_v_H, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, int __pyx_v_is_call, int __pyx_v_is_up, int __pyx_v_is_out, double __pyx_v_rebate) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  struct __pyx_opt_args_10bz_pricing_4core_12options_core_barrier_bsm_price_greeks __pyx_t_2;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("barrier_bsm_price_greeks", 0);
+  __pyx_t_2.__pyx_n = 4;
+  __pyx_t_2.is_call = __pyx_v_is_call;
+  __pyx_t_2.is_up = __pyx_v_is_up;
+  __pyx_t_2.is_out = __pyx_v_is_out;
+  __pyx_t_2.rebate = __pyx_v_rebate;
+  __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_barrier_bsm_price_greeks(__pyx_v_S, __pyx_v_K, __pyx_v_H, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, 1, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1223, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  {
+    PyObject *__pyx_temp;
+    {
+      __pyx_temp = __pyx_r;
+      __pyx_r = __pyx_t_1;
+    }
+    __Pyx_XDECREF(__pyx_temp);
+  }
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("bz_pricing.core.options_core.barrier_bsm_price_greeks", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "bz_pricing/core/options_core.pyx":1268
+ * 
+ * 
+ * cpdef tuple asian_price_greeks(             # <<<<<<<<<<<<<<
+ *     double S,
+ *     double K,
+*/
+
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_47asian_price_greeks(PyObject *__pyx_self, 
+#if CYTHON_VECTORCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+); /*proto*/
+static PyObject *__pyx_f_10bz_pricing_4core_12options_core_asian_price_greeks(double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, CYTHON_UNUSED int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_12options_core_asian_price_greeks *__pyx_optional_args) {
+
+  /* "bz_pricing/core/options_core.pyx":1275
+ *     double T,
+ *     double sigma,
+ *     bint is_call=True,             # <<<<<<<<<<<<<<
+ *     int n_fixings=0,
+ *     bint is_geometric=False,
+*/
+  int __pyx_v_is_call = ((int)1);
+  int __pyx_v_n_fixings = ((int)0);
+
+  /* "bz_pricing/core/options_core.pyx":1277
+ *     bint is_call=True,
+ *     int n_fixings=0,
+ *     bint is_geometric=False,             # <<<<<<<<<<<<<<
+ * ):
+ *     """Preo e gregas centrais em Cython para opes asiticas geomtricas e aritmticas."""
+*/
+  int __pyx_v_is_geometric = ((int)0);
+  double __pyx_v_price;
+  double __pyx_v_delta;
+  double __pyx_v_gamma;
+  double __pyx_v_vega;
+  double __pyx_v_theta;
+  double __pyx_v_rho;
+  double __pyx_v_dS;
+  double __pyx_v_dv;
+  double __pyx_v_dr;
+  double __pyx_v_dT;
+  double __pyx_v_p_su;
+  double __pyx_v_p_sd;
+  double __pyx_v_p_vu;
+  double __pyx_v_p_vd;
+  double __pyx_v_p_ru;
+  double __pyx_v_p_rd;
+  double __pyx_v_p_td;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  double __pyx_t_1;
+  struct __pyx_opt_args_10bz_pricing_4core_12options_core_asian_geometric_price __pyx_t_2;
+  int __pyx_t_3;
+  int __pyx_t_4;
+  double __pyx_t_5;
+  struct __pyx_opt_args_10bz_pricing_4core_12options_core_asian_arithmetic_tw_price __pyx_t_6;
+  PyObject *__pyx_t_7 = NULL;
+  PyObject *__pyx_t_8 = NULL;
+  PyObject *__pyx_t_9 = NULL;
+  PyObject *__pyx_t_10 = NULL;
+  PyObject *__pyx_t_11 = NULL;
+  PyObject *__pyx_t_12 = NULL;
+  PyObject *__pyx_t_13 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("asian_price_greeks", 0);
+  if (__pyx_optional_args) {
+    if (__pyx_optional_args->__pyx_n > 0) {
+      __pyx_v_is_call = __pyx_optional_args->is_call;
+      if (__pyx_optional_args->__pyx_n > 1) {
+        __pyx_v_n_fixings = __pyx_optional_args->n_fixings;
+        if (__pyx_optional_args->__pyx_n > 2) {
+          __pyx_v_is_geometric = __pyx_optional_args->is_geometric;
+        }
+      }
+    }
+  }
+
+  /* "bz_pricing/core/options_core.pyx":1280
+ * ):
+ *     """Preo e gregas centrais em Cython para opes asiticas geomtricas e aritmticas."""
+ *     cdef double price = 0.0, delta = 0.0, gamma = 0.0, vega = 0.0, theta = 0.0, rho = 0.0             # <<<<<<<<<<<<<<
+ *     cdef double dS = fmax(1e-5, 1e-4 * S)
+ *     cdef double dv = 1e-4
+*/
+  __pyx_v_price = 0.0;
+  __pyx_v_delta = 0.0;
+  __pyx_v_gamma = 0.0;
+  __pyx_v_vega = 0.0;
+  __pyx_v_theta = 0.0;
+  __pyx_v_rho = 0.0;
+
+  /* "bz_pricing/core/options_core.pyx":1281
+ *     """Preo e gregas centrais em Cython para opes asiticas geomtricas e aritmticas."""
+ *     cdef double price = 0.0, delta = 0.0, gamma = 0.0, vega = 0.0, theta = 0.0, rho = 0.0
+ *     cdef double dS = fmax(1e-5, 1e-4 * S)             # <<<<<<<<<<<<<<
+ *     cdef double dv = 1e-4
+ *     cdef double dr = 1e-4
+*/
+  __pyx_v_dS = fmax(1e-5, (1e-4 * __pyx_v_S));
+
+  /* "bz_pricing/core/options_core.pyx":1282
+ *     cdef double price = 0.0, delta = 0.0, gamma = 0.0, vega = 0.0, theta = 0.0, rho = 0.0
+ *     cdef double dS = fmax(1e-5, 1e-4 * S)
+ *     cdef double dv = 1e-4             # <<<<<<<<<<<<<<
+ *     cdef double dr = 1e-4
+ *     cdef double dT = fmin(1e-4, 0.1 * T)
+*/
+  __pyx_v_dv = 1e-4;
+
+  /* "bz_pricing/core/options_core.pyx":1283
+ *     cdef double dS = fmax(1e-5, 1e-4 * S)
+ *     cdef double dv = 1e-4
+ *     cdef double dr = 1e-4             # <<<<<<<<<<<<<<
+ *     cdef double dT = fmin(1e-4, 0.1 * T)
+ *     cdef double p_su, p_sd, p_vu, p_vd, p_ru, p_rd, p_td
+*/
+  __pyx_v_dr = 1e-4;
+
+  /* "bz_pricing/core/options_core.pyx":1284
+ *     cdef double dv = 1e-4
+ *     cdef double dr = 1e-4
+ *     cdef double dT = fmin(1e-4, 0.1 * T)             # <<<<<<<<<<<<<<
+ *     cdef double p_su, p_sd, p_vu, p_vd, p_ru, p_rd, p_td
+ * 
+*/
+  __pyx_v_dT = fmin(1e-4, (0.1 * __pyx_v_T));
+
+  /* "bz_pricing/core/options_core.pyx":1287
+ *     cdef double p_su, p_sd, p_vu, p_vd, p_ru, p_rd, p_td
+ * 
+ *     with nogil:             # <<<<<<<<<<<<<<
+ *         if is_geometric:
+ *             price = asian_geometric_price(S, K, r, q, T, sigma, is_call, n_fixings)
+*/
+  {
+      PyThreadState * _save;
+      _save = PyEval_SaveThread();
+      __Pyx_FastGIL_Remember();
+      /*try:*/ {
+
+        /* "bz_pricing/core/options_core.pyx":1288
+ * 
+ *     with nogil:
+ *         if is_geometric:             # <<<<<<<<<<<<<<
+ *             price = asian_geometric_price(S, K, r, q, T, sigma, is_call, n_fixings)
+ *             if T > 0.0 and sigma > dv and S > dS and K > 0.0:
+*/
+        if (__pyx_v_is_geometric) {
+
+          /* "bz_pricing/core/options_core.pyx":1289
+ *     with nogil:
+ *         if is_geometric:
+ *             price = asian_geometric_price(S, K, r, q, T, sigma, is_call, n_fixings)             # <<<<<<<<<<<<<<
+ *             if T > 0.0 and sigma > dv and S > dS and K > 0.0:
+ *                 p_su = asian_geometric_price(S + dS, K, r, q, T, sigma, is_call, n_fixings)
+*/
+          __pyx_t_2.__pyx_n = 2;
+          __pyx_t_2.is_call = __pyx_v_is_call;
+          __pyx_t_2.n_fixings = __pyx_v_n_fixings;
+          __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, 0, &__pyx_t_2); 
+          __pyx_v_price = __pyx_t_1;
+
+          /* "bz_pricing/core/options_core.pyx":1290
+ *         if is_geometric:
+ *             price = asian_geometric_price(S, K, r, q, T, sigma, is_call, n_fixings)
+ *             if T > 0.0 and sigma > dv and S > dS and K > 0.0:             # <<<<<<<<<<<<<<
+ *                 p_su = asian_geometric_price(S + dS, K, r, q, T, sigma, is_call, n_fixings)
+ *                 p_sd = asian_geometric_price(S - dS, K, r, q, T, sigma, is_call, n_fixings)
+*/
+          __pyx_t_4 = (__pyx_v_T > 0.0);
+
+          if (__pyx_t_4) {
+
+          } else {
+
+            __pyx_t_3 = __pyx_t_4;
+
+            goto __pyx_L8_bool_binop_done;
+          }
+          __pyx_t_4 = (__pyx_v_sigma > __pyx_v_dv);
+
+          if (__pyx_t_4) {
+
+          } else {
+
+            __pyx_t_3 = __pyx_t_4;
+
+            goto __pyx_L8_bool_binop_done;
+          }
+          __pyx_t_4 = (__pyx_v_S > __pyx_v_dS);
+
+          if (__pyx_t_4) {
+
+          } else {
+
+            __pyx_t_3 = __pyx_t_4;
+
+            goto __pyx_L8_bool_binop_done;
+          }
+          __pyx_t_4 = (__pyx_v_K > 0.0);
+
+
+          __pyx_t_3 = __pyx_t_4;
+
+          __pyx_L8_bool_binop_done:;
+          if (__pyx_t_3) {
+
+
+            /* "bz_pricing/core/options_core.pyx":1291
+ *             price = asian_geometric_price(S, K, r, q, T, sigma, is_call, n_fixings)
+ *             if T > 0.0 and sigma > dv and S > dS and K > 0.0:
+ *                 p_su = asian_geometric_price(S + dS, K, r, q, T, sigma, is_call, n_fixings)             # <<<<<<<<<<<<<<
+ *                 p_sd = asian_geometric_price(S - dS, K, r, q, T, sigma, is_call, n_fixings)
+ *                 p_vu = asian_geometric_price(S, K, r, q, T, sigma + dv, is_call, n_fixings)
+*/
+            __pyx_t_2.__pyx_n = 2;
+            __pyx_t_2.is_call = __pyx_v_is_call;
+            __pyx_t_2.n_fixings = __pyx_v_n_fixings;
+            __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price((__pyx_v_S + __pyx_v_dS), __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, 0, &__pyx_t_2); 
+            __pyx_v_p_su = __pyx_t_1;
+
+            /* "bz_pricing/core/options_core.pyx":1292
+ *             if T > 0.0 and sigma > dv and S > dS and K > 0.0:
+ *                 p_su = asian_geometric_price(S + dS, K, r, q, T, sigma, is_call, n_fixings)
+ *                 p_sd = asian_geometric_price(S - dS, K, r, q, T, sigma, is_call, n_fixings)             # <<<<<<<<<<<<<<
+ *                 p_vu = asian_geometric_price(S, K, r, q, T, sigma + dv, is_call, n_fixings)
+ *                 p_vd = asian_geometric_price(S, K, r, q, T, sigma - dv, is_call, n_fixings)
+*/
+            __pyx_t_2.__pyx_n = 2;
+            __pyx_t_2.is_call = __pyx_v_is_call;
+            __pyx_t_2.n_fixings = __pyx_v_n_fixings;
+            __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price((__pyx_v_S - __pyx_v_dS), __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, 0, &__pyx_t_2); 
+            __pyx_v_p_sd = __pyx_t_1;
+
+            /* "bz_pricing/core/options_core.pyx":1293
+ *                 p_su = asian_geometric_price(S + dS, K, r, q, T, sigma, is_call, n_fixings)
+ *                 p_sd = asian_geometric_price(S - dS, K, r, q, T, sigma, is_call, n_fixings)
+ *                 p_vu = asian_geometric_price(S, K, r, q, T, sigma + dv, is_call, n_fixings)             # <<<<<<<<<<<<<<
+ *                 p_vd = asian_geometric_price(S, K, r, q, T, sigma - dv, is_call, n_fixings)
+ *                 p_ru = asian_geometric_price(S, K, r + dr, q, T, sigma, is_call, n_fixings)
+*/
+            __pyx_t_2.__pyx_n = 2;
+            __pyx_t_2.is_call = __pyx_v_is_call;
+            __pyx_t_2.n_fixings = __pyx_v_n_fixings;
+            __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, (__pyx_v_sigma + __pyx_v_dv), 0, &__pyx_t_2); 
+            __pyx_v_p_vu = __pyx_t_1;
+
+            /* "bz_pricing/core/options_core.pyx":1294
+ *                 p_sd = asian_geometric_price(S - dS, K, r, q, T, sigma, is_call, n_fixings)
+ *                 p_vu = asian_geometric_price(S, K, r, q, T, sigma + dv, is_call, n_fixings)
+ *                 p_vd = asian_geometric_price(S, K, r, q, T, sigma - dv, is_call, n_fixings)             # <<<<<<<<<<<<<<
+ *                 p_ru = asian_geometric_price(S, K, r + dr, q, T, sigma, is_call, n_fixings)
+ *                 p_rd = asian_geometric_price(S, K, r - dr, q, T, sigma, is_call, n_fixings)
+*/
+            __pyx_t_2.__pyx_n = 2;
+            __pyx_t_2.is_call = __pyx_v_is_call;
+            __pyx_t_2.n_fixings = __pyx_v_n_fixings;
+            __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, (__pyx_v_sigma - __pyx_v_dv), 0, &__pyx_t_2); 
+            __pyx_v_p_vd = __pyx_t_1;
+
+            /* "bz_pricing/core/options_core.pyx":1295
+ *                 p_vu = asian_geometric_price(S, K, r, q, T, sigma + dv, is_call, n_fixings)
+ *                 p_vd = asian_geometric_price(S, K, r, q, T, sigma - dv, is_call, n_fixings)
+ *                 p_ru = asian_geometric_price(S, K, r + dr, q, T, sigma, is_call, n_fixings)             # <<<<<<<<<<<<<<
+ *                 p_rd = asian_geometric_price(S, K, r - dr, q, T, sigma, is_call, n_fixings)
+ *                 p_td = asian_geometric_price(S, K, r, q, T - dT, sigma, is_call, n_fixings) if T > dT else price
+*/
+            __pyx_t_2.__pyx_n = 2;
+            __pyx_t_2.is_call = __pyx_v_is_call;
+            __pyx_t_2.n_fixings = __pyx_v_n_fixings;
+            __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(__pyx_v_S, __pyx_v_K, (__pyx_v_r + __pyx_v_dr), __pyx_v_q, __pyx_v_T, __pyx_v_sigma, 0, &__pyx_t_2); 
+            __pyx_v_p_ru = __pyx_t_1;
+
+            /* "bz_pricing/core/options_core.pyx":1296
+ *                 p_vd = asian_geometric_price(S, K, r, q, T, sigma - dv, is_call, n_fixings)
+ *                 p_ru = asian_geometric_price(S, K, r + dr, q, T, sigma, is_call, n_fixings)
+ *                 p_rd = asian_geometric_price(S, K, r - dr, q, T, sigma, is_call, n_fixings)             # <<<<<<<<<<<<<<
+ *                 p_td = asian_geometric_price(S, K, r, q, T - dT, sigma, is_call, n_fixings) if T > dT else price
+ *         else:
+*/
+            __pyx_t_2.__pyx_n = 2;
+            __pyx_t_2.is_call = __pyx_v_is_call;
+            __pyx_t_2.n_fixings = __pyx_v_n_fixings;
+            __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(__pyx_v_S, __pyx_v_K, (__pyx_v_r - __pyx_v_dr), __pyx_v_q, __pyx_v_T, __pyx_v_sigma, 0, &__pyx_t_2); 
+            __pyx_v_p_rd = __pyx_t_1;
+
+            /* "bz_pricing/core/options_core.pyx":1297
+ *                 p_ru = asian_geometric_price(S, K, r + dr, q, T, sigma, is_call, n_fixings)
+ *                 p_rd = asian_geometric_price(S, K, r - dr, q, T, sigma, is_call, n_fixings)
+ *                 p_td = asian_geometric_price(S, K, r, q, T - dT, sigma, is_call, n_fixings) if T > dT else price             # <<<<<<<<<<<<<<
+ *         else:
+ *             price = asian_arithmetic_tw_price(S, K, r, q, T, sigma, is_call, n_fixings)
+*/
+            __pyx_t_3 = (__pyx_v_T > __pyx_v_dT);
+
+            if (__pyx_t_3) {
+              __pyx_t_2.__pyx_n = 2;
+              __pyx_t_2.is_call = __pyx_v_is_call;
+              __pyx_t_2.n_fixings = __pyx_v_n_fixings;
+              __pyx_t_5 = __pyx_f_10bz_pricing_4core_12options_core_asian_geometric_price(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, (__pyx_v_T - __pyx_v_dT), __pyx_v_sigma, 0, &__pyx_t_2); 
+              __pyx_t_1 = __pyx_t_5;
+            } else {
+
+              __pyx_t_1 = __pyx_v_price;
+            }
+
+            __pyx_v_p_td = __pyx_t_1;
+
+            /* "bz_pricing/core/options_core.pyx":1290
+ *         if is_geometric:
+ *             price = asian_geometric_price(S, K, r, q, T, sigma, is_call, n_fixings)
+ *             if T > 0.0 and sigma > dv and S > dS and K > 0.0:             # <<<<<<<<<<<<<<
+ *                 p_su = asian_geometric_price(S + dS, K, r, q, T, sigma, is_call, n_fixings)
+ *                 p_sd = asian_geometric_price(S - dS, K, r, q, T, sigma, is_call, n_fixings)
+*/
+          }
+
+          /* "bz_pricing/core/options_core.pyx":1288
+ * 
+ *     with nogil:
+ *         if is_geometric:             # <<<<<<<<<<<<<<
+ *             price = asian_geometric_price(S, K, r, q, T, sigma, is_call, n_fixings)
+ *             if T > 0.0 and sigma > dv and S > dS and K > 0.0:
+*/
+          goto __pyx_L6;
+        }
+
+        /* "bz_pricing/core/options_core.pyx":1299
+ *                 p_td = asian_geometric_price(S, K, r, q, T - dT, sigma, is_call, n_fixings) if T > dT else price
+ *         else:
+ *             price = asian_arithmetic_tw_price(S, K, r, q, T, sigma, is_call, n_fixings)             # <<<<<<<<<<<<<<
+ *             if T > 0.0 and sigma > dv and S > dS and K > 0.0:
+ *                 p_su = asian_arithmetic_tw_price(S + dS, K, r, q, T, sigma, is_call, n_fixings)
+*/
+        /*else*/ {
+          __pyx_t_6.__pyx_n = 2;
+          __pyx_t_6.is_call = __pyx_v_is_call;
+          __pyx_t_6.n_fixings = __pyx_v_n_fixings;
+          __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_price(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, 0, &__pyx_t_6); 
+          __pyx_v_price = __pyx_t_1;
+
+          /* "bz_pricing/core/options_core.pyx":1300
+ *         else:
+ *             price = asian_arithmetic_tw_price(S, K, r, q, T, sigma, is_call, n_fixings)
+ *             if T > 0.0 and sigma > dv and S > dS and K > 0.0:             # <<<<<<<<<<<<<<
+ *                 p_su = asian_arithmetic_tw_price(S + dS, K, r, q, T, sigma, is_call, n_fixings)
+ *                 p_sd = asian_arithmetic_tw_price(S - dS, K, r, q, T, sigma, is_call, n_fixings)
+*/
+          __pyx_t_4 = (__pyx_v_T > 0.0);
+
+          if (__pyx_t_4) {
+
+          } else {
+
+            __pyx_t_3 = __pyx_t_4;
+
+            goto __pyx_L13_bool_binop_done;
+          }
+          __pyx_t_4 = (__pyx_v_sigma > __pyx_v_dv);
+
+          if (__pyx_t_4) {
+
+          } else {
+
+            __pyx_t_3 = __pyx_t_4;
+
+            goto __pyx_L13_bool_binop_done;
+          }
+          __pyx_t_4 = (__pyx_v_S > __pyx_v_dS);
+
+          if (__pyx_t_4) {
+
+          } else {
+
+            __pyx_t_3 = __pyx_t_4;
+
+            goto __pyx_L13_bool_binop_done;
+          }
+          __pyx_t_4 = (__pyx_v_K > 0.0);
+
+
+          __pyx_t_3 = __pyx_t_4;
+
+          __pyx_L13_bool_binop_done:;
+          if (__pyx_t_3) {
+
+
+            /* "bz_pricing/core/options_core.pyx":1301
+ *             price = asian_arithmetic_tw_price(S, K, r, q, T, sigma, is_call, n_fixings)
+ *             if T > 0.0 and sigma > dv and S > dS and K > 0.0:
+ *                 p_su = asian_arithmetic_tw_price(S + dS, K, r, q, T, sigma, is_call, n_fixings)             # <<<<<<<<<<<<<<
+ *                 p_sd = asian_arithmetic_tw_price(S - dS, K, r, q, T, sigma, is_call, n_fixings)
+ *                 p_vu = asian_arithmetic_tw_price(S, K, r, q, T, sigma + dv, is_call, n_fixings)
+*/
+            __pyx_t_6.__pyx_n = 2;
+            __pyx_t_6.is_call = __pyx_v_is_call;
+            __pyx_t_6.n_fixings = __pyx_v_n_fixings;
+            __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_price((__pyx_v_S + __pyx_v_dS), __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, 0, &__pyx_t_6); 
+            __pyx_v_p_su = __pyx_t_1;
+
+            /* "bz_pricing/core/options_core.pyx":1302
+ *             if T > 0.0 and sigma > dv and S > dS and K > 0.0:
+ *                 p_su = asian_arithmetic_tw_price(S + dS, K, r, q, T, sigma, is_call, n_fixings)
+ *                 p_sd = asian_arithmetic_tw_price(S - dS, K, r, q, T, sigma, is_call, n_fixings)             # <<<<<<<<<<<<<<
+ *                 p_vu = asian_arithmetic_tw_price(S, K, r, q, T, sigma + dv, is_call, n_fixings)
+ *                 p_vd = asian_arithmetic_tw_price(S, K, r, q, T, sigma - dv, is_call, n_fixings)
+*/
+            __pyx_t_6.__pyx_n = 2;
+            __pyx_t_6.is_call = __pyx_v_is_call;
+            __pyx_t_6.n_fixings = __pyx_v_n_fixings;
+            __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_price((__pyx_v_S - __pyx_v_dS), __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, 0, &__pyx_t_6); 
+            __pyx_v_p_sd = __pyx_t_1;
+
+            /* "bz_pricing/core/options_core.pyx":1303
+ *                 p_su = asian_arithmetic_tw_price(S + dS, K, r, q, T, sigma, is_call, n_fixings)
+ *                 p_sd = asian_arithmetic_tw_price(S - dS, K, r, q, T, sigma, is_call, n_fixings)
+ *                 p_vu = asian_arithmetic_tw_price(S, K, r, q, T, sigma + dv, is_call, n_fixings)             # <<<<<<<<<<<<<<
+ *                 p_vd = asian_arithmetic_tw_price(S, K, r, q, T, sigma - dv, is_call, n_fixings)
+ *                 p_ru = asian_arithmetic_tw_price(S, K, r + dr, q, T, sigma, is_call, n_fixings)
+*/
+            __pyx_t_6.__pyx_n = 2;
+            __pyx_t_6.is_call = __pyx_v_is_call;
+            __pyx_t_6.n_fixings = __pyx_v_n_fixings;
+            __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_price(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, (__pyx_v_sigma + __pyx_v_dv), 0, &__pyx_t_6); 
+            __pyx_v_p_vu = __pyx_t_1;
+
+            /* "bz_pricing/core/options_core.pyx":1304
+ *                 p_sd = asian_arithmetic_tw_price(S - dS, K, r, q, T, sigma, is_call, n_fixings)
+ *                 p_vu = asian_arithmetic_tw_price(S, K, r, q, T, sigma + dv, is_call, n_fixings)
+ *                 p_vd = asian_arithmetic_tw_price(S, K, r, q, T, sigma - dv, is_call, n_fixings)             # <<<<<<<<<<<<<<
+ *                 p_ru = asian_arithmetic_tw_price(S, K, r + dr, q, T, sigma, is_call, n_fixings)
+ *                 p_rd = asian_arithmetic_tw_price(S, K, r - dr, q, T, sigma, is_call, n_fixings)
+*/
+            __pyx_t_6.__pyx_n = 2;
+            __pyx_t_6.is_call = __pyx_v_is_call;
+            __pyx_t_6.n_fixings = __pyx_v_n_fixings;
+            __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_price(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, (__pyx_v_sigma - __pyx_v_dv), 0, &__pyx_t_6); 
+            __pyx_v_p_vd = __pyx_t_1;
+
+            /* "bz_pricing/core/options_core.pyx":1305
+ *                 p_vu = asian_arithmetic_tw_price(S, K, r, q, T, sigma + dv, is_call, n_fixings)
+ *                 p_vd = asian_arithmetic_tw_price(S, K, r, q, T, sigma - dv, is_call, n_fixings)
+ *                 p_ru = asian_arithmetic_tw_price(S, K, r + dr, q, T, sigma, is_call, n_fixings)             # <<<<<<<<<<<<<<
+ *                 p_rd = asian_arithmetic_tw_price(S, K, r - dr, q, T, sigma, is_call, n_fixings)
+ *                 p_td = asian_arithmetic_tw_price(S, K, r, q, T - dT, sigma, is_call, n_fixings) if T > dT else price
+*/
+            __pyx_t_6.__pyx_n = 2;
+            __pyx_t_6.is_call = __pyx_v_is_call;
+            __pyx_t_6.n_fixings = __pyx_v_n_fixings;
+            __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_price(__pyx_v_S, __pyx_v_K, (__pyx_v_r + __pyx_v_dr), __pyx_v_q, __pyx_v_T, __pyx_v_sigma, 0, &__pyx_t_6); 
+            __pyx_v_p_ru = __pyx_t_1;
+
+            /* "bz_pricing/core/options_core.pyx":1306
+ *                 p_vd = asian_arithmetic_tw_price(S, K, r, q, T, sigma - dv, is_call, n_fixings)
+ *                 p_ru = asian_arithmetic_tw_price(S, K, r + dr, q, T, sigma, is_call, n_fixings)
+ *                 p_rd = asian_arithmetic_tw_price(S, K, r - dr, q, T, sigma, is_call, n_fixings)             # <<<<<<<<<<<<<<
+ *                 p_td = asian_arithmetic_tw_price(S, K, r, q, T - dT, sigma, is_call, n_fixings) if T > dT else price
+ * 
+*/
+            __pyx_t_6.__pyx_n = 2;
+            __pyx_t_6.is_call = __pyx_v_is_call;
+            __pyx_t_6.n_fixings = __pyx_v_n_fixings;
+            __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_price(__pyx_v_S, __pyx_v_K, (__pyx_v_r - __pyx_v_dr), __pyx_v_q, __pyx_v_T, __pyx_v_sigma, 0, &__pyx_t_6); 
+            __pyx_v_p_rd = __pyx_t_1;
+
+            /* "bz_pricing/core/options_core.pyx":1307
+ *                 p_ru = asian_arithmetic_tw_price(S, K, r + dr, q, T, sigma, is_call, n_fixings)
+ *                 p_rd = asian_arithmetic_tw_price(S, K, r - dr, q, T, sigma, is_call, n_fixings)
+ *                 p_td = asian_arithmetic_tw_price(S, K, r, q, T - dT, sigma, is_call, n_fixings) if T > dT else price             # <<<<<<<<<<<<<<
+ * 
+ *         if T > 0.0 and sigma > dv and S > dS and K > 0.0:
+*/
+            __pyx_t_3 = (__pyx_v_T > __pyx_v_dT);
+
+            if (__pyx_t_3) {
+              __pyx_t_6.__pyx_n = 2;
+              __pyx_t_6.is_call = __pyx_v_is_call;
+              __pyx_t_6.n_fixings = __pyx_v_n_fixings;
+              __pyx_t_5 = __pyx_f_10bz_pricing_4core_12options_core_asian_arithmetic_tw_price(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, (__pyx_v_T - __pyx_v_dT), __pyx_v_sigma, 0, &__pyx_t_6); 
+              __pyx_t_1 = __pyx_t_5;
+            } else {
+
+              __pyx_t_1 = __pyx_v_price;
+            }
+
+            __pyx_v_p_td = __pyx_t_1;
+
+            /* "bz_pricing/core/options_core.pyx":1300
+ *         else:
+ *             price = asian_arithmetic_tw_price(S, K, r, q, T, sigma, is_call, n_fixings)
+ *             if T > 0.0 and sigma > dv and S > dS and K > 0.0:             # <<<<<<<<<<<<<<
+ *                 p_su = asian_arithmetic_tw_price(S + dS, K, r, q, T, sigma, is_call, n_fixings)
+ *                 p_sd = asian_arithmetic_tw_price(S - dS, K, r, q, T, sigma, is_call, n_fixings)
+*/
+          }
+        }
+        __pyx_L6:;
+
+        /* "bz_pricing/core/options_core.pyx":1309
+ *                 p_td = asian_arithmetic_tw_price(S, K, r, q, T - dT, sigma, is_call, n_fixings) if T > dT else price
+ * 
+ *         if T > 0.0 and sigma > dv and S > dS and K > 0.0:             # <<<<<<<<<<<<<<
+ *             delta = (p_su - p_sd) / (2.0 * dS)
+ *             gamma = (p_su - 2.0 * price + p_sd) / (dS * dS)
+*/
+        __pyx_t_4 = (__pyx_v_T > 0.0);
+
+        if (__pyx_t_4) {
+
+        } else {
+
+          __pyx_t_3 = __pyx_t_4;
+
+          goto __pyx_L18_bool_binop_done;
+        }
+        __pyx_t_4 = (__pyx_v_sigma > __pyx_v_dv);
+
+        if (__pyx_t_4) {
+
+        } else {
+
+          __pyx_t_3 = __pyx_t_4;
+
+          goto __pyx_L18_bool_binop_done;
+        }
+        __pyx_t_4 = (__pyx_v_S > __pyx_v_dS);
+
+        if (__pyx_t_4) {
+
+        } else {
+
+          __pyx_t_3 = __pyx_t_4;
+
+          goto __pyx_L18_bool_binop_done;
+        }
+        __pyx_t_4 = (__pyx_v_K > 0.0);
+
+
+        __pyx_t_3 = __pyx_t_4;
+
+        __pyx_L18_bool_binop_done:;
+        if (__pyx_t_3) {
+
+
+          /* "bz_pricing/core/options_core.pyx":1310
+ * 
+ *         if T > 0.0 and sigma > dv and S > dS and K > 0.0:
+ *             delta = (p_su - p_sd) / (2.0 * dS)             # <<<<<<<<<<<<<<
+ *             gamma = (p_su - 2.0 * price + p_sd) / (dS * dS)
+ *             vega = (p_vu - p_vd) / (2.0 * dv)
+*/
+          __pyx_v_delta = ((__pyx_v_p_su - __pyx_v_p_sd) / (2.0 * __pyx_v_dS));
+
+          /* "bz_pricing/core/options_core.pyx":1311
+ *         if T > 0.0 and sigma > dv and S > dS and K > 0.0:
+ *             delta = (p_su - p_sd) / (2.0 * dS)
+ *             gamma = (p_su - 2.0 * price + p_sd) / (dS * dS)             # <<<<<<<<<<<<<<
+ *             vega = (p_vu - p_vd) / (2.0 * dv)
+ *             rho = (p_ru - p_rd) / (2.0 * dr)
+*/
+          __pyx_v_gamma = (((__pyx_v_p_su - (2.0 * __pyx_v_price)) + __pyx_v_p_sd) / (__pyx_v_dS * __pyx_v_dS));
+
+          /* "bz_pricing/core/options_core.pyx":1312
+ *             delta = (p_su - p_sd) / (2.0 * dS)
+ *             gamma = (p_su - 2.0 * price + p_sd) / (dS * dS)
+ *             vega = (p_vu - p_vd) / (2.0 * dv)             # <<<<<<<<<<<<<<
+ *             rho = (p_ru - p_rd) / (2.0 * dr)
+ *             if T > dT:
+*/
+          __pyx_v_vega = ((__pyx_v_p_vu - __pyx_v_p_vd) / (2.0 * __pyx_v_dv));
+
+          /* "bz_pricing/core/options_core.pyx":1313
+ *             gamma = (p_su - 2.0 * price + p_sd) / (dS * dS)
+ *             vega = (p_vu - p_vd) / (2.0 * dv)
+ *             rho = (p_ru - p_rd) / (2.0 * dr)             # <<<<<<<<<<<<<<
+ *             if T > dT:
+ *                 theta = (p_td - price) / dT
+*/
+          __pyx_v_rho = ((__pyx_v_p_ru - __pyx_v_p_rd) / (2.0 * __pyx_v_dr));
+
+          /* "bz_pricing/core/options_core.pyx":1314
+ *             vega = (p_vu - p_vd) / (2.0 * dv)
+ *             rho = (p_ru - p_rd) / (2.0 * dr)
+ *             if T > dT:             # <<<<<<<<<<<<<<
+ *                 theta = (p_td - price) / dT
+ * 
+*/
+          __pyx_t_3 = (__pyx_v_T > __pyx_v_dT);
+
+          if (__pyx_t_3) {
+
+
+            /* "bz_pricing/core/options_core.pyx":1315
+ *             rho = (p_ru - p_rd) / (2.0 * dr)
+ *             if T > dT:
+ *                 theta = (p_td - price) / dT             # <<<<<<<<<<<<<<
+ * 
+ *     return (price, delta, gamma, vega, theta, rho)
+*/
+            __pyx_v_theta = ((__pyx_v_p_td - __pyx_v_price) / __pyx_v_dT);
+
+            /* "bz_pricing/core/options_core.pyx":1314
+ *             vega = (p_vu - p_vd) / (2.0 * dv)
+ *             rho = (p_ru - p_rd) / (2.0 * dr)
+ *             if T > dT:             # <<<<<<<<<<<<<<
+ *                 theta = (p_td - price) / dT
+ * 
+*/
+          }
+
+          /* "bz_pricing/core/options_core.pyx":1309
+ *                 p_td = asian_arithmetic_tw_price(S, K, r, q, T - dT, sigma, is_call, n_fixings) if T > dT else price
+ * 
+ *         if T > 0.0 and sigma > dv and S > dS and K > 0.0:             # <<<<<<<<<<<<<<
+ *             delta = (p_su - p_sd) / (2.0 * dS)
+ *             gamma = (p_su - 2.0 * price + p_sd) / (dS * dS)
+*/
+        }
+      }
+
+      /* "bz_pricing/core/options_core.pyx":1287
+ *     cdef double p_su, p_sd, p_vu, p_vd, p_ru, p_rd, p_td
+ * 
+ *     with nogil:             # <<<<<<<<<<<<<<
+ *         if is_geometric:
+ *             price = asian_geometric_price(S, K, r, q, T, sigma, is_call, n_fixings)
+*/
+      /*finally:*/ {
+        /*normal exit:*/{
+          __Pyx_FastGIL_Forget();
+          PyEval_RestoreThread(_save);
+          goto __pyx_L5;
+        }
+        __pyx_L5:;
+      }
+  }
+
+  /* "bz_pricing/core/options_core.pyx":1317
+ *                 theta = (p_td - price) / dT
+ * 
+ *     return (price, delta, gamma, vega, theta, rho)             # <<<<<<<<<<<<<<
+ * 
+*/
+  __pyx_t_7 = PyFloat_FromDouble(__pyx_v_price); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1317, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_8 = PyFloat_FromDouble(__pyx_v_delta); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 1317, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_9 = PyFloat_FromDouble(__pyx_v_gamma); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 1317, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_9);
+  __pyx_t_10 = PyFloat_FromDouble(__pyx_v_vega); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 1317, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_10);
+  __pyx_t_11 = PyFloat_FromDouble(__pyx_v_theta); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 1317, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_11);
+  __pyx_t_12 = PyFloat_FromDouble(__pyx_v_rho); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 1317, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_12);
+  __pyx_t_13 = PyTuple_New(6); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 1317, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_13);
+  __Pyx_GIVEREF(__pyx_t_7);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 0, __pyx_t_7) != (0)) __PYX_ERR(0, 1317, __pyx_L1_error);
+  __Pyx_GIVEREF(__pyx_t_8);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 1, __pyx_t_8) != (0)) __PYX_ERR(0, 1317, __pyx_L1_error);
+  __Pyx_GIVEREF(__pyx_t_9);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 2, __pyx_t_9) != (0)) __PYX_ERR(0, 1317, __pyx_L1_error);
+  __Pyx_GIVEREF(__pyx_t_10);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 3, __pyx_t_10) != (0)) __PYX_ERR(0, 1317, __pyx_L1_error);
+  __Pyx_GIVEREF(__pyx_t_11);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 4, __pyx_t_11) != (0)) __PYX_ERR(0, 1317, __pyx_L1_error);
+  __Pyx_GIVEREF(__pyx_t_12);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_13, 5, __pyx_t_12) != (0)) __PYX_ERR(0, 1317, __pyx_L1_error);
+  __pyx_t_7 = 0;
+  __pyx_t_8 = 0;
+  __pyx_t_9 = 0;
+  __pyx_t_10 = 0;
+  __pyx_t_11 = 0;
+  __pyx_t_12 = 0;
+  {
+    PyObject *__pyx_temp;
+    {
+      __pyx_temp = __pyx_r;
+      __pyx_r = ((PyObject*)__pyx_t_13);
+    }
+    __Pyx_XDECREF(__pyx_temp);
+  }
+  __pyx_t_13 = 0;
+  goto __pyx_L0;
+
+  /* "bz_pricing/core/options_core.pyx":1268
+ * 
+ * 
+ * cpdef tuple asian_price_greeks(             # <<<<<<<<<<<<<<
+ *     double S,
+ *     double K,
+*/
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_XDECREF(__pyx_t_8);
+  __Pyx_XDECREF(__pyx_t_9);
+  __Pyx_XDECREF(__pyx_t_10);
+  __Pyx_XDECREF(__pyx_t_11);
+  __Pyx_XDECREF(__pyx_t_12);
+  __Pyx_XDECREF(__pyx_t_13);
+  __Pyx_AddTraceback("bz_pricing.core.options_core.asian_price_greeks", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_47asian_price_greeks(PyObject *__pyx_self, 
+#if CYTHON_VECTORCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+); /*proto*/
+PyDoc_STRVAR(__pyx_doc_10bz_pricing_4core_12options_core_46asian_price_greeks, "Pre\303\247o e gregas centrais em Cython para op\303\247\303\265es asi\303\241ticas geom\303\251tricas e aritm\303\251ticas.");
+static PyMethodDef __pyx_mdef_10bz_pricing_4core_12options_core_47asian_price_greeks = {"asian_price_greeks", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10bz_pricing_4core_12options_core_47asian_price_greeks, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10bz_pricing_4core_12options_core_46asian_price_greeks};
+static PyObject *__pyx_pw_10bz_pricing_4core_12options_core_47asian_price_greeks(PyObject *__pyx_self, 
+#if CYTHON_VECTORCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+) {
+  double __pyx_v_S;
+  double __pyx_v_K;
+  double __pyx_v_r;
+  double __pyx_v_q;
+  double __pyx_v_T;
+  double __pyx_v_sigma;
+  int __pyx_v_is_call;
+  int __pyx_v_n_fixings;
+  int __pyx_v_is_geometric;
+  #if !CYTHON_VECTORCALL
+  CYTHON_UNUSED Py_ssize_t __pyx_nargs;
+  #endif
+  CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
+  PyObject* values[9] = {0,0,0,0,0,0,0,0,0};
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("asian_price_greeks (wrapper)", 0);
+  #if !CYTHON_VECTORCALL
+  #if CYTHON_ASSUME_SAFE_SIZE
+  __pyx_nargs = PyTuple_GET_SIZE(__pyx_args);
+  #else
+  __pyx_nargs = PyTuple_Size(__pyx_args); if (unlikely(__pyx_nargs < 0)) return NULL;
+  #endif
+  #endif
+  __pyx_kwvalues = __Pyx_KwValues_FASTCALL(__pyx_args, __pyx_nargs);
+  {
+    PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_S,&__pyx_mstate_global->__pyx_n_u_K,&__pyx_mstate_global->__pyx_n_u_r,&__pyx_mstate_global->__pyx_n_u_q,&__pyx_mstate_global->__pyx_n_u_T,&__pyx_mstate_global->__pyx_n_u_sigma,&__pyx_mstate_global->__pyx_n_u_is_call,&__pyx_mstate_global->__pyx_n_u_n_fixings,&__pyx_mstate_global->__pyx_n_u_is_geometric,0};
+    const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
+    if (unlikely(__pyx_kwds_len < 0)) __PYX_ERR(0, 1268, __pyx_L3_error)
+    if (__pyx_kwds_len > 0) {
+      switch (__pyx_nargs) {
+        case  9:
+        values[8] = __Pyx_ArgRef_FASTCALL(__pyx_args, 8);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 1268, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  8:
+        values[7] = __Pyx_ArgRef_FASTCALL(__pyx_args, 7);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 1268, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  7:
+        values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 1268, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  6:
+        values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 1268, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  5:
+        values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 1268, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  4:
+        values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 1268, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  3:
+        values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 1268, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  2:
+        values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 1268, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  1:
+        values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 1268, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      const Py_ssize_t kwd_pos_args = __pyx_nargs;
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "asian_price_greeks", 0) < (0)) __PYX_ERR(0, 1268, __pyx_L3_error)
+      for (Py_ssize_t i = __pyx_nargs; i < 6; i++) {
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("asian_price_greeks", 0, 6, 9, i); __PYX_ERR(0, 1268, __pyx_L3_error) }
+      }
+    } else {
+      switch (__pyx_nargs) {
+        case  9:
+        values[8] = __Pyx_ArgRef_FASTCALL(__pyx_args, 8);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 1268, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  8:
+        values[7] = __Pyx_ArgRef_FASTCALL(__pyx_args, 7);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 1268, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  7:
+        values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 1268, __pyx_L3_error)
+        CYTHON_FALLTHROUGH;
+        case  6:
+        values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 1268, __pyx_L3_error)
+        values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 1268, __pyx_L3_error)
+        values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 1268, __pyx_L3_error)
+        values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 1268, __pyx_L3_error)
+        values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 1268, __pyx_L3_error)
+        values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 1268, __pyx_L3_error)
+        break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+    }
+    __pyx_v_S = __Pyx_PyFloat_AsDouble(values[0]); if (unlikely((__pyx_v_S == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1269, __pyx_L3_error)
+    __pyx_v_K = __Pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_K == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1270, __pyx_L3_error)
+    __pyx_v_r = __Pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_r == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1271, __pyx_L3_error)
+    __pyx_v_q = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_q == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1272, __pyx_L3_error)
+    __pyx_v_T = __Pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_T == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1273, __pyx_L3_error)
+    __pyx_v_sigma = __Pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_sigma == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 1274, __pyx_L3_error)
+    if (values[6]) {
+      __pyx_v_is_call = __Pyx_PyObject_IsTrue(values[6]); if (unlikely((__pyx_v_is_call == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1275, __pyx_L3_error)
+    } else {
+
+      /* "bz_pricing/core/options_core.pyx":1275
+ *     double T,
+ *     double sigma,
+ *     bint is_call=True,             # <<<<<<<<<<<<<<
+ *     int n_fixings=0,
+ *     bint is_geometric=False,
+*/
+      __pyx_v_is_call = ((int)1);
+    }
+    if (values[7]) {
+      __pyx_v_n_fixings = __Pyx_PyLong_As_int(values[7]); if (unlikely((__pyx_v_n_fixings == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1276, __pyx_L3_error)
+    } else {
+      __pyx_v_n_fixings = ((int)0);
+    }
+    if (values[8]) {
+      __pyx_v_is_geometric = __Pyx_PyObject_IsTrue(values[8]); if (unlikely((__pyx_v_is_geometric == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1277, __pyx_L3_error)
+    } else {
+
+      /* "bz_pricing/core/options_core.pyx":1277
+ *     bint is_call=True,
+ *     int n_fixings=0,
+ *     bint is_geometric=False,             # <<<<<<<<<<<<<<
+ * ):
+ *     """Preo e gregas centrais em Cython para opes asiticas geomtricas e aritmticas."""
+*/
+      __pyx_v_is_geometric = ((int)0);
+    }
+  }
+  goto __pyx_L6_skip;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("asian_price_greeks", 0, 6, 9, __pyx_nargs); __PYX_ERR(0, 1268, __pyx_L3_error)
+  __pyx_L6_skip:;
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L3_error:;
+  for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+    Py_XDECREF(values[__pyx_temp]);
+  }
+  __Pyx_AddTraceback("bz_pricing.core.options_core.asian_price_greeks", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_10bz_pricing_4core_12options_core_46asian_price_greeks(__pyx_self, __pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, __pyx_v_is_call, __pyx_v_n_fixings, __pyx_v_is_geometric);
+
+  /* "bz_pricing/core/options_core.pyx":1268
+ * 
+ * 
+ * cpdef tuple asian_price_greeks(             # <<<<<<<<<<<<<<
+ *     double S,
+ *     double K,
+*/
+
+  /* function exit code */
+  for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+    Py_XDECREF(values[__pyx_temp]);
+  }
+
+
+
+
+
+
+
+
+
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_10bz_pricing_4core_12options_core_46asian_price_greeks(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_S, double __pyx_v_K, double __pyx_v_r, double __pyx_v_q, double __pyx_v_T, double __pyx_v_sigma, int __pyx_v_is_call, int __pyx_v_n_fixings, int __pyx_v_is_geometric) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  struct __pyx_opt_args_10bz_pricing_4core_12options_core_asian_price_greeks __pyx_t_2;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("asian_price_greeks", 0);
+  __pyx_t_2.__pyx_n = 3;
+  __pyx_t_2.is_call = __pyx_v_is_call;
+  __pyx_t_2.n_fixings = __pyx_v_n_fixings;
+  __pyx_t_2.is_geometric = __pyx_v_is_geometric;
+  __pyx_t_1 = __pyx_f_10bz_pricing_4core_12options_core_asian_price_greeks(__pyx_v_S, __pyx_v_K, __pyx_v_r, __pyx_v_q, __pyx_v_T, __pyx_v_sigma, 1, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1268, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  {
+    PyObject *__pyx_temp;
+    {
+      __pyx_temp = __pyx_r;
+      __pyx_r = __pyx_t_1;
+    }
+    __Pyx_XDECREF(__pyx_temp);
+  }
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("bz_pricing.core.options_core.asian_price_greeks", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -36348,7 +40946,7 @@ __Pyx_RefNannySetupContext("PyInit_options_core", 0);
  * 
  * import numpy as np             # <<<<<<<<<<<<<<
  * cimport numpy as np
- * from libc.math cimport exp, log, sqrt, erf, fabs, pow, fmax, NAN
+ * from libc.math cimport exp, log, sqrt, erf, fabs, pow, fmax, fmin, NAN
 */
   __pyx_t_1 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_numpy, 0, 0, NULL, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 6, __pyx_L1_error)
   __pyx_t_4 = __pyx_t_1;
@@ -36483,208 +41081,271 @@ __Pyx_RefNannySetupContext("PyInit_options_core", 0);
   if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_crr_american_price_greeks, __pyx_t_4) < (0)) __PYX_ERR(0, 302, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/options_core.pyx":353
+  /* "bz_pricing/core/options_core.pyx":469
+ * 
+ * 
+ * cpdef tuple crr_american_discrete_div_price_greeks(             # <<<<<<<<<<<<<<
+ *     double S,
+ *     double K,
+*/
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_15crr_american_discrete_div_price_greeks, 0, __pyx_mstate_global->__pyx_n_u_crr_american_discrete_div_price, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[7])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 469, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
+  PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
+  #endif
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_crr_american_discrete_div_price, __pyx_t_4) < (0)) __PYX_ERR(0, 469, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "bz_pricing/core/options_core.pyx":540
  * 
  * 
  * cpdef double corrado_su_price(             # <<<<<<<<<<<<<<
  *     double S,
  *     double K,
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_15corrado_su_price, 0, __pyx_mstate_global->__pyx_n_u_corrado_su_price, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[7])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 353, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_17corrado_su_price, 0, __pyx_mstate_global->__pyx_n_u_corrado_su_price, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[8])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 540, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[3]);
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_corrado_su_price, __pyx_t_4) < (0)) __PYX_ERR(0, 353, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_corrado_su_price, __pyx_t_4) < (0)) __PYX_ERR(0, 540, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/options_core.pyx":396
+  /* "bz_pricing/core/options_core.pyx":583
  * 
  * 
  * cpdef double implied_vol_bsm(             # <<<<<<<<<<<<<<
  *     double target_price,
  *     double S,
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_17implied_vol_bsm, 0, __pyx_mstate_global->__pyx_n_u_implied_vol_bsm, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[8])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 396, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_19implied_vol_bsm, 0, __pyx_mstate_global->__pyx_n_u_implied_vol_bsm, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[9])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 583, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[5]);
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_implied_vol_bsm, __pyx_t_4) < (0)) __PYX_ERR(0, 396, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_implied_vol_bsm, __pyx_t_4) < (0)) __PYX_ERR(0, 583, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/options_core.pyx":456
+  /* "bz_pricing/core/options_core.pyx":643
  * 
  * 
  * cpdef double implied_vol_black76(             # <<<<<<<<<<<<<<
  *     double target_price,
  *     double F,
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_19implied_vol_black76, 0, __pyx_mstate_global->__pyx_n_u_implied_vol_black76, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[9])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 456, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_21implied_vol_black76, 0, __pyx_mstate_global->__pyx_n_u_implied_vol_black76, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[10])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 643, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[6]);
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_implied_vol_black76, __pyx_t_4) < (0)) __PYX_ERR(0, 456, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_implied_vol_black76, __pyx_t_4) < (0)) __PYX_ERR(0, 643, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/options_core.pyx":469
+  /* "bz_pricing/core/options_core.pyx":656
  * 
  * 
  * cpdef double svi_total_variance(             # <<<<<<<<<<<<<<
  *     double k,
  *     double a,
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_21svi_total_variance, 0, __pyx_mstate_global->__pyx_n_u_svi_total_variance, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[10])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 469, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_23svi_total_variance, 0, __pyx_mstate_global->__pyx_n_u_svi_total_variance, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[11])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 656, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_svi_total_variance, __pyx_t_4) < (0)) __PYX_ERR(0, 469, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_svi_total_variance, __pyx_t_4) < (0)) __PYX_ERR(0, 656, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/options_core.pyx":482
+  /* "bz_pricing/core/options_core.pyx":669
  * 
  * 
  * cpdef np.ndarray[np.float64_t, ndim=1] svi_eval_vec(             # <<<<<<<<<<<<<<
  *     double[:] k_arr,
  *     double a,
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_23svi_eval_vec, 0, __pyx_mstate_global->__pyx_n_u_svi_eval_vec, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[11])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 482, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_25svi_eval_vec, 0, __pyx_mstate_global->__pyx_n_u_svi_eval_vec, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[12])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 669, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_svi_eval_vec, __pyx_t_4) < (0)) __PYX_ERR(0, 482, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_svi_eval_vec, __pyx_t_4) < (0)) __PYX_ERR(0, 669, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/options_core.pyx":500
+  /* "bz_pricing/core/options_core.pyx":687
  * 
  * 
  * cpdef double sabr_implied_vol(             # <<<<<<<<<<<<<<
  *     double F,
  *     double K,
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_25sabr_implied_vol, 0, __pyx_mstate_global->__pyx_n_u_sabr_implied_vol, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[12])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 500, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_27sabr_implied_vol, 0, __pyx_mstate_global->__pyx_n_u_sabr_implied_vol, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[13])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 687, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_sabr_implied_vol, __pyx_t_4) < (0)) __PYX_ERR(0, 500, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_sabr_implied_vol, __pyx_t_4) < (0)) __PYX_ERR(0, 687, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/options_core.pyx":549
+  /* "bz_pricing/core/options_core.pyx":736
  * 
  * 
  * cpdef tuple price_options_batch(             # <<<<<<<<<<<<<<
  *     int[:] is_call_arr,
  *     int[:] is_american_arr,
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_27price_options_batch, 0, __pyx_mstate_global->__pyx_n_u_price_options_batch, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[13])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 549, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_29price_options_batch, 0, __pyx_mstate_global->__pyx_n_u_price_options_batch, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[14])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 736, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[7]);
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_price_options_batch, __pyx_t_4) < (0)) __PYX_ERR(0, 549, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_price_options_batch, __pyx_t_4) < (0)) __PYX_ERR(0, 736, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/options_core.pyx":685
+  /* "bz_pricing/core/options_core.pyx":872
  * 
  * 
  * cpdef tuple bachelier_price_greeks(             # <<<<<<<<<<<<<<
  *     double F,
  *     double K,
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_29bachelier_price_greeks, 0, __pyx_mstate_global->__pyx_n_u_bachelier_price_greeks, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[14])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 685, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_31bachelier_price_greeks, 0, __pyx_mstate_global->__pyx_n_u_bachelier_price_greeks, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[15])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 872, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[3]);
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_bachelier_price_greeks, __pyx_t_4) < (0)) __PYX_ERR(0, 685, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_bachelier_price_greeks, __pyx_t_4) < (0)) __PYX_ERR(0, 872, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/options_core.pyx":700
+  /* "bz_pricing/core/options_core.pyx":887
  * 
  * 
  * cpdef double implied_vol_bachelier(             # <<<<<<<<<<<<<<
  *     double target_price,
  *     double F,
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_31implied_vol_bachelier, 0, __pyx_mstate_global->__pyx_n_u_implied_vol_bachelier, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[15])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 700, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_33implied_vol_bachelier, 0, __pyx_mstate_global->__pyx_n_u_implied_vol_bachelier, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[16])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 887, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[8]);
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_implied_vol_bachelier, __pyx_t_4) < (0)) __PYX_ERR(0, 700, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_implied_vol_bachelier, __pyx_t_4) < (0)) __PYX_ERR(0, 887, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/options_core.pyx":752
+  /* "bz_pricing/core/options_core.pyx":939
  * 
  * 
  * cpdef double barrier_bsm_price(             # <<<<<<<<<<<<<<
  *     double S,
  *     double K,
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_33barrier_bsm_price, 0, __pyx_mstate_global->__pyx_n_u_barrier_bsm_price, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[16])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 752, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_35barrier_bsm_price, 0, __pyx_mstate_global->__pyx_n_u_barrier_bsm_price, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[17])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 939, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[9]);
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_barrier_bsm_price, __pyx_t_4) < (0)) __PYX_ERR(0, 752, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_barrier_bsm_price, __pyx_t_4) < (0)) __PYX_ERR(0, 939, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/options_core.pyx":841
+  /* "bz_pricing/core/options_core.pyx":1028
  * 
  * 
  * cpdef double asian_geometric_price(             # <<<<<<<<<<<<<<
  *     double S,
  *     double K,
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_35asian_geometric_price, 0, __pyx_mstate_global->__pyx_n_u_asian_geometric_price, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[17])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 841, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_37asian_geometric_price, 0, __pyx_mstate_global->__pyx_n_u_asian_geometric_price, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[18])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1028, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[10]);
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_asian_geometric_price, __pyx_t_4) < (0)) __PYX_ERR(0, 841, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_asian_geometric_price, __pyx_t_4) < (0)) __PYX_ERR(0, 1028, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/options_core.pyx":876
+  /* "bz_pricing/core/options_core.pyx":1063
  * 
  * 
  * cpdef double asian_arithmetic_tw_price(             # <<<<<<<<<<<<<<
  *     double S,
  *     double K,
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_37asian_arithmetic_tw_price, 0, __pyx_mstate_global->__pyx_n_u_asian_arithmetic_tw_price, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[18])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 876, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_39asian_arithmetic_tw_price, 0, __pyx_mstate_global->__pyx_n_u_asian_arithmetic_tw_price, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[19])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1063, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[10]);
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_asian_arithmetic_tw_price, __pyx_t_4) < (0)) __PYX_ERR(0, 876, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_asian_arithmetic_tw_price, __pyx_t_4) < (0)) __PYX_ERR(0, 1063, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "bz_pricing/core/options_core.pyx":944
+  /* "bz_pricing/core/options_core.pyx":1131
  * 
  * 
  * cpdef tuple price_black76_batch(             # <<<<<<<<<<<<<<
  *     int[:] is_call_arr,
  *     double[:] F_arr,
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_39price_black76_batch, 0, __pyx_mstate_global->__pyx_n_u_price_black76_batch, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[19])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 944, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_41price_black76_batch, 0, __pyx_mstate_global->__pyx_n_u_price_black76_batch, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[20])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1131, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_price_black76_batch, __pyx_t_4) < (0)) __PYX_ERR(0, 944, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_price_black76_batch, __pyx_t_4) < (0)) __PYX_ERR(0, 1131, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "bz_pricing/core/options_core.pyx":1179
+ * 
+ * 
+ * cpdef tuple corrado_su_price_greeks(             # <<<<<<<<<<<<<<
+ *     double S,
+ *     double K,
+*/
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_43corrado_su_price_greeks, 0, __pyx_mstate_global->__pyx_n_u_corrado_su_price_greeks, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[21])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1179, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
+  PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
+  #endif
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[3]);
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_corrado_su_price_greeks, __pyx_t_4) < (0)) __PYX_ERR(0, 1179, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "bz_pricing/core/options_core.pyx":1223
+ * 
+ * 
+ * cpdef tuple barrier_bsm_price_greeks(             # <<<<<<<<<<<<<<
+ *     double S,
+ *     double K,
+*/
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_45barrier_bsm_price_greeks, 0, __pyx_mstate_global->__pyx_n_u_barrier_bsm_price_greeks, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[22])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1223, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
+  PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
+  #endif
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[11]);
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_barrier_bsm_price_greeks, __pyx_t_4) < (0)) __PYX_ERR(0, 1223, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "bz_pricing/core/options_core.pyx":1268
+ * 
+ * 
+ * cpdef tuple asian_price_greeks(             # <<<<<<<<<<<<<<
+ *     double S,
+ *     double K,
+*/
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_10bz_pricing_4core_12options_core_47asian_price_greeks, 0, __pyx_mstate_global->__pyx_n_u_asian_price_greeks, NULL, __pyx_mstate_global->__pyx_n_u_bz_pricing_core_options_core, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[23])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1268, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
+  PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
+  #endif
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_mstate_global->__pyx_tuple[12]);
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_asian_price_greeks, __pyx_t_4) < (0)) __PYX_ERR(0, 1268, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "bz_pricing/core/options_core.pyx":1
@@ -36802,7 +41463,7 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
   if (__Pyx_PyTuple_SET_ITEM(__pyx_mstate_global->__pyx_tuple[1], 0, __pyx_mstate_global->__pyx_slice[0]) != (0)) __PYX_ERR(1, 763, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[1]);
 
-  /* "bz_pricing/core/options_core.pyx":492
+  /* "bz_pricing/core/options_core.pyx":679
  *     cdef Py_ssize_t n = k_arr.shape[0]
  *     cdef Py_ssize_t i
  *     cdef np.ndarray[np.float64_t, ndim=1] out = np.empty(n, dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -36811,7 +41472,7 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[1] = {__pyx_mstate_global->__pyx_n_u_dtype};
-    __pyx_mstate_global->__pyx_tuple[2] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[2])) __PYX_ERR(0, 492, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[2] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[2])) __PYX_ERR(0, 679, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[2]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[2]);
@@ -36844,7 +41505,7 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[4]);
 
-  /* "bz_pricing/core/options_core.pyx":396
+  /* "bz_pricing/core/options_core.pyx":583
  * 
  * 
  * cpdef double implied_vol_bsm(             # <<<<<<<<<<<<<<
@@ -36853,12 +41514,12 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[3] = {Py_True, __pyx_mstate_global->__pyx_float_1eneg_9, __pyx_mstate_global->__pyx_int_100};
-    __pyx_mstate_global->__pyx_tuple[5] = __Pyx_PyTuple_FromArray(__pyx_temp, 3); if (unlikely(!__pyx_mstate_global->__pyx_tuple[5])) __PYX_ERR(0, 396, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[5] = __Pyx_PyTuple_FromArray(__pyx_temp, 3); if (unlikely(!__pyx_mstate_global->__pyx_tuple[5])) __PYX_ERR(0, 583, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[5]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[5]);
 
-  /* "bz_pricing/core/options_core.pyx":456
+  /* "bz_pricing/core/options_core.pyx":643
  * 
  * 
  * cpdef double implied_vol_black76(             # <<<<<<<<<<<<<<
@@ -36867,12 +41528,12 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[3] = {Py_True, __pyx_mstate_global->__pyx_float_1eneg_9, __pyx_mstate_global->__pyx_int_100};
-    __pyx_mstate_global->__pyx_tuple[6] = __Pyx_PyTuple_FromArray(__pyx_temp, 3); if (unlikely(!__pyx_mstate_global->__pyx_tuple[6])) __PYX_ERR(0, 456, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[6] = __Pyx_PyTuple_FromArray(__pyx_temp, 3); if (unlikely(!__pyx_mstate_global->__pyx_tuple[6])) __PYX_ERR(0, 643, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[6]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[6]);
 
-  /* "bz_pricing/core/options_core.pyx":549
+  /* "bz_pricing/core/options_core.pyx":736
  * 
  * 
  * cpdef tuple price_options_batch(             # <<<<<<<<<<<<<<
@@ -36881,12 +41542,12 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[1] = {__pyx_mstate_global->__pyx_int_150};
-    __pyx_mstate_global->__pyx_tuple[7] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[7])) __PYX_ERR(0, 549, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[7] = __Pyx_PyTuple_FromArray(__pyx_temp, 1); if (unlikely(!__pyx_mstate_global->__pyx_tuple[7])) __PYX_ERR(0, 736, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[7]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[7]);
 
-  /* "bz_pricing/core/options_core.pyx":700
+  /* "bz_pricing/core/options_core.pyx":887
  * 
  * 
  * cpdef double implied_vol_bachelier(             # <<<<<<<<<<<<<<
@@ -36895,12 +41556,12 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[3] = {Py_True, __pyx_mstate_global->__pyx_float_1eneg_9, __pyx_mstate_global->__pyx_int_100};
-    __pyx_mstate_global->__pyx_tuple[8] = __Pyx_PyTuple_FromArray(__pyx_temp, 3); if (unlikely(!__pyx_mstate_global->__pyx_tuple[8])) __PYX_ERR(0, 700, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[8] = __Pyx_PyTuple_FromArray(__pyx_temp, 3); if (unlikely(!__pyx_mstate_global->__pyx_tuple[8])) __PYX_ERR(0, 887, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[8]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[8]);
 
-  /* "bz_pricing/core/options_core.pyx":752
+  /* "bz_pricing/core/options_core.pyx":939
  * 
  * 
  * cpdef double barrier_bsm_price(             # <<<<<<<<<<<<<<
@@ -36909,12 +41570,12 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[4] = {Py_True, Py_False, Py_True, __pyx_mstate_global->__pyx_float_0_0};
-    __pyx_mstate_global->__pyx_tuple[9] = __Pyx_PyTuple_FromArray(__pyx_temp, 4); if (unlikely(!__pyx_mstate_global->__pyx_tuple[9])) __PYX_ERR(0, 752, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[9] = __Pyx_PyTuple_FromArray(__pyx_temp, 4); if (unlikely(!__pyx_mstate_global->__pyx_tuple[9])) __PYX_ERR(0, 939, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[9]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[9]);
 
-  /* "bz_pricing/core/options_core.pyx":841
+  /* "bz_pricing/core/options_core.pyx":1028
  * 
  * 
  * cpdef double asian_geometric_price(             # <<<<<<<<<<<<<<
@@ -36923,14 +41584,42 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 */
   {
     PyObject* __pyx_temp[2] = {Py_True, __pyx_mstate_global->__pyx_int_0};
-    __pyx_mstate_global->__pyx_tuple[10] = __Pyx_PyTuple_FromArray(__pyx_temp, 2); if (unlikely(!__pyx_mstate_global->__pyx_tuple[10])) __PYX_ERR(0, 841, __pyx_L1_error)
+    __pyx_mstate_global->__pyx_tuple[10] = __Pyx_PyTuple_FromArray(__pyx_temp, 2); if (unlikely(!__pyx_mstate_global->__pyx_tuple[10])) __PYX_ERR(0, 1028, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[10]);
   }
   __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[10]);
+
+  /* "bz_pricing/core/options_core.pyx":1223
+ * 
+ * 
+ * cpdef tuple barrier_bsm_price_greeks(             # <<<<<<<<<<<<<<
+ *     double S,
+ *     double K,
+*/
+  {
+    PyObject* __pyx_temp[4] = {Py_True, Py_False, Py_True, __pyx_mstate_global->__pyx_float_0_0};
+    __pyx_mstate_global->__pyx_tuple[11] = __Pyx_PyTuple_FromArray(__pyx_temp, 4); if (unlikely(!__pyx_mstate_global->__pyx_tuple[11])) __PYX_ERR(0, 1223, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[11]);
+  }
+  __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[11]);
+
+  /* "bz_pricing/core/options_core.pyx":1268
+ * 
+ * 
+ * cpdef tuple asian_price_greeks(             # <<<<<<<<<<<<<<
+ *     double S,
+ *     double K,
+*/
+  {
+    PyObject* __pyx_temp[3] = {Py_True, __pyx_mstate_global->__pyx_int_0, Py_False};
+    __pyx_mstate_global->__pyx_tuple[12] = __Pyx_PyTuple_FromArray(__pyx_temp, 3); if (unlikely(!__pyx_mstate_global->__pyx_tuple[12])) __PYX_ERR(0, 1268, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_mstate_global->__pyx_tuple[12]);
+  }
+  __Pyx_GIVEREF(__pyx_mstate_global->__pyx_tuple[12]);
   #if CYTHON_IMMORTAL_CONSTANTS
   {
     PyObject **table = __pyx_mstate->__pyx_tuple;
-    for (Py_ssize_t i=0; i<11; ++i) {
+    for (Py_ssize_t i=0; i<13; ++i) {
       #if PY_VERSION_HEX >= 0x030F0000
       PyUnstable_SetImmortal(table[i]);
       #elif CYTHON_COMPILING_IN_CPYTHON_FREETHREADING
@@ -36987,47 +41676,47 @@ static int __Pyx_InitConstants(__pyx_mstatetype *__pyx_mstate) {
   int __pyx_clineno = 0;
   CYTHON_UNUSED_VAR(__pyx_mstate);
   {
-    const struct { const unsigned int length: 8; } str_length_index[] = {{6},{8},{1},{2},{15},{23},{25},{32},{20},{22},{1},{1},{37},{45},{22},{179},{8},{15},{7},{6},{2},{9},{50},{38},{33},{36},{30},{37},{5},{8},{1},{5},{1},{1},{5},{1},{5},{8},{1},{5},{15},{20},{12},{9},{17},{8},{8},{12},{10},{8},{10},{8},{7},{14},{11},{10},{19},{14},{12},{10},{17},{13},{12},{12},{19},{8},{13},{1},{3},{15},{5},{25},{21},{18},{1},{22},{17},{4},{4},{20},{16},{28},{1},{18},{16},{5},{18},{25},{9},{4},{5},{15},{5},{6},{9},{5},{5},{7},{6},{7},{2},{21},{19},{15},{5},{15},{7},{11},{6},{5},{5},{8},{1},{5},{6},{6},{1},{8},{7},{4},{9},{4},{4},{8},{8},{8},{2},{2},{5},{3},{1},{4},{3},{19},{19},{1},{5},{1},{5},{6},{8},{3},{16},{9},{10},{5},{5},{9},{7},{4},{5},{4},{5},{4},{6},{12},{18},{12},{3},{6},{6},{6},{1}};
-    const struct { const unsigned int length: 11; } bytes_length_index[] = {{1},{11},{510},{38},{428},{84},{66},{818},{558},{323},{788},{84},{84},{1187},{50},{443},{1866},{550},{359},{127}};
+    const struct { const unsigned int length: 8; } str_length_index[] = {{6},{8},{1},{2},{15},{23},{25},{32},{20},{22},{1},{1},{37},{45},{22},{179},{8},{15},{7},{6},{2},{9},{50},{38},{33},{36},{30},{37},{5},{8},{1},{5},{1},{1},{5},{1},{5},{8},{1},{5},{15},{20},{12},{9},{17},{8},{8},{12},{10},{8},{10},{8},{7},{14},{11},{10},{19},{14},{12},{10},{17},{13},{12},{12},{19},{8},{13},{1},{3},{15},{5},{25},{21},{18},{18},{1},{22},{17},{24},{4},{4},{20},{16},{28},{1},{18},{16},{23},{5},{38},{18},{25},{9},{4},{11},{9},{5},{15},{5},{6},{9},{5},{5},{7},{6},{7},{2},{21},{19},{15},{5},{15},{7},{11},{12},{6},{5},{5},{8},{1},{5},{6},{6},{1},{8},{7},{4},{9},{4},{4},{8},{8},{8},{2},{2},{5},{3},{1},{4},{3},{19},{19},{14},{15},{1},{5},{1},{5},{6},{8},{3},{16},{9},{10},{5},{5},{9},{7},{4},{5},{4},{5},{4},{6},{12},{18},{12},{3},{6},{6},{6},{1}};
+    const struct { const unsigned int length: 11; } bytes_length_index[] = {{1},{11},{510},{38},{428},{84},{66},{818},{558},{771},{323},{788},{84},{84},{546},{1187},{50},{443},{481},{1866},{550},{359},{897},{127}};
     #ifndef CYTHON_COMPRESS_STRINGS
       #define CYTHON_COMPRESS_STRINGS 90
     #endif
-    #if (CYTHON_COMPRESS_STRINGS) == 2 /* compression: bz2 (4188 bytes) */
-static const char cstring[] = "BZh91AY&SY\307\031\367\021\000\004\r\177\377\377\377\377\377\377\357\377\377\377\373\377\377\377\377\377\376\300@@@@@@@@@@@@\000@\000`\022\034^\370\357#\353\003\253\2636\001\220R\233\032\"I\005-\r\025\271\366\325\000m\024\000\r\007>\373\322\256\204\211\020\251\000\000\321\246\206\200xi\222d\311\263\023P\323T\36543\021\033P\3044\320\320\014\203A\246\201\246\203A$\200&$i\031\020\325?&\246\010\365=CL\223Cd\230G\251\3522\r\000d\320\r=M\003\324\001\240\321\240\323@\022 \222$\200\000h\006\232\r\007\251\243\324\374\322(\320\000\000\000h\320\000\0004\006\200\000\004\232\221\010\224\333R\007\242\r\000\r4\r\000i\243\047\351@\365\000h2\003!\240=M\006\200d\003M=OP\022\225A\241\243 \304h\323@\323M\003#@0\232\000\321\220\311\240h\006\201\223F\201\220\r\000\320\000I!\032M&\247\264\0310\247\222d\315\025<T\321\246\047\250\036\2402d\006\0204\365\006\200\000\000\003@x\243C\376$\t\221\254\232:\026\267\000\225\322\326\345\351\034\220\263\210\271\030eJd\321[z\201$\373\022\036\360\212(\244`\221D\004\0470\346\234\343\234\t?\243\236\177{[f\322_\010c$b.U\267kZ\205\205\353\033f\266C\222\230\007$\345\0147\206s\003\2323|\231 \366\216q\317\003\240t\216\201\361\033\204\320\300\214r\007):N\034\3079\320I:N\240\353<\017\020\230y\236\341hY\"\033\220\215\340\034R\342\222\344\227 \\\201^\0319\325c3\237\310\340\035f\"\342,N\263\254\304\304\016\361\211\300\\\003\023\020\322j11111\014LLC\211\211\210^b#\021#\020X\254@\307\025\377\177\363&`a\200fL\262\"\214b\240\304@Y\026\"EX1\221L\0032L\310L0\212*$QP\n\tP\240\274q\nA$IH$I\036h\007\376EE9H\t\035\301\024\010AC\234\n\245y5X\252E\200\244\200\260\223\304!\234\3253\336\027\227\276\244\30053\032$\315\340\006g\205R\210\2450\241\001\206\216\004\231I\210\032\254\005\"\"$X\"E\005\005\010\241\211\223&D\317p\334$5\026E\301:\022\301\312\222*0\315\253\r\022\205VB\034@T\350<\0239\226\341\200\242\230\223HPg&Zp\213\235\00544\353%\274o\006\360\266 \332#h\005\005)\017#6\030{/:7\254_\242\334\013Z\340\272U\026nF\261\201\311\231\231\256\"\242\013\211XJ\350\302Z\221\251/Mj\314E""\204\\3s0\330K\000\260\006\005\200\302;\211-\r\003h\314\311\231\014\310\260p\000\302a\254YXV,\255\3621Q\031\273\047\255\273\034\207\207\307\300\261\226\322\035!\201LE\2129\014\326a\314\314\251\251\032\265\031\0346\311Q\n\305\002\22786\010\222K<O$V\021\014\315R\034\360\204\254\345\022L\311\344\303\203\322O\036\014XYoF<\276\027\217\361\177gs\366]\343\361\370\237!\222,\315\355\330\217=2\346\255j\276\337\233\367\345\332t\313\317F\264\335\376\245\331\362\361\215q\047[;&\231hE\356P\031\2453\364\207\003\221Z\027R\013\366\207V\0479\211\224\314\362\004\315\310\n2\247/&\262\030\351\246\354\210\201\333*&\266\302\305\010E\202\310\002\202(\"b\240P\240\225\020s\013%\221\2222Y\006A\221T\212\2014LSJa2iL\232\232\234\346\210\304\214TTf\004\3173\317\243\302\247\t\224\302&J`\204\344\343\276{\242D\214TQ\256\330|:\263l\375m{M\323\251\257x|\017aU,>\240Q\263\246\360\275\027%p\211AZ\026\210\265*\321i\2219\\\243EF\213p\\\350u\006\025\301\005c*X\321\223\234\211\020d%\021(%DRt4\251P*\n\241U\354\206Ejx|\037\236\367J\341uu}E\363X\302\250\252\202\2412\047S\302\244H$Y\026\240\254\252\036\372\245\005@\241\346\223F\003\311\224\224\311\313\262\370\302\354[q\323\007\255bvMN\330\217\256Z\310\222(\213]fcy\301\027\330tT\341*\016\031\354\300\304S\047R.P)7I\320\203@\240\021\020\364\201\351\004\301\022\022$\005\n/\347\373\265\332\302,\221d\225\222\262-\341\013\352\rG\260un\202\350\013\210.\256+\227J\3262<o\245\360\356+\335]]\\\271p.,\305\342\375=\226E\225\262\312\341\025\030\335H\225\366\235\251\254\305\230\265\373\231\363\265\314\246L\376?\313B\004\017s\211\343\312\247\236\004\016\373\200p\036\304\235\251(\222\022\t\340\266eC#HORU\006\200\250\265\021B\215l\344\236\304f\222\020\047KvQ\340\211\200R\202\230\212$d\2622\372\211{\035,$\274G`\300\203\002\302\026\020`5\001\230g\236~Vb^\3560\214a\030\3061\251a\205\356\265\322+Y^(\226c\302a\324\321\252\212\230\306\224\376\213q\270\262\026\360o\005\205b\272\266\007\365\262f\260\254+\000\262\312\213B\264^\276bad\031\006H=u\002.O\r\t\345\014z\350\220\236\235\357\047""\242\025+\010\tg1\177c\373\260\312\010S\251\020\377\0029\022\n\n\007_\267{\301\017\344\344\201\335\276I|\020w\304q\026N\231\303\241\3629N\374\222\215\r\010\267P\235|\256~\277F\036\257\304\337\365uw#\335\316\017\315\234\363M\375oP=\226\331\233\r\007\205ZM=\376\366#95\212a\331pp\277\324\205\375\242\301\321mV\357\354\245\242\346\317x\330\017\362y\003\337\351\261`u\005\200P\020\006\201\000\325\366\n\213=K\275\354\272\206mL\331\266{%)\272\010\026\254\236K\240c\206\377\007A\206:\303|,\272\321\3207-\370\345Fa\252\223\374\371|\351\256\251\213E\024\256\327\245\027pm\323v\370V\r~\237N\246\302\300\315\260|,Cp\352\310\363>7o>\000\250A\330\242\2127D`\315e\267\301:\223\033[P\341!\3424\313\206F\321\357\217\264\022=H\342Vp\3669\234\302\233\355\346\316\031\330\030\234\267H\343\004\3122\263%\027+\035\355P\225\002KR\003RZRZRZ\322\260V\036}\206v6\033\014zy\326j\244\265\352\265d!`\243i\026\031.\363\047\264%\201\324@|\237:@\203di\232\214\216\245%\350\234\345\233\215\303\271\242g\243\200\314a\231k\231\310\034\210\344A\310\033Q\265m\014\r\301\266\256\375\245\206\323@X\215L\314\345\047\047\007_d:\242\232\0263\2375\230M\2674\222\3148fidF\\\255\271\202L\266\253PZ\202\324\255\025\240\255\016\001q\337\240Z\212\316\312\253f;\273\215\335=5\243,\215\021\335\254\317g\231!\007\26328\240\347I\300\323kJ\005\241\3602(\352\275\322\262\201\322\343\007Nav\007\312}\307\034\212\021;y\004s(x\r\034\231\360\322[=\031?\236\213\316m\207j]\2109A\304\3627\357\276\350\353\316F-\300\373\301\356s\316j`,\317\277_\301\327\027[\252\272\253\304K\265\257/\024\357pf\3148\256\255\2416\024\314[\047\312\363k\307\266\240\355\331\261vWA\334kS\235\206\t\362ki4\004\031`\025\310\031&\201~\214\371\373\267\227\0261\2344\005V5\251\214\023j\030)y\253R\341F\275|\241\203\007\216\260Z\3763\234\310\r^\336\307\304`\334\340s\036\221Vj\205N\023\226\245<\376\226\256%JC\261\005\210\232\370N\353\017D.\224%\233\241\214\206\234\346\327\246\031g\232h5\320-\265o\270-7\340n\332\343B\363\263\177\207\312\322\200\3148\034\341\247\237q\220\244<\312\2421""u~Rq\025L\240\342\215\256\222<G\252 Z\016&\224\206]\367\006\306\274S\307\261\0278,Y\237\016,\265\346vFC\346n]#a\312\317\207-\327,\035\006Yb\274\332\265\225\3641\232\212Md\307\305n.m\233u\323T\367\237\0109\207\020d\367\344@\264\372\272F4\3559\311U\314\215mV\0106N[\243\273\204\341X\333\202\025\010=\307C\020\353G\213\311)cY\316Ma\221\246\275\3751\274\365\227\033\0219\223\332\272q\335\213\372\314\0236O\036w\037\n\3011r\335mz\310p\332\326|R\303\035\246\337\257@\261\257\247-\305\201`gP\321\222k\316\203\271\207Fy\241\035 \376\247(\234g\352\330exT\300t\334\304\202\241\262!\321\271\030\033\307?\245l\021\263\203\306$/ 8D\365\314\203\310<Ty\036Z]#q\241b\226\263\016{\334\360q\371Y\315w\047]\244I\205\033\305\242\366\333\220\316\3417\226\316\353g8a\307u\222\243|\035\322\224*\\Bh\313\266f\236E\254J\021R\312\230\260\250\201\320u\n`\232\200q\000\311D_>J\347\004kU\tiH\324\202\244T\202\253\002@\200Yq\263x\332h\261\313|\036\316a\206s\006\215\2621{V\352\245\211e\3261s\314\321Re\214\373\216\366\n|\231\005,\303\314\031\236\354\323\364x\023I\200E\346\211\266\317\227\000\300\025\241\202E\313\004`\202\300\230\265\315\227,\034.,[MR\222\267d\316\221\314\r\002\3308{\t\246q\0271*s\336\376\047\255\241\016\272\305r\035\306O.\212|\237\236@>\375\002\003\336\216f\226Q\212g\334Fv\355\047t\003\205\302\272\345qr\274\240+m\354f\n\031\372w\017\253{F\276L\030;\263%9\245\340g\204\021PR\005(T\245J)\335\214\234\r\205\371\306\315\271\251\035\272\270\"\202\201e\002\200\317\300\317\215\347\003\231B54\352r\225\2242\252N\213\226\013\007\275\277\275\206\343`\332\347\247\362\233\332h\\\3410\030\014\216#\250|\276\003\203Hpz>6$\261\224]\353UaY\2409\232\r\007\"\302\362\263`Dx\345\321}\346\303+k~p\216t?\263\341\360\3723\306\363\272i\237 \247\305\253\243\346\366\330\300i\260\367!\257]\026NQ9sr\362\230I\262|\306\201\346\026\250\311E\020\346\237V\313\374\224\005\023`\335m\026*\243>\353\010ZQ\364y\312\014\206\227\325K\014)\227\220(\003Ox\334/\035\220gQ\270#\314\231\r\023\223cc\342 \341\265\230p\017\034\235\234lO\224R\231,0A""\323\tn\003LdxD\310\021\022\270\205%_\345i.%k\207i;).\250\376\033w\247\271\223\023\013\211\210U\020[\261M\"c\374\010?\247\351\237\027^\022q\302Z\342R\333\312\2618\203/\365Y\230\276%\244L/\013\006\316\374?>\355\237\243&\r\201\212p`\336\323\001\034\334\236d\2502\202\305+(\220\241\375\221\303\225\270m\002\217\252\0228\255\037\261\205\250\327\032\002\245^\202\326-\230qcM\260\304\0276\3028zWh\306\215\304\303\367\202\0025\305\n!\336\266a\027s\340\322)b\311&, \237\220\235Fh\316\027\332#\363{\252\350\261R\231*gv\221M\\EDa\324\252V\240 \240m\230pH\360\234=S\251\232\241N\244B3d\347QA*\247\0200\326\047\237\037?\321\247\363\204cv04ML\275\354]\"\242\250\241\316.\246\"\302?\\\366\t\221\234F\312\335\212\030\026}\323mR`\306\232\304\r\251\331\236\264\367\266\006\304;\217b\205R\312\270\304q\246\207!\005\3622\207h\265!d\226\341\334\\\347\310Y\357o\025\365\361%\325\312\271\032i\365\350\266h\233\232\340\025*\212(\307\333\354\330\236#]\207Q\217b\342C\235%SQ4\343\246\367\215K\325\243\212p\216y\247\203\3034\263\206\230i\225l)\327\312\241l\314\253U\"\226)\267\004\025\230\354J\032\266Q.\326\272\204JT.\342jt\224\357L)\047@\344D\336\365\236\261\263\261\222&d\310FFTA\0248\343#\356\223UL$\335\226\366.\201\203\376\366\224\221@o\344% p5!\365\226\326\001r\262\355\006\345\020m*\206\247\371E\016\263\n0s\315\211\260ysN\273\023\310\237\301^cxyC\261\220\212u%UJD\252\250\252W\0312\214\331\031\"\016\364\310z\223T\203\024\223\257\036\344(e\306\304\244&\311\014\206I\333m\252\265t\356\271\r\223\030D\023\224\"j\026\037\243\r\214\271\220\023p\325\252[\263\230B\260\303\233\252\272\255X\024(\305L\355\237\361aC\245\317{\026\347\346\360\332Z\027cX\350\211\214.$I\324N\006w8l1\327`\3056\035V\271\367P\370\370\255+u\201<p[M4\265\020\311\273aMB\203\177\036\032\341\306\363_l\342\340\377TE\322,\377\213N\262{\214\031\257\261$@\344D6\267b\242T\014\331[=p\215\200\327^\366\317H\047\226\210\0339\204\021\257\261\262\304\327[,2Yr\316\220\355\252\021\n\204\241\306\332\226\302\345\255\275\275\255\257\031\355\345P\231e\245\315<""\204\022\220\334-u\020\2413\210\033\267-~E\267l\r\3040t\227H\226%Z\304[(I\240~\221m\241:`]\203\020Y\356\343-\035\213\232n\316\344\315l#\025\214U\236\200\266\310\362\3071Z(P\243s\200c\257\tc\027\n+D\213\007\375\026j\241\225\341\305\023A\022Q\277\306\304sJ\323\343\251\313\027\010\233j\272\334\024\360\326\347\047\022\375Y]\204&X\020\021\022\001\225\030\214*\303Ya\262\n\306VkV\231\310\200\255\223\254\212!M\303\343\030\260\352j\204\265\214:F\230\032\206\250s\241O\216Bf\356\300\331\250\3270\006\316\374\262\r\316\367Y\003\324\016s\245Y\205\250$\235CTiq_\027SV\026\225\373\344h\310\321\032\323a\245K\034N\200\032S\227\0044t/\263F#H\221\027`\016\236\211\014\300\014q\236\257\337\202\375\366t\335\353\306\206<\006\n\036\000\243?\031\217C\205\200\221\235u\340\276\005\371JyC\004\244hh`\002\005\201Z\361\204f\210\317\317q\313\202\030),\353\331\310\336ey\231\254\275\021\265_\246g\231\331\231\257\265\311\3153sR\210\305\231\234,\305\230D\233\323\276Q\344\212\276\217\005\364C\317\002\334\362\371z\363\275\020\216\320\360MK\2305\363\0309\257@^Q\227\320{\271\375\0170\027/,G\022bD\036\021\217\252\001P0y\020|\300\361\013\304\217\254%\344B\374\000y\000\342\214\005r\006\002/J\2041\3213O\215\000Od\014\022dD\365,\304h@\ra.\002\304\3424K\332p\007\216\347cV%\333\364\316\363\317\023\312\265\217@\345 ?\003\230b\221fp=\231\230\244\326\376H\241\244\260\315\363*M\365\344\361\213\036O \241\212\n\312\r\021t\016G7b\263\244\177g\264V\025y)d\320\225\336lt^\351I\301&\343\320h^\0035)j>\304\035\235\2432,\351\216\205+J\305\364\204\344\230|Fb\211\322f\223\273\363x%e\021\006\233\252P\244\211\340\342\345s\030\311^X\toI:\\\236\200\276\215\010\327jRq\201%\335\246m\353RJ\313\001*\272\315\236i\323f\355\251Jt\237\251\251I\212\271\321\225\326\334rU\245\266e\224p\235P\340\250oN2\337\321.\351Kx\216f\244\210\337\230\014\340$y\303\036i\n\rn\230\236\377\016h\032\235\026\320G\356@x\303\234\021\246\001\177\342\356H\247\n\022\030\343>\342 ";
-    PyObject *data = __Pyx_DecompressString(cstring, 4188, 2);
+    #if (CYTHON_COMPRESS_STRINGS) == 2 /* compression: bz2 (4901 bytes) */
+static const char cstring[] = "BZh91AY&SY\241L\235o\000\005(\377\377\377\377\377\377\377\357\377\377\377\373\377\377\377\377\377\377\300@@@@@@@@@@@@\000@\000`\025\377y\276s\236\306MJ/\266Jhd\027\260\312\252%B\002@!*\203\303O|\326\224\231f\024\241 \200\001|\360\367\314p\221\021$\240\000\032\000\000\014mL\236i\224\321\224\236\247\231Sb\201\243j\0004\032\000\000\320\000\000\022HFL\200\211\211\223&\232MM\220\312Ljh\323OMCj\003@hh\033P\000h=@\032\r\000h\000\310\321M\024@\000h\0004\000\000\332M2h\000\000\000\000\000\000\r=@6\240\001&\244DTh\023&\000\232\030&\214\0232\002cm\2414\322\203I\215##&L\000\32051\2221\036\217)\352\200\222\252d\032=M\250\000\000\310\320\000\000\000\000\032\000h\321\240\r\000\000\000\001\246\200\022$\010!Lh\310jzM\242oT\324\332H\315G\221\250h=@\001\246\200\001\240\000\000\000\r\000\032z\342@\254q3F\363\214\300\310\341\356Ky\360\273\230\022vcn\342\205\320\334\3164W\027\030$\237:C\373\010\242\212F\t\024@Bs\216y\320:\000\201\370O\3048\000\341\3428S\014\030c$\307\212\322\302\347\253Z\323\003\324\204Y:\223\202u\010\260\232*\2028\017 a\345\214\346\0074g\tBA\340\370\323\003P\3325\007\346\261\010K\233g\010q\020\243S\214\3449Nc\240\351\016\243\300\361\017s\314\370\n\"\201!\300\t\310\221@\220:H\035 \241\005B\013h_\327\253\221\270\227x\356\207I\220\272\205\221\322t\231\031\001\240\310\356\213\272\031\031\007\001\244\310\310\310\310\310222\016\243# \332d#!#$\226HYI\016\342w\023\376\377\346(\"\002\305d\021F1PH#\001A`,D\212,\030\200\304\005\202 \314\200a\204IH\024\205$\211\tIH]GxIDQJ*!b\310\364\004\217]\030\n\325\250\025\017l\"h\270(\250\225\014@\275,\311ghlm\2616\201\261 l\000\364\204`g/\235\030QR\230*\206\030`\226\006\201\030x\303\007\356\010P\223b\206\210\030\r\0357\212C4\230\201\323\306,\005\"\"$X\"E\220D\021b\nA@\025E\014L\314\231\210q\256\034r\301\343(F\360VD\357\002\306\371!L\2631\242/\222\025\005FB\034@B\315\350\027\253\031\332\023b\006\323j\345d\036TH$+yh\233\275\2031\2039\264%\212\n\364 \320,\3104$h\000\260Q\255\231\345Ra\222%\ns=\241\027\324\275\3378L\337\rB7\230\332k^t\260\026\210F""#\003\22333^\001bH\271\001D\202\340W\241^\214\022\361,3\002\300E\242.\014\034\314\230\0315\351^%z\025\340^\001z\002\300\275\250#\200\340\016!\266\233\004\3324\024\026\260\032\00631\231Z+QjV\231\342|\031\213\n\0101uOZx\234\t\342<,`,\002\333H\n\254y\023\201HE\245NC5\2549\206efH2Y\0241@Rj@Q\204\305\226\005\226\\\023E\240\032\227\303\300\024\312\000T\341\324\244M\032\000\255l\323M\276\321\275q\236\224\n0\2138X\025\275H\274 >\002\010 2\316/\005\346k\035{\246\301\271\340\371\276\237\254\367.b\251\026K3w\356\304\352\353\272\324\331e\207\253\265\354\327\337tKc\223R.\366\353\363|\353\256\306\2426Q\323h\224\204^\345\001\232\263\016nP\355\035+\221\013\241\n\234\333\203\240<\305\346^^^\344M^\351\336\002\205\250\344\346\325\212\301\024i\272\221\020:\262\205%:y\301QB\022\306\251+$\213\304^\nH,E\205\202V\010\362\303\260a\202\325AQ%@(\005\000\2414\211\2011I\004\222\222D\202JIH\220EF1EU$T\024J\212\226\002\307\213\307\301\364\026\000|\220\371L\315\210b\221\212\014B\326\251\230y\331\007\311H\224\227\255b5\357\261)\004}>Ln\333\372\033\235\251\303Ks\274<?Mk\256\037P3\354\316\227\016p\340\216T\267$DA\2705\210\334\226\304n\">5=\022\203\327,\342Um\016*2\341\3149\252\211I`\036\243\\4P\024\010\022J\250J\000H\002J23XX\005\200\254J\304/\030M\na9\236O\275\371.\271+\204\\\256\025\330\027\\\225\327+\005`+\002%GW\221VV\005iP\n)\n\210\260?\302\224\201H$\245\350\222\025\310\357\306*w\223\0379\331dAy\361\2621\256O#`j8\004\026Bui\246\357@G\256]rP\024\201g\021\241h4h\201\262\216X\222\242\264\353q\003\223`\312)B\225\324\201P\272\321X\224\333\231p\024\021 \024\200V@\252\002\250\027\027/\341\372\361\245\004Q\"\210E\022(\001E\344\013p\014\017\254yV\240\265\001j\021jV\201ih\024T&w\275oF\321Z\026\253B\325j\264\264\013Ex\273\237C5\021AP\234\325\240T\025TZ\253U\210\264\320%\356\342\025\336+\305\217\263\177cVL\232R$X~\357\337\221QQ\354\355x\363M\266\300\201\340p\016\003\327\253\274\220D\250\250OB5Q\014\213\3053JZC0f6\"(E\270\334\004\335\223)\014\202\351:\316f\000n\304R\004^\tT\002\311&\311&\020\302\030\0303""\320\264\346\031BNZ22 e&R\006A\014\244^\"\360\274\276\3772\361/j\353\201\\\\\005\310\270.W`\256a{L\255\020M)\251\312E\261D\257\036\026 \355d\323D\325\352\363)\331\374Pi4\226\244\263\206`-\025\245\266\346\314\213\357\316\037\313\004\303\234\340\300X\013\004\n\373\312\026,\344\346\274y\204\301\006(\024\n\010\361\250\025\270\255\240\031\022\234/\361\242\242\rb\232\227\364$\0471S\023\031\307\254*\to\352\014\0053\372\261\252!W\022\201\375\204w\022\r&\2226\367:$\010\227z\022\010\354\3775\366\363\217,\026i\322p\350|~\231\276\312\306\206B\247m\177\231O\314\354\335\266\036\257\241\243\325\307\301\205~\2265?\021\234\3636\214\244\246g~\251\365c\031\261\320\220\022\302,\356\325\360tR\352\274\306\027\306\207\352k\247.\312Ry\377\001hmlm\365\013L\366[[\233\r\006p|{\374\003\333\350\362\372\036Cpt\006\324\031\302\201\325\005\n\006\276c\224\333\362\373\236J\353\033\326\336\215\237`\344O15\215\365$Wi\237m\272\366\260\307P\334\323\352\253 \322\216*\247!\206\032\304\237\351W\362\342\272K\251R%f\202IR5\361\033\372\270B\375o?ON\006\22307\244\224\361\047\254\213\352x\375\037\022\362<\2051\007\205\036\031\224=\021\026^E;\272\2712:\313\263f\207\t\016\321\214\2342/3\037d)I\247\005\\\022c\242\353:\303V}\246\302\010\216c#\275\272\220s&\243[2M\026Z\335\355d\226BK:H\305\013 Fd\203\211-`k=\326\263\0065\032\216\336\336\2563>\203c\303\215k\2045\212;\010\260\311\027\262{@\256\00792T\217N\242\250I\336\344\273F\007M\325\367\047\200\305\363A\023\357\357\235\251@\300\3200\314\261\211\2747\243z\r\342\336%\275%\274\016S\200o\323\350x\036.E\260\3478\003\225\034-\270T\353\200\356\366Ou\223\237+\211]\317\263\236\371g\245n m\327gC\275\227#>s\262(\302\354\373V\324\033DmA\264\r\240\266\206A\314v\374\376\021k6\036\016]\215\236n\243\243\233\217\266\214h\354G\201\2719\027\316rlh9\247\021X\007g\215fc?\364\321t_(\256*go\234\"\326\014\314\tV\336\224\034\352u9\274\371\201:\357,=\203\047&|2\216o\177[\373\t/\003Qw\353\356\301\301\007\021\231\305o\024^\325\343|K\251\251\371\245T\034:\007U\227\205\254\373\272}\216\221t""\364\256\332\355\256\204\273\371Q\251\334>\026\267\3368\331\307\274,\343\323#\222\257S\334\353\351\323\244:\326\255K\275\307\211\330q)\235\323\225>\243\211\252\311\020e\312\034n\250\013%Q\273,0\354\3479\t\353q~\001\220i\326\333\023\034\251\263\214\032\036?,\226\275h\317\237\201\3462\300\300\353X+\360\356\271\314\2222\374Z\037P\301\261\301\334x\343\304M\232a3q\332q2^\373n<\312\271C\271\005uF[O\013\017D-J\025\336\350]6iJC\264g\205\047\031I\025;}F\355\313v\340\332tp7n\206\047\300\203\305\237\326\225]P6@\021\003\303\016\222\363|<5\324\306l\343\354PYqT3\310\336\356En\357\022U\231\312\020]Rx{\370\016\007\232\212D\231G8(Q\237\r\263\306\363\315\030O\211\245r,\307\006|8Z\270A\320`\274\245\344\372\341\211g\300\272\365:\322u\023\036\361\266\365\2436\211K\010\347| \346\034\240\300\367\314\201H\364eUR\3569\311X\346F-c\004\032nZj\323\306q\253\264\\B\300\203\3346\273\241\345Co\270%C\023\254\212\271\221\226\047\026Wgz\237+\025\035\324\366\263#\226\326-\371\214\0219\214\362\277\336\357\326\027\222\024\255Z\036\023\0346*\375\265\334\307}\270\254\216\262\206<\321\236\223Xk\r\246*\274\324\236\343\003\255\207F\222\204p\007\3639D\362\247n\245G\201\245\200n\033\266\261\020\230g\210r\\YYQ\304u\370\255\274\252\327\007p\254]\201\260O\021\335\021\330u#\263\316Ki\250\310\241*L\243\207\301\356\2625\004\017#9\242\351\212\3209\274\321y&*\346\243\244\236\354\307j\022g\260q\324\310\201\220i\344\252:\047\035\264\247\251t\201u\273\266\347\275\343P\324 \201L\223\047(\240N\204\244:\005BD\022\244!\304\003$\210\257!$\305\254G\n\rB\\\000\264\2405%\250KQ\306*\004\303\217\224\347\027\037@\364\357\362\302\350\234\2341\214\206\031\371\225Lr\264\030\327*\252\325\\\215\233v1\265\345\221\n\254\214\371\313\367\204\353\356\316b\224\007\234\314\317u\364\273\302\232\256`\210\3634\270N\234\301\314\205\264\016`\r\311s\010\347B\345\013\215\220\361\306p,\231\263\213UJ\276\313\242\220\301\314\3318$\305\021\047\221s\025\247=\357\334\365\240!\322\256\262f\241\373\311Sb|_\205\000}\326\020\036I\035\216\270\343Z\247=\205\330""\275\24610\352\330#`l[\026\300\330l\r\246\220\330\307i\214\0033?\213\200\375|\355\036>\246\016gwl\325q_A\204 \2160\324\006\244-IjF\255=5t\032\216to\304k\336\332\007s\361\301\030\230\212\200\261\014q\332,N\235\307A\324d\216&\242\241D\250\024Z\013m(\024\017\347\305\236\346\345`\320\347\247\3603\345\221\221\216)b,N3 \310/6\235\243\343j5k\323WD\021\342\355\221\225b\317\235f\014\3130u\031\214\307I\310r\201\260\326\0210\024\007\253\271v\036\210\022\301\227;#\366\235hp\234\315\235\241\346\362\377]\254\362\213\265\353\2707\234\337\201\020\030\241\360\322\275dY>B\177\211\323\277\"@=\243\342:a\347\026\250\311E\022s\317\237\230\377\262P\024M\207Y\300X\252\214\372\254!iG\315\276\240\310n2z)a\205A\267^J\003\217\350\034\243\274:\000\237*\321_\246\3450\275\224Q\334\203k]\362\027I\351\223\362L\365Y/\220MJE\002\244\033\204\275\2304\306V\322\326\002\252\323\311)*\376\363Iq+ \356go%\325b\363\377+\323\336\311\211\205\304\304*\212\023\010V\004\265K\325R1\225\371\001G\003\375G\240y5\200@@&;\210:\332EJ\247\024\376\031\025\210\250\"XL\"\3001=\355P\3720\264\276\326\221W \323e\350t\225Q\216k\0472T\030 \250\245`\224\245\210\301R\030\317\2620\312\327*\n>xH\364\232?R\305\210\307\031\302\366\230g0\230\340\230\265\200\305C\032+\007\004+\367\364S\220\2148\361\017\332\010\010\307\024\024C\212\343p\344\261\023Zi\242(\252\212\222LT /0[A\210/\210\276E\0021\032\321\230\022\014\024\204%j\010\2062\357\016\224\330\342U\025T\004\024\013\"\031\016\t\034\226(\227\nqE\251c\214Lo\035\245\025\225D\"\306UR\252\261P\225Y\262\006\0061;\177E\364\274\215\213z@\277T\277z\006!y\315Q\014\215B\225I\r-\020 2\244\264$\2204T\t\375pd\276\361AK\242/\243*\3500*\272\023V\250\2301\247Q\242\311\033T\014\256\373\236E\031o\013\302H\207X\347U*XR\n\315I\303\364\324\006@8\233tv\220\004\224\004\204%\235\200\227\224 Z\266E\254\014\001\036\354$\321(\231A\213\026\2678J\010j\244&5\204h&F\347\375\213\202_ \311\207\314\216\235\005\206\370\227\22732\330G\034\257u\032\227J\264L\311\311?\003/#p\311\233\211\206R\255\2058\351j\026\206vU\263X""\305%\326\207\030=\266\302\303b]\216\032u\370\335\227!\346\035\035\354\033\264f\202\224<\271\001\315\004\301a\024 U|\316>}\363wsDP\321\240#E\220`$\212\331b\222\232\210\372\245\245e\002[\314r3\362\247n\006\017\371\320\244UM\233\222\274\375\002\255A\242\007,?L\360M\324\206\235\355\223\363\217\237\215\033&q\251\303\215\213\002\024\3339Ay\213\321M\371\3107\3046\237\305\353\267X\233\323\357\333\033y\215\314!\200\371y\204\230a \3463J\305\013\346\265\234\315\335&\311\264\330Q\260K\224~b\344w\313\314A-\020\270>\230qe\3253\321J\005C\\\331\273{\205\304\256\022\213\014\226U\356nr\022\334[h\321]\007\2461\351EI\200\201\245\020VHF\3662b^h\344s+F\272\224j\020\326\227*!h\210\335.\304\264\266\365\256\0254\350S\301\311\350h\0475&3\255\314\025-\253=\335\333\337>\271\203f\345\342g\207\207\306\334?\007\266\034Ct4\263B4UF\245\014\nR\323Pc(\350R!Tq\262\3357\265k\030\034N\002\034\326\340\244}\235\374\367\254\370W\343&Z\315[\r\321\326\006\t\265\014q\307\026R%%\335\225\013\312\2256\363\266\3526Rl-\260\365j}x\325\341\211\214\235\204n\302\347\226\334\322\033GQ\316\211\267e\005\033\301f\320\241\257\344\302\345\213\253\013\326%\260\023N\331\267\375\005oI\273\023\332\263HN\365Q\003\244\034\262H\3367z\tr\374s\226\304\306\016w\241\223R\262\267\245\025\033b\377U\210\205bP\354\223\201SB\341\\\033\341\245?\037\211\277\017\226F\020aI\020\266\346F\226;\305\026,\252-I\252UJ\226\243^\320\355\203\227\242i\345j\324\026\330X\2651\2532\311#\211\256\254<\231\2719&V\251\251\n\013\260\256\354\323s\322\324R3\026\02552\276\343 \325\220{\032\212\031\224\243\372\032\265\340^\244d\362\271#&I\332D4/\354\047jU\340\252\2427&D\264\251\\\274\346\235\036Q\241\r\301\017\321{\334\205\301\r\005_\200\313z\312\321\236L\364Y\253-\004JQ\351\335\230\346\231\323\312\212Nh\223\264\006\354\205C>k\004D\321I\251\333/-\371\231\326o\316\016T\221\312\210\032  \"$\006\2543\033+9\225l\346\210\3168%\206q\230,\214\345\331\226x\207\263\001\264\312\320\332&!E\"S\210\003!\263\226\351\013\240)\224\202v\033\217\370\306Z\005\305\341\316\205M\203(J""\203g\314\r\240\273`\313\226\221\264:\001@\235\363{\002\221\246ml=\222\007\224\034\355QSh*\240\220\231\256#&\301\000\\\356\244\354\312Sv\047\210\266KF\257k\232\340\276\306;\002\312\270\001\245<\332\327\263\014X\255e\321\031\t(\027\214m:h\265\037\r\244&d\006;\347b\325u\276\241%\2673\324\323\010\330\311\222\346\356\274\275\225\213\302\272\374\235\005\270\331\335dU\024\226b\323hd\002\331\2323\310\013\242K\254cfLW\001\002\270\271\356\275\001\020P\326\021\216\354Q3\0040R\271:\372\310\364\031\036\254\206\346\023Y\230\2425\301k\362X\331\277\270\365H\304k\352\341{~v\023\016\024\2426\360\361Q\307\023\325Z\244Q\271\306?\201w\"\322\n\323\030\270\306\353\022\345s\373\227\317\016(\025\306d-\222\330\264\210\n\276@i\324\304.\316Xz\344\366Z\315\260\326\\\002\326\326\037Q\301H\220Z\334{\301q\2550\211\200\370\335\033\361\002\214\320;\241\014\200:\360a\302C\320\016\002\007\001=2N\030O\216B\n\n\221O\nu\0014\224\270J\241\332\014\345\005\047\250P\020_\037/\302\002\246\025(\017A\340\253A\321\306\003\343E\264\240T4h\3361\274=\263\263!\250\346\271\206\014!\3019\022\216\334\241h\033m\227\321\267\013\254a6\3330\2456\311D\306\252\301Y\231\356pU\273\242\206{\246\353J\016\367`\230\305\004\355\005\321\367\346y\326\200\232<\035\374o\302\237\263\002\371\337\"\265\305\316\271\344qE%\025\254\005^\356\021\3174\307\201\232Xa\233\tT\234h\315K\024qb\047~\027_I];U2T\033.(\324\252\314\237\221F\250#Gw\026LAr\203\253\331\257Qye\227Rk\250\261\313\335\330\032eJ\312\023\006S\214Z\241\354F\266\201]L\363\323K\304M\031\356\254\302\302\313 C`\2330\254\206Z\254\231j\3707\315\231\274W\326\246\263\214\303\207\345\032\241utn)\311D\204[\361\253\256\276\266\3654\314\314AfVr\276\352O\317\213N\367\315\020]ty\256s\035\361\"\223\335\021\215\370]\255\222\240\335h\244\357n\204K\242\265\302\234\222\346\231\210\3778\032@H\361\014\361\023\3415E\346=>\373\335T\337\251\275\301(\047\032K\376\354\311\014\210\010\306\000?\305\334\221N\024$(S\047[\300";
+    PyObject *data = __Pyx_DecompressString(cstring, 4901, 2);
     #define __Pyx_DecompressString_LZSS_UNUSED
     if (unlikely(!data)) __PYX_ERR(0, 1, __pyx_L1_error)
     const char* const bytes = __Pyx_PyBytes_AsString(data);
     #if !CYTHON_ASSUME_SAFE_MACROS
     if (likely(bytes)); else { Py_DECREF(data); __PYX_ERR(0, 1, __pyx_L1_error) }
     #endif
-    #elif (CYTHON_COMPRESS_STRINGS) == 1 /* compression: zlib (4385 bytes) */
-static const char cstring[] = "x\332\315YIw\333V\2266!\312\226l\331\026)\311C9\251\220\032\254\370t\"\027%YNR\325\251\346 \271\\9qLI\266\234T\3050\010\200\"\"\222 \001\220\222\354\352SYr\211%\226Xb\211%\227Xr\211%\227\374\t\376\t\375\335\007@\242,\217\235\324I|,<\014o\270\323\373\356w\037S\202\221\372\323AJ-\375$\213\306\327K_\245\376\362\255\\S\265\303\307\212\274\237R\313\251\277\210j\335Pv[jKO\tu)%)\032u|\365\265R\217>\350\206\246H\2624\3249\245jo\375~\362\335Q\317\257\377\232\027\352u\325H\t\272\256\354\326S\206\232\322dA\372\\\255W\017S5&d\033B\336\257\267\205\252\"\245j\252$\177\226\222\017\032\030\213\251\026\305EZw\261\254j\206&\324\027?K\355b\252\250\263^\021\0322\226J\t\007\212\236z\240\032r\312\250\300\022\371C\243\242\326Sx\047\311U\245$k\202!c5\222\017\263j\324\251\236z\270\376\360\363\325/V\231\264\232Lv\323Sz\253$V!\250\254\223\321J-\245j`v\343\260!\353K\251\373\345\324\241\332J\325e\310\005-\032\3507<\300\250\310\365\224.\033t\223Zd:\013\206\242\326y\014W\352\273\213\241\231\224\266L\2437\204\252./\t\222\304\243\237,\252\325*}S\353\372\222P\022%E\027JUY\256\323uWT\364\340N\252\253P\250,\264\252F\212\3475Yj\2112\317\247\244\026\233\261\256\326?\207\202mE\250\342\253\250\324\025\203\347\353\255Z\343pIT5y\251\206a\212\240i\302a\252,(\325@\t\245\326\200e\207z\265j\202Q9\325A\327\304\333\245\347|\003\366\203*\267\251\347m\265\301\344\345\331\260\306\341A\213\311Hc\204jU\025a\362T\260\232$\030\302\322k\276\006\336#\363\007\201\243/e\267\362\367\357\257W\253JCW\364\215\r\036\343\377\366\3157\324lm\261\253\334l\311uQ\336\336\246\047\212\355\245\3430\347\371\207\207\007\370+\300\307\374\003\371\300\330\224\313<\037\372\001v\202M\310S\3077\273\262\241\030r\215^H4\006\377\312\255\272H->\351\321\250\300\002tW\023\224:kU\251Ue\337\352B-hiy\236\207\025x\261\"\213{z\253\026<\205\263\320-EQp\327\2527\024q\0173\254\327\243~m\203\314Cs4[B5\2326r\361\321\235\310\002{\350\205|@\017\210\272#Q\364!\321\217\356\217\307\031\262N\272(\314oj\013\341-\013\210\270\310)|\251U.c\277T\033\025A\320\025\241\016C+""F\245\006S\211\274\261\317\"@\016>\354\312*^\3439zyX\027\025u\351hZ\275T\022`\214\252\"kA\017~W\223\345=\275\004\327\321\273\222^\013\336\227\004].\311d\000A\334\273\273v\262s\324)z>\n\302 \\\207\203P\024\253X\226\207\217\000\0254\255\270\207\327\232 \251\274\336\nf\021\325V\335\0205\215\207\261\360\014-\202\327\247\336\204\313\321\007\335\220\033\272T\3465\211<\310.d\276\000j\345Z\3038DH\002\265d8\223!\215\254i\252V\256\n\273z\271\252\n\306\332*\300\013\273*\2040EB@\301(\022\337V\253\374\221\211N\274\014\014q\342\225^\003\242\312\200\271cA\311\216\320\034\256\013\233\360\r\231_\347[\r\nn=\270<\227\367\366\350\353\236\320h\010+\354\272Z\253\t\007<>k\000aB`B\336:_V\016`\\\235\242\t\010^\253Ct^\224\312\254mDm\243\\o\324[\0145`\006L&\3565\324F`\270\310\213%\301\020+\301\253\310I\354U\263I\202\220\301q\201\223 \200\274\253\300\310\232VQ\001{\032?\244\267\016\265d\352\211H\016\221\217\241\0062IM`\027\366\221\335\324IM\204;\320\212<F\177\272\241\342Fk\001\332\333\n/#i\360mY\244{\003\240\200\007\004\267\000<\301 \354\370\300\363\206Z\305\376\204\016\255\006\200\213\306\264d\375\340\273\237c\375\370\205\316\227f\326,\376\034\033\304\317\375\254u\246:\331\376\330\345N\263\177\342i\020\2371\213\375\370\025S\350\277\346\356\215_\303\017\257\\\330W6,\272\033~w\315\202P\327\255ik\323j\276<{ft\014b$;\231\376\330D\247`\306\314\031\263d\215X\031\013rM\231+x\340\254Y\253`s\366\254\235\263%g\326\3119%7\356\346\334R\227\353\316wK\036\347\315z\350\2344\347\314MS\263\222\326\252\245\331I{\331\336v\222\316\262\263\351\030\356\262\273\351j\335\004ij\230\313\020q\374Bg\245#\320\222\271N\311\214\r\335\274\377\232\205\036\327K\177\240\220\341\372\203Wt\245\221\351\377\214\276M3n\346L\341\347\330\313\2113\311\251\376\345\311~\"9@L\374\325J[_;SN\336\321\3359w\253;\356\315x\047{E\276\231\202\250#\346\035\0224\014\234\217\254u{\312.81\266\340\226;\326\275\350m\367\022\275\331^\256\047\372\305M\n\255\3775\363\346s\210\225\t\303\213\371\377\252\211\321\177\260\322/\307\316\214\216w\316vd3cB\025""\274\306\354+V\331\316\333\207\356x7\321]\364\022\336\"f\\\304l\376\346\023\377\311\367\376\367?\320Lm\350\334\354\217]\350\254B\263\263\260V\254?1ef\350\315\035\2233\347M\311\372\024\226\313\366\047\222f\272\1771i\316\232\005+n\375\r\266\024N\364L\367\047\256\230\025\253d\217\332\233v\263?q\271s`\352\326\274%\332\327`\225l\177\362\017\354a\232\276\016\320U\262\346\254m\322g\020\037;\226<\211\025\305 \224\177\231\032q\270\234$i\301\335\247\004\205*\003\366*N\003t\254\t\275C_\301\224\347/\364\307\022f\202t\320\021\024[\020\342.\302i\342bg\007\033\177\307\312Z;v\326~\354d\234{n\306]\017\345J\017\342\023\235{\346]k\321\276b\357;\262{\267\233>9\347\373\35234O\0233\\\242\010\272t\0313\215^\t!\001\241D\023^\364/~b5\355\021{\305\026Y\350\355\273Jw\337\023\274v\257\330+\373\333\217\374G\217I\3555s\n\306\235H\370\2119;\203\305ug\016Q6\002\toyk\275do\245\047\364\332\350\353?\376\247\377\317\037\375\037\237\366\047\246\341f\222\265d\307\242\207;lS\275\361a\200\207l\377\344e\200\305\227;\233\330\244\253f\033N\325\355y\273\344p\316\274#\271\263\330\202\302k\204Z\353&\273\253\335\303\336\271^\323\177\270\343\357\300*\274\317?\363\237\241\363\214\271mMYyK\363\323+0}\336\325\273s\335-o\204i\261\332;\364\237<\365\237\242\253\350\213\222/\355\371{U\277\252\373\272\341\033\377~y\346\314\377p\033\034\232\r\356>5\367\271\207\324<\344\212\334\357E\212i\363\236\265l=\261\267\2348\205\355`X,\302-\211!\313\271\367\027k\266\233\353J\336\234\267\205\001\277\212q~C)\246\260%f\001<y\333\000H\026\203\r\314\266\362\211}\047D;\3465\230\273\214\275\034\047\331\200\266Q\232\276\n\224J#e\344X\250\277\372\370\021`$\306\222\301\2430s\234u+\335\032\274\014\315\261e\267\375ml\331\177\370\377\300\256\201\td_.\367\343\177\264\004\226A\276t\0360\335\205\323\370\035\275\371\027f.\236Btd\364W\020\035p\024\"\321\n@\364\2523\356&\334\305!\000\271\351?,\372\305\000@`_\210R\366\313\273\376n\345=1\376f\260\235O`\374F\200\373\35098\206\316is\003^Xg\212L\320\324\201E\333\210\331X\177\362\032{0H\251A\210\r\224L\023""\0470~\022\0314o\032\210\364\342\257\255\330\377\013\365Y\264\000\244\047\206Ce\rA\\\000\262.\263\315\230w4w\312\r\371F\006\371\237h\306\027\366\177\203Gd\0315\230\352f\373\361i\366\201\005\021\201]\223\370\341s3IB\\\352T\340]\250\316A\333mp\214;\230{\325\326\234\004\345\274\005F;V,\t\026_\007\220\027\\\316\235\007?\031\005\252\304\275\234\047\201\t\204\206\313\232O\202\344HS\221\2378\346\273\233\014TKH*\311.[\256D:\017\320+0K\226l}\251#\205\034g\206E\367Q\267\370\305N\261#\"I\344\315\026\374\267o+N\323=\3476\261\311\233\3369\257\031l\364\300\t\202/\224\374\322O\376O\264u\311\224\231!\023^\372e&\034\2342\3411\013\246\r1\026\2313\201f\005l\003&\245\357,[\007\227\211\316:X\240`\276@\246a\021\360E\224\304\210\337\025\031\035dTE\240\213\010\263/c\2356\213\231<cz\333\314\204\023`UH\260\310\370y\363\200\354M\267\005k\314\276\340\2548\025W\030\204Q7\302\350\357DH\027ZL|Za\222\030\316,\214\331d\001I\310Y@ZY\205\2423\340\234q/\357\265\300\356d\177\013I\032\020J\211\1770I\312\\\244-1\213\211\312\000!aX\3569H\332\002\376i\240\211\014\372\210+M\301\267\233\014\321\202\017DX[H\255\345n\276\253yIo\331\333\3644\344\245L0\361|H\2107\"R\367\226\311I\201\034\330J.\314\331\242\233tW\\\021\273\223PM\304\344w\210\262\017\336<\313\305~b\006\001\247\0171\3602\313 \363\214}\337D\316\\e\322-\367\036\017[\242?9\005\306\240\263\365K\0308\017\342N\353O\263HIv\357\262l\022c\003\267\374\207[\321\330\047\204\367\327\303\022 \0068\031\2055\030E\236\263\212\330^i\266\347\256\302\021\244\007\3719N\264T\260\016\330V\004\360\222m\2624\313\245\243-\261\017`\272\356\334B2\273\327\315t\357y\031\357^/\323\273\347o\001\374\003\276D\260\357\227\353~]\365\325\306\360\236\010y\332\257F&\047I\273Q\3531\26216\313\237\000\0237\2731\354\234\rV\302\304o\240\242\030?\177\274\t\232,0\315\005\377\352-\047\341,`S\307YB^\350\352^:\222s2L\226\223\211\367\002\301Bw\244\273\014\\\212\275G\376\214\222\230\204x\316\343\303\002R\303]\206S#.C\346L\210\321\357\312\002\001?\376\301\377\001\2316 \016`\r5\277V\017\2058\r\033\037""\303HT\301%\2344\225\311\024\233\363\020\351,B9F/$HI\30002T\347\261\242}\313\2121P\330B\330\375\027\250 U\212\022\002>\333\177\367G\216\005\254\210\275H[\2068\334\036\234S@\2059\357\225z\261w\3140\r\0335\331\034\304Pn\260}2\353f\211\030\354Z?\006zT\254=\047A\372Rj]f\233-\307\320:\232\047\007p\031\305\226?dy\023\273\002\250\035\320\223\247\375_2\014\356>\337\231E\\\021\360\nG\371j\016\221\30197\021\210\267\2607H\323t\3201\207l\277<\244m<,\276\357\273E,Ht\231\243 \377\217NMd\372\021\235\003\004\300GX\231\263j\254\302\216\001\312\226\301b\343\214\232\316z\367Q0I\376f\2408\305Y0>\010Rv\2241\302\316\022Fa\273C\324\351\323\014W \316\034`\242\304\262:\271\177\001\216\273\356\244\235UGg\365\r\231\226IN\210r\325dD\360\000Y\202)\315\302\037\244\004\312\004\347\016k`U+v\005\333\203\013\252\243\301\321\347\240x\3724\344\240\341\347\376x\302\234\246\364\027\316D4b\212\225\346\204\327\307]\263\357\232\347\374\245\216\202\314_\260_\047\3252K/I{\r\273d\305\331u\213\203S\237\333,\303}\032\n\375A\212\275~\n@\323]\226\252\306\355\004 *I\225/\365M\020hQA\251\001\231\013a\2761Xm\242\2017\345\2342\rg#\030\370\276\202eog\037\047Q_\307\334;\366\006\234\371\025\342j\267[\354\356zE\257\334\313\366vXa\035\200\021\250\020\341\321\273\312\210\023ht\335\272\002\203^\t2\316\rd\003\312\304q\"#\211\023\370\3011\316@\020\317\001\010\223\336\3121\206\020\303\300\010\005\354\"vt3\210\007\234c\235\325+\001\t\336\353Nw\2671\366\317\275\222\377\020\371\n%>\004G\326\202\324A\261\022\214\331`\271\271\304\362\345\213n\272?N\347w\"v\344*\254N\3071/Ba\346\2217\257\"\242?\243\t\351\034b\364\206u\013\313\355`1\342\007_F\365\316\001|\304\310m\232\236\232!P_\267\256\rIG\361\300\362\320WH\2049Ka\307\035\3113S\323A\032\017\023\035=\334\005_8\333\025\220\267n\262S\302\370\332;_\334\201_\333p\233\350]\001\305H\274\246\307*\243IY\000\306Y2mx\222\372\206\313\313\363$\022;iM\204i}(\315^\267n \213o9#\016+\213\376\rJ\321$\022\363\025\360)\326\237\376\310\377h\t\005\311\265\217\031\013Y\260\233H\016\353\310q\363\256\314""\260m\024\241%\365n1J\361\250\177m\316\376\263#8\373\256\340\356C\336\346\340\303\307\177\005?\352n\232h\003\310R\332\313\014\246Ay\331\036\037a;9\323\377\360\027\341\034\277P\227`\322l\377\364\r\354u\007\250N(-\201\362Q~\032\001J?\356\256v[^\026\204\217\353\315\023J\007\047\016Qz\232\376\330\377\3706\272\2162\370_@\305\022\367\326\301\031\346\211\\C\006t\245~\376S\354\325\340\270\001,\255\3517\017^\2369s\030+\320\001C\201\373\216\232\357\242\343\206\035jv\270\047\324<\341xjx\356\0315\3178\201\373-V\274j>gg\026\327\322\3664\302\354\234\243\371\231<\230\350\233\226\245\n\331\257`e,\253\371Z\333o\007\247+Y\2322\313\2052\204g-\337R\363m\264x\211\232\022\047Q#q\273\324\354r\025j*\234J\215\3125\250ip\373\324\354s\007\324\034p\207\334\357\\:\026gm\200z\016\251(\250%\232o\364\345\\o\263w\340\357\004\374\0365op\352\000o\032\276\321\362[\207\230\364yl\235\346^?>\244BS\214\004\375\236\232\357\217}\210F\200\364\277\301\202\037\024;X\031\251\001\3136\374\006\274\203\225\237\373\317_\370/\002\007\205\247r\177\247\346\357\334\003j\036D\013\213\324\210\234L\215\034\271D\241F\211\\\322\244\246y\354\022\332\017\334s\356w,\331\353b\3464\204\r&\221\024\372\323\270\240\310\220\221\263\nH\244E\320\367\005\267\t\212\271\216*f\336S\350\014\245\330\237\236\301\377\243\272o\307\311:\217\303\312r=,v\322\203IbG\200\302\376\207\334P\305\370\215\371\002U\305\017\356\013\217\252\305\3517\235}\026\220\247\326\242\323\030d\345t\360\263L@\230\214#\302\273\034\034\255L\241N\335\"\302\2320?A\325r\033Y~-\254\301\037\365f\251\020\016~g 2\272\ts\020\203I\242\316\233s\266\3215\023\374\250C\207P\271\360\200\213xd\360\023\034;\022\243\023\2521v\034\2463\272\037\361\235\014\235Km\2311\260\020\222d\350a\213M\006\2321\016\345r\235],\273\037\020\255?Z\214|\374+\220\235Ny\306g\202CBv\272\032\025\373\006\312\355\350\220m\302\313!\373s\321\217mGg\t(2\203\r\310\352\314x@\365\005bz\373\021\307k\005R\334`\025=\350@\036\211\277d_F\235|%\370\271\220\375*\352_\376\204\325[\304\177\341\245\350\330\0227\032\264\271\313D""\242\357{n\2024\3461\251\212\364\335F\254\355\203\275\314@\272s=\215\375\014x\261\263\215!wB\342\273o\213a!\022\277\304j\354BX\345\036\2378\205\374\352K0^\205\375\372\":WB\361\210\305\205Q\362\373\243Zo\243W\t\363:qk\372\251\241\330\247#30\330\005\020\3408B+\341\314;2\366S\241;\ny$\357V/\323\003\261\270\001*~\017\n\336\013\217Y6BZt\247\027\353]e%\357\346`\342RG@iF\307\333\331\376;\037\326Q\267d^\373\205\234\220~e3\372g>\261\232G?\344\215\275\375\307\273\375\236\320\333\367\037\023\313y\337\037\357\202\356\301\371\3703:SYe\365\013;(\306\016\377?RA\016\274";
-    PyObject *data = __Pyx_DecompressString(cstring, 4385, 1);
+    #elif (CYTHON_COMPRESS_STRINGS) == 1 /* compression: zlib (5255 bytes) */
+static const char cstring[] = "x\332\315Z\313[\333\326\266\217\205I\240!\t~\020B\323\207\r$4\337i\323\032\010i\332s{\256y6\355\3276\006\002IO[G\226dP\361S\222y$\347\336\323\241\207\032j\250\241\206\032j\350\241\207\032z\350?!\177\302\375\255\275ec\3023\267=_\233\217xK\332\257\265\327^\373\267~kI\t\321H|\266\237(\347~U$\343\253\373_$\376\376\235R,k\007\033\252\262\227(\347\023\177\227\312%C\335\252\225kzB,\311\tY\325\250\341\233\217\325R\247B74UV\344\236\306\211\262vf\375\321g\335\226_\375cA,\225\312FB\324uu\253\2240\312\tM\021\345O\312\245\302A\242\310\204\334\205\220\217K\273bA\225\023\305\262\254|\234P\366+\350\213\241\246\244)\232w*_\326\014M,M}\234\330\302P\235\306\372\266XQ0UB\334W\365\304\367eCI\030\333\320\304\302\201\261].%\360LV\njN\321DC\301l$\037F\325\250Q)\361d\351\311\047\263\237\3172i5\205\364\246\047\364ZN*@PE\047\245\345jj\301\300\350\306AE\321\357\047\036\347\023\007\345Z\242\244@.\254\242\202v\275\035\214m\245\224\320\025\203.\022Sl\315\242\241\226KYtWK[S\201\232\324]\205z/\213\005]\271/\312r\026\355\024\251\\(P]\271\244\337\027s\222\254\352b\256\240(%\372\335\222T\235_\311\2452\026\224\027k\005#\221\315j\212\\\223\224l6!\327\330\210\245r\351\023,pW\025\013\250\225\324\222jd\263\245Z\261rp_*k\312\375\"\272\251\242\246\211\007\211\274\250\026\370\"\324b\005\232\355iU+\212\306\366\261\006\272&}\232{\231\255@\177X\312\247\324\362\323r\205\311\233e\335*\007\3735&#\365\021\013\205\262\004\225\047\370l\262h\210\367O\250\345\273G\352\347\206\243\337O\257-<~\274T(\250\025]\325\227\227\263\350\377\365\267\337R\261\266\306~\225jM)I\312\372:\335\221m\337?4\363l\366\311\301>\376/b\217\263\337+\373\306\252\222\317f\203}\200\236\240\023\332\251\303\213-\305P\r\245H\017d\352\203\177\371ZI\242\022Uz\247\027\327\000]\025E\265\304\312\262\\+\260\272\222X\344%M\237\315B\013Yi[\221v\364Z\221\337\005\243\320%Y\021\277\252\225*\252\264\203\021\226J\235v\273\006\251\207\306\250\326\304Bg\330\316\026w\257$f\330=\017\224}\272\201\325uE\321{D\357^\037\3663\024\235\326\242\262}+\327`\336\212\010\213\353lJ""6W\313\347q^\n\225mQ\324U\261\004E\253\306v\021\252\222\262\306\036\263\000\205Wl)e<\306}\357Cv\231\335\322\024eG\027\365\203\222\244\226\357w\047\322s9\021\352)\250\212v\244a\016\233I\317rz\221\077\077\366\240\333PWr\n\251J\224v\036\316\035\255{\263m\327\\\271a\367\232\253$\025 N\026\273\tP\241\351\244\035<\326D\271\234\325k|\2247\357\203Q\245r\255dH\232\226\205\266\361\030+\306Y\2254\005\232\223\325\335\243M{[\3611\217=\351i\252\033JE\227\363Y\215\306\021\2134\217N\227\206ZTt\231\214\207\375\320\316q\224W\212\025\343\000\247\001\200\251\300\216\030\310)\232V\326\362\005qK\317\027\312\24217\013\334\304\201\016\320S\225a\313\320\276\234\335-\027\262\335\2758\362\220k\366\310#\275\0100W\200\260\207\302\323\376@\225\260\232\240\010\236tm\202\244\304\236\353\331Z\205\316\230\316\177^*;;\324rG\254T\304\031\366;[,\212\373YTk\360\005\344\010\310\001\224\262yu\037;\247\223Q\303\221\024KXFV\222\363\254\254t\312J\276T)\325\030xA%\030L\332\251\224+\\\261\035\023\311\211\206\264\315\037u, xT\256d\273\372\355\336\035\250JA\326\253U\222\222v\013?0\017H\247l\251\330!M\333.\003\232\265l\217\202t\254_\241\2268m\001:3d\203\267+\212\354\207U\262\213\022\351\000G\022\210J\333M\377u\243\214\013\255\006\367\263\253f\0258\266\354\256\"\321\265\001\340\302\r\016\240\010\314C\047\240\0227\033\243\\\000\206`\201\265\n\300\225\372\324\024}\377\207\337B\255\360\325\372#3mf~\013\265\303W~\323\352\261z\2725p\243^m\035\271k\207G\314L+|\323\024[\047\\\235Z\033T\274\361\303jY\267\316U\357\263[\026\204\032\263\342\326\252U}}\371R\377\000\304\210\326S\255\201\241\372\242\0312G\314\234\325g\245,\310\0253gp#X\343\326\242-\330\343\366\274-;\343\316\274\223s\303\356\274\233\363\004o\322\3135\204\306x\003\215\243\346\204\271jjV\324\232\2654;jO\333\353N\324\231vV\035\303\235vW]\315\213\320J\rs\032\"\016^\255\317\324E\232r\276\2363C=\027\027\237s\261)4\223o)d0\177\373\215\265R\317\344\177f\275U3l\316\233\342o\241\327C\227\242\261\326\215\341V$\332\206M\374\303JZ_91g\301\321\335\tw\315\033l\2144\216\266""\352\354M\014\242\366\231\017H\320\300p\336\263\226\354\230\275\350\204\330\204k\356\200w\255\261\336\2144\307\233\363M\311\317\254\222i\375\217\271`\276\204X\251\300\274\330\376\217\232\350\375\256\225|=p\251\177\260~\271\256\230)\023K\301c\214>c\345\355\005\373\300\035\364\"\336T#\322\230\302\210S\030\315_}\346?{\356?\377\221F\332\305\232\253\255\201\253\365Y\254\3542\264\025j\r\305\314\024=y`\n\346\244)[\037As\351\326P\324L\266\256E\315qs\321\n[_C\227\342\221\226\311\326\320Ms\333\312\331\375\366\252]m\r\335\250\357\233\2725iI\366-h%\335\032~\227\335\304\251\266\215\246\2625a\255\323z\332\341\201C\311\243\230Q\342\246\374\373\226\021\306\226\223$5l\3671A\261\2246{\024\246\016:\346\304\272\203\275\202*\337\271\332\032\210\230\021Z\203\016\243X\203\020\017aNC\327\352\2338\370\233V\332\332\264\323\366\206\223rV\334\224\273\024\310\225l\207\207\352+\346Ck\312\276i\3579\212\373\320K\036\035\363\242\353\351\031\247\212\021\256\223\005]\277\201\221\372o\006\220\000S\242\001\257\371\327>\264\252v\237=cK\314\364\366\\\325\333k\210\215\335f\246\231\367\327\237\372O7h\331sf\014\312\035\212\370\221\t;\205\311ug\002V\326\007\t\3575\346\232\321\346LSl\356\242\255\277\361\223\377\323\317\376\317\277\264\206\342\330f\2225g\207:7\017\330\241:\365\246\215\233t\353\350O\033\223O\327WqHg\315]l\252nO\3329Gp&\035\331\035\307\021\024O\020j\316\213z\263\336A\363J\263\352?\331\3647\241\225\254\237}\341\277@\343\021s\335\212Y\013\226\346\047g\240\372\005W\367&\274\265F\037[\305l\363\300\177\366\213\377\013\232J\276$\373\362\216\277S\360\013\272\257\033\276\361\357\327\227.\375\267\260,\240X\026\036S\361XxB\305\023!#\374U\244\210\233+\326\264\365\314^s\302d\266\355^\261\010\267d\206,W..\326\2707\357\311\215\211\306\032:\374!\312\371\023\245\210\341H\214\003x\026l\003 \231\341\007\230\035\345#\347N\354\234\230\0230w\032g9L\262\001m;nz\024(\225\204\313\230g\246\376\346\355{\200\221\020s\006O\003\317q\331\335\366\212\330e\254\034Gv\335_\307\221\375\247\377O\234\032\250@\361\225|+\374\201%2""\017\362\310\371\236\255]<\216\337\235\047\377\302\310\231c\210\016\217\376\006\242\003\216\002$\232\001\210\216:\203n\304\235\352\001\220\273\376\223\214\237\341\000\002\375B\224\274\237\337\362\267\266/\210\361w\371q>\202\361\313\034\367\321\262}\010\235qs\031\273\260\304\0262DCs\215\356\302fC\255\341[\354\306\240E\265\003l g\0329\202\361\303\360\240\013\246\001K\317\374\321\013\373\177\241>\263\026\374\335\034%k\031\263\256\331?\273\037c\217\277\36476\tm\327\255\010\364\303\335\332\021f\306+\302\344\n\003@\276\n\3325\024\367\343\367\234H\200#3\256\344\2156\006\233\314\233hf\024@hXsP\337L\300E$7\036\220\213\341Q\177\364c\047\r\302\241\341\331\232\327\347\315xRc\2649H\014\340B\225\235\tc\3362\343SoWI$\3078m\3303+i\330\2507\355\255\363Jl\222\350\2138\340t\272\333\244\217O\234\014\026\032\013\240r\263\361\270\231\271\230>>sCn\024\223\257C\354\005O\007\210l6\037\223W\273Pe\254\213\315\227\033\271f\370-+5\346\002N\031\366\314J\032v\325\323\032q^\tM\000\030`\264e\277\\9\315%N8\353l1\031\202\320\2478c\313\366\004c\240\251\316\003\342\260w\321\362.\323x\316c\216y\t|u\216\221G\301I\222\305?\000\337\275\013J0kkN\327\350R\255\3411k\004\220v\205\236\236\002\230\340)C\275h9\007\034_\304H\323\314\037-\300\360bn@\271S\240\300\304\264?\267\377\013T:\3156,\346\245[\3418\253`8J\213\253R\210\364\222\t0p\275\276\r\200\303\351\027p\340\327!\366\203\256\224\240}w\030\363\236\261d\200\316\022\270\314\242+\270\223Xd?\366\047\334\230o\310 \303\001v\244\315g\234\037\322P\004U\002\203\257\273\214W\344\300\253\242\036\233.G\307\276\215V\034\031\322\0047\327\353r@\363G\030\300w\233\205\257\3253u\t<i\301\254\001\302\366l\325\251\272W\334*\374\\\265q\245Q\345\276\216\343\020\214;\347\347~\365\177%\373&4I\365\250\360\372\357Sa\373\230\n\0171\207|\302@G\235\021\0243 \334P)\3253\302\312\177\206\352K\010\204D\363\025,\213\201\340\347\035\036G!N\206ED\214\255\213\364#A\355\323\230g\227\301\346\002\013v\326\231\n\207\020X\200c\202\364.\230\373\244o\272\\\264\006\354\253\316\214\263\355\212\355\000x""\373X\0048\0240\346\032\023\237f\030&\222?\016eV\031x\022yX\204\351\316b\241#\010\273\302\215\205F\r\001\216\342\257\201\247\202E\020\367m\017\323b\256\221W\030\307@y\370a\261W\356\tHZ\003\005\320\370\301\340\341B\014{\273\312\234:\257\240\230\255\006v\231\007*h\215hc\272\261\332\320@\315R|\340\311 &\\\356\3045g\014N\013\230\007a\237\017h\253\2043Jh\027a\216]\302\340\017(jm\237>\312\265Vd\004\006\247\367\004\241yF\242&Y\000z\027\264q\226I7\335\334\350\325Dk8\006\204\320\331\3749t\234\004>Nv\3211\352=d\204*\304:\256\371O\326:}\237q\047\306\243\340\020<j?\264\301\242\304\t+\203\343\225dgn\264\213\332)\252\232\004c\331gG\021\334\203t\223\246Q\256w\217\304\036|\363\230s\017|n\305Ky+\215Tc\245\231j\256\370k\340?<d \346\343\347K~\2110\256\367L\004\236\361\017\213\247\206iu\375\326\006\010)\016\313g\200\211\273^(pj\000\240\333\010\252\007\3379<\004Uf\230\346\035\177\224|\362\035\034\3520\003\350;\300\356dG\316\341\200/\016GZL\340c$`\024N\252\313\t\271\343\277\303\014n\t\233\374\010\"G\275/\032O\031D\235\303\020\206\375\341\244\035\001\264\2579}8F\344\024W\274GP\347\347Pf\353\034\337\260\356\305\275\247l\235C1?6\t\245\255b\323\342=\256}\245\361\210\266\005\204\364\247\213\265\271\250\257iwF;\224{\301\335\205\2273N\230\361\3146o\370\2547\006\3161\334?m)g\2679\352\373\332\207\276\017\256\371#\047\324\223\234\021p|\027\001\353\007,|\241\330\345\034\007y\324B\316u\223\213\340g\323\360\\\241\013\004\031\035\246/\003\361\026Pq\007\374\371!\363d}n*\240\2241\216\370gSe\236D\370\321\377\021\352\340\321\025B\253\242_,\005B\034w,\357\343\030Q\232+\002\352\200\360\203\320k\022\"]\206\321\205\350\201\014)\311u\364\365$\303Xfs\315\n1\267\261\0063\371\033L\213\322i2t\312\314\377\234J\201A\232\204\375\047P\245@w\007;\271\330\020\032\223\340a\241sF\210CGU6\006\205q\267\031\222\216\273i\212\236\266\254\237\371:\266\255\035\332C\036\177L38\236g\376\2743\316<\334O?\234\302\001\013.\200\233\360\353<\206\373\245\365{\272a\273\337\251\217\003y\3105\213]FC\207\235\216\222\340\336\003z\322J\223""\274\341<B\242\351\236\325\206\203\014\345c7\203\t\211\232\n\004\203\377\321\241)\343\360\224\222\245\3345\2227\235\267\212,\r\311\331\365\232\027f\361\3738\261\366\246\354\257\362\205\223\235\361\376\334HY\276\267\217%\\\373\241\273\003\234\2678\363<\020g\002\216$\307x\037m?!\347\230\223tfq\030\307\003\3252\311\tyGM\026-\357\203G\260E3\363G\344\206\305\360\344,\217\025\266\031\010\260\024R\273[\315!\363\243 P\017\252[\203\0213N\004)\030\211\210f\214\345/\tY\017\233\246\317\033\347\235\353u\025\334p\321>I\252iF@\242\366\034N\311\214\263\345f\332\307\252w\031\007\372(\020\372\255\026v\362\020p^\017\031\231\031\264#\200\250(\245\007\251m\204\334\032\271\021\r\276{1`$\006K\340h\300\300y\047O\335Y\017\356\355\216b\331\331\374\364(/\3201\366\246\275\214\315\374\002v\265\345e\274\255F\246\221o\246\233\233,\373\310\301\010d\231\360\350\274\\\313\0214\032\263nB\24179\047\271\r\276@\\-Lt5r\004?\004\306*\211\004\010\000\302hc\346\020C\210\203\242\207\n\376\031\352^\264\303\234\225.\261\244\016\317\024\354\300\255\256\243\357\227\315\234\377\004\214f\303\337\200\340\3405<p\313\267\202>\313\214\275\345\030\243z\345%[\203\364\222Cb1\254\306r\326\257\002a&Y\320/4>\246\001)Y\333\177\333\272\207\3516Y|\033u\037u\222B\373\330#\026\376$\351\256\032\000\365\230u\253G:\262\007\306T\276\000U\232\267T\226\023\356l\335\357\312V\200\213$@\021c\335\264\347\025w\337\333oT[\347\207\250\360\307\224\022\344\010\336\361\252W\320y\277Y=\257\366\255(\307IY\331\243\263\234R{\022\3158)\213y|\260\223j\317\242\026Sv\265\313w\350\255R\030\264\344s\316\347\216\220\nJ\210\263-\244\007\373\316\377z\317X\\2\n\0239N8\242\227bq\276\301\001\327\245\233\207\030\375\262\047\202\272\336e\357\312\302s\347>x\200\203\273\213s)5nb\256\310\t-fY\244\224\016\362 \241\340}\342)?\257\337!\221\330\373\306H`E=L{\314\272\035\2204\226\034\3747\242\212*\3051_\300\001\205Z\361\367\374\367\356;b\353\326\373,\020\271\003\265\205\235%\220\230IWa\316\253\037\330!7\357\261\250\342i\353\326\204\375\245#:{\256\350\356A\336j\373\355""\373\177\201\203\252\273I\212\034\020/%\033\251v\034Q/\003\361>\006\325\251\326\333?\010\306\370\235k\341\203\246[\307/\206\311\330B\314\r\3138xD@(\375\266\001\323\2565\322\210\371\204\346$\271a\236w\357\360\217\370\373\376\373\237\242i?\363\357w\274*\342\353%\220\302I\212\257!\003\232R;\377\027\2001O\272#P\253\372\325\375\327\227.\035\204\026)\315\276(\374@\305\017\235\244\373&\025\233\3023*\236\tY*\262\302\013*^\010\242\360g\3148j\276d\231\373[I;\0163\273\342h~j\001\301\350i\323R\236\330\337\306\314\230V\363\265]\177\227\277cH\323\220i!\220!x\343\360\035\025\337u&\317Q\221\023d*da\213\212-a\233\212m\241LEY\250PQ\021\366\250\330\023\366\251\330\027\016\204\277\270t\314\316v\341\265\347\3015x:\241z\352^N4W\233\373\376&\017\361E_\344\271w\354\246\341\0335\277v\200A_\206\226h\354\245\303W5(2\035A\237S\361\374p\017Q\210\220\376O\230\360\255l\247\233\276\256\370\025\354\016f~\351\277|\345\277\342\033\024\274\233\372\206\212o\204\357\251\370\2763\261D\205$(T(\235-Q\251P;[R\245\242z\270%t\036\204\227\302_X\262\223l\3468\204\265\341\355\"\2558~\020E*\360Y\213`J\031\270\322;n\025Nq\ta\352dC\2454j\246\025\037\301_7\365\263\351\244\235\215 \271\264\024D\263\311\3660\321_@a\353m.\310\223~k\276B\330\370\243\373\252A\t\243\370io\000\027\341\247\346:\tY\320\256$\3778\2013b\243\033\321L\363\354j\014\316{\215\"\222\210\371!\230\312\247`BsA\032\216\022?+,\377\266A\325q\260\360\032\243\250Q\004\362\2344\245\370\247\r\224\207\236\017r\334Q\226\311\010\263\330\"HR\0170\202\241\263x\256ChS\224\232^3C\240\033$I\317\315\032\033\014<r\020\213\233\257oa\332=\316\244?\260\030\273\374\027\227\235\022\275\203#\374U\031{\307\330\311\367\031N\252\233g\037j\314\303\373\013\235ON\272\351D\331\227\371\001d\211\2040\217\345D\242\362{\035\022_\343R\334fI=\320\201\0058\376\234}\303\321\334\233\374\243\031\366m\220\177\343C\026PS\200\203]\352\274\274\013s&\365\220\211D\365;n\204V\234\305\240e\270\357]\330\332\036\330\313\010\244\273\322\324\330\3070\327\352\353\350\362 \210l\366l)\2104\303\327Y\022e1Hc""\034&\235\003\002\375\010!\215\312\330\254\344\334\014\304#\232\036X\311_\217j\235E\257\"\346\030\005O\304\2363-\312\232#D\271\203\010\047\014\323\2128\223\216\202\363\264\350\365C\036\271q\257\231j\202X\334F\254\265\202\005\256\004\231\326\345\200\026=h\206\030\013\205r\333C\327\353\"boz\311\233n\235{C\024;ub\rmB\362\370a\374\200\202\324\247\010\206\346:I\047\305\372\n\233QuC\354C&\353\021\313\004\317\341\310\200\264\361G_\332\242\275\013|\230v7)\003\364.\373\320*\202Cr\205\355_\320\361\037\010B\347\334Qvj\"\244\331\336\300\250\335\215\177(\003O\037Z\335d/:6\330KK\302%\372ff\215\275\322G\364\267\311<\020L_\351\r\241n\261\227H\353\354TOr+&\300\243\2376\245\234\021N\215\333\311\356\2678\272;\345\215\001\312n\371\231\347\376\363\027\376\0138{\002\355\013DW#\376\010\005\025B\360\306\344\315\264-\034\300\257\376\257\240\014\004\375o\335\232\205 \333\335C\023< LZ\306\010_\007_l\244\333\235qOK\345\236,\305\005[\037\373\322\245\247\373I\351\335\323\047\273@\353c_\216p\314\231c\306\013\272\315/\342\357Y\337\330y\346\211h\023\342\267\000\007O\261\237)N\362\025f\262\023Lg\303|\304\364a\237M\006\343g\366\031\363\307\376F\341\304(\313\232\2541K\\q\036\272\367p\006\231\225\360\257h\210\025\222\047\035E\203)\026\2000\t)/\203\341C0\2707\356\337\"\256\364/}hU\273\337\223\r\234\375\r\331^Sl\356\261\263\360\354\242\337\220\361\346\3743\215\027\244\367Y\266V\366\262\026.\366\377\000\270\000\320\240";
+    PyObject *data = __Pyx_DecompressString(cstring, 5255, 1);
     #define __Pyx_DecompressString_LZSS_UNUSED
     if (unlikely(!data)) __PYX_ERR(0, 1, __pyx_L1_error)
     const char* const bytes = __Pyx_PyBytes_AsString(data);
     #if !CYTHON_ASSUME_SAFE_MACROS
     if (likely(bytes)); else { Py_DECREF(data); __PYX_ERR(0, 1, __pyx_L1_error) }
     #endif
-    #elif (CYTHON_COMPRESS_STRINGS) > 0 && (CYTHON_COMPRESS_STRINGS) <= 90 /* compression: lzss (5966 bytes) */
-static const char cstring[] = "\377 at 0x o\377bject>.:\377 <Memory\377View of \377<contigu\377ous and gdir%\001\007\rin\021\005\177strided\"\010o or \004\031><(\t\376A\006>?Canno\377t assign\377 to read\177-only m\240\002\375v\242\000Invali\377d mode, \347exp\305\000|\000\047c\047\376t\001\047fortra\237n\047, gH\000%\005s\357hape\222\000 ax\377is Note \373th\207 Cytho\373n \021\000delib\237eratek\000\320\001c\367ter!\001n PE\337P-484\212\"re\376\264!s subcl\366\246\000es\261!buil\373ti\260\000ypes.\377 If you \223ne\224 \303\000p\316\000%\tt\177hen set\200\000\367e \047\357\002atio\377n_typing\355\047\355$iv\242\000o F\377alse.add}_\231 ecoll\266@\376+\000s.abcdi\177sableen\002\001\357gcis\004\003dno\377 default\377 __reduc\277e__ duM\002n\367on-\262@vial\376\033\000cinit__\377numpy.co\357re.m4\000iar\377ray fail\316\277\003imp\327 \033\010um\367ath\020\016src/\277bz_priU\000g\335/L\001/op\332\001s_\236X\002pyxu\251\002\334Aa\257lloc\360  h\003d\017ata.\013\020\270C\212\204\001\347c\377s.ASCIIE\377llipsisF\273F_\253\000HKK\003\001S\375S\001\002equenc\247eTT\027\001\330\204\001.\335\204\007_\357_Pyx\001\000Dic\377t_NextRegf__\201D\245 __\326B\373__\001\005getit\313em\r\001d0\001\027\000fu3nc\035\001\030\000st\262`)\001\274\235#3\001main\003\002owdulM\002nam\002\003\363ewT\001\203 _che\017cksuT\000\n\001?\004\025\001\370\204`\253@\037\001unpicmk?\000En \005vt\355A\036\230\001qualO\005\333E\344F1c\324\204\002\277\001\367Dex\314\001\363`\301_\203\005\377`\262\006\003\006.\007te\355s\224`_i\263Bout\317inea\357`\253E_b\377ufferalp\177haasian\201@\357ithm\250 c_tuw\375Be\023\003geo\024\000|\217`\r\005yncio\350a\336Q\003sbba\212 li\373er1\003_gree\277ksbarr\020\001b\373smI\003baseb}e\375\001ack76\037\013\340\035\0055\005\374f\317\204\003\371iccl\372\313\000_\241@trace\376{\000kcorrad\357o_su\264\003cou\277ntcrr_\265@r\023ic\334\000\317\204\001e\000\017\245\004\047\001\377stepsdf_\303rd\276A\000\002\273!\345\211\003em\377ptyencod\337eenum\345\207\002er\377rorflags\377float64f\337ormat\274\210\004id\367im""p\222 d_vo\223l_\232&\010\nl\204\"\033\ns?mindex\265@\262\006\376\304!s_calli\362\001\003_\014\003\322As_up\372\331\204\001s\000\002izekk~\312\205\001kappa3\001\002\3774mmax_it\237ermem\376\211\001\366\211\001n\377_fixings\352\325\204\001n\247\000n\270\000_cd\365f\003\002p\000\005pfnp\273nu\327\207\002objP\000cokpop\306\"_b\267\003\316\327\000tch\r\003\242\207\005ba\346\020\000qq\323\206\001\377!rrr~\242@teregi\342 \377rrhosabr\325_\225(s\333\000e\203\207\001se\371t\363\210\004\357\212\002sigma\270\000\002\030\002\n\001_ns\344\000s\317tart\255B\262Ast\377opstruct\377svi_eval\357_vec\010\001tot~\t\001arianc\371`\357rget\327\204\003tol\377unpackup\367dat0\001uesx\377O\200\001\330\004\013\2109\377\220A\220Q\200\001\340\004\377\007\200r\210\023\210A\330\337\010\017\210q\330\001\n\340\004\377\025\220Q\330\004\026\220a\001\330\000\007\013\006\005\0260\0047\002<\002<\007\302H\000\340J\003P\002U\002\017\002\030\230\376\222\000\031\230\024\230R\230q\337\360\006\000\005\010\222\000\022\210\3771\330\010\014\210D\220\001\377\220\025\220b\230\003\2301\335\230\243\000\023\2203\n\000\002\230\377\"\230D\240\002\240\"\240\377B\240d\250\"\250B\250\377b\260\004\260B\260b\270\377\002\270$\270b\300\002\300\373\"\300\320\000\022\220#\220R\377\220r\230\022\2304\230r\377\240\022\2402\240T\250\022\377\2502\250R\250t\2602\277\260R\260r\270\021\364\001t\373\2202\346\000\t\013\2103\210}ao\001B\210b\220\001\000\006\373\330\010J\047D\310\002\310!\n\005)Aw\006\340\335\014\333\001\033-\311\200$\377q\220\004\220B\220a\200\377\001\360\014\000\022\023\330\017\337\020\330\021\022\340\221`?\230\377!\230>\250\023\250C\250\377s\260#\260S\270\t\300\323\025\300\030\013\224E\023\224@\003\220\3715\221A\262d\034\230E\240\023\357\240D\250\001\334\"S\260\010\377\270\r\300T\310\021\310\"\177\310B\310c\320QR\327a_}\220C\220z\204@1\350b\366\203d\027\220\364`\032\230!\360\377\010\000\005\t\210\006\210e?\2201\220A\330\010\024\000\360@\3773\230f\240C\240y\260\377\t\270\021\270\047\300\021\300\365\047O\000\047K\000""\320RX\320_XY\320YZ\263\204\001v\341@\377q\330\010\013\2104\210q\373\220\006\250`\001\330\014\023\220\376\272`\013\2105\220\002\220$\357\220d\230(\247`A\330\014\377\022\220!\330\r\022\220\"\277\220D\230\004\230H\271`a\376\035\n!\330\014\026\220h\230\377b\240\005\240R\240q\330\377\014\017\210x\220s\230$\357\230c\240\030\223 A\330\020\325\032\010\002\024\032\001\340(\000d\230w#\230T\314\001\340\004\010\260\007\345\022o\000c\305\204\003\211\200;\004\230D\236\205\002u\250B\250\230\016\310\000\340\352\341\002\004\364\001s\343\000b\230\001\374\313D\310 \n\013\330\010\021\220\375\021\300\001s\220#\220S\230\357\003\2307\240\335\000\r\210W\377\220A\220W\230A\230W\377\240A\240V\2501\250G\357\2601\260E\330$!\340\004\377\014\210G\2207\230\047\240\377\026\240w\250e\2607\270Q!F\013\357\201%=\010q\345`\016\344a\333\016\017\355`\005\026\320\207\001\025\220\357Q\360\006\000\241\001\r\320\r\377\037\230q\240\003\2403\240\375c\366bw\260i\270w\300\377a\300v\310Q\310f\320\337TU\320UV\330A6\220\375\023\224`\014\021\320\021#\240\3751\221`s\250#\250S\260\375\003\237\000)\3006\310\022\310\3373\310a\310v)\000\320V\377\\\320\\]\320]^\330\273\014\024\344@\003\2303\315@\001\016\005\0055\240\002\202!\024\003\000\n\025\002\211\3401\000\244`\024f\001\000\002\007\000\340\376\326`2\210R\210t\2204\377\220v\230R\230s\240$\377\240b\250\002\250$\250d\237\260\"\260B\260\300`\204\0166\377\270\022\2704\270y\310\007\377\310q\320PW\320WX\377\320X_\320_`\320`\376\355`\025\220T\230\023\230C\337\230r\320!3\370 C\260\177s\270#\270S\300\003\301\002\3774\310y\320X^\320^\376(\000c\320cd\320dk\377\320kl\320ls\320s\377t\320t\177\360\000\000@w\002F\002\004\000F\002I\003\001\367I\002P\n\001P\002Q\002\373\330\014\000\203\024\220G\2302\277\230X\240S\250\004\263\204\001\340\324\246I\244\212\001d\325\207\002\007\363\200\047\"\270\177B\270d\300#\300S\313 \374\330\200B\013x\023\2207\230\"\230\377H\240C\240t\2502\250\021Q\273\206\003\222\210\001\352\205\013a\252\205\005\225\212\002\346\211\013\3372\220S\230\004\273a\240\023""\375\240\257\216\003\340\004\027\220s\230\237!\2301\230B\346\204\002\000\014\004_\034\230D\240\001\370\214\002U\243\215\004\177\006\260h\270m\3104\231\204\001\377R\320RT\320TY\320\377Y[\320[]\320]_\377\320_e\320ef\330\004\367\036\230a\255\215\0029\250N\270\362\376!a\256\212\017\312\212\005|\2402\240\335Q\301\212\016\030\230\001\303\212\014\021\220\375\021\203\210\0043\230c\240\027\250\337\t\260\021\260\047\315\212\010&\320\357PQ\320Q\322\212\003^\320^\377_\320_f\320fg\320Kgh\275\212$&\326\206\003\327\212\nF\362\212\003\247\023\2201\303\206\001\212\213\001!\224\207\001F\357\230\"\230E\204\214\002\014\017\210\375v\313$v\240S\250\001\330+\020\030\332\"t\321\001\340\274\207\004\271\217\001\375\021\327\212\n\020\220\004\220C\220\037t\2302\230Q\343\211\002\216\200H\301\2122\306\333\211\002\022\023\334\211\001\267\221\001\231\216\0036\230\177\023\230D\240\003\2402\210\206\002\277C\250r\260\023\260\351\217\0041\373\220B\316\221\0028\240=\260\004\373\260A\206\221\002\023\270A\330\004M\024\024\002\001\330\321`\351\210\001q\234\223\001\367z\220\022\312\215\001\016\210h\220\377a\330\010\020\220\002\220#\377\220T\230\022\2305\240\003\377\2404\240r\250\021\330\010\367\022\220%\342\221\0023\230d\240\377\"\240E\250\023\250D\260\377\002\260$\260b\270\005\270\377S\300\004\300B\300d\310\367\"\310A:\001\004\220A\220\261X\344\222\001E\003\210\216\001\002\230\270A&\376\320\211\002b\260\t\270\022\2701\377\330\010\016\210b\220\002\220s!\340n\000\320\216\001\004\230A\350!\227\016\210d\315\222\004\025\323\212\002\036\006\004\377\r\210Q\210c\220\023\220\377C\220u\230C\230w\240\377i\250q\260\007\260q\270\177\007\270q\300\007\300q\206\212\003\376\260\217\003a\320ab\320bj\223\320j\332\211\001\211\225\0011\233\214\005\300 \016D\370\223\003\213\2015\340\262.\266\225\004\357\214\001\010\326\224\001\372\310$\021\323 3\220h\230a\343\330\010\343\225\001\251\216\002\256\216\002\010\014\210\377E\220\025\220a\220{\240K$\240\234\220\0028\275\214\005\314\224\001Q\372\224\002\372\246\220\002a\254\220\001c""\230\022\2302\377\230R\230v\240R\240u\353\250C\325\224\002T\276\"\014\032\230\367!\330\010\356\216\001C\220x\230\375q\005\003D\230\010\240\013\250\2773\250h\260a\340\254\221\004\003\252\372\224\002\014\250\217\004u\226b\0028\000\020\377\026\220d\230\"\230C\230\335q\214\221\002s\250\"\323@\003\260\1774\260r\270\025\270b\323@\377C\300u\310B\310e\320\177SU\320UW\320W\214\222\001\353\340\020\260\227\001\r\350\206\001\"\220B\257\220f\230B\336\000\014\256\007#\277\230R\230u\240C\263`\022\373\2501\215\222\001$\220c\230\023\377\230A\230R\230r\240\023\374\022\004\235\226\001u\260B\260f\270\377C\270r\300\022\3002\300\377R\300r\310\022\3101\330\302T\002$\372\226\004\326\206\004@\032\275\001B\230\367f\240B\255\216\004c\260\022\260_3\260c\270\021\321\210\002cZ\000\3655\257\226\001\340\211\027\r\330\021\025\357\220R\220s\347\227\010f\250B\373\250d\331\204\002\002\270&\300\003\273\3004\231\0022\310V\376\t\330\317\020\023\22042\002\223\212\001\002\240\377$\240d\250$\250c\260\335\024\363\227\002\022\2707\317\214\002\001\310\377\022\3102\310S\320PS\312\276%X\374\230\001\031\352\230\002\264\212\001\027\250\357\005\250R\250\236\225\002#\230Q\357\230d\240!\357\205\002\027\260\003t\303\002\247\205\001\004\223\224\001a\230x\206\206\002W\004\030\230\231\231\001A\302\231\001\016\212\205\006\377w\230c\240\031\250)\260\3771\260G\2701\270G\300\3771\300G\3101\310G\320\317ST\320T\252\221\003\363\212\001\320f\177n\320no\320op\210\205\t\374\241\222\004\204\223F\020\000\005\031\230\005\377\230V\2401\240A\340\004\3770\260\002\260&\270\001\270\367\023\270F\256\232\002\004\033\2301o\330\t\n\330\374\204\006q\330\225\204\001\377\220%\320\027)\250\021\250\277%\250q\260\004\260\260\221\001%\257\270s\300!\264\206\005\020\300\230\004\020\373\021\330\341\210!D\270\003\2702\217\270S\300\001\201\230\004\244\215\031\217\230\005d\377\220\"\220C\220s\230%\377\230t\2407\250$\250b\027\260\003\260\336\227\0021\346\227\004\277\214\035\261\230\003\277Z\320Z[\320[\326\222\003l?\320lm\320mn\206\231\004\352\211\rg\330""\004\035\242 \256\234\001\021\250\346\000\375\026\361\234\002$\230b\240\006\240wb\250\001\223\236\001d\230!\331\224\002u\003\315\234\010q\261\236\001S\230\001\220\207\002\177S\240\002\240+\250S\225\235\002\267d\270\"\334\212\001\025\220\000\032S>\270bB\230c\240\023\256\205\002\300\222\001\375k\232@D\300\002\300$\300\347b\310\001\206\237\001D\030\024\220C\373\220q\374bC\230r\240\033\366\243\205\002\"\260\345@\026\220g\230}]\302\003h\230k\250\021\243\211\001wD\230\003\265\210\002u\240B\251\212\002\374\275\236\001\243\001B\270b\300\005\300\367R\300y\214\217\002U\320UX\313\320X\231\220\003^\235\214\001\0004D\230\377\001\330\010\n\210\"\210E\372\364\211\002a\247\214\006#\240S\250\002\377\250&\260\002\260)\2701\365\270\346\001!#\003B\210e\220\3652\245(\004\346\237\004I\260Q\260\035d\260\226\002\002\300!\303\003\002V\311\225\001\347U\240!\337\217\003\246\211\003B\230m\377\2502\250S\260\001\260\022\277\2602\260S\270\004\234\225\002\"\377\300I\310Q\310d\320RX\252#\344a\207\214\001G\230\237\204\003\210\320\240\001\375\003\267\241\002\005\230R\230y\250\347\001\250\024\323\207\002\220 #\210Q\374\347\215\002\243\233\001\002\230%\230r\240\177\031\250!\2504\250s\333\230\002\350\265a\220\"\224\242\001\027\210\243\001\007\200x\267\210u\220\313\"\013\210\300\212\002!\373\2202\341\241\0046\240\022\2403?\240h\250b\260\002\230\231\003\326\211\001\344\031\003\267\231\003(\247\242\004\030\004\330\t\021\217\220\024\220Q\272\236\001\212\213\002\303\217\001\023\320\226\236\002\340\231\001\323\242\003F\001A(\035\n\016\017\210i\220u\347\224\001C\006\214\007\234\215\001\376\374\242\0016\250\022\2503\250g\353\260Q\214\007r\264\215\010s\250(\362\256\004\010\255\200)-\023\004\013\2107\376\221\236\002\t\240\021\200\001\360\022\227\000\005\026\207\244\002\021\372\245\001\315\233\001r\177\220\023\220D\230\002\230\217\215\001\375t\317\234\002r\250\023\250B\250\031f\321\233\001-\002\022\023\342\241\013\315\222\001\243\222\033\376\350\212\013s\230#\230W\240F\376\312@:\260Q\260g\270Q\377\270g\300Q\300f""\310As\310W\324\235\002\207\210\003b\320b\350\233\001\374\247\227\035\201\210\n\031\230\026\230r\240\335\026\354\213\003\033\2307\332\241\002\004\026\177\220c\230\021\230\"\230\266\207\007\371\002\257\217\002\337\212\001\002\270\047\300\022\363\3003\272\207\007\336\217\001\004\026\220iG\230q\240\311\210\002\004\002\232\247\001d\226\226\004\3752\314\220\002B\250k\270\024\270\377T\300\022\300;\310b\320\377PT\320TV\320VZ\377\320Z\\\320\\c\320c\340\247\230\003\242\220\003\350\226\001\343\216\001\254\215\001{\270!\377\330\t\014\210B\210c\220_\022\2204\220r\325\247\002{\206\004\377$\260c\270\027\300\002\300\371,M\001\204\240\001\005\033\230)\240\2772\240W\250B\250\234\217\0019\367\270B\270\353\230\002x\210r\220\352\330\224\002!\225\251\001q\257\244\004\031\230\030\330\306\247\002\353\221\001\364\247\001\002\260\203\214\002:\220\277W\230B\230i\240\353\240\001\022\307\000\023\024\301\216\003\342\214\004\320\250\0017\260\377b\270\006\270a\270s\300\315&\241\247\002\0046\000\016\022\r5\260\367R\260v\264@c\300\026\300\323r\310\267`\"\0164\242\221\002A\2707S\300\006\233\212\001\340\004\305\251\002\312\251\002L\000\007\014\005\360\n\370\215\001\345\251\002\021\370\241\004\376\344\223\005q\330\014\031\230\033\240\337A\240S\250\003\225\222\001\017\210\337\177\230a\230q\301\220\001:\230\375S\237@\024\034\320\034.\250\357a\330\030\035\201\220\002%\240q\377\250\004\250E\260\021\260$\353\260e\262\211\002\005\330`d\310)\376\316\217\002U\330\030#\240;\250\177a\250w\260a\260w\361\000\373q\340\016/:\250R\250s\373\260!\200\244\001\2707\300!\300\2771\340\024\026\220a\337\206\002\003\r\240\306\206\0011\330\000\016\001\036=\004\215\200<\322\202\003Ax\005\000\006A\361\222\0015\230\377\001\230\023\230B\230d\240\375$\200\230\002\003\2602\260V\270\3774\270u\300A\300S\310\307\002\310$\242\212\001\217\243\003\316\214\005\024\035\177\320\035/\250q\260\005\325\213\002\377%\270q\300\004\300E\310u\021(\000e\236\222\002X\320X\317\244\001\337\320^b\320b\214\243\003o\320\377oq\320qx\360\000\000wy\001D\216""\243\001D\002O\225\243\001uO\212\243\005W\243\243\001W\002X\252\243\001wX\002_\261\243\001_\002`\270\243\001\337`\002a\002\330\000o\024\027\373\220z\257\240\002\030!\240\024\240\377S\250\007\250r\3201C\363\3001\320\026\367\236\001\320hl\320\375l\346\000r\320rv\320v\232\373\244\003A\375\244\001A\002\357\004\210\245\004M\352\222\245\001M\347\005b\240\245\001b\002d\356\247\245\001d\002g\256\245\001g\002h\356\265\245\001h\002o\274\245\001o\002p\356\303\245\001p\002w\312\245\001w\002x>\321\245\001x\002y\002\330\000\233\375\204\002\177v\230W\240B\240h\305\227\004\375q\263V#\310R\310x\320\335W\212\251\003a\320a\311\241\003k\320\377kt\320tu\320uy\277\360\000\000z\001E\313\247\001E^\276\247\007\360\000\000Q\256eY\347\247\001\375Y\254g\360\000\000a\002b\365\002\000n\330\216\203+a\320ac\377\320ck\320kp\320p\367q\320q\350\000z\320z{\323\320{\272\251\003\262\251\004J\303\251\001J\002\255N\312\251\001N\002\343\004c\330\251\001c\253\002e\337\251\001e\251ei\355\251\001i\312\251eq\373\251\001q\247g\376\205\001\002z\340\221\203$%r\240q\303\211\005\271\210\007\340\020\031\357\230\021\330\024\002\000\230$\230\377e\2401\240D\250\005\250\377Q\250d\260%\260q\270\377\004\270E\300\021\300$\300=i\314\254\001Q\330\024\025\000\000\274\257\006_W\250A\250V\323\233\004E\235\262\004\377!\340\020\022\220!\2205\207\230\001\330\000\006\000\017\023\016\373\257\001K\377\220{\240+\250Z\260{\345\300\367\257\001\024\202\242\t\360\250\tD\250\003\273\2506\311\244\005q\340\004\321\207\001R\235\240\266\267\004t\2101\352\224\004\325\266\001\010\361\021\270\257\001\365\230\001\220\261\001\037\240\002\240\317/\260\022\260\240\256\001\200\236\001U\310q\"\205\235\001\342\257\003\211\224\001R\220u\275\220\002\377\022\2407\250#\250T\2609\022\344\232\001\321\262\001b\230\004\322\212\002\335\244\001P\304\223\001\355\267\003\216\245\002\362\263\001\010\212\245\002s\305\227\002\373&\270\352\220\0031\340\004\r\210\037S\220\001\220\022\336\267\002\002\010\302\252\001\376\230\241\001\004\t\210\023\210B\210\337g\220R\220w""\271\252\003\036\230j\350\251\002|\220\270\002\010\372\271\001\t\025\334\264\003\334\205\272\002\345\236\005t\2501\334\245\006\014\300\237B\300b\310\002\345\265\005\303\237\006d\377\320dg\320gk\320k.\343\233\002\004\n\210\347\226\001a\255\253\001e\004]\027\347\002a\330\004\300\222\001!\353\271\001\377C\210\177\230b\240\017\250\347r\260\026\231\271\003\221\271\002\320\017\037\271\230\243\232\001\325\226\001\001\340\004\261\251\001R\376\264\266\001\017\210r\220\022\2207\357\230$\230a\033\002k\260\021\376\356\001_\230B\230o\250R\377\250v\260R\260w\270c\377\300\025\300b\310\007\310r\376\202\267\002\r\210T\220\022\2205.\362\224\004w\240c\202\230\004\004\327\246\001\210\247\003\361$\374\265\004\354\243\003\331\221\0049\220B\220\035i\371\261\002c\250\026\230\004\302\222\001\237dp\313\237\006\342\220\206\377\265\001\307\221\025\021\220\031\256\256\001\363\330\014\336\275\001\257\245\001\220d\230%\377\230q\240\004\240E\250\021\377\250$\250e\2601\260D\377\270\005\270Q\270d\300)\377\3101\310A\330\020\033\230\1771\230G\2401\240G\255\266\004\367F\270!\222\221\0025\310\001\310\375\027\266\255\002R\340\014\016\210a7\210u\220\333\254\001A\330\000\n\006\021\237E\230\022\2301\022\022\223\230\001!~\376\205\014\320\000\037\230q\360\301\266\005\375\010\237\266\033w\310a\310w\320!V\367\264\001\225\266%)\003\363\256\003`\275\272\001\271\245\001\035#\243\253\003\017\210q";
-    PyObject *data = __Pyx_DecompressString_LZSS(cstring, 5966, 10263);
+    #elif (CYTHON_COMPRESS_STRINGS) > 0 && (CYTHON_COMPRESS_STRINGS) <= 90 /* compression: lzss (7160 bytes) */
+static const char cstring[] = "\377 at 0x o\377bject>.:\377 <Memory\377View of \377<contigu\377ous and gdir%\001\007\rin\021\005\177strided\"\010o or \004\031><(\t\376A\006>?Canno\377t assign\377 to read\177-only m\240\002\375v\242\000Invali\377d mode, \347exp\305\000|\000\047c\047\376t\001\047fortra\237n\047, gH\000%\005s\357hape\222\000 ax\377is Note \373th\207 Cytho\373n \021\000delib\237eratek\000\320\001c\367ter!\001n PE\337P-484\212\"re\376\264!s subcl\366\246\000es\261!buil\373ti\260\000ypes.\377 If you \223ne\224 \303\000p\316\000%\tt\177hen set\200\000\367e \047\357\002atio\377n_typing\355\047\355$iv\242\000o F\377alse.add}_\231 ecoll\266@\376+\000s.abcdi\177sableen\002\001\357gcis\004\003dno\377 default\377 __reduc\277e__ duM\002n\367on-\262@vial\376\033\000cinit__\377numpy.co\357re.m4\000iar\377ray fail\316\277\003imp\327 \033\010um\367ath\020\016src/\277bz_priU\000g\335/L\001/op\332\001s_\236X\002pyxu\251\002\334Aa\257lloc\360  h\003d\017ata.\013\020\270C\212\204\001\347c\377s.ASCIIE\377llipsisF\273F_\253\000HKK\003\001S\375S\001\002equenc\247eTT\027\001\330\204\001.\335\204\007_\357_Pyx\001\000Dic\377t_NextRegf__\201D\245 __\326B\373__\001\005getit\313em\r\001d0\001\027\000fu3nc\035\001\030\000st\262`)\001\274\235#3\001main\003\002owdulM\002nam\002\003\363ewT\001\203 _che\017cksuT\000\n\001?\004\025\001\370\204`\253@\037\001unpicmk?\000En \005vt\355A\036\230\001qualO\005\333E\344F1c\324\204\002\277\001\367Dex\314\001\363`\301_\203\005\377`\262\006\003\006.\007te\355s\224`_i\263Bout\317inea\357`\253E_b\377ufferalp\177haasian\201@\357ithm\250 c_tuw\375Be\023\003geo\024\000\370\217`\t\t\236ae_gre\377eksasync\363io\372ac\003sbba\276\234 lier_\035\tbwarr\020\001bsm[\003\374\000\016K\004basebe>\247!ack767\0135\005p$\005\246\204\006\371\204\003\243\204\tccl\365\000}_\313@trace\223\000\377kcorrado\307_su\336\003\000\r\315\004co\177untcrr_\366@\367ric\235 disc\377rete_div\300\311\n\031\n\223\"\000\017N\005N\000st\177epsdf_rD\001\353amd\001sO\001tim\207esd\271a\000\002\266A\340\212\003e\377mpt""yenco\277deenum\340\210\002e\377rrorflag\377sfloat64\277format\267\211\004i\357dimp\373 d_v\047ol_\203F\010\nl\325\"\033\n\177smindex\260`\374\354\006\255As_call\205i\001\003_\014\003\213f\335`\331as\327_up\340\205\001s\000\002iz\367ekk\321\206\001kapp\373a3\001\0024mmax\377_itermem\374\205\213\001\375\212\001n_fixiWngs\334\205\001n\263\000n\304\000\257_cdf\003\002p\000\005p\337fnpnu\336\210\002ob}jP\000ckpop\375c9b\303\003\343\000tch\220\204\003\251\210\005\273ba\016\002op_\327&p\375r\007\004yieldssqq\367\207\001\342Arrr\234`\277teregi\237@r\377rhosabr_\352\276(s\204 e\247\210\001set|\227\212\004\223\214\002sigma\000\002\334\030\002\n\001_ns\201 st\347art\352B\357Asto\377pstructs\377vi_eval_wvec\010\001tot\t\001\177ariance2\000\367get\373\205\003tolu\377npackupd\373at0\001uesxO\377\200\001\330\004\013\2109\220\377A\220Q\200\001\340\004\007\377\200r\210\023\210A\330\010\357\017\210q\330\001\n\340\004\025\377\220Q\330\004\026\220a\330\000\000\007\013\006\005\0260\0047\002<\002<\007H\000a\340J\003P\002U\002\017\002\030\230\222\000\377\031\230\024\230R\230q\360\357\006\000\005\010\222\000\022\2101\377\330\010\014\210D\220\001\220\377\025\220b\230\003\2301\230\356\243\000\023\2203\n\000\002\230\"\377\230D\240\002\240\"\240B\377\240d\250\"\250B\250b\377\260\004\260B\260b\270\002\377\270$\270b\300\002\300\"\375\300\320\000\022\220#\220R\220\377r\230\022\2304\230r\240\377\022\2402\240T\250\022\250\3772\250R\250t\2602\260\337R\260r\270\021\364\001t\220\3752\346\000\t\013\2103\210a\276o\001B\210b\220\001\000\006\330}\010J\047D\310\002\310!\005)\205Aw\006\340\335\014\333\001\033-\311\200$q\377\220\004\220B\220a\200\001\377\360\014\000\022\023\330\017\020\357\330\021\022\340\221`?\230!\377\230>\250\023\250C\250s\377\260#\260S\270\t\300\025\351\300\030\013\224E\023\224@\003\2205\374\221A\262d\034\230E\240\023\240\367D\250\001\334\"S\260\010\270\377\r\300T\310\021\310\"\310\277B\310c\320QR\327a}/\220C\220z\204@1\350b\203d\373\027\220\364`\032\230!\360\010\377\000\005\t\210\006""\210e\220\2371\220A\330\010\024\000\360@3\377\230f\240C\240y\260\t\377\270\021\270\047\300\021\300\047\372O\000\047K\000\320RX\320X\257Y\320YZ\263\204\001v\341@q\377\330\010\013\2104\210q\220}\006\250`\001\330\014\023\220\272`\377\013\2105\220\002\220$\220\367d\230(\247`A\330\014\022\377\220!\330\r\022\220\"\220_D\230\004\230H\271`a\035\n\377!\330\014\026\220h\230b\377\240\005\240R\240q\330\014\377\017\210x\220s\230$\230\367c\240\030\223 A\330\020\032\352\010\002\024\032\001\340(\000d\230#\273\230T\314\001\340\004\010\260\007\022ro\000c\305\204\003\211\200;\004\230D\205\002Ou\250B\250\230\016\310\000\340\341\002u\004\364\001s\343\000b\230\001\313D\376\310 \n\013\330\010\021\220\021\376\300\001s\220#\220S\230\003\367\2307\240\335\000\r\210W\220\377A\220W\230A\230W\240\377A\240V\2501\250G\260\3671\260E\330$!\340\004\014\377\210G\2207\230\047\240\026\377\240w\250e\2607\270!\250F\013\357\201%=\010q\345`\016\344a\016\355\017\355`\005\026\320\207\001\025\220Q\367\360\006\000\241\001\r\320\r\037\377\230q\240\003\2403\240c\376\366bw\260i\270w\300a\377\300v\310Q\310f\320T\357U\320UV\330A6\220\023\376\224`\014\021\320\021#\2401\376\221`s\250#\250S\260\003\376\237\000)\3006\310\022\3103\357\310a\310v)\000\320V\\\377\320\\]\320]^\330\014]\024\344@\003\2303\315@\001\005\005\2075\240\002\202!\024\003\000\n\025\002\340D1\000\244`\024f\001\000\002\007\000\340\326`\3772\210R\210t\2204\220\377v\230R\230s\240$\240\377b\250\002\250$\250d\260\317\"\260B\260\300`\204\0166\270\377\022\2704\270y\310\007\310\377q\320PW\320WX\320\177X_\320_`\320`\355`\377\025\220T\230\023\230C\230\357r\320!3\370 C\260s\277\270#\270S\300\003\301\0024\177\310y\320X^\320^(\000\377c\320cd\320dk\320\377kl\320ls\320st\377\320t\177\360\000\000@\002\273F\002\004\000F\002I\003\001I\373\002P\n\001P\002Q\002\330\375\014\000\203\024\220G\2302\230_X\240S\250\004\263\204\001\340\246I\352\244\212\001d\325\207\002\007\363\200\047\"\270B?\270d\300#\300S\313 \330\200B\376\013x\023\2207\230\"\230H\377\240C\240t\2502\250Q\210""\273\206\003\222\210\001\352\205\013a\252\205\005\225\212\002\346\211\0132\357\220S\230\004\273a\240\023\240\376\257\216\003\340\004\027\220s\230!\317\2301\230B\346\204\002\000\014\004\034\257\230D\240\001\370\214\002U\243\215\004\006\277\260h\270m\3104\231\204\001R\377\320RT\320TY\320Y\377[\320[]\320]_\320\377_e\320ef\330\004\036{\230a\255\215\0029\250N\270\376!\371a\256\212\017\312\212\005|\2402\240Q\356\301\212\016\030\230\001\303\212\014\021\220\021\376\203\210\0043\230c\240\027\250\t\357\260\021\260\047\315\212\010&\320P\367Q\320Q\322\212\003^\320^_\377\320_f\320fg\320g\245h\275\212$&\326\206\003\327\212\nF\362\212\003\023\323\2201\303\206\001\212\213\001!\224\207\001F\230\367\"\230E\204\214\002\014\017\210v\376\313$v\240S\250\001\330\020\225\030\332\"t\321\001\340\274\207\004\271\217\001\021\376\327\212\n\020\220\004\220C\220t\017\2302\230Q\343\211\002\216\200H\301\2122\333\211\002\337\022\023\330\026\027\272\221\001\031\230\337\r\240]\260,\341@;\320\373VW\271\222\001T\230\021\230&\222\320\214\004\004\216\222\t\023\003\004\207\215\001\212\212\004\013\377\2101\330\014\024\320\024)\373\250\021\334\211\0043\260c\270\027\367\300\t\310\311\213\002r\220\022\220}4\367\0006\240\022\2403\365\221\004\367c\260\024\306\221\004\020\027\320\027\177,\250A\250R\250r\021\000\377S\270\003\2703\270c\300\007\027\310\t\376\216\001\000\0322\005\320\212\001m\001\177\023\270F\300\"\300D,\013\210\000\032\212\213\001\321\222\001t`\021\000\032l\005\022\357\2702\270T\250\003_\320_\277a\320ac\320c\375\211\001\340\376\214!-\250Q\250c\260\023}\260\253\212\003W\300I\310Q\236\217\001\376\356\0370\260\001\260\022\2602\377\260T\270\023\270C\270s?\300#\300W\310I\322\214\001\251!\370\000\0326\001i\005S\300\006\300b#\310\004,\013\000\032\247\001r\204\214\002a\020|\000\032\335\005R\270r\300\024\250\003\377c\320ce\320eg\320\337go\320op\373\214\025#\250\371T\345\002\226 \025\220U\230\"\017\230F\240#\355\225\002\317`\013\003\260\226\001\377&\250\002\250&\260\003\260\3573\260b\270\224\216\002E\230\022""\273\2306\270\223\002\002\250!\267\222\0015\377\230\002\230&\240\003\2404\367\240r\250\354f1\330\020\031?\230\025\230b\240\007\022\001\232\211\024\343\022\023\337\217\001\272\227\001\234\224\0036\230\023\277\230D\240\003\2402\213\214\002Cs\250r\276@\354\225\0041\220B\321\227\002\1778\240=\260\004\260A\211\227\002\277\023\270A\330\004\024\024\002\001\327\330\004\027\353\216\002q\237\231\001z\220\375\022\315\223\001\016\210h\220a\330\377\010\020\220\002\220#\220T\357\230\022\2305\235\006\010\022\220\375%\345\227\0023\230d\240\"\240\377E\250\023\250D\260\002\260\377$\260b\270\005\270S\300\377\004\300B\300d\310\"\310}A:\001\004\220A\220X\347\230\001\330E\003\213\224\001\355\001\002\240\227!$\250\377b\260\t\270\022\2701\330\377\010\016\210b\220\002\220!\271\340n\000\323\224\001\004\230A\353\207\001\016\323\210d\320\230\004\212!\001\035\007\004\r\377\210Q\210c\220\023\220C\377\220u\230C\230w\240i\377\250q\260\007\260q\270\007?\270q\300\007\300q\211\220\003\263\225\003\377a\320ab\320bj\320Ij\335\217\001\214\233\0011\236\222\005\300 \016\373\231\003\312\213\2015\340\262.\330\353\207\006\342\226\001\010\200\376\310$\021\220\022\2203\220h\217\230a\330\010\346\233\001\254\224\002\261\224\002\010\377\014\210E\220\025\220a\220/{\240$\240\237\226\0028\300\222\005\317\232\001\351Q\375\232\002\251\226\002a\257\226\001c\230\022\377\2302\230R\230v\240R\257\240u\250C\330\232\002T\276\"\014\337\032\230!\330\010\361\224\001C\220\367x\230q\005\003D\230\010\240\377\013\2503\250h\260a\340\252\257\227\004\003\375\232\002\014\253\225\004u\226b\002\3768\000\020\026\220d\230\"\230wC\230q\217\227\002s\250\"\323@\377\003\2604\260r\270\025\270\375b\323@C\300u\310B\310\377e\320SU\320UW\320\255W\217\230\001\340\020\263\235\001\r\353\214\001\"\277\220B\220f\230B\336\000\014\376\256\007#\230R\230u\240C\277\240r\250\022\2501\220\230\001$\377\220c\230\023\230A\230R\317\230r\240\023\022\004\240\234\001u\260\377B\260f\270C\270r\300\377\022\3002\300R\300r\310/\022\3101\330T\002$\375\234\004\331\214\004|@""\032\275\001B\230f\240B\260\224\004\257c\260\022\260\317\212\001\021\324\216\002c\352Z\0005\262\234\001\340\211\027\r\330\021\337\025\220R\220s\352\235\010f\250\367B\250d\331\204\002\002\270&\300w\003\3004\231\0022\310V\376\t\237\330\020\023\22042\002\226\220\001\002\177\240$\240d\250$\250\246\213\005\367\022\2707\322\222\002\001\310\022\310\2772\310S\320PS\276%X\370\277\214\003\356\236\001\267\220\001\027\250\005\250R\375\250\241\233\002#\230Q\230d\240U!\225\207\002\027\277\207\002c\246\205\002\004\226\232\001wa\230x\254\207\002\004\030\230\234\237\001\365A\305\237\001\016\212\205\006w\230c\240\377\031\250)\2601\260G\270\3771\270G\3001\300G\310\3771\310G\320ST\320T|\255\227\003\366\220\001\320fn\320n\340\210\001\370\210\205\t\244\230\004\207\231F\020\000\005\031\230\377\005\230V\2401\240A\340\377\0040\260\002\260&\270\001\375\270\354\214\003A\330\004\033\2301o\330\t\n\330\374\204\006q\330\225\204\001\357\220%\320\027\220\216\001%\250q\373\260\004\201\214\002%\270s\300!\372\264\206\005\020\303\236\004\020\021\330\022\023\316\361\216\021\027\220t\231\223\007\201\230\001\021\230\375%\354bE\250\022\2509\260\177E\270\022\270:\300U\236\210\002\376\203\217\034\020\320\020!\240\021\240\177#\240S\250\003\2503\220\215\002WG\2709\314 8\312 \330\230\231\024\276\224\213\005T\270\024\270U\231\242\002\014\377\023\320\023$\240A\240R\337\240r\250\024\250\356\216\007G\300}9\223A[\320[\\\330\000!\345\014\304\213%\340j\005\256\007C\260v\317\270R\270t_\020\007\032\024\220\364\247\214\nJ\014b\363\212\002c\270\023\270\351G@\026\014\025\220\357\214\n\340\014\017\355\210\355\221\0011\330\325\221\001(\250\001\376\222\242\010\002\270\"\270D\300\007C\300y\335\233\002\333\233\001\202\215\034\224k\014\304\212\035\377D\270\003\2702\270S\300\361\001\246\242\004\311\227\031\264\242\005d\220\"\220\367C\220s\326`t\2407\250\026\306\214\001\003\260\203\242\0021\213\242\004\344\226\035\326\242\003\277Z\320Z[\320[\373\234\003l?\320lm\320mn\253\243\004\214\216\r\337\330\004\035\230V\322\246\002\021\250""\375!\247\250\001b\230\002\230$\230\177b\240\006\240b\250\001\270\250\001Wd\230!\376\236\002\003\362\246\010q\326\250\001\367S\230\001\262\213\002S\240\002\240w+\250S\272\247\002d\270\"\376\216\001\353\025\220\000\032S\332\207\002B\230cs\240\023\320\211\002\345\234\001k\270\023\213@\177\002\300$\300b\310\001\253\251\001\276D\030\024\220C\220q\236\210\002C\357\230r\240\033\305\211\002\"\260A\356\226\251\001g\230]\302\003h\230k\273\250\021\305\215\001D\230\003\327\214\002u\343\240B\313\216\002\342\250\001\243\001B\270b\357\300\005\300R\373AQ\320Q\277U\320UX\320X\276\232\003^\374\277\220\001\0004D\230\001\330\010\n/\210\"\210E\226\216\002a\311\220\006\351\206\001\276\263\222\001\002\260)\2701\345\002!\276#\003B\210e\2202\245(\004\276\213\252\004I\260Q\260d\325\240\002\002\343\300!\303\003\002V\356\237\001U\240!\374\204\232\003\310\215\003B\230m\2502\250]S\364\225\004S\270\004\301\237\002\"\262\226\001\217\310d\320R\252#\344a\251\220\001G\325\230\237\204\003\210\365\252\001\003\334\253\002\005\230\177R\230y\250\001\250\024\365\213\002N\220 #\210Q\211\222\002\310\245\001\002\265\211\002\177\031\250!\2504\250s\200\243\002\246\265aD\300\347\000\271\254\001\027\255\255\001\007\237\200x\210u\220\313\"\315\231\002\022\317\220!\2202\206\254\004\266\231\003h\250\240\245\207\001\276\243\002\370\215\001\031\003\334\243\003(\314\254\004\002~\333\243\004\t\021\220\024\220Q\337\250\001\204\254\217\002\345\223\001\023\273\250\002\205\244\001\370\254\003\047\001A~(\035\n\016\210i\220u\214\237\001\360C\006\214\007\276\221\001\241\255\0016\250\022\250_3\250g\260Q\214\007r\326\221\010\007s\250(\362\244\003\225\245\001\273\220\002\264\200\"-\023\357\004\013\2107\266\250\002\t\240\021\177\200\001\360\022\000\005\026\254\256\002\371\021\237\260\001\362\245\001r\220\023\220D\327\230\002\230\261\221\001t\364\246\002r\250\037\023\250B\250f\366\245\001-\002\350\214\003\370\345\226\013\305\226\033\212\217\013s\230#\230W\373\240F\312@:\260Q\260g\377\270Q\270g\300Q\300f\317\310A\310W\371\247\002""\207\210\003b\320\361b\215\246\001\314\241\035\201\210\n\031\230\026\230wr\240\026\216\220\003\033\2307\377\253\002\377\004\026\220c\230\021\230\"\345\230\266\207\007\002\321\223\002\201\217\001\002\270\047\317\300\022\3003\272\207\007\200\224\001\004\026\037\220i\230q\240\311\210\002\004\002\277\261\001\365d\273\240\0042\356\224\002B\250k\270\377\024\270T\300\022\300;\310\377b\320PT\320TV\320\177VZ\320Z\\\320\\\263\232\003\321f\205\211\003\216\232\001\257\261\001b\315\221\002{\270\377!\330\t\014\210B\210c\252\317\236\002r\372\261\002{\206\004$\360\236\002\002\363\300,M\001\251\252\001\005\033\230)\177\2402\240W\250B\250\276\223\001\3579\270B\270\220\243\002x\210r\357\220\021\330\010\327\255\001\004\007\200\035q\324\256\004\031\230\030\353\261\002\215\226\001\231\262\001\373\002\260\245\220\002:\220W\230B\317\230i\240q\260H\361\237:\020\320\317\020 \240\001\262\225\002\214\253\003\007\260_x\270x\300q\347\217\035Q\326\217\002\324\307\253\001\223\225\001\004\352\260\006\007:\000x\310\305q\000\033\330\305\217+\243\254\013\226\253\003x\300\006Z\tC\240\307\254\005\021\n\323\217\021\366\254\005\300\251\t8;\017\n\021\277\217\031\047\240q\303\222\006\302\265\001?\004\270G\3008\310\313\222\002\351\235\n\370\234\255\001\276B\203\236\001x\250~\270X\336\223\230\002\027\320PQ\261\250\017\022\000\343\023\024\211\244\003\345\224\004\326\266\0017\260b\377\270\006\270a\270s\300&\346\247\265\002\0046\000\016\022\r5\260R\377\260v\270Q\270c\300\026_\300r\310\021\330!\0174\245\231\002;A\270\237\241\003\001\340\004\313\267\002\320\267\002L\000\007\014\005\360\n\373\225\001\353\267\002\021\376\257\004\376\347\233\005q\330\014\031\230\033\240\365A\325\224\0021\375\262\001\177\230a\230\375q\304\230\001:\230S\240\001\330\377\024\034\320\034.\250a\330\353\030\035\204\230\002%\264 \004\250E\277\260\021\260$\260e\223\215\002\005\277\300Q\300d\310)\321\227\002U\377\330\030#\240;\250a\250\337w\260a\260w\361\000q\340\376\016/:\250R\250s\260!\376\206\262\001\2707\300!\3001\340o\024\026\220a\300""\212\002\003\240\247\212\001\2031\330\000\016\001\036=\004\215\200<\202\003A\364x\005\000\006A\364\232\0015\230\001\230\177\023\230B\230d\240$\203\240\002\377\003\2602\260V\2704\270\377u\300A\300S\310\002\310\361$\203\216\001\225\261\003\257\220\005\024\035\320\035\337/\250q\260\005\266\217\002%\270\177q\300\004\300E\310\021(\000\335e\241\232\002X\320X\325\262\001\320^\367b\320b\222\261\003o\320oq\377\320qx\360\000\000y\001]D\224\261\001D\002O\233\261\001O\220\261\005\335W\251\261\001W\002X\260\261\001X\002\335_\267\261\001_\002`\276\261\001`\002\367a\002\330\000o\024\027\220z\376\265\256\002\030!\240\024\240S\250\377\007\250r\3201C\3001|\320\026\375\254\001\320hl\320l\346\000\277r\320rv\320v\201\263\003A\246\203\263\001A\002\357\004\216\263\004M\230\263\001M\272\347\005b\246\263\001b\002d\255\263\001d\273\002g\264\263\001g\002h\273\263\001h\273\002o\302\263\001o\002p\311\263\001p\273\002w\320\263\001w\002x\327\263\001x\317\002y\002\330\000\233\375\204\002v\230_W\240B\240h\310\237\004q\263V\177#\310R\310x\320W\220\267\003\367a\320a\317\257\003k\320kt\377\320tu\320uy\360\000\257\000z\001E\321\265\001E\304\265\007\360W\000\000Q\256eY\355\265\001Y\254g\177\360\000\000a\002b\002\000n\371\330\216\203+\266\254\006p\320pq\320\375q\350\000z\320z{\320{t\300\267\003\270\267\004J\311\267\001J\002N\320\267\001\353N\002\343\004c\336\267\001c\002e\252\345\267\001e\251ei\363\267\001i\251eq2\201\270\001q\247g\376\205\001\002z\221\203$%r\370\240q\303\211\005\271\210\007\340\020\031\230\021\373\330\024\002\000\230$\230e\240\3771\240D\250\005\250Q\250\377d\260%\260q\270\004\270\177E\300\021\300$\300i\322\272\001\317Q\330\024\025\000\000\302\275\006W\250\327A\250V\326\243\004E\243\300\004!\340=\020\363\226\0015\230\001\330\000\006\000\017\374\023\016\201\276\001K\220{\240+\250/Z\260{\300\375\275\001\024\205\252\t\366\266\t\337D\250\003\2506\314\254\005q\340\355\004\321\207\001R\240\274\305\004t\2101\214\313\230\004\333\304\001\010\021\276\275\001\326\234\001\226\277\001\037\177\240""\002\240/\260\022\260\246\274\001\324\203\246\001\365\242\001G\301\250\002V\265\277\001\024\220\367R\220u\236\224\002\022\2407\250\022\322\256\0031\341\222\001\365\247\001\004\322\212\002\340\254\001\245\227\001\350\363\305\003\221\255\002\370\301\001\010\263\256\002s\250&\375\260\307\224\0071\340\004\r\210S\017\220\001\220\022\344\305\002\002\010\310\270\001\233\251\001\377\004\t\210\023\210B\210go\220R\220w\277\270\003\036\230\356\267\0025|\226\306\002\010\200\310\001\t\025\342\302\003\213\310\002\356\350\246\005t\2501\337\255\006\014\300B\317\300b\310\002\353\303\005\306\247\006d\320\177dg\320gk\320k\304\237\002\227\004\n\210\310\232\001a\263\271\001e\004\027\362\347\002a\366\245\001\241\301\001\010\014\210C\377\210\177\230b\240\017\250r\363\260\026\237\307\003\227\307\002\320\017\037\230\\\204\236\001\266\232\001\001\340\004\267\267\001R\272\304\001\276\237\242\0037\230$\230a\033\002k\373\260\021\356\001_\230B\230o\377\250R\250v\260R\260w\377\270c\300\025\300b\310\007\373\310r\210\305\002\r\210T\220\022\\\350\242\002\213\253\001w\240c\343\233\004\004\332\256\001\342\213\257\003$\202\304\004\357\253\003\272\225\0049\220B\273\220i\377\277\002c\250\026\230\004\027\036\365\233\001\200\001\360\024\314\247\010\342\220\206\205\304\001\316\307\221\025\021\220\031\264\274\001\313\225\001Q\330\376\262\255\001\220d\230%\230q\240\377\004\240E\250\021\250$\250\377e\2601\260D\270\005\270\377Q\270d\300)\3101\310\377A\330\020\033\2301\230G\357\2401\240G\263\304\004F\270!\336\222\221\0025\310\001\310\202\224\001\320Q\377R\340\014\016\210a\210u\215\220\341\272\001A\330\000\n\006\021\372\263\0011\324\022\022\364\233\001!\373\205\017\036\241\234\001U\230\357)\2406\250\356\243\004e\230>\376\212@q\260\001\330\004\032\230w!\2309\325\305\0026\260\022\273\305\001\376\r\003;\240a\240v\250V\317\2602\260W\337\263\001\"\001>\250\377\021\250&\260\007\260r\270\373\027\3002\004?\250!\2506\027\260\027\270\203\233\001\021\301\224\001\273\272\t\212\316\001(\301\272\003\363\314\001\345\311\001""\026\301\314\002V\260\270\002\224\210\001\376\260\305\001S\320PR\320RV\367\320VW\356\214\002d\320de\226\363\261\007\330\004\331\274\001A\257\310\002\231\246\003\001\323\340\004\355\210\001\001\001\340\357\253\001\020\320\357\020\"\240!\203\306\006s\260\047\377\270\031\300\047\310\030\320Q\377Y\320Y`\320`h\3209h\313\213\001\273\231 \025\320\025\321\227\001\326\234\003\374\351\266\001\202\251\013c\320cj\320j\267r\320r\221\214\001\330\014\000+\025\312\301\233\002h\254\205\006\014\013\003\364\265\001F\250\367\"\250H\237\272\002\"\270A\340\000P\005\237\254\005\337\252\rp\023\007$\331\304\016\354\004\220\255\001\340\357\252\021S\027\013 \251\303\016\223\253\0036\230\022\363\2301\343\261\001\003\003\024\034\230J\373\240f\205\214\0022\260Q\330\024\377\030\230\005\230U\240!\240U1\253\230\003e\256\204\002#\310\261\002\020\206\304\003\313A\330+\006W\310\310\002\027\032\031\320\217\031+\2501\205\220\001\262\241\001\266\251\001\"\377\240G\2507\260)\2707\360\240c\343\310\003\261\302\001\306\215\001\027\240\002\240]\047\341\264\002\020\023\220\207\272\001A\217\001\257\001\230\021\330\001\014\340\256\233\047\320_\000\037\230q\360\310\313\005\010\246\313\033_w\310a\310w\207\205\002X\234\313%\244)\003\372\303\003`\304\317\001\275\264\001#\247\272\003\017\003\210q";
+    PyObject *data = __Pyx_DecompressString_LZSS(cstring, 7160, 13122);
     #define __Pyx_DecompressString_UNUSED
     if (unlikely(!data)) __PYX_ERR(0, 1, __pyx_L1_error)
     const char* const bytes = __Pyx_PyBytes_AsString(data);
     #if !CYTHON_ASSUME_SAFE_MACROS
     if (likely(bytes)); else { Py_DECREF(data); __PYX_ERR(0, 1, __pyx_L1_error) }
     #endif
-    #else /* compression: none (10263 bytes) */
-static const char bytes[] = " at 0x object>.: <MemoryView of <contiguous and direct><contiguous and indirect><strided and direct or indirect><strided and direct><strided and indirect>>?Cannot assign to read-only memoryviewInvalid mode, expected \047c\047 or \047fortran\047, got Invalid shape in axis Note that Cython is deliberately stricter than PEP-484 and rejects subclasses of builtin types. If you need to pass subclasses then set the \047annotation_typing\047 directive to False.add_notecollections.abcdisableenablegcisenabledno default __reduce__ due to non-trivial __cinit__numpy.core.multiarray failed to importnumpy.core.umath failed to importsrc/bz_pricing/core/options_core.pyxunable to allocate array data.unable to allocate shape and strides.ASCIIEllipsisFF_arrHKK_arrSS_arrSequenceTT_arrView.MemoryView__Pyx_PyDict_NextRef__annotate____class____class_getitem____dict____func____getstate____import____main____module____name____new____pyx_checksum__pyx_state__pyx_type__pyx_unpickle_Enum__pyx_vtable____qualname____reduce____reduce_cython____reduce_ex____set_name____setstate____setstate_cython____test___is_coroutineaabcallocate_bufferalphaasian_arithmetic_tw_priceasian_geometric_priceasyncio.coroutinesbbachelier_price_greeksbarrier_bsm_pricebasebetablack76_price_greeksbsm_price_greeksbz_pricing.core.options_coreccline_in_tracebackcorrado_su_pricecountcrr_american_pricecrr_american_price_greekscrr_stepsdf_rdtypedtype_is_objectemptyencodeenumerateerrorflagsfloat64formatfortranidimplied_vol_bachelierimplied_vol_black76implied_vol_bsmindexis_american_arris_callis_call_arris_outis_upitemsitemsizekk_arrkappa3kappa4mmax_itermemviewmoden_fixingsnamendimnorm_cdfnorm_pdfnorm_ppfnpnunumpyobjppackpopprice_black76_batchprice_options_batchqq_arrrr_arrrebateregisterrhosabr_implied_volscale_arrsetdefaultshapesigmasigma_arrsigma_nsizestartstepstepsstopstructsvi_eval_vecsvi_total_variancetarget_pricetolunpackupdatevaluesxO\200\001\330\004\013\2109\220A\220Q\200\001\340\004\007\200r\210\023\210A\330\010\017\210q""\330\004\007\200r\210\023\210A\330\010\017\210q\340\004\025\220Q\330\004\026\220a\330\004\025\220Q\330\004\026\220a\330\004\025\220Q\330\004\026\220a\340\004\025\220Q\330\004\026\220a\330\004\025\220Q\330\004\026\220a\330\004\025\220Q\340\004\025\220Q\330\004\025\220Q\330\004\025\220Q\330\004\025\220Q\330\004\026\220a\330\004\026\220a\340\004\026\220a\330\004\026\220a\330\004\026\220a\330\004\026\220a\340\004\030\230\001\330\004\031\230\024\230R\230q\360\006\000\005\010\200r\210\022\2101\330\010\014\210D\220\001\220\025\220b\230\003\2301\230A\330\010\023\2203\220b\230\002\230\"\230D\240\002\240\"\240B\240d\250\"\250B\250b\260\004\260B\260b\270\002\270$\270b\300\002\300\"\300A\330\010\022\220#\220R\220r\230\022\2304\230r\240\022\2402\240T\250\022\2502\250R\250t\2602\260R\260r\270\021\330\010\017\210t\2202\220Q\330\t\013\2103\210a\330\010\014\210B\210b\220\001\330\010\014\210B\210b\220\001\330\010\023\2203\220b\230\002\230\"\230D\240\002\240\"\240B\240d\250\"\250B\250b\260\004\260B\260b\270\002\270$\270b\300\002\300\"\300D\310\002\310!\330\010\023\2203\220b\230\002\230\"\230D\240\002\240\"\240B\240d\250\"\250B\250b\260\004\260B\260b\270\002\270$\270b\300\002\300\"\300A\330\010\017\210t\2202\220Q\340\010\014\210D\220\001\220\025\220b\230\003\2301\230D\240\002\240!\330\010\023\2203\220b\230\002\230\"\230D\240\002\240\"\240B\240d\250\"\250B\250b\260\004\260B\260b\270\002\270$\270b\300\002\300\"\300A\330\010\022\220#\220R\220r\230\022\2304\230r\240\022\2402\240T\250\022\2502\250R\250t\2602\260R\260r\270\021\330\010\017\210q\220\004\220B\220a\200\001\360\014\000\022\023\330\017\020\330\021\022\340\004\013\210?\230!\230>\250\023\250C\250s\260#\260S\270\t\300\025\300a\200\001\360\014\000\022\023\330\017\020\330\021\022\360\006\000\005\010\200r\210\023\210D\220\003\2205\230\003\2301\330\010\017\210q\330\004\034\230E\240\023\240D\250\001\250\022\2502\250S\260\010\270\r\300T\310\021\310\"\310B\310c\320QR\330\004\007\200}\220C\220z\240\022\2401\330\010\017\210q\340\004\026\220a""\330\004\027\220q\330\004\032\230!\360\010\000\005\t\210\006\210e\2201\220A\330\010\027\220q\230\003\2303\230f\240C\240y\260\t\270\021\270\047\300\021\300\047\310\021\310\047\320QR\320RX\320XY\320YZ\330\010\017\210v\220R\220q\330\010\013\2104\210q\220\006\220b\230\001\330\014\023\2201\330\010\013\2105\220\002\220$\220d\230(\240\"\240A\330\014\022\220!\330\r\022\220\"\220D\230\004\230H\240B\240a\330\014\023\2201\330\010\013\2105\220\002\220!\330\014\026\220h\230b\240\005\240R\240q\330\014\017\210x\220s\230$\230c\240\030\250\023\250A\330\020\032\230$\230c\240\024\240R\240q\340\014\026\220d\230#\230T\240\022\2401\340\004\010\210\006\210e\2201\220A\330\010\022\220$\220c\230\024\230R\230q\330\010\027\220q\230\003\2303\230f\240C\240y\260\t\270\021\270\047\300\021\300\047\310\021\310\047\320QR\320RX\320XY\320YZ\330\010\017\210v\220R\220q\330\010\013\2104\210q\220\006\220b\230\004\230D\240\005\240R\240u\250B\250a\330\014\023\2201\330\010\013\2105\220\002\220!\330\014\022\220!\340\014\023\2201\330\004\013\2104\210s\220$\220b\230\001\200\001\360\014\000\022\023\360\010\000\n\013\330\010\021\220\021\330\014\017\210s\220#\220S\230\003\2307\240!\330\014\r\210W\220A\220W\230A\230W\240A\240V\2501\250G\2601\260E\270\021\270\047\300\021\300!\340\004\014\210G\2207\230\047\240\026\240w\250e\2607\270!\200\001\360\014\000\022\023\360\010\000\n\013\330\010\027\220q\230\003\2303\230f\240C\240y\260\t\270\021\270\047\300\021\300\047\310\021\310\047\320QR\320RX\320XY\320YZ\330\004\014\210G\2207\230\047\240\026\240q\200\001\360\016\000\022\023\330\016\017\360\014\000\005\026\220Q\330\004\025\220Q\360\006\000\n\013\330\010\r\320\r\037\230q\240\003\2403\240c\250\023\250C\250w\260i\270w\300a\300v\310Q\310f\320TU\320UV\330\010\013\2106\220\023\220A\330\014\021\320\021#\2401\240C\240s\250#\250S\260\003\2607\270)\3006\310\022\3103\310a\310v\320UV\320V\\\320\\]\320]^\330\014\024\220D\230\003\2303\230b\240\001\330\014\024\220D\230\003\2305\240\002\240!\330\014\024\220D\230\003\2305\240\002\240!\330""\014\024\220D\230\003\2305\240\002\240!\340\014\024\220A\330\014\024\220A\330\014\024\220A\330\014\024\220A\340\010\013\2102\210R\210t\2204\220v\230R\230s\240$\240b\250\002\250$\250d\260\"\260B\260a\330\014\021\320\021#\2401\240C\240s\250#\250S\260\003\2606\270\022\2704\270y\310\007\310q\320PW\320WX\320X_\320_`\320`a\330\014\025\220T\230\023\230C\230r\320!3\2601\260C\260s\270#\270S\300\003\3006\310\022\3104\310y\320X^\320^`\320`c\320cd\320dk\320kl\320ls\320st\320t\177\360\000\000@\002F\002\360\000\000F\002I\002\360\000\000I\002P\002\360\000\000P\002Q\002\330\014\021\320\021#\2401\240C\240s\250#\250S\260\003\2606\270\022\2704\270y\310\007\310q\320PW\320WX\320X_\320_`\320`a\330\014\025\220T\230\023\230C\230r\320!3\2601\260C\260s\270#\270S\300\003\3006\310\022\3104\310y\320X^\320^`\320`c\320cd\320dk\320kl\320ls\320st\320t\177\360\000\000@\002F\002\360\000\000F\002I\002\360\000\000I\002P\002\360\000\000P\002Q\002\330\014\024\220G\2302\230X\240S\250\004\250B\250a\340\014\021\320\021#\2401\240C\240s\250\"\250B\250d\260#\260S\270\007\270y\310\007\310q\320PW\320WX\320X_\320_`\320`a\330\014\025\220T\230\023\230C\230r\320!3\2601\260C\260s\270\"\270B\270d\300#\300S\310\007\310y\320X^\320^`\320`c\320cd\320dk\320kl\320ls\320st\320t\177\360\000\000@\002F\002\360\000\000F\002I\002\360\000\000I\002P\002\360\000\000P\002Q\002\330\014\021\320\021#\2401\240C\240s\250\"\250B\250d\260#\260S\270\007\270y\310\007\310q\320PW\320WX\320X_\320_`\320`a\330\014\025\220T\230\023\230C\230r\320!3\2601\260C\260s\270\"\270B\270d\300#\300S\310\007\310y\320X^\320^`\320`c\320cd\320dk\320kl\320ls\320st\320t\177\360\000\000@\002F\002\360\000\000F\002I\002\360\000\000I\002P\002\360\000\000P\002Q\002\330\014\023\2207\230\"\230H\240C\240t\2502\250Q\340\014\023\2201\330\014\022\220!\340\004\014\210G\2207\230\047\240\026\240w\250a\200\001\360\016\000\022\023\330\017\020\330\021\022\360\006\000\005\010\200r\210\023\210D\220\003\2202\220S\230\004\230C\230r\240\023\240A\330\010\017\210q\340\004\027\220s\230!""\2301\230B\230b\240\001\330\004\027\220s\230!\2301\230B\230b\240\001\330\004\034\230D\240\001\240\022\2402\240U\250\"\250B\250b\260\006\260h\270m\3104\310q\320PR\320RT\320TY\320Y[\320[]\320]_\320_e\320ef\330\004\036\230a\230r\240\022\2409\250N\270\"\270B\270a\330\004\007\200}\220C\220z\240\022\2401\330\010\017\210q\330\004\007\200}\220C\220|\2402\240Q\330\010\017\210q\340\004\026\220a\330\004\027\220q\330\004\030\230\001\360\010\000\005\t\210\006\210e\2201\220A\330\010\021\220\021\220#\220S\230\003\2303\230c\240\027\250\t\260\021\260\047\270\021\270\047\300\021\300\047\310\021\310&\320PQ\320QX\320XY\320Y^\320^_\320_f\320fg\320gh\330\010\017\210v\220R\220q\330\010\013\2104\210q\220\006\220b\230\001\330\014\023\2201\330\010\013\2105\220\002\220$\220d\230&\240\002\240!\330\014\022\220!\330\r\022\220\"\220D\230\004\230F\240\"\240A\330\014\023\2201\340\010\013\2105\220\002\220!\330\014\024\220F\230\"\230E\240\022\2401\330\014\017\210v\220S\230\004\230C\230v\240S\250\001\330\020\030\230\004\230C\230t\2402\240Q\340\014\024\220D\230\003\2304\230r\240\021\340\004\010\210\006\210e\2201\220A\330\010\020\220\004\220C\220t\2302\230Q\330\010\021\220\021\220#\220S\230\003\2303\230c\240\027\250\t\260\021\260\047\270\021\270\047\300\021\300\047\310\021\310&\320PQ\320QX\320XY\320Y^\320^_\320_f\320fg\320gh\330\010\017\210v\220R\220q\330\010\013\2104\210q\220\006\220b\230\004\230D\240\005\240R\240u\250B\250a\330\014\023\2201\330\010\013\2105\220\002\220!\330\014\022\220!\340\014\023\2201\330\004\013\2104\210s\220$\220b\230\001\200\001\360\016\000\022\023\330\022\023\360\014\000\005\010\200r\210\023\210D\220\003\2206\230\023\230D\240\003\2402\240S\250\004\250C\250r\260\023\260A\330\010\017\210t\2201\220B\220b\230\003\2308\240=\260\004\260A\260R\260r\270\023\270A\330\004\024\220B\220b\230\001\330\004\027\220v\230R\230q\340\004\007\200z\220\022\2201\330\010\016\210h\220a\330\010\020\220\002\220#\220T\230\022\2305\240\003\2404\240r\250\021\330\010\022\220%\220r\230\022\2303\230d\240\"\240E""\250\023\250D\260\002\260$\260b\270\005\270S\300\004\300B\300d\310\"\310A\330\010\020\220\004\220A\220X\230R\230q\330\010\020\220\002\220\"\220D\230\002\230&\240\002\240&\250\002\250$\250b\260\t\270\022\2701\330\010\016\210b\220\002\220!\340\010\020\220\006\220b\230\004\230A\230Q\330\010\016\210d\220#\220R\220r\230\025\230b\240\001\330\010\016\210b\220\002\220!\340\004\r\210Q\210c\220\023\220C\220u\230C\230w\240i\250q\260\007\260q\270\007\270q\300\007\300q\310\007\310q\320PX\320XY\320Ya\320ab\320bj\320jk\320kl\330\004\013\2101\200\001\360\016\000\022\023\330\022\023\360\016\000\005\010\200r\210\023\210D\220\003\2206\230\023\230D\240\003\2402\240S\250\004\250C\250r\260\023\260A\330\010\017\210t\2201\220B\220b\230\003\2308\240=\260\004\260A\260R\260r\270\023\270A\340\004\024\220B\220b\230\001\330\004\027\220v\230R\230q\330\004\025\220Q\330\004\025\220Q\360\010\000\005\010\200z\220\022\2201\330\010\021\220\022\2203\220h\230a\330\010\025\220Q\330\010\021\220\021\330\010\021\220\021\330\010\014\210E\220\025\220a\220{\240$\240a\330\014\023\2208\2303\230b\240\001\330\014\022\220#\220Q\220b\230\002\230!\330\014\026\220a\330\014\026\220c\230\022\2302\230R\230v\240R\240u\250C\250t\2602\260T\270\022\2701\330\014\032\230!\330\010\r\210W\220C\220x\230q\330\010\r\210W\220D\230\010\240\013\2503\250h\260a\340\010\013\2104\210q\220\003\2202\220Q\330\014\021\220\021\330\014\017\210u\220B\220b\230\002\230!\330\020\026\220d\230\"\230C\230q\240\005\240R\240s\250\"\250D\260\003\2604\260r\270\025\270b\300\004\300C\300u\310B\310e\320SU\320UW\320WY\320YZ\340\020\025\220Q\330\r\021\220\021\220\"\220B\220f\230B\230a\330\014\022\220#\220Q\220b\230\002\230#\230R\230u\240C\240r\250\022\2501\330\014\022\220$\220c\230\023\230A\230R\230r\240\023\240C\240r\250\022\2502\250R\250u\260B\260f\270C\270r\300\022\3002\300R\300r\310\022\3101\330\r\021\220\021\220$\220b\230\002\230\"\230F\240\"\240A\330\014\022\220#\220Q\220b\230\002\230#\230R\230u\240C\240r\250\022\2501\330\014\022\220$\220d\230\"\230B\230f""\240B\240b\250\002\250$\250c\260\022\2603\260c\270\021\270\"\270B\270c\300\022\3005\310\002\310!\340\014\022\220#\220Q\220b\230\002\230#\230R\230u\240C\240r\250\022\2501\330\014\r\330\021\025\220R\220s\230\"\230D\240\002\240\"\240B\240f\250B\250d\260$\260b\270\002\270&\300\003\3004\300r\310\022\3102\310V\320SU\320UW\320WY\320YZ\330\020\023\2204\220s\230\"\230B\230b\240\002\240$\240d\250$\250c\260\024\260R\260r\270\022\2707\300#\300S\310\001\310\022\3102\310S\320PS\320SU\320UW\320WX\360\006\000\005\031\230\003\2301\230D\240\001\240\027\250\005\250R\250q\330\004\032\230#\230Q\230d\240!\2404\240r\250\027\260\003\2603\260c\270\022\2701\330\004\032\230$\230a\230x\240r\250\021\330\004\030\230\002\230\"\230A\360\006\000\005\016\210Q\210c\220\023\220C\220w\230c\240\031\250)\2601\260G\2701\270G\3001\300G\3101\310G\320ST\320T\\\320\\]\320]e\320ef\320fn\320no\320op\330\004\013\2101\200\001\360\016\000\022\023\360\006\000\n\013\330\010\021\220\021\330\014\017\210s\220#\220S\230\003\2307\240!\330\014\r\210W\220A\220W\230A\230W\240A\240V\2501\250G\2601\260E\270\021\270\047\300\021\300!\340\004\014\210G\2207\230\047\240\026\240w\250e\2607\270!\200\001\360\020\000\005\031\230\005\230V\2401\240A\340\0040\260\002\260&\270\001\270\023\270F\300\"\300A\330\004\033\2301\330\t\n\330\010\014\210E\220\025\220a\220q\330\014\021\220\021\220%\320\027)\250\021\250%\250q\260\004\260C\260s\270%\270s\300!\330\004\013\2101\200\001\360\020\000\022\023\330\017\020\330\020\021\330\022\023\360\014\000\005\010\200r\210\023\210D\220\003\2206\230\023\230D\240\003\2402\240S\250\004\250C\250r\260\023\260D\270\003\2702\270S\300\001\330\010\017\210q\340\004\027\220s\230!\2301\230B\230b\240\001\330\004\027\220s\230!\2301\230B\230b\240\001\360\010\000\005\t\210\006\210d\220\"\220C\220s\230%\230t\2407\250$\250b\260\003\2601\330\010\013\2101\330\014\023\2201\330\010\021\220\021\220#\220S\230\003\2303\230c\240\027\250\t\260\021\260\047\270\021\270\047\300\021\300\047\310\021\310\047\320QR\320RZ\320Z[\320[c\320cd""\320dl\320lm\320mn\330\010\017\210q\340\004\024\220B\220b\230\001\330\004\027\220v\230R\230q\330\004\035\230V\2402\240T\250\021\250!\330\004\026\220b\230\002\230$\230b\240\006\240b\250\001\330\004\026\220d\230!\2303\230b\240\003\2402\240T\250\022\2502\250R\250q\340\004\025\220S\230\001\230\022\2302\230S\240\002\240+\250S\260\004\260B\260d\270\"\270A\330\004\025\220S\230\001\230\022\2302\230S\240\002\240+\250S\260\004\260B\260d\270\"\270A\330\004\025\220S\230\002\230\"\230B\230c\240\023\240B\240b\250\004\250B\250k\270\023\270D\300\002\300$\300b\310\001\330\004\025\220S\230\001\230\022\2302\230S\240\002\240+\250S\260\004\260B\260d\270\"\270A\330\004\024\220C\220q\230\002\230\"\230C\230r\240\033\250B\250d\260\"\260A\340\004\026\220g\230]\250!\330\004\026\220h\230k\250\021\340\004\024\220D\230\003\2302\230R\230u\240B\240i\250q\260\004\260B\260d\270\"\270B\270b\300\005\300R\300y\320PQ\320QU\320UX\320X[\320[]\320]^\330\004\024\220D\230\003\2302\230R\230u\240B\240i\250q\260\004\260B\260d\270\"\270B\270b\300\005\300R\300y\320PQ\320QU\320UX\320X[\320[]\320]^\330\004\024\220D\230\001\330\010\n\210\"\210E\220\022\2203\220a\220r\230\022\2303\230d\240#\240S\250\002\250&\260\002\260)\2701\270D\300\002\300!\330\010\n\210\"\210B\210e\2202\220S\230\001\230\022\2302\230S\240\004\240B\240d\250\"\250I\260Q\260d\270#\270S\300\002\300!\340\004\024\220D\230\001\330\010\n\210\"\210E\220\022\2203\220a\220r\230\022\2303\230d\240#\240S\250\002\250&\260\002\260)\2701\270D\300\002\300!\330\010\n\210\"\210B\210e\2202\220S\230\001\230\022\2302\230S\240\004\240B\240d\250\"\250I\260Q\260d\270#\270S\300\002\300!\340\004\024\220G\2302\230U\240!\330\010\021\220\021\220$\220c\230\023\230B\230m\2502\250S\260\001\260\022\2602\260S\270\004\270B\270d\300\"\300I\310Q\310d\320RU\320UX\320XZ\320Z[\340\004\024\220G\2301\330\010\013\2101\210B\210b\220\003\2203\220b\230\005\230R\230y\250\001\250\024\250R\250q\330\010\n\210#\210Q\210b\220\002\220#\220S\230\002\230%\230r\240\031\250!\2504\250s\260\"\260B\260d\270""\"\270D\300\002\300!\360\006\000\005\027\220a\330\004\007\200x\210u\220D\230\001\330\010\013\2101\330\014\022\220!\2202\220R\220r\230\022\2306\240\022\2403\240h\250b\260\002\260\"\260B\260a\340\014\022\220!\2202\220R\220v\230R\230s\240(\250\"\250B\250b\260\002\260\"\260B\260a\330\t\021\220\024\220Q\330\010\013\2101\330\014\022\220%\220r\230\023\230H\240B\240b\250\002\250\"\250B\250b\260\002\260\"\260A\340\014\022\220!\2202\220R\220v\230R\230s\240(\250\"\250B\250b\260\002\260\"\260B\260a\330\n\016\210i\220u\230D\240\001\330\010\013\2101\330\014\022\220!\2202\220R\220r\230\022\2302\230R\230r\240\022\2406\250\022\2503\250g\260Q\340\014\022\220!\2202\220R\220r\230\022\2302\230R\230v\240R\240s\250(\260\"\260B\260a\340\010\013\2101\330\014\022\220!\2202\220R\220r\230\022\2306\240\022\2403\240h\250b\260\002\260\"\260B\260a\340\014\022\220!\2202\220R\220r\230\022\2302\230R\230v\240R\240s\250(\260\"\260B\260a\340\004\013\2107\220$\220b\230\t\240\021\200\001\360\022\000\005\026\220R\220r\230\021\330\004\013\2102\210R\210r\220\023\220D\230\002\230#\230R\230t\2401\240C\240r\250\023\250B\250f\260B\260a\200\001\360\022\000\022\023\360\006\000\005\010\200r\210\023\210D\220\003\2206\230\023\230A\330\010\017\210t\2201\220B\220b\230\003\2308\240=\260\004\260A\260R\260r\270\023\270A\360\006\000\005\016\210Q\210c\220\023\220C\220s\230#\230W\240F\250!\250:\260Q\260g\270Q\270g\300Q\300f\310A\310W\320TU\320UZ\320Z[\320[b\320bc\320cd\340\004\027\220s\230!\2301\230B\230b\240\001\330\004\027\220s\230!\2301\230B\230b\240\001\330\004\035\230V\2402\240T\250\021\250!\330\004\031\230\026\230r\240\026\240r\250\021\330\004\033\2307\240\"\240A\330\004\026\220c\230\021\230\"\230B\230c\240\023\240B\240b\250\002\250\"\250D\260\002\260&\270\002\270\047\300\022\3003\300b\310\001\330\004\025\220S\230\002\230!\330\004\026\220i\230q\240\001\330\004\026\220i\230q\240\001\340\004\026\220d\230\"\230E\240\022\2402\240R\240u\250B\250k\270\024\270T\300\022\300;\310b\320PT\320TV\320VZ\320Z\\\320\\c\320ce\320ef""\330\004\026\220d\230\"\230F\240\"\240B\240b\250\005\250R\250{\270!\330\t\014\210B\210c\220\022\2204\220r\230\024\230R\230{\250\"\250D\260\002\260$\260c\270\027\300\002\300,\310b\320PQ\360\006\000\005\033\230)\2402\240W\250B\250c\260\022\2609\270B\270a\330\004\007\200x\210r\220\021\330\010\022\220!\330\004\007\200q\330\010\017\210q\340\004\031\230\030\240\022\2402\240R\240u\250B\250b\260\002\260!\330\004\013\210:\220W\230B\230i\240q\200\001\360\022\000\023\024\360\006\000\005\031\230\005\230V\2401\240A\360\006\000\0057\260b\270\006\270a\270s\300&\310\002\310!\330\0046\260b\270\006\270a\270s\300&\310\002\310!\330\0046\260b\270\006\270a\270s\300&\310\002\310!\330\0045\260R\260v\270Q\270c\300\026\300r\310\021\330\0046\260b\270\006\270a\270s\300&\310\002\310!\330\0044\260B\260f\270A\270S\300\006\300b\310\001\340\004\030\230\001\330\004\030\230\001\330\004\030\230\001\330\004\030\230\001\330\004\030\230\001\330\004\030\230\001\360\n\000\005\031\230\001\330\004\031\230\021\360\006\000\n\013\330\010\014\210E\220\025\220a\220q\330\014\031\230\033\240A\240S\250\003\2501\330\014\017\210\177\230a\230q\330\020\023\220:\230S\240\001\330\024\034\320\034.\250a\330\030\035\230Q\230d\240%\240q\250\004\250E\260\021\260$\260e\2701\270D\300\005\300Q\300d\310)\320ST\320TU\330\030#\240;\250a\250w\260a\260w\270a\270q\340\024\034\320\034.\250a\330\030\035\230Q\230d\240%\240q\250\004\250E\260\021\260$\260e\2701\270D\300\005\300Q\300d\310)\320ST\320TU\330\030#\240:\250R\250s\260!\2607\270!\2707\300!\3001\340\024\026\220a\220u\230D\240\003\2406\250\022\2501\330\024\026\220a\220u\230D\240\003\2406\250\022\2501\330\024\026\220a\220u\230D\240\003\2406\250\022\2501\330\024\026\220a\220u\230D\240\003\2406\250\022\2501\340\024\026\220a\220u\320\034.\250a\330\030\035\230Q\230d\240%\240q\250\004\250E\260\021\260$\260e\2701\270D\300\005\300Q\300d\310)\320ST\320TU\330\030#\240;\250a\250w\260a\260w\270a\270q\340\024\026\220a\220u\230A\330\024\026\220a\220u\230A\330\024\026\220a\220u\230A\330\020\023""\2205\230\001\230\023\230B\230d\240$\240i\250q\260\003\2602\260V\2704\270u\300A\300S\310\002\310$\310d\320RW\320WX\320X[\320[]\320]^\330\024\035\320\035/\250q\260\005\260Q\260d\270%\270q\300\004\300E\310\021\310$\310e\320ST\320TX\320X]\320]^\320^b\320bk\320kl\320lo\320oq\320qx\360\000\000y\001D\002\360\000\000D\002O\002\360\000\000O\002P\002\360\000\000P\002W\002\360\000\000W\002X\002\360\000\000X\002_\002\360\000\000_\002`\002\360\000\000`\002a\002\330\024\035\320\035/\250q\260\005\260Q\260d\270%\270q\300\004\300E\310\021\310$\310e\320ST\320TX\320X]\320]^\320^b\320bk\320kl\320lo\320oq\320qx\360\000\000y\001D\002\360\000\000D\002O\002\360\000\000O\002P\002\360\000\000P\002W\002\360\000\000W\002X\002\360\000\000X\002_\002\360\000\000_\002`\002\360\000\000`\002a\002\330\024\027\220z\240\023\240A\330\030!\240\024\240S\250\007\250r\3201C\3001\300E\310\021\310$\310e\320ST\320TX\320X]\320]^\320^b\320bg\320gh\320hl\320lq\320qr\320rv\320v\177\360\000\000@\002A\002\360\000\000A\002D\002\360\000\000D\002F\002\360\000\000F\002M\002\360\000\000M\002X\002\360\000\000X\002b\002\360\000\000b\002d\002\360\000\000d\002g\002\360\000\000g\002h\002\360\000\000h\002o\002\360\000\000o\002p\002\360\000\000p\002w\002\360\000\000w\002x\002\360\000\000x\002y\002\330\030!\240\024\240S\250\007\250r\3201C\3001\300E\310\021\310$\310e\320ST\320TX\320X]\320]^\320^b\320bg\320gh\320hl\320lq\320qr\320rv\320v\177\360\000\000@\002A\002\360\000\000A\002D\002\360\000\000D\002F\002\360\000\000F\002M\002\360\000\000M\002X\002\360\000\000X\002b\002\360\000\000b\002d\002\360\000\000d\002g\002\360\000\000g\002h\002\360\000\000h\002o\002\360\000\000o\002p\002\360\000\000p\002w\002\360\000\000w\002x\002\360\000\000x\002y\002\330\024\026\220a\220v\230W\240B\240h\250c\260\024\260R\260q\330\024\035\320\035/\250q\260\005\260Q\260d\270%\270q\300\004\300E\310\021\310#\310R\310x\320W\\\320\\]\320]a\320af\320fg\320gk\320kt\320tu\320uy\360\000\000z\001E\002\360\000\000E\002P\002\360\000\000P\002Q\002\360\000\000Q\002X""\002\360\000\000X\002Y\002\360\000\000Y\002`\002\360\000\000`\002a\002\360\000\000a\002b\002\330\024\035\320\035/\250q\260\005\260Q\260d\270%\270q\300\004\300E\310\021\310#\310R\310x\320W\\\320\\]\320]a\320af\320fg\320gk\320kt\320tu\320uy\360\000\000z\001E\002\360\000\000E\002P\002\360\000\000P\002Q\002\360\000\000Q\002X\002\360\000\000X\002Y\002\360\000\000Y\002`\002\360\000\000`\002a\002\360\000\000a\002b\002\330\024\027\220z\240\023\240A\330\030!\240\024\240S\250\007\250r\3201C\3001\300E\310\021\310$\310e\320ST\320TX\320X]\320]^\320^a\320ac\320ck\320kp\320pq\320qu\320uz\320z{\320{\177\360\000\000@\002I\002\360\000\000I\002J\002\360\000\000J\002N\002\360\000\000N\002Y\002\360\000\000Y\002c\002\360\000\000c\002e\002\360\000\000e\002h\002\360\000\000h\002i\002\360\000\000i\002p\002\360\000\000p\002q\002\360\000\000q\002x\002\360\000\000x\002y\002\360\000\000y\002z\002\330\030!\240\024\240S\250\007\250r\3201C\3001\300E\310\021\310$\310e\320ST\320TX\320X]\320]^\320^a\320ac\320ck\320kp\320pq\320qu\320uz\320z{\320{\177\360\000\000@\002I\002\360\000\000I\002J\002\360\000\000J\002N\002\360\000\000N\002Y\002\360\000\000Y\002c\002\360\000\000c\002e\002\360\000\000e\002h\002\360\000\000h\002i\002\360\000\000i\002p\002\360\000\000p\002q\002\360\000\000q\002x\002\360\000\000x\002y\002\360\000\000y\002z\002\330\024\026\220a\220v\230W\240B\240h\250c\260\024\260R\260q\340\024\026\220a\220u\230A\330\024\026\220a\220u\230A\340\020\031\230\021\330\024\031\230\021\230$\230e\2401\240D\250\005\250Q\250d\260%\260q\270\004\270E\300\021\300$\300i\310q\320PQ\330\024\025\330\024\025\220W\230A\230W\240A\240W\250A\250V\2601\260G\2701\270E\300\021\300\047\310\021\310!\340\020\022\220!\2205\230\001\330\020\022\220!\2205\230\001\330\020\022\220!\2205\230\001\330\020\022\220!\2205\230\001\330\020\022\220!\2205\230\001\330\020\022\220!\2205\230\001\340\004\014\210K\220{\240+\250Z\260{\300!\200\001\360\024\000\005\010\200r\210\023\210D\220\003\2202\220S\230\004\230C\230r\240\023\240D\250\003\2506""\260\023\260A\330\010\017\210q\340\004!\240\024\240R\240q\360\006\000\005\010\200t\2101\210B\210b\220\003\2202\220Q\330\010\021\220\023\220A\220S\230\001\330\010\021\220\037\240\002\240/\260\022\2606\270\022\2707\300#\300U\310\"\310G\320SU\320UV\330\010\021\220\024\220R\220u\230B\230c\240\022\2407\250#\250T\260\022\2601\330\010\022\220$\220b\230\004\230B\230d\240\"\240E\250\022\2503\250b\260\004\260B\260a\330\010\020\220\006\220b\230\010\240\003\2404\240s\250&\260\002\260&\270\002\270\047\300\022\3001\340\004\r\210S\220\001\220\022\2202\220Q\330\004\r\210S\220\001\220\022\2202\220S\230\004\230B\230a\330\004\t\210\023\210B\210g\220R\220w\230b\240\001\330\004\036\230a\330\004\007\200|\2202\220Q\330\010\026\220a\330\t\025\220R\220q\330\010\026\220a\330\004\032\230$\230a\230x\240t\2501\250D\260\002\260$\260b\270\014\300B\300b\310\002\310\"\310B\310c\320QS\320SU\320UW\320Wd\320dg\320gk\320km\320mn\330\004\n\210#\210Q\210a\340\004\027\220w\230b\240\001\330\004\027\220u\230B\230a\330\004\033\2307\240!\330\010\014\210C\210\177\230b\240\017\250r\260\026\260r\270\021\330\010\013\2103\210a\320\017\037\230u\240B\240h\250b\260\001\340\004\017\210v\220R\220q\330\004\017\210r\220\022\2207\230$\230a\230u\240B\240k\260\021\340\004\r\210_\230B\230o\250R\250v\260R\260w\270c\300\025\300b\310\007\310r\320QR\330\004\r\210T\220\022\2205\230\002\230#\230R\230w\240c\250\024\250R\250q\330\004\016\210d\220\"\220D\230\002\230$\230b\240\005\240R\240s\250\"\250D\260\002\260!\330\004\013\2109\220B\220i\230s\240$\240c\250\026\250r\260\026\260r\270\027\300\002\300!\200\001\360\024\000\005\031\230\005\230V\2401\240A\360\006\000\0057\260b\270\006\270a\270s\300&\310\002\310!\330\0046\260b\270\006\270a\270s\300&\310\002\310!\330\0046\260b\270\006\270a\270s\300&\310\002\310!\330\0045\260R\260v\270Q\270c\300\026\300r\310\021\330\0046\260b\270\006\270a\270s\300&\310\002\310!\330\0044\260B\260f\270A\270S\300\006\300b\310\001\340\004\030\230\001\330\004\030\230\001\330\004\030\230\001\330\004\030\230\001""\330\004\030\230\001\330\004\030\230\001\360\n\000\n\013\330\010\014\210E\220\025\220a\220q\330\014\031\230\033\240A\240S\250\003\2501\330\014\021\220\031\230!\2301\330\014\025\220Q\330\020\025\220Q\220d\230%\230q\240\004\240E\250\021\250$\250e\2601\260D\270\005\270Q\270d\300)\3101\310A\330\020\033\2301\230G\2401\240G\2501\250G\2601\260F\270!\2707\300!\3005\310\001\310\027\320PQ\320QR\340\014\016\210a\210u\220F\230\"\230A\330\014\016\210a\210u\220F\230\"\230A\330\014\016\210a\210u\220F\230\"\230A\330\014\016\210a\210u\220E\230\022\2301\330\014\016\210a\210u\220F\230\"\230A\330\014\016\210a\210u\220D\230\002\230!\340\004\014\210K\220{\240+\250Z\260{\300!\320\000\037\230q\360\016\000\022\023\330\016\017\360\010\000\n\013\330\010\r\320\r\037\230q\240\003\2403\240c\250\023\250C\250w\260i\270w\300a\300w\310a\310w\320VW\320WX\330\010\013\2106\220\023\220A\330\014\021\320\021#\2401\240C\240s\250#\250S\260\003\2607\270)\3006\310\022\3103\310a\310w\320VW\320W^\320^_\320_`\330\014\023\2204\220s\230#\230R\230q\330\010\017\210q";
+    #else /* compression: none (13122 bytes) */
+static const char bytes[] = " at 0x object>.: <MemoryView of <contiguous and direct><contiguous and indirect><strided and direct or indirect><strided and direct><strided and indirect>>?Cannot assign to read-only memoryviewInvalid mode, expected \047c\047 or \047fortran\047, got Invalid shape in axis Note that Cython is deliberately stricter than PEP-484 and rejects subclasses of builtin types. If you need to pass subclasses then set the \047annotation_typing\047 directive to False.add_notecollections.abcdisableenablegcisenabledno default __reduce__ due to non-trivial __cinit__numpy.core.multiarray failed to importnumpy.core.umath failed to importsrc/bz_pricing/core/options_core.pyxunable to allocate array data.unable to allocate shape and strides.ASCIIEllipsisFF_arrHKK_arrSS_arrSequenceTT_arrView.MemoryView__Pyx_PyDict_NextRef__annotate____class____class_getitem____dict____func____getstate____import____main____module____name____new____pyx_checksum__pyx_state__pyx_type__pyx_unpickle_Enum__pyx_vtable____qualname____reduce____reduce_cython____reduce_ex____set_name____setstate____setstate_cython____test___is_coroutineaabcallocate_bufferalphaasian_arithmetic_tw_priceasian_geometric_priceasian_price_greeksasyncio.coroutinesbbachelier_price_greeksbarrier_bsm_pricebarrier_bsm_price_greeksbasebetablack76_price_greeksbsm_price_greeksbz_pricing.core.options_coreccline_in_tracebackcorrado_su_pricecorrado_su_price_greekscountcrr_american_discrete_div_price_greekscrr_american_pricecrr_american_price_greekscrr_stepsdf_rdiv_amountsdiv_timesdtypedtype_is_objectemptyencodeenumerateerrorflagsfloat64formatfortranidimplied_vol_bachelierimplied_vol_black76implied_vol_bsmindexis_american_arris_callis_call_arris_geometricis_outis_upitemsitemsizekk_arrkappa3kappa4mmax_itermemviewmoden_fixingsnamendimnorm_cdfnorm_pdfnorm_ppfnpnunumpyobjppackpopprice_black76_batchprice_options_batchprop_div_timesprop_div_yieldsqq_arrrr_arrrebateregisterrhosabr_implied_volscale_arrsetdefaultshapesigmasigma_arrsigma_nsizestartstepstepsstop""structsvi_eval_vecsvi_total_variancetarget_pricetolunpackupdatevaluesxO\200\001\330\004\013\2109\220A\220Q\200\001\340\004\007\200r\210\023\210A\330\010\017\210q\330\004\007\200r\210\023\210A\330\010\017\210q\340\004\025\220Q\330\004\026\220a\330\004\025\220Q\330\004\026\220a\330\004\025\220Q\330\004\026\220a\340\004\025\220Q\330\004\026\220a\330\004\025\220Q\330\004\026\220a\330\004\025\220Q\340\004\025\220Q\330\004\025\220Q\330\004\025\220Q\330\004\025\220Q\330\004\026\220a\330\004\026\220a\340\004\026\220a\330\004\026\220a\330\004\026\220a\330\004\026\220a\340\004\030\230\001\330\004\031\230\024\230R\230q\360\006\000\005\010\200r\210\022\2101\330\010\014\210D\220\001\220\025\220b\230\003\2301\230A\330\010\023\2203\220b\230\002\230\"\230D\240\002\240\"\240B\240d\250\"\250B\250b\260\004\260B\260b\270\002\270$\270b\300\002\300\"\300A\330\010\022\220#\220R\220r\230\022\2304\230r\240\022\2402\240T\250\022\2502\250R\250t\2602\260R\260r\270\021\330\010\017\210t\2202\220Q\330\t\013\2103\210a\330\010\014\210B\210b\220\001\330\010\014\210B\210b\220\001\330\010\023\2203\220b\230\002\230\"\230D\240\002\240\"\240B\240d\250\"\250B\250b\260\004\260B\260b\270\002\270$\270b\300\002\300\"\300D\310\002\310!\330\010\023\2203\220b\230\002\230\"\230D\240\002\240\"\240B\240d\250\"\250B\250b\260\004\260B\260b\270\002\270$\270b\300\002\300\"\300A\330\010\017\210t\2202\220Q\340\010\014\210D\220\001\220\025\220b\230\003\2301\230D\240\002\240!\330\010\023\2203\220b\230\002\230\"\230D\240\002\240\"\240B\240d\250\"\250B\250b\260\004\260B\260b\270\002\270$\270b\300\002\300\"\300A\330\010\022\220#\220R\220r\230\022\2304\230r\240\022\2402\240T\250\022\2502\250R\250t\2602\260R\260r\270\021\330\010\017\210q\220\004\220B\220a\200\001\360\014\000\022\023\330\017\020\330\021\022\340\004\013\210?\230!\230>\250\023\250C\250s\260#\260S\270\t\300\025\300a\200\001\360\014\000\022\023\330\017\020\330\021\022\360\006\000\005\010\200r\210\023\210D\220\003\2205\230\003\2301\330\010\017\210q\330\004\034\230E""\240\023\240D\250\001\250\022\2502\250S\260\010\270\r\300T\310\021\310\"\310B\310c\320QR\330\004\007\200}\220C\220z\240\022\2401\330\010\017\210q\340\004\026\220a\330\004\027\220q\330\004\032\230!\360\010\000\005\t\210\006\210e\2201\220A\330\010\027\220q\230\003\2303\230f\240C\240y\260\t\270\021\270\047\300\021\300\047\310\021\310\047\320QR\320RX\320XY\320YZ\330\010\017\210v\220R\220q\330\010\013\2104\210q\220\006\220b\230\001\330\014\023\2201\330\010\013\2105\220\002\220$\220d\230(\240\"\240A\330\014\022\220!\330\r\022\220\"\220D\230\004\230H\240B\240a\330\014\023\2201\330\010\013\2105\220\002\220!\330\014\026\220h\230b\240\005\240R\240q\330\014\017\210x\220s\230$\230c\240\030\250\023\250A\330\020\032\230$\230c\240\024\240R\240q\340\014\026\220d\230#\230T\240\022\2401\340\004\010\210\006\210e\2201\220A\330\010\022\220$\220c\230\024\230R\230q\330\010\027\220q\230\003\2303\230f\240C\240y\260\t\270\021\270\047\300\021\300\047\310\021\310\047\320QR\320RX\320XY\320YZ\330\010\017\210v\220R\220q\330\010\013\2104\210q\220\006\220b\230\004\230D\240\005\240R\240u\250B\250a\330\014\023\2201\330\010\013\2105\220\002\220!\330\014\022\220!\340\014\023\2201\330\004\013\2104\210s\220$\220b\230\001\200\001\360\014\000\022\023\360\010\000\n\013\330\010\021\220\021\330\014\017\210s\220#\220S\230\003\2307\240!\330\014\r\210W\220A\220W\230A\230W\240A\240V\2501\250G\2601\260E\270\021\270\047\300\021\300!\340\004\014\210G\2207\230\047\240\026\240w\250e\2607\270!\200\001\360\014\000\022\023\360\010\000\n\013\330\010\027\220q\230\003\2303\230f\240C\240y\260\t\270\021\270\047\300\021\300\047\310\021\310\047\320QR\320RX\320XY\320YZ\330\004\014\210G\2207\230\047\240\026\240q\200\001\360\016\000\022\023\330\016\017\360\014\000\005\026\220Q\330\004\025\220Q\360\006\000\n\013\330\010\r\320\r\037\230q\240\003\2403\240c\250\023\250C\250w\260i\270w\300a\300v\310Q\310f\320TU\320UV\330\010\013\2106\220\023\220A\330\014\021\320\021#\2401\240C\240s\250#\250S\260\003\2607\270)\3006\310\022\3103\310a""\310v\320UV\320V\\\320\\]\320]^\330\014\024\220D\230\003\2303\230b\240\001\330\014\024\220D\230\003\2305\240\002\240!\330\014\024\220D\230\003\2305\240\002\240!\330\014\024\220D\230\003\2305\240\002\240!\340\014\024\220A\330\014\024\220A\330\014\024\220A\330\014\024\220A\340\010\013\2102\210R\210t\2204\220v\230R\230s\240$\240b\250\002\250$\250d\260\"\260B\260a\330\014\021\320\021#\2401\240C\240s\250#\250S\260\003\2606\270\022\2704\270y\310\007\310q\320PW\320WX\320X_\320_`\320`a\330\014\025\220T\230\023\230C\230r\320!3\2601\260C\260s\270#\270S\300\003\3006\310\022\3104\310y\320X^\320^`\320`c\320cd\320dk\320kl\320ls\320st\320t\177\360\000\000@\002F\002\360\000\000F\002I\002\360\000\000I\002P\002\360\000\000P\002Q\002\330\014\021\320\021#\2401\240C\240s\250#\250S\260\003\2606\270\022\2704\270y\310\007\310q\320PW\320WX\320X_\320_`\320`a\330\014\025\220T\230\023\230C\230r\320!3\2601\260C\260s\270#\270S\300\003\3006\310\022\3104\310y\320X^\320^`\320`c\320cd\320dk\320kl\320ls\320st\320t\177\360\000\000@\002F\002\360\000\000F\002I\002\360\000\000I\002P\002\360\000\000P\002Q\002\330\014\024\220G\2302\230X\240S\250\004\250B\250a\340\014\021\320\021#\2401\240C\240s\250\"\250B\250d\260#\260S\270\007\270y\310\007\310q\320PW\320WX\320X_\320_`\320`a\330\014\025\220T\230\023\230C\230r\320!3\2601\260C\260s\270\"\270B\270d\300#\300S\310\007\310y\320X^\320^`\320`c\320cd\320dk\320kl\320ls\320st\320t\177\360\000\000@\002F\002\360\000\000F\002I\002\360\000\000I\002P\002\360\000\000P\002Q\002\330\014\021\320\021#\2401\240C\240s\250\"\250B\250d\260#\260S\270\007\270y\310\007\310q\320PW\320WX\320X_\320_`\320`a\330\014\025\220T\230\023\230C\230r\320!3\2601\260C\260s\270\"\270B\270d\300#\300S\310\007\310y\320X^\320^`\320`c\320cd\320dk\320kl\320ls\320st\320t\177\360\000\000@\002F\002\360\000\000F\002I\002\360\000\000I\002P\002\360\000\000P\002Q\002\330\014\023\2207\230\"\230H\240C\240t\2502\250Q\340\014\023\2201\330\014\022\220!\340\004\014\210G\2207\230\047\240\026\240w\250a\200\001\360\016""\000\022\023\330\017\020\330\021\022\360\006\000\005\010\200r\210\023\210D\220\003\2202\220S\230\004\230C\230r\240\023\240A\330\010\017\210q\340\004\027\220s\230!\2301\230B\230b\240\001\330\004\027\220s\230!\2301\230B\230b\240\001\330\004\034\230D\240\001\240\022\2402\240U\250\"\250B\250b\260\006\260h\270m\3104\310q\320PR\320RT\320TY\320Y[\320[]\320]_\320_e\320ef\330\004\036\230a\230r\240\022\2409\250N\270\"\270B\270a\330\004\007\200}\220C\220z\240\022\2401\330\010\017\210q\330\004\007\200}\220C\220|\2402\240Q\330\010\017\210q\340\004\026\220a\330\004\027\220q\330\004\030\230\001\360\010\000\005\t\210\006\210e\2201\220A\330\010\021\220\021\220#\220S\230\003\2303\230c\240\027\250\t\260\021\260\047\270\021\270\047\300\021\300\047\310\021\310&\320PQ\320QX\320XY\320Y^\320^_\320_f\320fg\320gh\330\010\017\210v\220R\220q\330\010\013\2104\210q\220\006\220b\230\001\330\014\023\2201\330\010\013\2105\220\002\220$\220d\230&\240\002\240!\330\014\022\220!\330\r\022\220\"\220D\230\004\230F\240\"\240A\330\014\023\2201\340\010\013\2105\220\002\220!\330\014\024\220F\230\"\230E\240\022\2401\330\014\017\210v\220S\230\004\230C\230v\240S\250\001\330\020\030\230\004\230C\230t\2402\240Q\340\014\024\220D\230\003\2304\230r\240\021\340\004\010\210\006\210e\2201\220A\330\010\020\220\004\220C\220t\2302\230Q\330\010\021\220\021\220#\220S\230\003\2303\230c\240\027\250\t\260\021\260\047\270\021\270\047\300\021\300\047\310\021\310&\320PQ\320QX\320XY\320Y^\320^_\320_f\320fg\320gh\330\010\017\210v\220R\220q\330\010\013\2104\210q\220\006\220b\230\004\230D\240\005\240R\240u\250B\250a\330\014\023\2201\330\010\013\2105\220\002\220!\330\014\022\220!\340\014\023\2201\330\004\013\2104\210s\220$\220b\230\001\200\001\360\016\000\022\023\330\022\023\330\026\027\360\006\000\005\031\230\r\240]\260,\270m\310;\320VW\330\004\025\220T\230\021\230&\240\005\240R\240q\330\004\025\220Q\330\004\025\220Q\330\004\025\220T\230\021\230&\240\004\240B\240a\360\006\000\n\013\330\010\013\2101\330\014\024\320\024)\250\021\250#""\250S\260\003\2603\260c\270\027\300\t\310\021\330\014\017\210r\220\022\2204\220t\2306\240\022\2403\240d\250\"\250B\250c\260\024\260R\260r\270\021\330\020\027\320\027,\250A\250R\250r\260\024\260S\270\003\2703\270c\300\027\310\t\320QR\330\020\027\320\027,\250A\250R\250r\260\024\260S\270\003\2703\270c\300\027\310\t\320QR\330\020\027\320\027,\250A\250S\260\003\2603\260c\270\023\270F\300\"\300D\310\t\320QR\330\020\027\320\027,\250A\250S\260\003\2603\260c\270\023\270F\300\"\300D\310\t\320QR\330\020\027\320\027,\250A\250S\260\003\2602\260R\260t\2703\270c\300\027\310\t\320QR\330\020\027\320\027,\250A\250S\260\003\2602\260R\260t\2703\270c\300\027\310\t\320QR\330\020\027\320\027,\250A\250S\260\003\2603\260c\270\022\2702\270T\300\027\310\t\320Q_\320_a\320ac\320ck\320kl\340\014\024\320\024-\250Q\250c\260\023\260C\260s\270#\270W\300I\310Q\330\014\017\210r\220\022\2204\220t\2306\240\022\2403\240d\250\"\250B\250c\260\024\260R\260r\270\021\330\020\027\320\0270\260\001\260\022\2602\260T\270\023\270C\270s\300#\300W\310I\320UV\330\020\027\320\0270\260\001\260\022\2602\260T\270\023\270C\270s\300#\300W\310I\320UV\330\020\027\320\0270\260\001\260\023\260C\260s\270#\270S\300\006\300b\310\004\310I\320UV\330\020\027\320\0270\260\001\260\023\260C\260s\270#\270S\300\006\300b\310\004\310I\320UV\330\020\027\320\0270\260\001\260\023\260C\260r\270\022\2704\270s\300#\300W\310I\320UV\330\020\027\320\0270\260\001\260\023\260C\260r\270\022\2704\270s\300#\300W\310I\320UV\330\020\027\320\0270\260\001\260\023\260C\260s\270#\270R\270r\300\024\300W\310I\320Uc\320ce\320eg\320go\320op\340\010\013\2102\210R\210t\2204\220v\230R\230s\240$\240b\250\002\250#\250T\260\022\2602\260Q\330\014\025\220U\230\"\230F\240#\240T\250\022\2501\330\014\025\220U\230\"\230D\240\002\240&\250\002\250&\260\003\2603\260b\270\001\330\014\024\220E\230\022\2306\240\023\240D\250\002\250!\330\014\023\2205\230\002\230&\240\003\2404\240r\250\021\330\014\017\210r\220\022\2201\330\020\031\230\025\230b\240\007\240r\250\021\340\004\014\210G""\2207\230\047\240\026\240w\250a\200\001\360\016\000\022\023\330\022\023\360\014\000\005\010\200r\210\023\210D\220\003\2206\230\023\230D\240\003\2402\240S\250\004\250C\250r\260\023\260A\330\010\017\210t\2201\220B\220b\230\003\2308\240=\260\004\260A\260R\260r\270\023\270A\330\004\024\220B\220b\230\001\330\004\027\220v\230R\230q\340\004\007\200z\220\022\2201\330\010\016\210h\220a\330\010\020\220\002\220#\220T\230\022\2305\240\003\2404\240r\250\021\330\010\022\220%\220r\230\022\2303\230d\240\"\240E\250\023\250D\260\002\260$\260b\270\005\270S\300\004\300B\300d\310\"\310A\330\010\020\220\004\220A\220X\230R\230q\330\010\020\220\002\220\"\220D\230\002\230&\240\002\240&\250\002\250$\250b\260\t\270\022\2701\330\010\016\210b\220\002\220!\340\010\020\220\006\220b\230\004\230A\230Q\330\010\016\210d\220#\220R\220r\230\025\230b\240\001\330\010\016\210b\220\002\220!\340\004\r\210Q\210c\220\023\220C\220u\230C\230w\240i\250q\260\007\260q\270\007\270q\300\007\300q\310\007\310q\320PX\320XY\320Ya\320ab\320bj\320jk\320kl\330\004\013\2101\200\001\360\016\000\022\023\330\022\023\360\016\000\005\010\200r\210\023\210D\220\003\2206\230\023\230D\240\003\2402\240S\250\004\250C\250r\260\023\260A\330\010\017\210t\2201\220B\220b\230\003\2308\240=\260\004\260A\260R\260r\270\023\270A\340\004\024\220B\220b\230\001\330\004\027\220v\230R\230q\330\004\025\220Q\330\004\025\220Q\360\010\000\005\010\200z\220\022\2201\330\010\021\220\022\2203\220h\230a\330\010\025\220Q\330\010\021\220\021\330\010\021\220\021\330\010\014\210E\220\025\220a\220{\240$\240a\330\014\023\2208\2303\230b\240\001\330\014\022\220#\220Q\220b\230\002\230!\330\014\026\220a\330\014\026\220c\230\022\2302\230R\230v\240R\240u\250C\250t\2602\260T\270\022\2701\330\014\032\230!\330\010\r\210W\220C\220x\230q\330\010\r\210W\220D\230\010\240\013\2503\250h\260a\340\010\013\2104\210q\220\003\2202\220Q\330\014\021\220\021\330\014\017\210u\220B\220b\230\002\230!\330\020\026\220d\230\"\230C\230q\240\005\240R\240s\250\"\250D\260\003\2604\260r\270\025""\270b\300\004\300C\300u\310B\310e\320SU\320UW\320WY\320YZ\340\020\025\220Q\330\r\021\220\021\220\"\220B\220f\230B\230a\330\014\022\220#\220Q\220b\230\002\230#\230R\230u\240C\240r\250\022\2501\330\014\022\220$\220c\230\023\230A\230R\230r\240\023\240C\240r\250\022\2502\250R\250u\260B\260f\270C\270r\300\022\3002\300R\300r\310\022\3101\330\r\021\220\021\220$\220b\230\002\230\"\230F\240\"\240A\330\014\022\220#\220Q\220b\230\002\230#\230R\230u\240C\240r\250\022\2501\330\014\022\220$\220d\230\"\230B\230f\240B\240b\250\002\250$\250c\260\022\2603\260c\270\021\270\"\270B\270c\300\022\3005\310\002\310!\340\014\022\220#\220Q\220b\230\002\230#\230R\230u\240C\240r\250\022\2501\330\014\r\330\021\025\220R\220s\230\"\230D\240\002\240\"\240B\240f\250B\250d\260$\260b\270\002\270&\300\003\3004\300r\310\022\3102\310V\320SU\320UW\320WY\320YZ\330\020\023\2204\220s\230\"\230B\230b\240\002\240$\240d\250$\250c\260\024\260R\260r\270\022\2707\300#\300S\310\001\310\022\3102\310S\320PS\320SU\320UW\320WX\360\006\000\005\031\230\003\2301\230D\240\001\240\027\250\005\250R\250q\330\004\032\230#\230Q\230d\240!\2404\240r\250\027\260\003\2603\260c\270\022\2701\330\004\032\230$\230a\230x\240r\250\021\330\004\030\230\002\230\"\230A\360\006\000\005\016\210Q\210c\220\023\220C\220w\230c\240\031\250)\2601\260G\2701\270G\3001\300G\3101\310G\320ST\320T\\\320\\]\320]e\320ef\320fn\320no\320op\330\004\013\2101\200\001\360\016\000\022\023\360\006\000\n\013\330\010\021\220\021\330\014\017\210s\220#\220S\230\003\2307\240!\330\014\r\210W\220A\220W\230A\230W\240A\240V\2501\250G\2601\260E\270\021\270\047\300\021\300!\340\004\014\210G\2207\230\047\240\026\240w\250e\2607\270!\200\001\360\020\000\005\031\230\005\230V\2401\240A\340\0040\260\002\260&\270\001\270\023\270F\300\"\300A\330\004\033\2301\330\t\n\330\010\014\210E\220\025\220a\220q\330\014\021\220\021\220%\320\027)\250\021\250%\250q\260\004\260C\260s\270%\270s\300!\330\004\013\2101\200\001\360\020\000\022\023\330\017\020\330\020\021\330\022\023\360\006\000\005\031""\230\r\240]\260,\270m\310;\320VW\330\004\027\220t\2301\230B\230b\240\001\330\004\025\220T\230\021\230%\230r\240\023\240E\250\022\2509\260E\270\022\270:\300U\310\"\310A\330\004\025\220Q\330\004\025\220Q\330\004\025\220T\230\021\230&\240\004\240B\240a\360\006\000\n\013\330\010\020\320\020!\240\021\240#\240S\250\003\2503\250c\260\023\260G\2709\300G\3108\320ST\330\010\013\2102\210R\210t\2204\220v\230R\230s\240$\240b\250\002\250#\250T\260\022\2602\260T\270\024\270U\300\"\300A\330\014\023\320\023$\240A\240R\240r\250\024\250S\260\003\2603\260c\270\023\270G\3009\310G\320S[\320[\\\330\014\023\320\023$\240A\240R\240r\250\024\250S\260\003\2603\260c\270\023\270G\3009\310G\320S[\320[\\\330\014\025\220U\230\"\230F\240#\240T\250\022\2501\330\014\025\220U\230\"\230D\240\002\240&\250\002\250&\260\003\2603\260b\270\001\340\014\023\320\023$\240A\240S\250\003\2503\250c\260\023\260C\260v\270R\270t\3009\310G\320S[\320[\\\330\014\023\320\023$\240A\240S\250\003\2503\250c\260\023\260C\260v\270R\270t\3009\310G\320S[\320[\\\330\014\024\220E\230\022\2306\240\023\240D\250\002\250!\340\014\023\320\023$\240A\240S\250\003\2503\250b\260\002\260$\260c\270\023\270G\3009\310G\320S[\320[\\\330\014\023\320\023$\240A\240S\250\003\2503\250b\260\002\260$\260c\270\023\270G\3009\310G\320S[\320[\\\330\014\023\2205\230\002\230&\240\003\2404\240r\250\021\340\014\017\210r\220\022\2201\330\020\027\320\027(\250\001\250\023\250C\250s\260#\260S\270\002\270\"\270D\300\007\300y\320PW\320W_\320_`\330\020\031\230\025\230b\240\007\240r\250\021\340\004\014\210G\2207\230\047\240\026\240w\250a\200\001\360\020\000\022\023\330\017\020\330\020\021\330\022\023\360\014\000\005\010\200r\210\023\210D\220\003\2206\230\023\230D\240\003\2402\240S\250\004\250C\250r\260\023\260D\270\003\2702\270S\300\001\330\010\017\210q\340\004\027\220s\230!\2301\230B\230b\240\001\330\004\027\220s\230!\2301\230B\230b\240\001\360\010\000\005\t\210\006\210d\220\"\220C\220s\230%\230t\2407\250$\250b\260\003\2601\330\010\013\2101\330\014\023\2201\330\010""\021\220\021\220#\220S\230\003\2303\230c\240\027\250\t\260\021\260\047\270\021\270\047\300\021\300\047\310\021\310\047\320QR\320RZ\320Z[\320[c\320cd\320dl\320lm\320mn\330\010\017\210q\340\004\024\220B\220b\230\001\330\004\027\220v\230R\230q\330\004\035\230V\2402\240T\250\021\250!\330\004\026\220b\230\002\230$\230b\240\006\240b\250\001\330\004\026\220d\230!\2303\230b\240\003\2402\240T\250\022\2502\250R\250q\340\004\025\220S\230\001\230\022\2302\230S\240\002\240+\250S\260\004\260B\260d\270\"\270A\330\004\025\220S\230\001\230\022\2302\230S\240\002\240+\250S\260\004\260B\260d\270\"\270A\330\004\025\220S\230\002\230\"\230B\230c\240\023\240B\240b\250\004\250B\250k\270\023\270D\300\002\300$\300b\310\001\330\004\025\220S\230\001\230\022\2302\230S\240\002\240+\250S\260\004\260B\260d\270\"\270A\330\004\024\220C\220q\230\002\230\"\230C\230r\240\033\250B\250d\260\"\260A\340\004\026\220g\230]\250!\330\004\026\220h\230k\250\021\340\004\024\220D\230\003\2302\230R\230u\240B\240i\250q\260\004\260B\260d\270\"\270B\270b\300\005\300R\300y\320PQ\320QU\320UX\320X[\320[]\320]^\330\004\024\220D\230\003\2302\230R\230u\240B\240i\250q\260\004\260B\260d\270\"\270B\270b\300\005\300R\300y\320PQ\320QU\320UX\320X[\320[]\320]^\330\004\024\220D\230\001\330\010\n\210\"\210E\220\022\2203\220a\220r\230\022\2303\230d\240#\240S\250\002\250&\260\002\260)\2701\270D\300\002\300!\330\010\n\210\"\210B\210e\2202\220S\230\001\230\022\2302\230S\240\004\240B\240d\250\"\250I\260Q\260d\270#\270S\300\002\300!\340\004\024\220D\230\001\330\010\n\210\"\210E\220\022\2203\220a\220r\230\022\2303\230d\240#\240S\250\002\250&\260\002\260)\2701\270D\300\002\300!\330\010\n\210\"\210B\210e\2202\220S\230\001\230\022\2302\230S\240\004\240B\240d\250\"\250I\260Q\260d\270#\270S\300\002\300!\340\004\024\220G\2302\230U\240!\330\010\021\220\021\220$\220c\230\023\230B\230m\2502\250S\260\001\260\022\2602\260S\270\004\270B\270d\300\"\300I\310Q\310d\320RU\320UX\320XZ\320Z[\340\004\024\220G\2301\330\010\013\2101\210B\210b\220\003\2203\220b""\230\005\230R\230y\250\001\250\024\250R\250q\330\010\n\210#\210Q\210b\220\002\220#\220S\230\002\230%\230r\240\031\250!\2504\250s\260\"\260B\260d\270\"\270D\300\002\300!\360\006\000\005\027\220a\330\004\007\200x\210u\220D\230\001\330\010\013\2101\330\014\022\220!\2202\220R\220r\230\022\2306\240\022\2403\240h\250b\260\002\260\"\260B\260a\340\014\022\220!\2202\220R\220v\230R\230s\240(\250\"\250B\250b\260\002\260\"\260B\260a\330\t\021\220\024\220Q\330\010\013\2101\330\014\022\220%\220r\230\023\230H\240B\240b\250\002\250\"\250B\250b\260\002\260\"\260A\340\014\022\220!\2202\220R\220v\230R\230s\240(\250\"\250B\250b\260\002\260\"\260B\260a\330\n\016\210i\220u\230D\240\001\330\010\013\2101\330\014\022\220!\2202\220R\220r\230\022\2302\230R\230r\240\022\2406\250\022\2503\250g\260Q\340\014\022\220!\2202\220R\220r\230\022\2302\230R\230v\240R\240s\250(\260\"\260B\260a\340\010\013\2101\330\014\022\220!\2202\220R\220r\230\022\2306\240\022\2403\240h\250b\260\002\260\"\260B\260a\340\014\022\220!\2202\220R\220r\230\022\2302\230R\230v\240R\240s\250(\260\"\260B\260a\340\004\013\2107\220$\220b\230\t\240\021\200\001\360\022\000\005\026\220R\220r\230\021\330\004\013\2102\210R\210r\220\023\220D\230\002\230#\230R\230t\2401\240C\240r\250\023\250B\250f\260B\260a\200\001\360\022\000\022\023\360\006\000\005\010\200r\210\023\210D\220\003\2206\230\023\230A\330\010\017\210t\2201\220B\220b\230\003\2308\240=\260\004\260A\260R\260r\270\023\270A\360\006\000\005\016\210Q\210c\220\023\220C\220s\230#\230W\240F\250!\250:\260Q\260g\270Q\270g\300Q\300f\310A\310W\320TU\320UZ\320Z[\320[b\320bc\320cd\340\004\027\220s\230!\2301\230B\230b\240\001\330\004\027\220s\230!\2301\230B\230b\240\001\330\004\035\230V\2402\240T\250\021\250!\330\004\031\230\026\230r\240\026\240r\250\021\330\004\033\2307\240\"\240A\330\004\026\220c\230\021\230\"\230B\230c\240\023\240B\240b\250\002\250\"\250D\260\002\260&\270\002\270\047\300\022\3003\300b\310\001\330\004\025\220S\230\002\230!\330\004\026\220i\230q\240\001\330\004\026\220i\230q""\240\001\340\004\026\220d\230\"\230E\240\022\2402\240R\240u\250B\250k\270\024\270T\300\022\300;\310b\320PT\320TV\320VZ\320Z\\\320\\c\320ce\320ef\330\004\026\220d\230\"\230F\240\"\240B\240b\250\005\250R\250{\270!\330\t\014\210B\210c\220\022\2204\220r\230\024\230R\230{\250\"\250D\260\002\260$\260c\270\027\300\002\300,\310b\320PQ\360\006\000\005\033\230)\2402\240W\250B\250c\260\022\2609\270B\270a\330\004\007\200x\210r\220\021\330\010\022\220!\330\004\007\200q\330\010\017\210q\340\004\031\230\030\240\022\2402\240R\240u\250B\250b\260\002\260!\330\004\013\210:\220W\230B\230i\240q\200\001\360\022\000\022\023\360\006\000\005\031\230\r\240]\260,\270m\310;\320VW\330\004\025\220T\230\021\230&\240\005\240R\240q\330\004\025\220Q\330\004\025\220Q\330\004\025\220T\230\021\230&\240\004\240B\240a\360\006\000\n\013\330\010\020\320\020 \240\001\240\023\240C\240s\250#\250S\260\007\260x\270x\300q\330\010\013\2102\210R\210t\2204\220v\230R\230s\240$\240b\250\002\250#\250T\260\022\2602\260Q\330\014\023\320\023#\2401\240B\240b\250\004\250C\250s\260#\260S\270\007\270x\300x\310q\330\014\023\320\023#\2401\240B\240b\250\004\250C\250s\260#\260S\270\007\270x\300x\310q\330\014\025\220U\230\"\230F\240#\240T\250\022\2501\330\014\025\220U\230\"\230D\240\002\240&\250\002\250&\260\003\2603\260b\270\001\340\014\023\320\023#\2401\240C\240s\250#\250S\260\003\2606\270\022\2704\270x\300x\310q\330\014\023\320\023#\2401\240C\240s\250#\250S\260\003\2606\270\022\2704\270x\300x\310q\330\014\024\220E\230\022\2306\240\023\240D\250\002\250!\340\014\023\320\023#\2401\240C\240s\250\"\250B\250d\260#\260S\270\007\270x\300x\310q\330\014\023\320\023#\2401\240C\240s\250\"\250B\250d\260#\260S\270\007\270x\300x\310q\330\014\023\2205\230\002\230&\240\003\2404\240r\250\021\340\014\017\210r\220\022\2201\330\020\027\320\027\047\240q\250\003\2503\250c\260\023\260B\260b\270\004\270G\3008\3108\320ST\330\020\031\230\025\230b\240\007\240r\250\021\340\014\024\220A\220W\230B\230b\240\007\240x\250~\270X\300R\300r\310\027\320PQ\340\004""\014\210G\2207\230\047\240\026\240w\250a\200\001\360\022\000\023\024\360\006\000\005\031\230\005\230V\2401\240A\360\006\000\0057\260b\270\006\270a\270s\300&\310\002\310!\330\0046\260b\270\006\270a\270s\300&\310\002\310!\330\0046\260b\270\006\270a\270s\300&\310\002\310!\330\0045\260R\260v\270Q\270c\300\026\300r\310\021\330\0046\260b\270\006\270a\270s\300&\310\002\310!\330\0044\260B\260f\270A\270S\300\006\300b\310\001\340\004\030\230\001\330\004\030\230\001\330\004\030\230\001\330\004\030\230\001\330\004\030\230\001\330\004\030\230\001\360\n\000\005\031\230\001\330\004\031\230\021\360\006\000\n\013\330\010\014\210E\220\025\220a\220q\330\014\031\230\033\240A\240S\250\003\2501\330\014\017\210\177\230a\230q\330\020\023\220:\230S\240\001\330\024\034\320\034.\250a\330\030\035\230Q\230d\240%\240q\250\004\250E\260\021\260$\260e\2701\270D\300\005\300Q\300d\310)\320ST\320TU\330\030#\240;\250a\250w\260a\260w\270a\270q\340\024\034\320\034.\250a\330\030\035\230Q\230d\240%\240q\250\004\250E\260\021\260$\260e\2701\270D\300\005\300Q\300d\310)\320ST\320TU\330\030#\240:\250R\250s\260!\2607\270!\2707\300!\3001\340\024\026\220a\220u\230D\240\003\2406\250\022\2501\330\024\026\220a\220u\230D\240\003\2406\250\022\2501\330\024\026\220a\220u\230D\240\003\2406\250\022\2501\330\024\026\220a\220u\230D\240\003\2406\250\022\2501\340\024\026\220a\220u\320\034.\250a\330\030\035\230Q\230d\240%\240q\250\004\250E\260\021\260$\260e\2701\270D\300\005\300Q\300d\310)\320ST\320TU\330\030#\240;\250a\250w\260a\260w\270a\270q\340\024\026\220a\220u\230A\330\024\026\220a\220u\230A\330\024\026\220a\220u\230A\330\020\023\2205\230\001\230\023\230B\230d\240$\240i\250q\260\003\2602\260V\2704\270u\300A\300S\310\002\310$\310d\320RW\320WX\320X[\320[]\320]^\330\024\035\320\035/\250q\260\005\260Q\260d\270%\270q\300\004\300E\310\021\310$\310e\320ST\320TX\320X]\320]^\320^b\320bk\320kl\320lo\320oq\320qx\360\000\000y\001D\002\360\000\000D\002O\002\360\000\000O\002P\002\360\000\000P\002W\002\360\000\000W\002X\002\360\000\000X""\002_\002\360\000\000_\002`\002\360\000\000`\002a\002\330\024\035\320\035/\250q\260\005\260Q\260d\270%\270q\300\004\300E\310\021\310$\310e\320ST\320TX\320X]\320]^\320^b\320bk\320kl\320lo\320oq\320qx\360\000\000y\001D\002\360\000\000D\002O\002\360\000\000O\002P\002\360\000\000P\002W\002\360\000\000W\002X\002\360\000\000X\002_\002\360\000\000_\002`\002\360\000\000`\002a\002\330\024\027\220z\240\023\240A\330\030!\240\024\240S\250\007\250r\3201C\3001\300E\310\021\310$\310e\320ST\320TX\320X]\320]^\320^b\320bg\320gh\320hl\320lq\320qr\320rv\320v\177\360\000\000@\002A\002\360\000\000A\002D\002\360\000\000D\002F\002\360\000\000F\002M\002\360\000\000M\002X\002\360\000\000X\002b\002\360\000\000b\002d\002\360\000\000d\002g\002\360\000\000g\002h\002\360\000\000h\002o\002\360\000\000o\002p\002\360\000\000p\002w\002\360\000\000w\002x\002\360\000\000x\002y\002\330\030!\240\024\240S\250\007\250r\3201C\3001\300E\310\021\310$\310e\320ST\320TX\320X]\320]^\320^b\320bg\320gh\320hl\320lq\320qr\320rv\320v\177\360\000\000@\002A\002\360\000\000A\002D\002\360\000\000D\002F\002\360\000\000F\002M\002\360\000\000M\002X\002\360\000\000X\002b\002\360\000\000b\002d\002\360\000\000d\002g\002\360\000\000g\002h\002\360\000\000h\002o\002\360\000\000o\002p\002\360\000\000p\002w\002\360\000\000w\002x\002\360\000\000x\002y\002\330\024\026\220a\220v\230W\240B\240h\250c\260\024\260R\260q\330\024\035\320\035/\250q\260\005\260Q\260d\270%\270q\300\004\300E\310\021\310#\310R\310x\320W\\\320\\]\320]a\320af\320fg\320gk\320kt\320tu\320uy\360\000\000z\001E\002\360\000\000E\002P\002\360\000\000P\002Q\002\360\000\000Q\002X\002\360\000\000X\002Y\002\360\000\000Y\002`\002\360\000\000`\002a\002\360\000\000a\002b\002\330\024\035\320\035/\250q\260\005\260Q\260d\270%\270q\300\004\300E\310\021\310#\310R\310x\320W\\\320\\]\320]a\320af\320fg\320gk\320kt\320tu\320uy\360\000\000z\001E\002\360\000\000E\002P\002\360\000\000P\002Q\002\360\000\000Q\002X\002\360\000\000X\002Y\002\360\000\000Y\002`\002\360\000\000`\002a\002\360\000""\000a\002b\002\330\024\027\220z\240\023\240A\330\030!\240\024\240S\250\007\250r\3201C\3001\300E\310\021\310$\310e\320ST\320TX\320X]\320]^\320^a\320ac\320ck\320kp\320pq\320qu\320uz\320z{\320{\177\360\000\000@\002I\002\360\000\000I\002J\002\360\000\000J\002N\002\360\000\000N\002Y\002\360\000\000Y\002c\002\360\000\000c\002e\002\360\000\000e\002h\002\360\000\000h\002i\002\360\000\000i\002p\002\360\000\000p\002q\002\360\000\000q\002x\002\360\000\000x\002y\002\360\000\000y\002z\002\330\030!\240\024\240S\250\007\250r\3201C\3001\300E\310\021\310$\310e\320ST\320TX\320X]\320]^\320^a\320ac\320ck\320kp\320pq\320qu\320uz\320z{\320{\177\360\000\000@\002I\002\360\000\000I\002J\002\360\000\000J\002N\002\360\000\000N\002Y\002\360\000\000Y\002c\002\360\000\000c\002e\002\360\000\000e\002h\002\360\000\000h\002i\002\360\000\000i\002p\002\360\000\000p\002q\002\360\000\000q\002x\002\360\000\000x\002y\002\360\000\000y\002z\002\330\024\026\220a\220v\230W\240B\240h\250c\260\024\260R\260q\340\024\026\220a\220u\230A\330\024\026\220a\220u\230A\340\020\031\230\021\330\024\031\230\021\230$\230e\2401\240D\250\005\250Q\250d\260%\260q\270\004\270E\300\021\300$\300i\310q\320PQ\330\024\025\330\024\025\220W\230A\230W\240A\240W\250A\250V\2601\260G\2701\270E\300\021\300\047\310\021\310!\340\020\022\220!\2205\230\001\330\020\022\220!\2205\230\001\330\020\022\220!\2205\230\001\330\020\022\220!\2205\230\001\330\020\022\220!\2205\230\001\330\020\022\220!\2205\230\001\340\004\014\210K\220{\240+\250Z\260{\300!\200\001\360\024\000\005\010\200r\210\023\210D\220\003\2202\220S\230\004\230C\230r\240\023\240D\250\003\2506\260\023\260A\330\010\017\210q\340\004!\240\024\240R\240q\360\006\000\005\010\200t\2101\210B\210b\220\003\2202\220Q\330\010\021\220\023\220A\220S\230\001\330\010\021\220\037\240\002\240/\260\022\2606\270\022\2707\300#\300U\310\"\310G\320SU\320UV\330\010\021\220\024\220R\220u\230B\230c\240\022\2407\250#\250T\260\022\2601\330\010\022\220$\220b\230\004\230B\230d\240\"\240E\250\022\2503\250b\260\004""\260B\260a\330\010\020\220\006\220b\230\010\240\003\2404\240s\250&\260\002\260&\270\002\270\047\300\022\3001\340\004\r\210S\220\001\220\022\2202\220Q\330\004\r\210S\220\001\220\022\2202\220S\230\004\230B\230a\330\004\t\210\023\210B\210g\220R\220w\230b\240\001\330\004\036\230a\330\004\007\200|\2202\220Q\330\010\026\220a\330\t\025\220R\220q\330\010\026\220a\330\004\032\230$\230a\230x\240t\2501\250D\260\002\260$\260b\270\014\300B\300b\310\002\310\"\310B\310c\320QS\320SU\320UW\320Wd\320dg\320gk\320km\320mn\330\004\n\210#\210Q\210a\340\004\027\220w\230b\240\001\330\004\027\220u\230B\230a\330\004\033\2307\240!\330\010\014\210C\210\177\230b\240\017\250r\260\026\260r\270\021\330\010\013\2103\210a\320\017\037\230u\240B\240h\250b\260\001\340\004\017\210v\220R\220q\330\004\017\210r\220\022\2207\230$\230a\230u\240B\240k\260\021\340\004\r\210_\230B\230o\250R\250v\260R\260w\270c\300\025\300b\310\007\310r\320QR\330\004\r\210T\220\022\2205\230\002\230#\230R\230w\240c\250\024\250R\250q\330\004\016\210d\220\"\220D\230\002\230$\230b\240\005\240R\240s\250\"\250D\260\002\260!\330\004\013\2109\220B\220i\230s\240$\240c\250\026\250r\260\026\260r\270\027\300\002\300!\200\001\360\024\000\005\031\230\005\230V\2401\240A\360\006\000\0057\260b\270\006\270a\270s\300&\310\002\310!\330\0046\260b\270\006\270a\270s\300&\310\002\310!\330\0046\260b\270\006\270a\270s\300&\310\002\310!\330\0045\260R\260v\270Q\270c\300\026\300r\310\021\330\0046\260b\270\006\270a\270s\300&\310\002\310!\330\0044\260B\260f\270A\270S\300\006\300b\310\001\340\004\030\230\001\330\004\030\230\001\330\004\030\230\001\330\004\030\230\001\330\004\030\230\001\330\004\030\230\001\360\n\000\n\013\330\010\014\210E\220\025\220a\220q\330\014\031\230\033\240A\240S\250\003\2501\330\014\021\220\031\230!\2301\330\014\025\220Q\330\020\025\220Q\220d\230%\230q\240\004\240E\250\021\250$\250e\2601\260D\270\005\270Q\270d\300)\3101\310A\330\020\033\2301\230G\2401\240G\2501\250G\2601\260F\270!\2707\300!\3005\310\001\310\027\320PQ\320QR\340\014\016""\210a\210u\220F\230\"\230A\330\014\016\210a\210u\220F\230\"\230A\330\014\016\210a\210u\220F\230\"\230A\330\014\016\210a\210u\220E\230\022\2301\330\014\016\210a\210u\220F\230\"\230A\330\014\016\210a\210u\220D\230\002\230!\340\004\014\210K\220{\240+\250Z\260{\300!\200\001\360\036\000\005\026\220U\230)\2406\250\021\250!\330\004\026\220e\230>\250\026\250q\260\001\330\004\032\230!\2309\240A\240V\2506\260\022\2607\270!\330\004\032\230!\230;\240a\240v\250V\2602\260W\270A\330\004\032\230!\230>\250\021\250&\260\007\260r\270\027\300\001\330\004\032\230!\230?\250!\2506\260\027\270\002\270\047\300\021\340\004\030\230\r\240]\260,\270m\310;\320VW\340\004\025\220T\230\021\230&\240\002\240\"\240D\250\001\250\026\250t\2602\260V\2702\270T\300\021\300$\300a\300v\310S\320PR\320RV\320VW\320W\\\320\\d\320de\330\004\025\220Q\330\004\025\220Q\330\004\030\230\004\230A\230T\240\022\2407\250$\250b\260\001\340\004\031\230\021\330\004\031\230\021\340\t\n\330\010\020\320\020\"\240!\2403\240c\250\023\250C\250s\260\047\270\031\300\047\310\030\320QY\320Y`\320`h\320hp\320pq\330\010\013\2102\210R\210t\2204\220v\230R\230s\240$\240b\250\002\250#\250T\260\022\2602\260Q\330\014\025\320\025\047\240q\250\002\250\"\250D\260\003\2603\260c\270\023\270G\3009\310G\320S[\320[c\320cj\320jr\320rz\320z{\330\014\025\320\025\047\240q\250\002\250\"\250D\260\003\2603\260c\270\023\270G\3009\310G\320S[\320[c\320cj\320jr\320rz\320z{\330\014\025\220W\230B\230h\240c\250\024\250R\250q\330\014\025\220W\230B\230d\240\"\240F\250\"\250H\260C\260s\270\"\270A\340\014\025\320\025\047\240q\250\003\2503\250c\260\023\260C\260v\270R\270t\3009\310G\320S[\320[c\320cj\320jr\320rz\320z{\330\014\025\320\025\047\240q\250\003\2503\250c\260\023\260C\260v\270R\270t\3009\310G\320S[\320[c\320cj\320jr\320rz\320z{\330\014\024\220G\2302\230X\240S\250\004\250B\250a\340\014\025\320\025\047\240q\250\003\2503\250b\260\002\260$\260c\270\023\270G\3009\310G\320S[\320[c\320cj\320jr\320rz\320z{\330\014\025\320\025\047\240q\250\003\2503\250b\260\002\260$\260c""\270\023\270G\3009\310G\320S[\320[c\320cj\320jr\320rz\320z{\330\014\023\2207\230\"\230H\240C\240t\2502\250Q\340\014\017\210r\220\022\2206\230\022\2301\330\020\023\2206\230\022\2301\330\024\034\230J\240f\250A\250V\2602\260Q\330\024\030\230\005\230U\240!\2401\330\030\035\230Q\230e\2406\250\021\250#\250R\250q\330\020\023\2207\230\"\230A\330\024\034\230J\240f\250A\250W\260B\260a\330\024\030\230\005\230U\240!\2401\330\030\035\230Q\230e\2406\250\021\250#\250R\250q\330\020\031\320\031+\2501\330\024\027\220s\230#\230S\240\002\240\"\240G\2507\260)\2707\300\047\310\030\320QX\320X_\320_g\320gh\340\020\031\230\027\240\002\240\047\250\022\2501\330\020\023\2206\230\023\230A\330\024\030\230\001\230\021\330\020\023\2206\230\023\230A\330\024\030\230\001\230\021\340\014\024\220A\220W\230B\230b\240\007\240x\250~\270X\300R\300r\310\027\320PQ\340\004\014\210G\2207\230\047\240\026\240w\250a\320\000\037\230q\360\016\000\022\023\330\016\017\360\010\000\n\013\330\010\r\320\r\037\230q\240\003\2403\240c\250\023\250C\250w\260i\270w\300a\300w\310a\310w\320VW\320WX\330\010\013\2106\220\023\220A\330\014\021\320\021#\2401\240C\240s\250#\250S\260\003\2607\270)\3006\310\022\3103\310a\310w\320VW\320W^\320^_\320_`\330\014\023\2204\220s\230#\230R\230q\330\010\017\210q";
     PyObject *data = NULL;
     #define __Pyx_DecompressString_UNUSED
     #define __Pyx_DecompressString_LZSS_UNUSED
     #endif
     PyObject **stringtab = __pyx_mstate->__pyx_string_tab;
     Py_ssize_t pos = 0;
-    for (int i = 0; i < 163; i++) {
+    for (int i = 0; i < 172; i++) {
       Py_ssize_t bytes_length = str_length_index[i].length;
       PyObject *string = PyUnicode_DecodeUTF8(bytes + pos, bytes_length, NULL);
       if (likely(string) && i >= 28) PyUnicode_InternInPlace(&string);
@@ -37038,8 +41727,8 @@ static const char bytes[] = " at 0x object>.: <MemoryView of <contiguous and dir
       stringtab[i] = string;
       pos += bytes_length;
     }
-    for (int i = 163; i < 183; i++) {
-      Py_ssize_t bytes_length = bytes_length_index[i-163].length;
+    for (int i = 172; i < 196; i++) {
+      Py_ssize_t bytes_length = bytes_length_index[i-172].length;
       PyObject *string = PyBytes_FromStringAndSize(bytes + pos, bytes_length);
       stringtab[i] = string;
       pos += bytes_length;
@@ -37049,15 +41738,15 @@ static const char bytes[] = " at 0x object>.: <MemoryView of <contiguous and dir
       }
     }
     Py_XDECREF(data);
-    for (Py_ssize_t i = 0; i < 183; i++) {
+    for (Py_ssize_t i = 0; i < 196; i++) {
       if (unlikely(PyObject_Hash(stringtab[i]) == -1)) {
         __PYX_ERR(0, 1, __pyx_L1_error)
       }
     }
     #if CYTHON_IMMORTAL_CONSTANTS
     {
-      PyObject **table = stringtab + 163;
-      for (Py_ssize_t i=0; i<20; ++i) {
+      PyObject **table = stringtab + 172;
+      for (Py_ssize_t i=0; i<24; ++i) {
         #if PY_VERSION_HEX >= 0x030F0000
         PyUnstable_SetImmortal(table[i]);
         #elif CYTHON_COMPILING_IN_CPYTHON_FREETHREADING
@@ -37133,7 +41822,7 @@ typedef struct {
     unsigned int num_kwonly_args : 1;
     unsigned int nlocals : 4;
     unsigned int flags : 10;
-    unsigned int first_line : 10;
+    unsigned int first_line : 11;
 } __Pyx_PyCode_New_function_description;
 #ifdef __cplusplus
 } /* anonymous namespace */
@@ -37188,69 +41877,89 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
     __pyx_mstate_global->__pyx_codeobj_tab[6] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_crr_american_price_greeks, __pyx_mstate->__pyx_kp_b_iso88591_Q_Q_q_3c_CwiwavQfTUUV_6_A_1Cs_S, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[6])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {9, 0, 0, 9, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 353};
+    const __Pyx_PyCode_New_function_description descr = {12, 0, 0, 12, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 469};
+    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_S, __pyx_mstate->__pyx_n_u_K, __pyx_mstate->__pyx_n_u_r, __pyx_mstate->__pyx_n_u_q, __pyx_mstate->__pyx_n_u_T, __pyx_mstate->__pyx_n_u_sigma, __pyx_mstate->__pyx_n_u_is_call, __pyx_mstate->__pyx_n_u_steps, __pyx_mstate->__pyx_n_u_div_times, __pyx_mstate->__pyx_n_u_div_amounts, __pyx_mstate->__pyx_n_u_prop_div_times, __pyx_mstate->__pyx_n_u_prop_div_yields};
+    __pyx_mstate_global->__pyx_codeobj_tab[7] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_crr_american_discrete_div_price, __pyx_mstate->__pyx_kp_b_iso88591_U_6_e_q_9AV6_7_avV2WA_r_6_m_VW, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[7])) goto bad;
+  }
+  {
+    const __Pyx_PyCode_New_function_description descr = {9, 0, 0, 9, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 540};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_S, __pyx_mstate->__pyx_n_u_K, __pyx_mstate->__pyx_n_u_r, __pyx_mstate->__pyx_n_u_q, __pyx_mstate->__pyx_n_u_T, __pyx_mstate->__pyx_n_u_sigma, __pyx_mstate->__pyx_n_u_kappa3, __pyx_mstate->__pyx_n_u_kappa4, __pyx_mstate->__pyx_n_u_is_call};
-    __pyx_mstate_global->__pyx_codeobj_tab[7] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_corrado_su_price, __pyx_mstate->__pyx_kp_b_iso88591_r_D_6_A_t1Bb_8_ARr_A_Qc_Cs_WF_Q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[7])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[8] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_corrado_su_price, __pyx_mstate->__pyx_kp_b_iso88591_r_D_6_A_t1Bb_8_ARr_A_Qc_Cs_WF_Q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[8])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {9, 0, 0, 9, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 396};
+    const __Pyx_PyCode_New_function_description descr = {9, 0, 0, 9, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 583};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_target_price, __pyx_mstate->__pyx_n_u_S, __pyx_mstate->__pyx_n_u_K, __pyx_mstate->__pyx_n_u_r, __pyx_mstate->__pyx_n_u_q, __pyx_mstate->__pyx_n_u_T, __pyx_mstate->__pyx_n_u_is_call, __pyx_mstate->__pyx_n_u_tol, __pyx_mstate->__pyx_n_u_max_iter};
-    __pyx_mstate_global->__pyx_codeobj_tab[8] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_implied_vol_bsm, __pyx_mstate->__pyx_kp_b_iso88591_r_D_2S_Cr_A_q_s_1Bb_s_1Bb_D_2U, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[8])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[9] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_implied_vol_bsm, __pyx_mstate->__pyx_kp_b_iso88591_r_D_2S_Cr_A_q_s_1Bb_s_1Bb_D_2U, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[9])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {8, 0, 0, 8, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 456};
+    const __Pyx_PyCode_New_function_description descr = {8, 0, 0, 8, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 643};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_target_price, __pyx_mstate->__pyx_n_u_F, __pyx_mstate->__pyx_n_u_K, __pyx_mstate->__pyx_n_u_r, __pyx_mstate->__pyx_n_u_T, __pyx_mstate->__pyx_n_u_is_call, __pyx_mstate->__pyx_n_u_tol, __pyx_mstate->__pyx_n_u_max_iter};
-    __pyx_mstate_global->__pyx_codeobj_tab[9] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_implied_vol_black76, __pyx_mstate->__pyx_kp_b_iso88591_Cs_S_a, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[9])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[10] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_implied_vol_black76, __pyx_mstate->__pyx_kp_b_iso88591_Cs_S_a, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[10])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {6, 0, 0, 6, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 469};
+    const __Pyx_PyCode_New_function_description descr = {6, 0, 0, 6, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 656};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_k, __pyx_mstate->__pyx_n_u_a, __pyx_mstate->__pyx_n_u_b, __pyx_mstate->__pyx_n_u_rho, __pyx_mstate->__pyx_n_u_m, __pyx_mstate->__pyx_n_u_sigma};
-    __pyx_mstate_global->__pyx_codeobj_tab[10] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_svi_total_variance, __pyx_mstate->__pyx_kp_b_iso88591_Rr_2Rr_D_Rt1Cr_BfBa, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[10])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[11] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_svi_total_variance, __pyx_mstate->__pyx_kp_b_iso88591_Rr_2Rr_D_Rt1Cr_BfBa, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[11])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {6, 0, 0, 6, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 482};
+    const __Pyx_PyCode_New_function_description descr = {6, 0, 0, 6, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 669};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_k_arr, __pyx_mstate->__pyx_n_u_a, __pyx_mstate->__pyx_n_u_b, __pyx_mstate->__pyx_n_u_rho, __pyx_mstate->__pyx_n_u_m, __pyx_mstate->__pyx_n_u_sigma};
-    __pyx_mstate_global->__pyx_codeobj_tab[11] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_svi_eval_vec, __pyx_mstate->__pyx_kp_b_iso88591_V1A_0_F_A_1_E_aq_q_Cs_s_1, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[11])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[12] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_svi_eval_vec, __pyx_mstate->__pyx_kp_b_iso88591_V1A_0_F_A_1_E_aq_q_Cs_s_1, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[12])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {7, 0, 0, 7, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 500};
+    const __Pyx_PyCode_New_function_description descr = {7, 0, 0, 7, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 687};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_F, __pyx_mstate->__pyx_n_u_K, __pyx_mstate->__pyx_n_u_T, __pyx_mstate->__pyx_n_u_alpha, __pyx_mstate->__pyx_n_u_beta, __pyx_mstate->__pyx_n_u_rho, __pyx_mstate->__pyx_n_u_nu};
-    __pyx_mstate_global->__pyx_codeobj_tab[12] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_sabr_implied_vol, __pyx_mstate->__pyx_kp_b_iso88591_r_D_2S_Cr_D_6_A_q_Rq_t1Bb_2Q_AS, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[12])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[13] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_sabr_implied_vol, __pyx_mstate->__pyx_kp_b_iso88591_r_D_2S_Cr_D_6_A_q_Rq_t1Bb_2Q_AS, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[13])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {9, 0, 0, 9, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 549};
+    const __Pyx_PyCode_New_function_description descr = {9, 0, 0, 9, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 736};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_is_call_arr, __pyx_mstate->__pyx_n_u_is_american_arr, __pyx_mstate->__pyx_n_u_S_arr, __pyx_mstate->__pyx_n_u_K_arr, __pyx_mstate->__pyx_n_u_r_arr, __pyx_mstate->__pyx_n_u_q_arr, __pyx_mstate->__pyx_n_u_T_arr, __pyx_mstate->__pyx_n_u_sigma_arr, __pyx_mstate->__pyx_n_u_crr_steps};
-    __pyx_mstate_global->__pyx_codeobj_tab[13] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_price_options_batch, __pyx_mstate->__pyx_kp_b_iso88591_V1A_7b_as_6b_as_6b_as_5RvQc_r_6, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[13])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[14] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_price_options_batch, __pyx_mstate->__pyx_kp_b_iso88591_V1A_7b_as_6b_as_6b_as_5RvQc_r_6, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[14])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {6, 0, 0, 6, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 685};
+    const __Pyx_PyCode_New_function_description descr = {6, 0, 0, 6, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 872};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_F, __pyx_mstate->__pyx_n_u_K, __pyx_mstate->__pyx_n_u_df_r, __pyx_mstate->__pyx_n_u_T, __pyx_mstate->__pyx_n_u_sigma_n, __pyx_mstate->__pyx_n_u_is_call};
-    __pyx_mstate_global->__pyx_codeobj_tab[14] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_bachelier_price_greeks, __pyx_mstate->__pyx_kp_b_iso88591_q_3fCy_QRRXXYYZ_G7_q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[14])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[15] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_bachelier_price_greeks, __pyx_mstate->__pyx_kp_b_iso88591_q_3fCy_QRRXXYYZ_G7_q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[15])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {8, 0, 0, 8, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 700};
+    const __Pyx_PyCode_New_function_description descr = {8, 0, 0, 8, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 887};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_target_price, __pyx_mstate->__pyx_n_u_F, __pyx_mstate->__pyx_n_u_K, __pyx_mstate->__pyx_n_u_df_r, __pyx_mstate->__pyx_n_u_T, __pyx_mstate->__pyx_n_u_is_call, __pyx_mstate->__pyx_n_u_tol, __pyx_mstate->__pyx_n_u_max_iter};
-    __pyx_mstate_global->__pyx_codeobj_tab[15] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_implied_vol_bachelier, __pyx_mstate->__pyx_kp_b_iso88591_r_D_5_1_q_E_D_2S_T_BcQR_Cz_1_q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[15])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[16] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_implied_vol_bachelier, __pyx_mstate->__pyx_kp_b_iso88591_r_D_5_1_q_E_D_2S_T_BcQR_Cz_1_q, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[16])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {11, 0, 0, 11, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 752};
+    const __Pyx_PyCode_New_function_description descr = {11, 0, 0, 11, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 939};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_S, __pyx_mstate->__pyx_n_u_K, __pyx_mstate->__pyx_n_u_H, __pyx_mstate->__pyx_n_u_r, __pyx_mstate->__pyx_n_u_q, __pyx_mstate->__pyx_n_u_T, __pyx_mstate->__pyx_n_u_sigma, __pyx_mstate->__pyx_n_u_is_call, __pyx_mstate->__pyx_n_u_is_up, __pyx_mstate->__pyx_n_u_is_out, __pyx_mstate->__pyx_n_u_rebate};
-    __pyx_mstate_global->__pyx_codeobj_tab[16] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_barrier_bsm_price, __pyx_mstate->__pyx_kp_b_iso88591_r_D_6_D_2S_Cr_D_2S_q_s_1Bb_s_1B, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[16])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[17] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_barrier_bsm_price, __pyx_mstate->__pyx_kp_b_iso88591_r_D_6_D_2S_Cr_D_2S_q_s_1Bb_s_1B, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[17])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {8, 0, 0, 8, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 841};
+    const __Pyx_PyCode_New_function_description descr = {8, 0, 0, 8, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 1028};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_S, __pyx_mstate->__pyx_n_u_K, __pyx_mstate->__pyx_n_u_r, __pyx_mstate->__pyx_n_u_q, __pyx_mstate->__pyx_n_u_T, __pyx_mstate->__pyx_n_u_sigma, __pyx_mstate->__pyx_n_u_is_call, __pyx_mstate->__pyx_n_u_n_fixings};
-    __pyx_mstate_global->__pyx_codeobj_tab[17] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_asian_geometric_price, __pyx_mstate->__pyx_kp_b_iso88591_r_D_6_D_2S_Cr_A_t1Bb_8_ARr_A_Bb, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[17])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[18] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_asian_geometric_price, __pyx_mstate->__pyx_kp_b_iso88591_r_D_6_D_2S_Cr_A_t1Bb_8_ARr_A_Bb, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[18])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {8, 0, 0, 8, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 876};
+    const __Pyx_PyCode_New_function_description descr = {8, 0, 0, 8, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 1063};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_S, __pyx_mstate->__pyx_n_u_K, __pyx_mstate->__pyx_n_u_r, __pyx_mstate->__pyx_n_u_q, __pyx_mstate->__pyx_n_u_T, __pyx_mstate->__pyx_n_u_sigma, __pyx_mstate->__pyx_n_u_is_call, __pyx_mstate->__pyx_n_u_n_fixings};
-    __pyx_mstate_global->__pyx_codeobj_tab[18] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_asian_arithmetic_tw_price, __pyx_mstate->__pyx_kp_b_iso88591_r_D_6_D_2S_Cr_A_t1Bb_8_ARr_A_Bb_2, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[18])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[19] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_asian_arithmetic_tw_price, __pyx_mstate->__pyx_kp_b_iso88591_r_D_6_D_2S_Cr_A_t1Bb_8_ARr_A_Bb_2, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[19])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {7, 0, 0, 7, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 944};
+    const __Pyx_PyCode_New_function_description descr = {7, 0, 0, 7, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 1131};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_is_call_arr, __pyx_mstate->__pyx_n_u_F_arr, __pyx_mstate->__pyx_n_u_K_arr, __pyx_mstate->__pyx_n_u_r_arr, __pyx_mstate->__pyx_n_u_T_arr, __pyx_mstate->__pyx_n_u_sigma_arr, __pyx_mstate->__pyx_n_u_scale_arr};
-    __pyx_mstate_global->__pyx_codeobj_tab[19] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_price_black76_batch, __pyx_mstate->__pyx_kp_b_iso88591_V1A_7b_as_6b_as_6b_as_5RvQc_r_6_2, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[19])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[20] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_price_black76_batch, __pyx_mstate->__pyx_kp_b_iso88591_V1A_7b_as_6b_as_6b_as_5RvQc_r_6_2, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[20])) goto bad;
+  }
+  {
+    const __Pyx_PyCode_New_function_description descr = {9, 0, 0, 9, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 1179};
+    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_S, __pyx_mstate->__pyx_n_u_K, __pyx_mstate->__pyx_n_u_r, __pyx_mstate->__pyx_n_u_q, __pyx_mstate->__pyx_n_u_T, __pyx_mstate->__pyx_n_u_sigma, __pyx_mstate->__pyx_n_u_kappa3, __pyx_mstate->__pyx_n_u_kappa4, __pyx_mstate->__pyx_n_u_is_call};
+    __pyx_mstate_global->__pyx_codeobj_tab[21] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_corrado_su_price_greeks, __pyx_mstate->__pyx_kp_b_iso88591_m_VW_T_Rq_Q_Q_T_Ba_Cs_S_xxq_2Rt, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[21])) goto bad;
+  }
+  {
+    const __Pyx_PyCode_New_function_description descr = {11, 0, 0, 11, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 1223};
+    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_S, __pyx_mstate->__pyx_n_u_K, __pyx_mstate->__pyx_n_u_H, __pyx_mstate->__pyx_n_u_r, __pyx_mstate->__pyx_n_u_q, __pyx_mstate->__pyx_n_u_T, __pyx_mstate->__pyx_n_u_sigma, __pyx_mstate->__pyx_n_u_is_call, __pyx_mstate->__pyx_n_u_is_up, __pyx_mstate->__pyx_n_u_is_out, __pyx_mstate->__pyx_n_u_rebate};
+    __pyx_mstate_global->__pyx_codeobj_tab[22] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_barrier_bsm_price_greeks, __pyx_mstate->__pyx_kp_b_iso88591_m_VW_t1Bb_T_r_E_9E_U_A_Q_Q_T_Ba, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[22])) goto bad;
+  }
+  {
+    const __Pyx_PyCode_New_function_description descr = {9, 0, 0, 9, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 1268};
+    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_S, __pyx_mstate->__pyx_n_u_K, __pyx_mstate->__pyx_n_u_r, __pyx_mstate->__pyx_n_u_q, __pyx_mstate->__pyx_n_u_T, __pyx_mstate->__pyx_n_u_sigma, __pyx_mstate->__pyx_n_u_is_call, __pyx_mstate->__pyx_n_u_n_fixings, __pyx_mstate->__pyx_n_u_is_geometric};
+    __pyx_mstate_global->__pyx_codeobj_tab[23] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_src_bz_pricing_core_options_core, __pyx_mstate->__pyx_n_u_asian_price_greeks, __pyx_mstate->__pyx_kp_b_iso88591_m_VW_T_Rq_Q_Q_T_Ba_1_S_3c_r_4t6, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[23])) goto bad;
   }
   Py_DECREF(tuple_dedup_map);
   return 0;

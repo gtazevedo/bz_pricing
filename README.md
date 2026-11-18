@@ -44,12 +44,12 @@ O pacote estrutura-se em três camadas desacopladas que separam a ingestão de d
 2. **Taxas Regulatórias Derivadas (`BUS/252`):** Taxa Básica Financeira (`TFP` / `TBF_PRE`), Taxa Referencial (`TP` / `TR_PRE`) com aplicação do redutor paramétrico por faixas e Curva DI x TR (`TR`);
 3. **Estruturas de Inflação (`BUS/252`):** Cupom Sujo de IPCA (`DIC`), Cupom Sujo de IGP-M (`DIM`) e Cupom Limpo de IPCA (`DPL` sobre contratos futuros `DAP`);
 4. **Cupons Cambiais, Spreads e Moedas a Termo (`BUS/252` e `ACT/360`):** Cupom Cambial Sujo (`DOL` sobre futuros `DDI`), Cupom Cambial Limpo (`DOC` e `DCL`), Cupons Cruzados de Euro (`EUC`) e Iene (`YCL`), Spreads de Taxas Offshore (`SDE`, `SGP`, `SMX`, `SYD`) e Estruturas a Termo de Câmbio (`PTX`, `EUR` e `JPY`);
-5. **Curvas Internacionais Offshore (`ACT/360` e `ACT/365`):** Curvas a termo de futuros de taxas *overnight* (`SFR`, `EST`, `TIE`), curvas zero cupom (`ZUS`, `ZEU`, `ZMX`) e *bootstrapping* institucional para `SOFR_OIS`, `ESTR_OIS`, `SONIA_OIS` e `UST_PAR` via `MonotoneConvexInterpolator` (Tesouro EUA), `LogLinearDiscountInterpolator` (CME/LCH), `LogCubicDiscountInterpolator`, `NelsonSiegelCurve` e `SvenssonCurve` (Fed/BCE);
+5. **Curvas Internacionais Offshore (`ACT/360` e `ACT/365`):** Curvas a termo de futuros de taxas *overnight* (`SFR`, `EST`, `TIE`), curvas zero cupom (`ZUS`, `ZEU`, `ZMX`) e *bootstrapping* em anos civis para `SOFR_OIS`, `ESTR_OIS`, `SONIA_OIS`, `TONA_OIS` e `UST_PAR` via `MonotoneConvexInterpolator` (Tesouro EUA), `LogLinearDiscountInterpolator` (CME/LCH), `LogCubicDiscountInterpolator` (ambos com cache nativo em C e busca binária $O(\log n)$), `NelsonSiegelCurve` e `SvenssonCurve` (Fed/BCE);
 6. **Renda Variável e Convenience Yield (`BUS/252`):** Estruturas de preços futuros de índices (`INP` para Ibovespa, `BRP` para IBrX-50, `SML`, `MBR`, `VIX`), futuros de ações individuais e curvas de custo de carrego (`CYI`, `CYM`, `CYX`);
-7. **Títulos Públicos Federais (`TPF`) e Cálculo de VNA a partir do VNE:** Precificação exata (PU, cotação em base 100, VNA calculado a partir do VNE via `calculate_vna_from_vne`, `calculate_ntnb_vna`, `calculate_lft_vna` e `calculate_ntnc_vna`, tanto *online* pelo BCB SGS/Focus quanto *offline*), suporte a fluxos customizados (`custom_cashflows`) e métricas de sensibilidade (*Duration* de Macaulay, *Duration* Modificada, DV01 e Convexidade) para **LTN**, **NTN-F**, **NTN-B**, **NTN-B Principal**, **NTN-C** e **LFT**;
+7. **Títulos Públicos Federais (`TPF`) e Renda Fixa Offshore (`offshore_bonds`):** Precificação determinística de **LTN**, **NTN-F**, **NTN-B**, **NTN-B Principal**, **NTN-C** e **LFT** com VNA calculado a partir do VNE (`calculate_vna_from_vne`, `calculate_ntnb_vna`, `calculate_lft_vna`, `calculate_ntnc_vna`), `TPFBuilder(..., real_discount=True)` e fluxos customizados (`custom_cashflows`); além de títulos norte-americanos e corporativos internacionais (`USTreasuryBill`, `USTreasuryNoteBond`, `TIPS`, `OffshoreBond`) com `Z-Spread`, `G-Spread`, *hazard rate* e operação integralmente *offline*;
 8. **Crédito Privado (`Debenture`, `CRI`, `CRA`, `CotaFIDC`, `LetraFinanceira`, `HazardRateCurve`):** Extração estruturada no SND e ANBIMA, construção por cronograma (`from_schedule`) ou fluxos customizados (`from_cashflows` / `custom_cashflows`), PU Par, PU a mercado, *Z-Spread*, *gross-up* tributário, YTM, TIR, modelagem de *hazard rate* (`risky_present_value`, `implied_hazard_rate`, `credit_dv01`) e precificação em lote (`price_credit_portfolio`);
-9. **Derivativos Lineares (`DI1Future`, `DDIFuture`, `DAPFuture`, `DOLFuture`, `INDFuture`, `SwapDIxPRE`, `SwapDIxIPCA`, `NDFContract`):** Precificação de futuros de juros, cupom cambial, cupom de IPCA, dólar, Ibovespa, *swaps* e NDFs com cálculo de PU, taxa implícita, ajuste financeiro, DV01 e avaliação em lote (`price_di1_portfolio`);
-10. **Opções e Superfícies de Volatilidade (`EquityOption`, `FXOption`, `IDIOption`, `DI1Option`, `CorradoSuOption`, `VolatilitySurface`):** Modelos Black-Scholes-Merton, Garman-Kohlhagen (com ajuste de *fixing*), Black-76 para opções de IDI e DI1, árvore binomial CRR em Cython para exercício americano (com gregas consistentes), Corrado & Su (Gram-Charlier), parametrizações `SVISlice`, `SABRSlice`, mistura de lognormais com estado de *default* (`LognormalMixtureSlice` e `BloombergMixtureSurface`), desamericanização/inferência de dividendos com filtro de Kalman (`deamericanize_and_infer_forward_bbg`, `KalmanDividendFilter`, `DividendCurveBBG`), auditoria de não arbitragem, densidade de Breeden-Litzenberger, volatilidade local de Dupire e leitura de séries reais B3 (`B3DataLoader.load_options`).
+9. **Derivativos Lineares Onshore e Offshore (`DI1Future`, `DDIFuture`, `DAPFuture`, `DOLFuture`, `INDFuture`, `SwapDIxPRE`, `SwapDIxIPCA`, `NDFContract`, `OISSwap`, `SOFRFuture`, `CrossCurrencySwap`):** Precificação de futuros de juros, cupom cambial, cupom de IPCA, dólar, Ibovespa, futuros `SOFR` (`SR3` e `SR1`), *swaps* domésticos e *OIS*, *cross-currency swaps* (`BRL` x `USD`) e NDFs com cálculo de PU, taxa par, ajuste financeiro, DV01 e avaliação em lote (`price_di1_portfolio`);
+10. **Opções e Superfícies de Volatilidade (`EquityOption`, `FXOption`, `IDIOption`, `DI1Option`, `CorradoSuOption`, `Swaption`, `CapFloor`, `BarrierOption`, `AsianOption`, `VolatilitySurface`):** Modelos Black-Scholes-Merton, Garman-Kohlhagen (com ajuste de *fixing* e convenção `ACT/360`), Black-76 e Bachelier para opções de IDI, DI1, `Swaption` e `CapFloor` multiconvenção (`BUS/252`, `ACT/360`, `ACT/365`, `30/360`), árvore binomial CRR em Cython para exercício americano (incluindo `discrete_dividends` e `prop_dividends`), Corrado & Su, barreiras contínuas/discretas e asiáticas com gregas completas (`risk_metrics` e `price_options_portfolio`), parametrizações `SVISlice`, `SABRSlice`, mistura de lognormais com estado de *default* (`LognormalMixtureSlice` e `BloombergMixtureSurface`), desamericanização/inferência de dividendos com filtro de Kalman (`deamericanize_and_infer_forward_bbg`, `KalmanDividendFilter`, `DividendCurveBBG`), auditoria de não arbitragem, densidade de Breeden-Litzenberger e volatilidade local de Dupire.
 
 ---
 
@@ -117,23 +117,27 @@ bz_pricing/
 │   │   ├── bonds.pxd / .pyx             # Motor Cython de fluxos de caixa, PU, YTM e métricas de risco de TPF
 │   │   ├── credit_core.pyx              # Motor Cython para crédito privado, gross-up e Z-Spread
 │   │   ├── derivatives_core.pyx         # Motor Cython para futuros, swaps e NDF
-│   │   ├── options_core.pyx             # Motor Cython para BSM, Black-76, CRR americano, Corrado-Su, SVI e SABR
-│   │   ├── calendars.py                 # Integração com calendários de dias úteis (bizdays)
+│   │   ├── options_core.pyx             # Motor Cython para BSM, Black-76, CRR (discreto/proporcional), Corrado-Su, barreiras, asiáticas, SVI e SABR
+│   │   ├── _anbima_holidays.py          # Tabelas embutidas em memória para calendários B3, US, TARGET e UK
+│   │   ├── calendars.py                 # Integração com calendários de dias úteis em modo offline/online (bizdays)
 │   │   └── vna_engine.py                # Cálculo e projeção de VNA a partir do VNE (IPCA, IGP-M, Selic, CDI)
 │   │
 │   ├── curves/                          # Camada de Orquestração e Construção de Curvas
 │   │   ├── configs.py                   # Especificações de interpolação, arredondamento e convenções por curva
+│   │   ├── offshore.py                  # Bootstrapping de curvas OIS e Treasuries (Monotone Convex, Log-Linear, Log-Cubic, Svensson)
 │   │   ├── builder.py                   # Construtor algébrico (B3CurveBuilder, CrossCouponCurve, CurrencyForwardCurve)
 │   │   ├── manager.py                   # Fachada central de resolução de insumos (CurveManager)
 │   │   └── exceptions.py                # Tratamento estruturado de exceções (DataUnavailableError)
 │   │
 │   ├── instruments/                     # Instrumentos de Renda Fixa, Derivativos e Opções
 │   │   ├── tpf.py                       # Precificação de LTN, NTN-F, NTN-B, NTN-B Principal, NTN-C e LFT (com VNA e custom_cashflows)
+│   │   ├── offshore_bonds.py            # Títulos dos EUA e globais offline (USTreasuryBill, USTreasuryNoteBond, TIPS, OffshoreBond)
 │   │   ├── credit.py                    # Debenture, CRI, CRA, CotaFIDC, LetraFinanceira, Z-Spread, YTM/TIR e fluxos customizados
-│   │   ├── derivatives.py               # Futuros (DI1, DDI, DAP, DOL, IND), Swaps (DIxPré, DIxIPCA) e NDF
-│   │   └── options.py                   # EquityOption, FXOption, IDIOption, DI1Option, CorradoSuOption e lotes
+│   │   ├── derivatives.py               # Futuros (DI1, DDI, DAP, DOL, IND, SOFR SR3/SR1), Swaps (DIxPré, DIxIPCA, OIS, CCS) e NDF
+│   │   └── options.py                   # EquityOption (com dividendos), FXOption, IDIOption, DI1Option, CorradoSu, Swaption, CapFloor, Barrier, Asian
 │   │
 │   ├── volatility/                      # Superfícies de Volatilidade Implícita e Validação
+│   │   ├── bloomberg_surface.py         # Modelo Bloomberg (desamericanização, Kalman, mistura de lognormais e superfície 2D)
 │   │   └── surface.py                   # SVISlice, SABRSlice, VolatilitySurface, Breeden-Litzenberger, Dupire e OOS
 │   │
 │   ├── bonds/                           # Construtores auxiliares de carteiras de títulos
@@ -155,17 +159,18 @@ bz_pricing/
 │   ├── validacao_derivativos_lineares.ipynb # Validação de futuros, swaps e NDF frente aos manuais B3
 │   └── validacao_opcoes_superficies.ipynb   # Validação de opções, SVI/SABR, Breeden-Litzenberger, Dupire e DOLZ26
 │
-└── tests/                               # Suíte Automatizada de Testes (80 testes)
-    ├── test_interpolators.py            # Testes dos operadores de interpolação, busca binária e casos de borda
-    ├── test_curves.py                   # Testes de aderência por vértices e construção 100% offline por componentes
-    ├── test_bonds.py                    # Testes de TPFs, cálculo de VNA a partir do VNE e fluxos customizados
+└── tests/                               # Suíte Automatizada de Testes (Pytest)
+    ├── test_interpolators.py            # Testes dos operadores de interpolação, cache de splines, busca binária e casos de borda
+    ├── test_curves.py                   # Testes de aderência por vértices, curvas offshore e construção 100% offline por componentes
+    ├── test_bonds.py                    # Testes de TPFs, títulos offshore (UST, TIPS, OffshoreBond), VNA e fluxos customizados
     ├── test_debentures.py               # Testes de extração SND e cálculo de debêntures (IPCA, CDI e Pré)
     ├── test_cricra.py                   # Testes de CRI e CRA
     ├── test_fidc_lf.py                  # Testes de FIDC e Letras Financeiras
-    ├── test_zspread.py                  # Testes de Z-Spread, gross-up, YTM, TIR e fluxos customizados
+    ├── test_zspread.py                  # Testes de Z-Spread, gross-up, YTM, TIR, hazard rate e fluxos customizados
     ├── test_anbima_data.py              # Testes de clientes e cache ANBIMA Data
-    ├── test_derivatives.py              # Testes de futuros, swaps e NDF
-    └── test_options_vol.py              # Testes de opções, superfícies SVI/SABR, B3 loader, Breeden-Litzenberger e Dupire
+    ├── test_derivatives.py              # Testes de futuros (DI1, SOFR), swaps (DIxPré, DIxIPCA, OIS, CCS) e NDF
+    ├── test_options_vol.py              # Testes de opções, dividendos discretos/proporcionais, exóticas, SVI/SABR, Bloomberg e Dupire
+    └── test_docs_examples.py            # Execução determinística offline de todos os exemplos da documentação
 ```
 
 ---
@@ -382,6 +387,53 @@ ust = bootstrap_treasury_curve([182, 365, 730, 1825], [0.0430, 0.0422, 0.0410, 0
 sl_mix = LognormalMixtureSlice([0.57, 0.38], [0.84, 1.3715789473684212], [0.35, 0.25], forward=100.0, T=1.0)
 surf_mix = BloombergMixtureSurface({252: sl_mix})
 print(f"SOFR 1Y: {sofr.get_rate(365.0)*100:.4f}% | UST 5Y: {ust.get_rate(1825.0)*100:.4f}% | Mix Vol(K=90): {surf_mix.get_vol(252, 90.0)*100:.2f}%")
+```
+
+### 5.7 Renda Fixa Offshore, Swaps OIS/Cross-Currency e Opções com Dividendos e Gregas
+
+```python
+import datetime
+import numpy as np
+from bz_pricing.core.curves import FlatCurve, SimpleCurve
+from bz_pricing.core.interpolators import LogLinearDiscountInterpolator
+from bz_pricing.curves import bootstrap_ois_curve
+from bz_pricing.instruments import (
+    BarrierOption,
+    CrossCurrencySwap,
+    EquityOption,
+    OISSwap,
+    OffshoreBond,
+    SOFRFuture,
+    TIPS,
+    USTreasuryNoteBond,
+    price_options_portfolio,
+)
+
+base_date = datetime.date(2026, 10, 30)
+sofr_crv = bootstrap_ois_curve([90, 180, 365, 730, 1825], [0.0432, 0.0425, 0.0415, 0.0408, 0.0412], convention="ACT/360")
+
+tnote = USTreasuryNoteBond("2031-05-15", coupon_rate=0.04125)
+tips = TIPS("2031-01-15", coupon_rate=0.0175, issue_cpi=305.0)
+eurobond = OffshoreBond("2031-10-30", coupon_rate=0.0550, day_count="30/360")
+z_sprd_bps = eurobond.z_spread(base_date, target_price=eurobond.clean_price(base_date, ytm=0.0575), zero_curve=sofr_crv) * 1e4
+
+ois = OISSwap(10_000_000.0, base_date, "2028-10-30", fixed_rate=0.0410)
+sr3 = SOFRFuture("SR3M27", "2027-06-16", "2027-09-15", contract_type="SR3")
+ccs = CrossCurrencySwap(1_000_000.0, base_date, "2028-10-30", initial_fx_spot=5.65)
+cupom_crv = SimpleCurve(np.array([30.0, 1825.0]), np.array([0.05, 0.05]), LogLinearDiscountInterpolator(0, 1, 360.0, "simple"))
+par_basis = ccs.par_basis_spread(base_date, fx_spot=5.65, pre_curve=FlatCurve(0.138), foreign_discount_curve=cupom_crv, foreign_forward_curve=sofr_crv)
+
+opt_div = EquityOption("PETR4", "2027-04-30", strike=38.0, option_type="PUT", exercise="AMERICAN", discrete_dividends={"2026-12-15": 1.60})
+bar = BarrierOption("VALE-KO", "2027-04-30", strike=40.0, barrier=32.0, barrier_type="down-and-out", monitoring_steps=52)
+df_g = price_options_portfolio(
+    [
+        {"instrument": opt_div, "spot": 40.0, "pre_rate_or_curve": 0.12, "vol": 0.30, "quantity": 100},
+        {"instrument": bar, "spot": 40.0, "pre_rate_or_curve": 0.12, "vol": 0.30, "quantity": 50},
+    ],
+    base_date=base_date,
+)
+print(f"T-Note Clean: {tnote.clean_price(base_date, 0.042):.4f} | TIPS: {tips.adjusted_clean_price(base_date, 0.019, 318.5):.4f} | Z-Sprd: {z_sprd_bps:.1f} bps | OIS: {ois.par_rate(base_date, sofr_crv)*100:.3f}% | SR3: {sr3.fair_price(base_date, sofr_crv):.3f} | CCS: {par_basis*1e4:.1f} bps")
+print(df_g[["ticker", "price", "delta", "gamma", "vega_1pct"]])
 ```
 
 ---

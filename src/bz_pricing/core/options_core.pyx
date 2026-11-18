@@ -5,7 +5,7 @@
 
 import numpy as np
 cimport numpy as np
-from libc.math cimport exp, log, sqrt, erf, fabs, pow, fmax, NAN
+from libc.math cimport exp, log, sqrt, erf, fabs, pow, fmax, fmin, NAN
 from libc.stdlib cimport malloc, free
 
 cdef double INV_SQRT_2PI = 0.3989422804014327
@@ -346,6 +346,193 @@ cpdef tuple crr_american_price_greeks(
         else:
             vega = 0.0
             rho = 0.0
+
+    return (price, delta, gamma, vega, theta, rho)
+
+
+cdef double _crr_american_discrete_core(
+    double S,
+    double K,
+    double r,
+    double q,
+    double T,
+    double sigma,
+    bint is_call,
+    int steps,
+    double *div_t,
+    double *div_a,
+    int n_div,
+    double *prop_t,
+    double *prop_y,
+    int n_prop,
+) noexcept nogil:
+    cdef int k, j, i
+    cdef double d_tmp, g_tmp, t_tmp
+    if n_div == 0 and n_prop == 0:
+        return _crr_american_core(S, K, r, q, T, sigma, is_call, steps, &d_tmp, &g_tmp, &t_tmp)
+    if T <= 0.0 or sigma <= 0.0 or steps <= 0 or S <= 0.0 or K <= 0.0:
+        return fmax(S - K, 0.0) if is_call else fmax(K - S, 0.0)
+
+    cdef double pv_div0 = 0.0
+    for k in range(n_div):
+        if 0.0 < div_t[k] <= T + 1e-12 and div_a[k] > 0.0:
+            pv_div0 += div_a[k] * exp(-r * div_t[k])
+
+    cdef double S_star = fmax(1e-8, S - pv_div0)
+    cdef double dt = T / (<double>steps)
+    cdef double u = exp(sigma * sqrt(dt))
+    cdef double d = 1.0 / u
+    cdef double d_sq = d * d
+    cdef double growth = exp((r - q) * dt)
+    cdef double disc = exp(-r * dt)
+    cdef double p = (growth - d) / (u - d)
+    if p < 0.0 or p > 1.0:
+        return NAN
+    cdef double one_minus_p = 1.0 - p
+
+    cdef double *values = <double *>malloc((steps + 1) * sizeof(double))
+    cdef double *step_pv = <double *>malloc((steps + 1) * sizeof(double))
+    cdef double *step_prop = <double *>malloc((steps + 1) * sizeof(double))
+    if values == NULL or step_pv == NULL or step_prop == NULL:
+        free(values); free(step_pv); free(step_prop)
+        return NAN
+
+    cdef double t_j, pv_j, pr_j, y_clip
+    for j in range(steps + 1):
+        t_j = (<double>j) * dt
+        pv_j = 0.0
+        for k in range(n_div):
+            if div_t[k] > t_j + 1e-12 and div_t[k] <= T + 1e-12 and div_a[k] > 0.0:
+                pv_j += div_a[k] * exp(-r * (div_t[k] - t_j))
+        pr_j = 1.0
+        for k in range(n_prop):
+            if 0.0 < prop_t[k] <= t_j + 1e-12 and prop_y[k] > 0.0:
+                y_clip = prop_y[k] if prop_y[k] < 0.999 else 0.999
+                pr_j *= (1.0 - y_clip)
+        step_pv[j] = pv_j
+        step_prop[j] = pr_j
+
+    cdef double spot_i = S_star * step_prop[steps] * pow(u, steps)
+    cdef double s_node
+    for i in range(steps + 1):
+        s_node = spot_i + step_pv[steps]
+        values[i] = fmax(s_node - K, 0.0) if is_call else fmax(K - s_node, 0.0)
+        spot_i *= d_sq
+
+    cdef double spot_row_base = S_star * pow(u, steps - 1)
+    cdef double hold, exercise
+    for j in range(steps - 1, -1, -1):
+        spot_i = spot_row_base * step_prop[j]
+        for i in range(j + 1):
+            hold = disc * (p * values[i] + one_minus_p * values[i + 1])
+            s_node = spot_i + step_pv[j]
+            exercise = (s_node - K) if is_call else (K - s_node)
+            values[i] = hold if hold > exercise else exercise
+            spot_i *= d_sq
+        spot_row_base *= d
+
+    cdef double val = values[0]
+    free(values)
+    free(step_pv)
+    free(step_prop)
+    return val
+
+
+cdef double _crr_disc_smoothed(
+    double S,
+    double K,
+    double r,
+    double q,
+    double T,
+    double sigma,
+    bint is_call,
+    int steps,
+    double *div_t,
+    double *div_a,
+    int n_div,
+    double *prop_t,
+    double *prop_y,
+    int n_prop,
+) noexcept nogil:
+    cdef double v1 = _crr_american_discrete_core(
+        S, K, r, q, T, sigma, is_call, steps, div_t, div_a, n_div, prop_t, prop_y, n_prop
+    )
+    if steps >= 2:
+        return 0.5 * (
+            v1 + _crr_american_discrete_core(
+                S, K, r, q, T, sigma, is_call, steps + 1, div_t, div_a, n_div, prop_t, prop_y, n_prop
+            )
+        )
+    return v1
+
+
+cpdef tuple crr_american_discrete_div_price_greeks(
+    double S,
+    double K,
+    double r,
+    double q,
+    double T,
+    double sigma,
+    bint is_call,
+    int steps,
+    double[:] div_times,
+    double[:] div_amounts,
+    double[:] prop_div_times,
+    double[:] prop_div_yields,
+):
+    """Árvore CRR para opções americanas com dividendos discretos em dinheiro e/ou proporcionais."""
+    cdef int n_div = <int>div_times.shape[0]
+    cdef int n_prop = <int>prop_div_times.shape[0]
+    cdef double *dt_ptr = &div_times[0] if n_div > 0 else NULL
+    cdef double *da_ptr = &div_amounts[0] if n_div > 0 else NULL
+    cdef double *pt_ptr = &prop_div_times[0] if n_prop > 0 else NULL
+    cdef double *py_ptr = &prop_div_yields[0] if n_prop > 0 else NULL
+
+    cdef double price = 0.0, delta = 0.0, gamma = 0.0, vega = 0.0, theta = 0.0, rho = 0.0
+    cdef double p_s_up, p_s_dn, p_v_up, p_v_dn, p_r_up, p_r_dn, p_t_dn
+    cdef double dS = fmax(1e-3, S * fmax(0.01, 0.5 * sigma * sqrt(fmax(1e-6, T) / fmax(4.0, <double>steps))))
+    cdef double dv = 1e-4
+    cdef double dr = 1e-4
+    cdef double dt_th = fmin(1.0 / 252.0, 0.1 * T)
+    cdef int k
+    cdef double *dt_sh = NULL
+    cdef double *pt_sh = NULL
+
+    with nogil:
+        price = _crr_disc_smoothed(S, K, r, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+        if T > 0.0 and sigma > dv and S > dS and K > 0.0:
+            p_s_up = _crr_disc_smoothed(S + dS, K, r, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+            p_s_dn = _crr_disc_smoothed(S - dS, K, r, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+            delta = (p_s_up - p_s_dn) / (2.0 * dS)
+            gamma = (p_s_up - 2.0 * price + p_s_dn) / (dS * dS)
+
+            p_v_up = _crr_disc_smoothed(S, K, r, q, T, sigma + dv, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+            p_v_dn = _crr_disc_smoothed(S, K, r, q, T, sigma - dv, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+            vega = (p_v_up - p_v_dn) / (2.0 * dv)
+
+            p_r_up = _crr_disc_smoothed(S, K, r + dr, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+            p_r_dn = _crr_disc_smoothed(S, K, r - dr, q, T, sigma, is_call, steps, dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop)
+            rho = (p_r_up - p_r_dn) / (2.0 * dr)
+
+            if T > dt_th + 1e-8:
+                if n_div > 0:
+                    dt_sh = <double *>malloc(n_div * sizeof(double))
+                    for k in range(n_div):
+                        dt_sh[k] = dt_ptr[k] - dt_th
+                if n_prop > 0:
+                    pt_sh = <double *>malloc(n_prop * sizeof(double))
+                    for k in range(n_prop):
+                        pt_sh[k] = pt_ptr[k] - dt_th
+                p_t_dn = _crr_disc_smoothed(
+                    S, K, r, q, T - dt_th, sigma, is_call, steps, dt_sh, da_ptr, n_div, pt_sh, py_ptr, n_prop
+                )
+                theta = (p_t_dn - price) / dt_th
+                if dt_sh != NULL:
+                    free(dt_sh)
+                if pt_sh != NULL:
+                    free(pt_sh)
+        else:
+            delta = (1.0 if S > K else 0.0) if is_call else (-1.0 if K > S else 0.0)
 
     return (price, delta, gamma, vega, theta, rho)
 
@@ -987,4 +1174,145 @@ cpdef tuple price_black76_batch(
             rv[i] = rho * sc
 
     return (out_price, out_delta, out_gamma, out_vega, out_theta, out_rho)
+
+
+cpdef tuple corrado_su_price_greeks(
+    double S,
+    double K,
+    double r,
+    double q,
+    double T,
+    double sigma,
+    double kappa3,
+    double kappa4,
+    bint is_call=True,
+):
+    """Preço e gregas numéricas centrais de Corrado & Su (1996) em Cython (`nogil`)."""
+    cdef double price = 0.0, delta = 0.0, gamma = 0.0, vega = 0.0, theta = 0.0, rho = 0.0
+    cdef double dS = fmax(1e-5, 1e-4 * S)
+    cdef double dv = 1e-4
+    cdef double dr = 1e-4
+    cdef double dT = fmin(1e-4, 0.1 * T)
+    cdef double p_su, p_sd, p_vu, p_vd, p_ru, p_rd, p_td
+
+    with nogil:
+        price = corrado_su_price(S, K, r, q, T, sigma, kappa3, kappa4, is_call)
+        if T > 0.0 and sigma > dv and S > dS and K > 0.0:
+            p_su = corrado_su_price(S + dS, K, r, q, T, sigma, kappa3, kappa4, is_call)
+            p_sd = corrado_su_price(S - dS, K, r, q, T, sigma, kappa3, kappa4, is_call)
+            delta = (p_su - p_sd) / (2.0 * dS)
+            gamma = (p_su - 2.0 * price + p_sd) / (dS * dS)
+
+            p_vu = corrado_su_price(S, K, r, q, T, sigma + dv, kappa3, kappa4, is_call)
+            p_vd = corrado_su_price(S, K, r, q, T, sigma - dv, kappa3, kappa4, is_call)
+            vega = (p_vu - p_vd) / (2.0 * dv)
+
+            p_ru = corrado_su_price(S, K, r + dr, q, T, sigma, kappa3, kappa4, is_call)
+            p_rd = corrado_su_price(S, K, r - dr, q, T, sigma, kappa3, kappa4, is_call)
+            rho = (p_ru - p_rd) / (2.0 * dr)
+
+            if T > dT:
+                p_td = corrado_su_price(S, K, r, q, T - dT, sigma, kappa3, kappa4, is_call)
+                theta = (p_td - price) / dT
+        else:
+            delta = (1.0 if S > K else 0.0) if is_call else (-1.0 if K > S else 0.0)
+
+    return (price, delta, gamma, vega, theta, rho)
+
+
+cpdef tuple barrier_bsm_price_greeks(
+    double S,
+    double K,
+    double H,
+    double r,
+    double q,
+    double T,
+    double sigma,
+    bint is_call=True,
+    bint is_up=False,
+    bint is_out=True,
+    double rebate=0.0,
+):
+    """Preço e gregas numéricas centrais de opções com barreira (Reiner-Rubinstein) em Cython."""
+    cdef double price = 0.0, delta = 0.0, gamma = 0.0, vega = 0.0, theta = 0.0, rho = 0.0
+    cdef double dist = fabs(S - H)
+    cdef double dS = fmin(1e-4 * S, 0.25 * dist) if dist > 1e-6 else 1e-4 * S
+    cdef double dv = 1e-4
+    cdef double dr = 1e-4
+    cdef double dT = fmin(1e-4, 0.1 * T)
+    cdef double p_su, p_sd, p_vu, p_vd, p_ru, p_rd, p_td
+
+    with nogil:
+        price = barrier_bsm_price(S, K, H, r, q, T, sigma, is_call, is_up, is_out, rebate)
+        if T > 0.0 and sigma > dv and S > dS and K > 0.0 and dist > 1e-6:
+            p_su = barrier_bsm_price(S + dS, K, H, r, q, T, sigma, is_call, is_up, is_out, rebate)
+            p_sd = barrier_bsm_price(S - dS, K, H, r, q, T, sigma, is_call, is_up, is_out, rebate)
+            delta = (p_su - p_sd) / (2.0 * dS)
+            gamma = (p_su - 2.0 * price + p_sd) / (dS * dS)
+
+            p_vu = barrier_bsm_price(S, K, H, r, q, T, sigma + dv, is_call, is_up, is_out, rebate)
+            p_vd = barrier_bsm_price(S, K, H, r, q, T, sigma - dv, is_call, is_up, is_out, rebate)
+            vega = (p_vu - p_vd) / (2.0 * dv)
+
+            p_ru = barrier_bsm_price(S, K, H, r + dr, q, T, sigma, is_call, is_up, is_out, rebate)
+            p_rd = barrier_bsm_price(S, K, H, r - dr, q, T, sigma, is_call, is_up, is_out, rebate)
+            rho = (p_ru - p_rd) / (2.0 * dr)
+
+            if T > dT:
+                p_td = barrier_bsm_price(S, K, H, r, q, T - dT, sigma, is_call, is_up, is_out, rebate)
+                theta = (p_td - price) / dT
+
+    return (price, delta, gamma, vega, theta, rho)
+
+
+cpdef tuple asian_price_greeks(
+    double S,
+    double K,
+    double r,
+    double q,
+    double T,
+    double sigma,
+    bint is_call=True,
+    int n_fixings=0,
+    bint is_geometric=False,
+):
+    """Preço e gregas centrais em Cython para opções asiáticas geométricas e aritméticas."""
+    cdef double price = 0.0, delta = 0.0, gamma = 0.0, vega = 0.0, theta = 0.0, rho = 0.0
+    cdef double dS = fmax(1e-5, 1e-4 * S)
+    cdef double dv = 1e-4
+    cdef double dr = 1e-4
+    cdef double dT = fmin(1e-4, 0.1 * T)
+    cdef double p_su, p_sd, p_vu, p_vd, p_ru, p_rd, p_td
+
+    with nogil:
+        if is_geometric:
+            price = asian_geometric_price(S, K, r, q, T, sigma, is_call, n_fixings)
+            if T > 0.0 and sigma > dv and S > dS and K > 0.0:
+                p_su = asian_geometric_price(S + dS, K, r, q, T, sigma, is_call, n_fixings)
+                p_sd = asian_geometric_price(S - dS, K, r, q, T, sigma, is_call, n_fixings)
+                p_vu = asian_geometric_price(S, K, r, q, T, sigma + dv, is_call, n_fixings)
+                p_vd = asian_geometric_price(S, K, r, q, T, sigma - dv, is_call, n_fixings)
+                p_ru = asian_geometric_price(S, K, r + dr, q, T, sigma, is_call, n_fixings)
+                p_rd = asian_geometric_price(S, K, r - dr, q, T, sigma, is_call, n_fixings)
+                p_td = asian_geometric_price(S, K, r, q, T - dT, sigma, is_call, n_fixings) if T > dT else price
+        else:
+            price = asian_arithmetic_tw_price(S, K, r, q, T, sigma, is_call, n_fixings)
+            if T > 0.0 and sigma > dv and S > dS and K > 0.0:
+                p_su = asian_arithmetic_tw_price(S + dS, K, r, q, T, sigma, is_call, n_fixings)
+                p_sd = asian_arithmetic_tw_price(S - dS, K, r, q, T, sigma, is_call, n_fixings)
+                p_vu = asian_arithmetic_tw_price(S, K, r, q, T, sigma + dv, is_call, n_fixings)
+                p_vd = asian_arithmetic_tw_price(S, K, r, q, T, sigma - dv, is_call, n_fixings)
+                p_ru = asian_arithmetic_tw_price(S, K, r + dr, q, T, sigma, is_call, n_fixings)
+                p_rd = asian_arithmetic_tw_price(S, K, r - dr, q, T, sigma, is_call, n_fixings)
+                p_td = asian_arithmetic_tw_price(S, K, r, q, T - dT, sigma, is_call, n_fixings) if T > dT else price
+
+        if T > 0.0 and sigma > dv and S > dS and K > 0.0:
+            delta = (p_su - p_sd) / (2.0 * dS)
+            gamma = (p_su - 2.0 * price + p_sd) / (dS * dS)
+            vega = (p_vu - p_vd) / (2.0 * dv)
+            rho = (p_ru - p_rd) / (2.0 * dr)
+            if T > dT:
+                theta = (p_td - price) / dT
+
+    return (price, delta, gamma, vega, theta, rho)
 

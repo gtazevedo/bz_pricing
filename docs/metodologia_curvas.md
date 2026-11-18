@@ -50,11 +50,12 @@ $$P(\text{DU}) = P_k \times \left( \frac{P_{k+1}}{P_k} \right)^{\frac{\text{DU} 
 
 ### 1.5 Interpoladores de Curvas Internacionais e Modelos Paramétricos
 
-Para curvas *offshore* (`SOFR_OIS`, `ESTR_OIS`, `SONIA_OIS`, `UST_PAR`), o núcleo em Cython implementa interpolação em espaço de fatores de desconto $\text{DF}(t)$ ou taxas instantâneas a termo $f(t)$ sob base arbitrária (`day_count_basis`) e regime `continuous`, `simple` ou `compounded`:
+Para curvas *offshore* (`SOFR_OIS`, `ESTR_OIS`, `SONIA_OIS`, `TONA_OIS`, `UST_PAR`), o núcleo em Cython implementa interpolação em espaço de fatores de desconto $\text{DF}(t)$ ou taxas instantâneas a termo $f(t)$ sob base arbitrária (`day_count_basis`) e regime `continuous`, `simple` ou `compounded`, utilizando busca binária em tempo $O(\log n)$ sobre os nós ordenados e extrapolação inicial em $(0, t_1]$ compatível com o regime de capitalização nominal configurado no construtor:
 
 - **Log-Linear nos Fatores de Desconto (`LogLinearDiscountInterpolator`):** Padrão de câmaras de compensação (CME e LCH) para descontos *overnight*. Interpola linearmente $\ln \text{DF}(t) = -r(t) \cdot t$, o que equivale a taxa instantânea constante por partes entre nós.
-- **Log-Cúbica Monotônica nos Fatores de Desconto (`LogCubicDiscountInterpolator`):** Aplica derivadas harmônicas de Fritsch-Carlson sobre os segmentos de $-\ln \text{DF}(t)$ com polinômio cúbico de Hermite, preservando monotonicidade de $r(t) \cdot t$ sem oscilações de Runge.
-- **Convexo Monótono de Hagan-West (`MonotoneConvexInterpolator`):** Padrão oficial do Departamento do Tesouro dos EUA para derivação de taxas *zero* e a termo a partir da curva par. Sobre as taxas a termo discretas $f_i^d = [r_i t_i - r_{i-1} t_{i-1}] / (t_i - t_{i-1})$, constrói funções quadráticas por partes contínuas que reproduzem exatamente todos os nós e mantêm positividade ($f(t) \ge 0$).
+- **Log-Cúbica Monotônica nos Fatores de Desconto (`LogCubicDiscountInterpolator`):** Aplica derivadas harmônicas de Fritsch-Carlson sobre os segmentos de $-\ln \text{DF}(t)$ com polinômio cúbico de Hermite, preservando monotonicidade de $r(t) \cdot t$ sem oscilações de Runge. Os segmentos e inclinações cúbicos são mantidos em cache interno em C e recalculados automaticamente apenas quando o vetor de nós `t_nodes` ou `y_nodes` sofre alteração.
+- **Convexo Monótono de Hagan-West (`MonotoneConvexInterpolator`):** Padrão oficial do Departamento do Tesouro dos EUA para derivação de taxas *zero* e a termo a partir da curva par. Sobre as taxas a termo discretas $f_i^d = [r_i t_i - r_{i-1} t_{i-1}] / (t_i - t_{i-1})$, constrói funções quadráticas por partes contínuas que reproduzem exatamente todos os nós e mantêm positividade ($f(t) \ge 0$). O pré-cálculo das taxas acumuladas e inclinações permanece em cache nativo com invalidação automática elemento a elemento em mutações de vértices.
+- **Bootstrapping com Agenda em Anos Civis:** Tanto `bootstrap_ois_curve` quanto `bootstrap_treasury_curve` geram agendas de cupom em anos civis (`365.25` ou `day_count_basis`) quando os prazos são informados em dias corridos, alinhando periodicidades anuais e semestrais de títulos do Tesouro dos EUA (`UST`) e *swaps* OIS internacionais.
 - **Modelos Paramétricos de Nelson-Siegel e Svensson (`NelsonSiegelCurve` e `SvenssonCurve`):** Utilizados pelo Federal Reserve Board e pelo Banco Central Europeu (BCE). Na formulação estendida de Svensson, a taxa zero contínua $r(t)$ segue:
 
 $$r(t) = \beta_0 + \beta_1 \left( \frac{1 - e^{-t/\lambda_1}}{t/\lambda_1} \right) + \beta_2 \left( \frac{1 - e^{-t/\lambda_1}}{t/\lambda_1} - e^{-t/\lambda_1} \right) + \beta_3 \left( \frac{1 - e^{-t/\lambda_2}}{t/\lambda_2} - e^{-t/\lambda_2} \right)$$
@@ -188,7 +189,7 @@ $$\text{DPL}(\text{DU}) = \frac{1 + \text{PRE}(\text{DU})}{1 + \pi(\text{DU})} -
 ### 6.1 Cupons Cambiais de Dólar: Sujo (`DOL`) e Limpo (`DOC` e `DCL`)
 
 - **Cupom Cambial Sujo (`DOL`):** Construído diretamente a partir dos vencimentos do contrato futuro de Cupom Cambial (`DDI`), indexado simultaneamente em dias úteis ($\text{DU}$) e dias corridos ($\text{DC}$), e interpolado via `FlatForward252LinearInterpolator(0, 1)`.
-- **Cupom Cambial Limpo (`DOC` e `DCL`):**Corrige a defasagem da PTAX de referência do contrato `DDI` ($\text{Ptax}_{t-1}$) em relação à cotação spot do dólar cupom limpo no dia $t_0$ ($\text{DolCL}_{t_0}$):
+- **Cupom Cambial Limpo (`DOC` e `DCL`):** Corrige a defasagem da PTAX de referência do contrato `DDI` ($\text{Ptax}_{t-1}$) em relação à cotação spot do dólar cupom limpo no dia $t_0$ ($\text{DolCL}_{t_0}$):
   - **Vértice 1 ($\text{DU} = 1$, prazo corrido $\text{DC}_1$):** Quando calculado a partir da cotação do casado de 1 dia útil ($\text{Casado}_{1\text{d}}$, em pontos de milésimo de real) e da taxa $\text{CDI}_t$:
 
 $$\text{DolCL}_{d_1} = \text{DolCL}_{t_0} + \frac{\text{Casado}_{1\text{d}}}{1000}, \quad \text{DOC}_1 = \left[ \frac{\left(1 + \text{CDI}_t\right)^{\frac{1}{252}}}{\text{DolCL}_{d_1} / \text{DolCL}_{t_0}} - 1 \right] \times \frac{360}{\text{DC}_1}$$
@@ -201,7 +202,7 @@ $$\text{DOC}_n = \left[ \left( 1 + \text{DDI}_n \times \frac{\text{DC}_n}{360} \
 
 ### 6.2 Spreads de Taxas Offshore (`SDE`, `SGP`, `SMX`, `SYD`) e Cupons Cruzados (`EUC` e `YCL`)
 
-- **Curvas de Spread Offshore:** Representam o diferencial linear entre a taxa externa da moeda de referência e a taxa externa em dólar americano na base 360:
+- **Curvas de Spread Offshore:** Representam o diferencial linear entre a taxa externa da moeda de referência e a taxa externa em dólar americano na base 360 (`SDE` para Euro em `ACT/360`, `SMX` para Peso Mexicano, `SYD` para Iene e `SGP` em `ACT/365` para Libra Esterlina):
 
 $$\text{Spread}_n = y_{\text{Moeda}, n} - y_{\text{USD}, n}$$
 

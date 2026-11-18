@@ -457,7 +457,7 @@ bl = surf.breeden_litzenberger_density(63, forward=5.55, r_cont=0.13)
 
 ## 8. Curvas Internacionais (`offshore`) e Superfície de Mistura Bloomberg (`bloomberg_surface`)
 
-O módulo [`offshore.py`](../src/bz_pricing/curves/offshore.py) e os interpoladores internacionais de [`interpolators.pyx`](../src/bz_pricing/core/interpolators.pyx) e [`curves.pyx`](../src/bz_pricing/core/curves.pyx) oferecem construção integralmente *offline* de curvas OIS e soberanas (`SOFR_OIS`, `ESTR_OIS`, `SONIA_OIS`, `UST_PAR`) tanto diretamente pelas funções de *bootstrapping* quanto por `CurveManager(allow_download=False)`:
+O módulo [`offshore.py`](../src/bz_pricing/curves/offshore.py) e os interpoladores internacionais em Cython de [`interpolators.pyx`](../src/bz_pricing/core/interpolators.pyx) e [`curves.pyx`](../src/bz_pricing/core/curves.pyx) implementam cache nativo de coeficientes e busca binária para construção integralmente *offline* de curvas OIS e soberanas (`SOFR_OIS`, `ESTR_OIS`, `SONIA_OIS`, `TONA_OIS`, `UST_PAR`) tanto diretamente pelas funções de *bootstrapping* em anos civis quanto por `CurveManager(allow_download=False)`:
 
 ```python
 import pandas as pd
@@ -504,4 +504,105 @@ put_parity_diff = (
 )
 print(f"Vol(K=90): {surf_bbg.get_vol(252, 90.0, 100.0)*100:.2f}% | Erro paridade Q-default={sl_bbg.Q_default:.2%}: {abs(put_parity_diff):.2e}")
 ```
+
+---
+
+## 9. Renda Fixa Offshore, Derivativos Internacionais e Gregas Exóticas
+
+Todos os instrumentos *offshore* e modelos estendidos de opções utilizam calendários embutidos em memória (`US`, `TARGET`, `UK`, `B3`, `ACTUAL`) e aceitam curvas ou taxas fornecidas diretamente pelo usuário em modo integralmente *offline*.
+
+### 9.1 Títulos do Tesouro dos EUA e Bonds Corporativos (`offshore_bonds`)
+
+O módulo [`offshore_bonds.py`](../src/bz_pricing/instruments/offshore_bonds.py) implementa letras de desconto (`USTreasuryBill`), notas e bônus cupom (`USTreasuryNoteBond`), títulos indexados à inflação americana com piso de deflação (`TIPS`) e bônus corporativos/soberanos em diversas convenções (`OffshoreBond`, incluindo `Z-Spread`, `G-Spread`, `risky_present_value` e `implied_hazard_rate`):
+
+```python
+import datetime
+from bz_pricing.curves import bootstrap_ois_curve
+from bz_pricing.instruments import OffshoreBond, TIPS, USTreasuryBill, USTreasuryNoteBond
+
+base_date = datetime.date(2026, 10, 30)
+sofr_crv = bootstrap_ois_curve(
+    pillars_dc=[90, 180, 365, 730, 1825],
+    par_rates=[0.0430, 0.0425, 0.0415, 0.0408, 0.0412],
+    convention="ACT/360",
+)
+
+tbill = USTreasuryBill("2027-04-30")
+p_tbill = tbill.price_per_100(base_date, discount_rate=0.0425)
+bey_tbill = tbill.bond_equivalent_yield(base_date, discount_rate=0.0425)
+
+tnote = USTreasuryNoteBond("2031-05-15", coupon_rate=0.04125)
+rm_ust = tnote.risk_metrics(base_date, ytm=0.0420)
+
+tips = TIPS("2031-01-15", coupon_rate=0.0175, issue_cpi=305.0)
+rm_tips = tips.risk_metrics(base_date, real_ytm=0.0190, ref_cpi=318.5)
+
+corp = OffshoreBond("2031-10-30", coupon_rate=0.0525, day_count="30/360")
+clean_corp = corp.clean_price(base_date, ytm=0.0560)
+z_bp = corp.z_spread(base_date, target_price=clean_corp, zero_curve=sofr_crv) * 1e4
+print(f"T-Bill BEY: {bey_tbill*100:.3f}% | UST ModDur: {rm_ust['modified_duration']:.3f} | TIPS AdjClean: {rm_tips['adjusted_clean_price']:.4f} | Corp Z-Spread: {z_bp:.1f} bps")
+```
+
+### 9.2 Swaps OIS, Futuros SOFR, Cross-Currency e Opções com Dividendos e Gregas
+
+Os módulos [`derivatives.py`](../src/bz_pricing/instruments/derivatives.py) e [`options.py`](../src/bz_pricing/instruments/options.py) contemplam `OISSwap`, `SOFRFuture` (`SR3` e `SR1`), `CrossCurrencySwap`, `Swaption` e `CapFloor` multiconvenção (`day_count`, `rate_compounding`, `payment_freq_months`), `EquityOption` com `discrete_dividends` e `prop_dividends`, além de `risk_metrics` completo em `CorradoSuOption`, `BarrierOption` e `AsianOption` (integrado a `price_options_portfolio`):
+
+```python
+import datetime
+import numpy as np
+from bz_pricing.core.curves import FlatCurve, SimpleCurve
+from bz_pricing.core.interpolators import LogLinearDiscountInterpolator
+from bz_pricing.curves import bootstrap_ois_curve
+from bz_pricing.instruments import (
+    AsianOption,
+    BarrierOption,
+    CapFloor,
+    CorradoSuOption,
+    CrossCurrencySwap,
+    EquityOption,
+    OISSwap,
+    SOFRFuture,
+    Swaption,
+    price_options_portfolio,
+)
+
+base_date = datetime.date(2026, 10, 30)
+sofr_crv = bootstrap_ois_curve([90, 180, 365, 730, 1095], [0.043, 0.0425, 0.0415, 0.0405, 0.0402], convention="ACT/360")
+pre_crv = FlatCurve(0.138)
+cupom_crv = SimpleCurve(np.array([30.0, 1825.0]), np.array([0.050, 0.050]), LogLinearDiscountInterpolator(0, 1, 360.0, "simple"))
+
+ois = OISSwap(notional=10_000_000.0, start_date=base_date, maturity_date="2028-10-30", fixed_rate=0.0410)
+sr3 = SOFRFuture("SR3M27", start_date="2027-06-16", end_date="2027-09-15", contract_type="SR3")
+ccs = CrossCurrencySwap(
+    notional_foreign=1_000_000.0,
+    start_date=base_date,
+    maturity_date="2028-10-30",
+    initial_fx_spot=5.65,
+    brl_leg_type="DI",
+    foreign_leg_type="FLOAT",
+    foreign_rate=0.0,
+)
+par_ccs = ccs.par_basis_spread(base_date, fx_spot=5.65, pre_curve=pre_crv, foreign_discount_curve=cupom_crv, foreign_forward_curve=sofr_crv)
+
+swpt = Swaption("SWPT-SOFR", "2027-10-29", "2029-10-30", strike_rate=0.041, calendar_name="US", day_count="ACT/360", payment_freq_months=12)
+cap = CapFloor("CAP-SOFR", ["2027-04-30"], ["2027-07-30"], strike_rate=0.042, calendar_name="US", day_count="ACT/360")
+
+opt_div = EquityOption("PETR4-DIV", "2027-04-30", strike=38.0, option_type="PUT", exercise="AMERICAN", discrete_dividends={"2026-12-15": 1.60}, prop_dividends=[(0.18, 0.02)])
+bar = BarrierOption("VALE-KO", "2027-04-30", strike=40.0, barrier=32.0, barrier_type="down-and-out", monitoring_steps=52)
+asi = AsianOption("IBOV-AS", "2027-04-30", strike=40.0, average_type="arithmetic")
+cs = CorradoSuOption("IBOV-CS", "2027-04-30", strike=41.0, option_type="CALL")
+
+df_greeks = price_options_portfolio(
+    [
+        {"instrument": opt_div, "spot": 40.0, "pre_rate_or_curve": 0.12, "vol": 0.30, "quantity": 100},
+        {"instrument": bar, "spot": 40.0, "pre_rate_or_curve": 0.12, "vol": 0.30, "quantity": 50},
+        {"instrument": asi, "spot": 40.0, "pre_rate_or_curve": 0.12, "vol": 0.30, "quantity": 25},
+        {"instrument": cs, "spot": 40.0, "pre_rate_or_curve": 0.12, "vol": 0.30, "kappa3": -0.30, "kappa4": 4.0, "quantity": 10},
+    ],
+    base_date=base_date,
+)
+print(f"OIS Par: {ois.par_rate(base_date, sofr_crv)*100:.3f}% | SR3 Fair: {sr3.fair_price(base_date, sofr_crv):.3f} | CCS Par Spread: {par_ccs*1e4:.1f} bps")
+print(df_greeks[["ticker", "price", "delta", "gamma", "vega_1pct", "rho"]])
+```
+
 

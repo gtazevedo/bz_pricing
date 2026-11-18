@@ -291,3 +291,45 @@ def test_left_extrapolation_non_continuous_compounding_e5():
         assert 0.040 < r_s_45 < 0.048
         assert crv_s.get_rate(0.0) == 0.045
 
+
+def test_cython_spline_cache_hit_and_invalidation():
+    from bz_pricing.core.curves import SimpleCurve
+    from bz_pricing.core.interpolators import (
+        LogCubicDiscountInterpolator,
+        MonotoneConvexInterpolator,
+    )
+
+    t_nodes = np.linspace(21.0, 2520.0, 40, dtype=float)
+    y_nodes = 0.095 + 0.018 * (1.0 - np.exp(-t_nodes / 500.0))
+    xs = np.array([5.0, 21.0, 63.0, 126.0, 315.0, 756.0, 1512.0, 2520.0, 3000.0], dtype=float)
+
+    for cls in (LogCubicDiscountInterpolator, MonotoneConvexInterpolator):
+        for comp in ("continuous", "simple"):
+            t_arr = t_nodes.copy()
+            y_arr = y_nodes.copy()
+            interp = cls(0, 1, 252.0, comp)
+
+            vals1 = np.array([interp.forward_rate(x, t_arr, y_arr) for x in xs], dtype=float)
+            vals2 = np.array([interp.forward_rate(x, t_arr, y_arr) for x in xs], dtype=float)
+            np.testing.assert_allclose(vals1, vals2, atol=0.0, rtol=0.0)
+
+            # Mutação in-place de y_arr deve invalidar cache de splines/knots imediatamente
+            y_arr[10] += 0.025
+            vals_mut_y = np.array([interp.forward_rate(x, t_arr, y_arr) for x in xs], dtype=float)
+            fresh_y = cls(0, 1, 252.0, comp)
+            expected_mut_y = np.array([fresh_y.forward_rate(x, t_arr, y_arr) for x in xs], dtype=float)
+            np.testing.assert_allclose(vals_mut_y, expected_mut_y, atol=1e-14, rtol=1e-14)
+            assert not np.allclose(vals_mut_y, vals1)
+
+            # Mutação in-place de t_arr também deve invalidar cache
+            t_arr[10] += 15.0
+            vals_mut_t = np.array([interp.forward_rate(x, t_arr, y_arr) for x in xs], dtype=float)
+            fresh_t = cls(0, 1, 252.0, comp)
+            expected_mut_t = np.array([fresh_t.forward_rate(x, t_arr, y_arr) for x in xs], dtype=float)
+            np.testing.assert_allclose(vals_mut_t, expected_mut_t, atol=1e-14, rtol=1e-14)
+
+            crv = SimpleCurve(t_nodes, y_nodes, cls(0, 1, 252.0, comp))
+            assert abs(crv.get_rate(float(t_nodes[5])) - float(y_nodes[5])) < 1e-12
+            assert abs(crv.get_rate(float(t_nodes[-1])) - float(y_nodes[-1])) < 1e-12
+
+

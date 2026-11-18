@@ -4,6 +4,8 @@ import time
 import numpy as np
 
 from bz_pricing.instruments import (
+    AsianOption,
+    BarrierOption,
     EquityOption,
     FXOption,
     IDIOption,
@@ -773,6 +775,162 @@ def test_swaption_and_capfloor_offshore_conventions():
     df_f = flr.cashflow_table(base_dt, sofr, vol=0.20)
     swap_from_caplets = (5_000_000.0 * df_c["tau"] * df_c["df_pay"] * (df_c["forward_rate"] - 0.043)).sum()
     assert abs((df_c["caplet_pv"].sum() - df_f["caplet_pv"].sum()) - swap_from_caplets) < 1e-6
+
+
+def test_equity_option_discrete_and_prop_dividends():
+    base_dt = datetime.date(2026, 10, 30)
+    mat_dt = "2027-04-30"
+    r_annual = 0.12
+    spot = 40.0
+    strike = 38.0
+    vol = 0.30
+    disc_divs = {"2026-12-15": 1.60, "2027-03-15": 1.20}
+    prop_divs = [(0.18, 0.025)]
+
+    # 1. Europeia com dividendos discretos em reais e proporcionais: gregas vs diferenças finitas
+    for opt_t in ("CALL", "PUT"):
+        opt_eu = EquityOption(
+            "PETR4",
+            mat_dt,
+            strike=strike,
+            option_type=opt_t,
+            exercise="EUROPEAN",
+            discrete_dividends=disc_divs,
+            prop_dividends=prop_divs,
+        )
+        rm = opt_eu.risk_metrics(base_dt, spot, r_annual, vol)
+        p0 = opt_eu.price(base_dt, spot, r_annual, vol)
+        assert abs(rm["price"] - p0) < 1e-12
+
+        eps_s = 1e-3
+        p_up = opt_eu.price(base_dt, spot + eps_s, r_annual, vol)
+        p_dn = opt_eu.price(base_dt, spot - eps_s, r_annual, vol)
+        fd_delta = (p_up - p_dn) / (2.0 * eps_s)
+        fd_gamma = (p_up - 2.0 * p0 + p_dn) / (eps_s ** 2)
+        assert abs(rm["delta"] - fd_delta) < 1e-5
+        assert abs(rm["gamma"] - fd_gamma) < 1e-4
+
+        eps_v = 1e-4
+        fd_vega = (opt_eu.price(base_dt, spot, r_annual, vol + eps_v) - opt_eu.price(base_dt, spot, r_annual, vol - eps_v)) / (2.0 * eps_v)
+        assert abs(rm["vega"] - fd_vega) < 1e-4
+
+        # Rho em relação à taxa contínua r_cont (incluindo efeito do PV dos dividendos)
+        r_cont0 = math.log(1.0 + r_annual)
+        eps_r = 1e-5
+        r_up = math.exp(r_cont0 + eps_r) - 1.0
+        r_dn = math.exp(r_cont0 - eps_r) - 1.0
+        fd_rho = (opt_eu.price(base_dt, spot, r_up, vol) - opt_eu.price(base_dt, spot, r_dn, vol)) / (2.0 * eps_r)
+        assert abs(rm["rho"] - fd_rho) < 1e-4
+
+        iv_rt = opt_eu.implied_volatility(base_dt, p0, spot, r_annual)
+        assert abs(iv_rt - vol) < 1e-6
+
+    # 2. Americana com dividendo discreto elevado: exercício antecipado gera prêmio >= europeia
+    big_div = {"2026-12-15": 3.50}
+    eu_c = EquityOption("PETR4", mat_dt, strike=36.0, option_type="CALL", exercise="EUROPEAN", discrete_dividends=big_div)
+    am_c = EquityOption("PETR4", mat_dt, strike=36.0, option_type="CALL", exercise="AMERICAN", discrete_dividends=big_div)
+    eu_p = EquityOption("PETR4", mat_dt, strike=42.0, option_type="PUT", exercise="EUROPEAN", discrete_dividends=big_div, prop_dividends=prop_divs)
+    am_p = EquityOption("PETR4", mat_dt, strike=42.0, option_type="PUT", exercise="AMERICAN", discrete_dividends=big_div, prop_dividends=prop_divs)
+
+    p_eu_c = eu_c.price(base_dt, spot, r_annual, vol)
+    p_am_c = am_c.price(base_dt, spot, r_annual, vol, crr_steps=400)
+    assert p_am_c >= p_eu_c - 1e-6
+
+    rm_am_c = am_c.risk_metrics(base_dt, spot, r_annual, vol, crr_steps=400)
+    rm_am_p = am_p.risk_metrics(base_dt, spot, r_annual, vol, crr_steps=400)
+    assert rm_am_p["price"] >= eu_p.price(base_dt, spot, r_annual, vol) - 1e-6
+    assert 0.0 < rm_am_c["delta"] < 1.0
+    assert -1.0 < rm_am_p["delta"] < 0.0
+    for key in ("gamma", "vega", "theta", "rho"):
+        assert np.isfinite(rm_am_c[key])
+        assert np.isfinite(rm_am_p[key])
+
+    # Checa delta da americana contra bump de spot em malha fina
+    fd_am_delta = (
+        am_c.price(base_dt, spot + 0.1, r_annual, vol, crr_steps=400)
+        - am_c.price(base_dt, spot - 0.1, r_annual, vol, crr_steps=400)
+    ) / 0.2
+    assert abs(rm_am_c["delta"] - fd_am_delta) < 0.02
+
+    iv_am = am_c.implied_volatility(base_dt, am_c.price(base_dt, spot, r_annual, vol), spot, r_annual)
+    assert abs(iv_am - vol) < 1e-5
+
+
+def test_exotic_options_greeks_and_portfolio():
+    base_dt = datetime.date(2026, 10, 30)
+    mat_dt = "2027-04-30"
+    spot = 100.0
+    r_annual = 0.11
+    q_annual = 0.02
+    vol = 0.28
+
+    # Corrado-Su (assimetria e curtose não gaussianas)
+    cs_opt = CorradoSuOption("IBOV-CS", mat_dt, strike=102.0, option_type="CALL")
+    rm_cs = cs_opt.risk_metrics(base_dt, spot, r_annual, vol, kappa3=-0.35, kappa4=4.2, carry_or_div_yield=q_annual)
+    p_cs = cs_opt.price(base_dt, spot, r_annual, vol, kappa3=-0.35, kappa4=4.2, carry_or_div_yield=q_annual)
+    assert abs(rm_cs["price"] - p_cs) < 1e-12
+    fd_cs_delta = (
+        cs_opt.price(base_dt, spot + 1e-3, r_annual, vol, kappa3=-0.35, kappa4=4.2, carry_or_div_yield=q_annual)
+        - cs_opt.price(base_dt, spot - 1e-3, r_annual, vol, kappa3=-0.35, kappa4=4.2, carry_or_div_yield=q_annual)
+    ) / 2e-3
+    fd_cs_vega = (
+        cs_opt.price(base_dt, spot, r_annual, vol + 1e-4, kappa3=-0.35, kappa4=4.2, carry_or_div_yield=q_annual)
+        - cs_opt.price(base_dt, spot, r_annual, vol - 1e-4, kappa3=-0.35, kappa4=4.2, carry_or_div_yield=q_annual)
+    ) / 2e-4
+    assert abs(rm_cs["delta"] - fd_cs_delta) < 1e-4
+    assert abs(rm_cs["vega"] - fd_cs_vega) < 1e-3
+
+    # Barreira Down-and-Out (contínua e discreta com monitoring_steps=52)
+    bar_cont = BarrierOption("PETR-KO", mat_dt, strike=100.0, barrier=82.0, option_type="CALL", barrier_type="down-and-out", rebate=1.5)
+    bar_disc = BarrierOption("PETR-KOD", mat_dt, strike=100.0, barrier=82.0, option_type="CALL", barrier_type="down-and-out", monitoring_steps=52)
+    rm_bc = bar_cont.risk_metrics(base_dt, spot, r_annual, vol, carry_or_div_yield=q_annual)
+    assert abs(rm_bc["price"] - bar_cont.price(base_dt, spot, r_annual, vol, carry_or_div_yield=q_annual)) < 1e-12
+    fd_bc_delta = (
+        bar_cont.price(base_dt, spot + 1e-3, r_annual, vol, carry_or_div_yield=q_annual)
+        - bar_cont.price(base_dt, spot - 1e-3, r_annual, vol, carry_or_div_yield=q_annual)
+    ) / 2e-3
+    assert abs(rm_bc["delta"] - fd_bc_delta) < 1e-4
+    rm_bd = bar_disc.risk_metrics(base_dt, spot, r_annual, vol, carry_or_div_yield=q_annual)
+    assert rm_bd["barrier_eff"] < bar_disc.barrier
+    assert np.isfinite(rm_bd["vega"]) and rm_bd["vega"] != 0.0
+
+    # Asiática aritmética e geométrica
+    as_art = AsianOption("DOL-ASA", mat_dt, strike=98.0, option_type="CALL", average_type="arithmetic")
+    as_geo = AsianOption("DOL-ASG", mat_dt, strike=98.0, option_type="PUT", average_type="geometric")
+    for as_opt in (as_art, as_geo):
+        rm_a = as_opt.risk_metrics(base_dt, spot, r_annual, vol, carry_or_div_yield=q_annual)
+        p_a = as_opt.price(base_dt, spot, r_annual, vol, carry_or_div_yield=q_annual)
+        assert abs(rm_a["price"] - p_a) < 1e-12
+        fd_a_delta = (
+            as_opt.price(base_dt, spot + 1e-3, r_annual, vol, carry_or_div_yield=q_annual)
+            - as_opt.price(base_dt, spot - 1e-3, r_annual, vol, carry_or_div_yield=q_annual)
+        ) / 2e-3
+        fd_a_vega = (
+            as_opt.price(base_dt, spot, r_annual, vol + 1e-4, carry_or_div_yield=q_annual)
+            - as_opt.price(base_dt, spot, r_annual, vol - 1e-4, carry_or_div_yield=q_annual)
+        ) / 2e-4
+        assert abs(rm_a["delta"] - fd_a_delta) < 1e-4
+        assert abs(rm_a["vega"] - fd_a_vega) < 1e-3
+
+    # Carteira consolidada: todas as posições exóticas e com dividendos devem retornar gregas finitas
+    eq_div = EquityOption("PETR4-DIV", mat_dt, strike=100.0, option_type="PUT", exercise="AMERICAN", discrete_dividends={"2026-12-15": 2.0})
+    eq_plain = EquityOption("VALE3", mat_dt, strike=95.0, option_type="CALL", exercise="EUROPEAN")
+    df_port = price_options_portfolio(
+        [
+            {"instrument": eq_plain, "quantity": 100.0, "spot": spot, "pre_rate_or_curve": r_annual, "vol": vol},
+            {"instrument": eq_div, "quantity": 50.0, "spot": spot, "pre_rate_or_curve": r_annual, "vol": vol},
+            {"instrument": cs_opt, "quantity": 10.0, "spot": spot, "pre_rate_or_curve": r_annual, "vol": vol, "kappa3": -0.35, "kappa4": 4.2, "carry_or_div_yield": q_annual},
+            {"instrument": bar_cont, "quantity": 20.0, "spot": spot, "pre_rate_or_curve": r_annual, "vol": vol, "carry_or_div_yield": q_annual},
+            {"instrument": as_art, "quantity": 15.0, "spot": spot, "pre_rate_or_curve": r_annual, "vol": vol, "carry_or_div_yield": q_annual},
+        ],
+        base_dt,
+    )
+    assert len(df_port) == 5
+    for col in ("price", "mtm", "delta", "gamma", "vega_1pct", "theta_du", "rho"):
+        assert df_port[col].notna().all()
+    assert abs(float(df_port.loc[df_port["ticker"] == "IBOV-CS", "price"].iloc[0]) - p_cs) < 1e-12
+    assert abs(float(df_port.loc[df_port["ticker"] == "PETR-KO", "delta"].iloc[0]) - rm_bc["delta"]) < 1e-12
+
 
 
 

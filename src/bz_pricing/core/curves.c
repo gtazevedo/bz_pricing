@@ -2034,10 +2034,19 @@ struct __pyx_obj_10bz_pricing_4core_13interpolators_LogCubicDiscountInterpolator
   double _day_count_basis;
   int _compounding;
   int _freq;
+  int _cached_n;
+  int _cached_m;
+  double *_cached_t;
+  double *_cached_y;
+  double *_xs;
+  double *_ys;
+  double *_h;
+  double *_d;
+  double *_slopes;
 };
 
 
-/* "bz_pricing/core/interpolators.pxd":31
+/* "bz_pricing/core/interpolators.pxd":41
  * 
  * 
  * cdef class MonotoneConvexInterpolator(Interpolator):             # <<<<<<<<<<<<<<
@@ -2050,6 +2059,14 @@ struct __pyx_obj_10bz_pricing_4core_13interpolators_MonotoneConvexInterpolator {
   int _compounding;
   int _freq;
   int _enforce_positivity;
+  int _cached_n;
+  int _cached_m;
+  double *_cached_t;
+  double *_cached_y;
+  double *_taus;
+  double *_zcum;
+  double *_fd;
+  double *_fnodes;
 };
 
 
@@ -2371,13 +2388,14 @@ static struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_LogLinearDisco
 
 struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_LogCubicDiscountInterpolator {
   struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_Interpolator __pyx_base;
+  void (*_ensure_cache)(struct __pyx_obj_10bz_pricing_4core_13interpolators_LogCubicDiscountInterpolator *, double *, double *, int);
   PyObject *(*_eval_ln_df_and_fwd)(struct __pyx_obj_10bz_pricing_4core_13interpolators_LogCubicDiscountInterpolator *, double, double *, double *, int);
   double (*forward_rate)(struct __pyx_obj_10bz_pricing_4core_13interpolators_LogCubicDiscountInterpolator *, double, __Pyx_memviewslice, __Pyx_memviewslice, int __pyx_skip_dispatch);
 };
 static struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_LogCubicDiscountInterpolator *__pyx_vtabptr_10bz_pricing_4core_13interpolators_LogCubicDiscountInterpolator;
 
 
-/* "bz_pricing/core/interpolators.pxd":31
+/* "bz_pricing/core/interpolators.pxd":41
  * 
  * 
  * cdef class MonotoneConvexInterpolator(Interpolator):             # <<<<<<<<<<<<<<
@@ -2387,6 +2405,7 @@ static struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_LogCubicDiscou
 
 struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_MonotoneConvexInterpolator {
   struct __pyx_vtabstruct_10bz_pricing_4core_13interpolators_Interpolator __pyx_base;
+  void (*_ensure_cache)(struct __pyx_obj_10bz_pricing_4core_13interpolators_MonotoneConvexInterpolator *, double *, double *, int);
   PyObject *(*_eval_ln_df_and_fwd)(struct __pyx_obj_10bz_pricing_4core_13interpolators_MonotoneConvexInterpolator *, double, double *, double *, int);
   double (*forward_rate)(struct __pyx_obj_10bz_pricing_4core_13interpolators_MonotoneConvexInterpolator *, double, __Pyx_memviewslice, __Pyx_memviewslice, int __pyx_skip_dispatch);
 };
@@ -51728,8 +51747,8 @@ static int __Pyx_modinit_Type_import_code(__pyx_mstatetype *__pyx_mstate) {
   #else
   sizeof(struct __pyx_obj_10bz_pricing_4core_13interpolators_MonotoneConvexInterpolator), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_13interpolators_MonotoneConvexInterpolator),
   #endif
-  __Pyx_ImportType_CheckSize_Warn_3_3_0); if (!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_MonotoneConvexInterpolator) __PYX_ERR(2, 31, __pyx_L1_error)
-  if (unlikely(__Pyx_GetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_MonotoneConvexInterpolator, (void**)&__pyx_vtabptr_10bz_pricing_4core_13interpolators_MonotoneConvexInterpolator) != 1)) __PYX_ERR(2, 31, __pyx_L1_error)
+  __Pyx_ImportType_CheckSize_Warn_3_3_0); if (!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_MonotoneConvexInterpolator) __PYX_ERR(2, 41, __pyx_L1_error)
+  if (unlikely(__Pyx_GetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_13interpolators_MonotoneConvexInterpolator, (void**)&__pyx_vtabptr_10bz_pricing_4core_13interpolators_MonotoneConvexInterpolator) != 1)) __PYX_ERR(2, 41, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;

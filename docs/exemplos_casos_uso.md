@@ -298,3 +298,73 @@ sl_mix = LognormalMixtureSlice.fit(strikes, np.where(strikes < fwd_true, p_eu, c
 surf_bbg = BloombergMixtureSurface({126: sl_mix})
 print(f"Q_default={sl_mix.Q_default:.4f} | Vol ATM (126 DU): {surf_bbg.get_vol(126, fwd_true)*100:.2f}%")
 ```
+
+---
+
+## 7. Instrumentos Offshore, Swaps Internacionais e Opções com Dividendos Discretos
+
+O bloco a seguir demonstra a precificação *offline* de títulos do Tesouro norte-americano, *swaps* OIS/Cross-Currency e opções com dividendos discretos e exóticas com gregas completas:
+
+```python
+import datetime
+import numpy as np
+from bz_pricing.core.curves import FlatCurve, SimpleCurve
+from bz_pricing.core.interpolators import LogLinearDiscountInterpolator
+from bz_pricing.curves import bootstrap_ois_curve
+from bz_pricing.instruments import (
+    AsianOption,
+    BarrierOption,
+    CorradoSuOption,
+    CrossCurrencySwap,
+    EquityOption,
+    OISSwap,
+    OffshoreBond,
+    SOFRFuture,
+    TIPS,
+    USTreasuryBill,
+    USTreasuryNoteBond,
+    price_options_portfolio,
+)
+
+base_date = datetime.date(2026, 10, 30)
+sofr_crv = bootstrap_ois_curve([90, 180, 365, 730, 1825], [0.0432, 0.0425, 0.0415, 0.0408, 0.0412], convention="ACT/360")
+pre_crv = FlatCurve(0.1380)
+cupom_crv = SimpleCurve(np.array([30.0, 1825.0]), np.array([0.0500, 0.0500]), LogLinearDiscountInterpolator(0, 1, 360.0, "simple"))
+
+# 7.1 Renda fixa americana (T-Bill, T-Note, TIPS e Eurobond 30/360)
+tbill = USTreasuryBill("2027-04-30")
+tnote = USTreasuryNoteBond("2031-05-15", coupon_rate=0.04125)
+tips = TIPS("2031-01-15", coupon_rate=0.0175, issue_cpi=305.0)
+eurobond = OffshoreBond("2031-10-30", coupon_rate=0.0550, day_count="30/360")
+
+clean_eb = eurobond.clean_price(base_date, ytm=0.0575)
+z_eb = eurobond.z_spread(base_date, target_price=clean_eb, zero_curve=sofr_crv)
+
+# 7.2 OIS Swap, Futuro SOFR SR3 e Cross-Currency Swap USD/BRL
+ois = OISSwap(10_000_000.0, base_date, "2028-10-30", fixed_rate=0.0410)
+sr3 = SOFRFuture("SR3M27", "2027-06-16", "2027-09-15", contract_type="SR3")
+ccs = CrossCurrencySwap(1_000_000.0, base_date, "2028-10-30", initial_fx_spot=5.65, brl_leg_type="DI", foreign_leg_type="FLOAT")
+
+# 7.3 Opção americana com dividendos discretos e gregas exóticas em carteira
+opt_div = EquityOption("PETR4-DIV", "2027-04-30", strike=38.0, option_type="PUT", exercise="AMERICAN", discrete_dividends={"2026-12-15": 1.60}, prop_dividends=[(0.18, 0.02)])
+bar = BarrierOption("VALE-KO", "2027-04-30", strike=40.0, barrier=32.0, barrier_type="down-and-out", monitoring_steps=52)
+asi = AsianOption("DOL-AS", "2027-04-30", strike=40.0, average_type="arithmetic")
+cs = CorradoSuOption("IBOV-CS", "2027-04-30", strike=41.0, option_type="CALL")
+
+df_opt = price_options_portfolio(
+    [
+        {"instrument": opt_div, "spot": 40.0, "pre_rate_or_curve": 0.12, "vol": 0.30, "quantity": 100},
+        {"instrument": bar, "spot": 40.0, "pre_rate_or_curve": 0.12, "vol": 0.30, "quantity": 50},
+        {"instrument": asi, "spot": 40.0, "pre_rate_or_curve": 0.12, "vol": 0.30, "quantity": 25},
+        {"instrument": cs, "spot": 40.0, "pre_rate_or_curve": 0.12, "vol": 0.30, "kappa3": -0.30, "kappa4": 4.0, "quantity": 10},
+    ],
+    base_date=base_date,
+)
+print(
+    f"T-Note Clean: {tnote.clean_price(base_date, ytm=0.042):.4f} | "
+    f"TIPS AdjClean: {tips.adjusted_clean_price(base_date, real_ytm=0.019, ref_cpi=318.5):.4f} | "
+    f"Z-Spread EB: {z_eb*1e4:.1f} bps | OIS Par: {ois.par_rate(base_date, sofr_crv)*100:.3f}% | "
+    f"CCS Par Basis: {ccs.par_basis_spread(base_date, fx_spot=5.65, pre_curve=pre_crv, foreign_discount_curve=cupom_crv, foreign_forward_curve=sofr_crv)*1e4:.1f} bps"
+)
+print(df_opt[["ticker", "price", "delta", "gamma", "vega_1pct", "rho"]])
+```

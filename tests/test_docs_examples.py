@@ -18,12 +18,12 @@ def _extract_python_blocks(md_path: Path):
 
 def test_exemplos_casos_uso_blocks_execute():
     blocks = _extract_python_blocks(ROOT / "docs" / "exemplos_casos_uso.md")
-    assert len(blocks) == 6
+    assert len(blocks) == 7
 
     # Bloco 1 (Curvas offline), Bloco 3 (Crédito/Z-Spread/Hazard offline),
-    # Bloco 4 (Derivativos lineares offline), Bloco 5 (Opções/Superfície offline)
-    # e Bloco 6 (Curvas offshore e modelo Bloomberg offline)
-    for idx in (0, 2, 3, 4, 5):
+    # Bloco 4 (Derivativos lineares offline), Bloco 5 (Opções/Superfície offline),
+    # Bloco 6 (Curvas offshore e modelo Bloomberg offline) e Bloco 7 (Offshore Bonds, Swaps e Opções c/ Dividendos/Exóticas)
+    for idx in (0, 2, 3, 4, 5, 6):
         ns = {}
         exec(compile(blocks[idx], f"docs/exemplos_casos_uso.md#block_{idx+1}", "exec"), ns)
 
@@ -47,8 +47,8 @@ def test_guia_uso_api_offline_blocks_execute():
     assert len(blocks) >= 10
 
     # Blocos estritamente offline em docs/guia_uso_api.md:
-    # 1.1 (idx 1), 3 (idx 5), 4 (idx 6), 4.2/builder (idx 7), 4.3 (idx 8), 6 (idx 12), 7 (idx 13), 8 (idx 14, 15)
-    for idx in (1, 5, 6, 7, 8, 12, 13, 14, 15):
+    # 1.1 (idx 1), 3 (idx 5), 4 (idx 6), 4.2/builder (idx 7), 4.3 (idx 8), 6 (idx 12), 7 (idx 13), 8 (idx 14, 15), 9 (idx 16, 17)
+    for idx in (1, 5, 6, 7, 8, 12, 13, 14, 15, 16, 17):
         ns = {}
         exec(compile(blocks[idx], f"docs/guia_uso_api.md#block_{idx}", "exec"), ns)
 
@@ -60,10 +60,10 @@ def test_guia_uso_api_offline_blocks_execute():
 
 def test_readme_offline_blocks_execute():
     blocks = _extract_python_blocks(ROOT / "README.md")
-    assert len(blocks) >= 5
+    assert len(blocks) >= 6
 
-    # Blocos offline: Seção 5.5 (idx 3) e Seção 5.6 (idx 4)
-    for idx in (3, 4):
+    # Blocos offline: Seção 5.5 (idx 3), Seção 5.6 (idx 4) e Seção 5.7 (idx 5)
+    for idx in (3, 4, 5):
         ns_opt = {}
         exec(compile(blocks[idx], f"README.md#block_{idx}", "exec"), ns_opt)
 

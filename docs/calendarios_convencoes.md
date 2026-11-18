@@ -17,15 +17,23 @@ As estruturas de dados em Cython suportam múltiplos regimes de contagem de praz
 
 ---
 
-## 2. Calendário de Dias Úteis e Regras de Rolagem (`bizdays`)
+## 2. Calendários Embutidos, Modo Offline e Regras de Rolagem (`bizdays`)
 
-A função [`get_calendar`](../src/bz_pricing/core/calendars.py) instancia o calendário oficial de negociação e liquidação com base no pacote `bizdays`:
+A função [`get_calendar`](../src/bz_pricing/core/calendars.py) opera com `allow_download=False` por padrão e disponibiliza calendários embutidos em memória sem dependência de rede ou de arquivos locais:
 
-- **Dias Não Úteis:** Sábados, domingos e feriados nacionais brasileiros (incluindo as alterações introduzidas pela Lei Federal nº 14.759/2023 referente ao dia 20 de novembro).
-- **Ajustes de Vencimento em Dia Não Útil:**
-  - `following`: Desloca a data para o primeiro dia útil subsequente.
-  - `preceding`: Recua a data para o dia útil imediatamente anterior.
-  - `modified_following`: Desloca para o primeiro dia útil subsequente, exceto quando o ajuste implica mudança de mês civil, hipótese em que recua para o dia útil anterior.
+- `'B3'`, `'ANBIMA'`, `'BR'`, `'BRAZIL'`: feriados nacionais brasileiros consolidados pela ANBIMA (2001–2099, incluindo a Lei Federal nº 14.759/2023 referente a 20 de novembro); caso exista `dados/b3/feriados_nacionais.xls` ou `allow_download=True`, o carregador lê a planilha local ou externa apenas quando solicitado.
+- `'US'`, `'USA'`, `'SIFMA'`, `'NYSE'`, `'FED'`: calendário do mercado norte-americano (SIFMA / títulos do Tesouro dos EUA).
+- `'TARGET'`, `'EUR'`, `'EU'`, `'ECB'`: calendário do sistema TARGET2 na Zona do Euro.
+- `'UK'`, `'GBP'`, `'SONIA'`, `'LCH'`: calendário bancário de Londres.
+- `'ACTUAL'`, `'DC'`, `'CALENDAR'`: dias corridos sem exclusão de feriados nem fins de semana.
+
+Quando o parâmetro `holidays` é informado, a função constrói uma instância dedicada com os feriados informados (ou combinados ao calendário base, exceto para `'CUSTOM'`, `'USER'` e `'NONE'`), preservando isolado o cache global das praças padrão.
+
+As regras de ajuste de vencimento em dias não úteis abrangem:
+
+- `following`: desloca a data para o primeiro dia útil subsequente.
+- `preceding`: recua a data para o dia útil imediatamente anterior.
+- `modified_following`: desloca para o primeiro dia útil subsequente, exceto quando o ajuste implica mudança de mês civil, hipótese em que recua para o dia útil anterior.
 
 ---
 
@@ -39,7 +47,7 @@ Mantém inalterada a taxa ou o preço do vértice extremo adjacente:
 
 $$y(t) = y_1 \quad (\forall \, t < t_1), \qquad y(t) = y_n \quad (\forall \, t > t_n)$$
 
-Esse regime é aplicado à esquerda ($t < t_1$) em todas as curvas do pacote e à direita ($t > t_n$) nas curvas internacionais (`SFR`, `EST`, `TIE`, `ZUS`, `ZEU`, `ZMX`, `SDE`), nas curvas de preços de índices e ações (`INP`, `BRP`, `SML`, `MBR`, `VIX`) e nas curvas de custo de carrego (`CYI`, `CYM`, `CYX`).
+Esse regime é aplicado à esquerda ($t < t_1$) em todas as curvas do pacote e à direita ($t > t_n$) nas curvas internacionais (`SFR`, `EST`, `TIE`, `ZUS`, `ZEU`, `ZMX`, `SDE`, `SGP`, `SYD`), nas curvas de preços de índices e ações (`INP`, `BRP`, `SML`, `MBR`, `VIX`) e nas curvas de custo de carrego (`CYI`, `CYM`, `CYX`). Nos interpoladores sobre fatores de desconto em capitalização `simple` ou `compounded` (`LogLinearDiscountInterpolator`, `LogCubicDiscountInterpolator` e `MonotoneConvexInterpolator`), a avaliação no intervalo inicial $(0, t_1]$ preserva a convenção exata informada no construtor para que $\text{DF}(t_1)$ coincida sem descontinuidade.
 
 ### 3.2 Extrapolação por Taxa a Termo Constante (`EXTRAP_FLAT_FORWARD = 1`)
 
@@ -47,4 +55,4 @@ Preserva a taxa a termo (ou a inclinação exponencial) estimada no último segm
 
 $$y(t) = \left[ \left(1 + y_{n-1}\right)^{\frac{\text{DU}_{n-1}}{252}} \times \left( \frac{\left(1 + y_n\right)^{\frac{\text{DU}_n}{252}}}{\left(1 + y_{n-1}\right)^{\frac{\text{DU}_{n-1}}{252}}} \right)^{\frac{t - \text{DU}_{n-1}}{\text{DU}_n - \text{DU}_{n-1}}} \right]^{\frac{252}{t}} - 1$$
 
-Esse regime é utilizado à direita ($t > t_n$) nas estruturas prefixadas (`PRE`, `SELIC_PRE`, `LTN`), nas curvas de inflação (`DIC`, `DIM`, `DPL`), nas curvas de TBF e TR (`TFP`, `TP`, `TR`) e nos cupons cambiais (`DOL`, `DOC`, `DCL`).
+Esse regime é utilizado à direita ($t > t_n$) nas estruturas prefixadas (`PRE`, `SELIC_PRE`, `LTN`), nas curvas de inflação (`DIC`, `DIM`, `DPL`), nas curvas de TBF e TR (`TFP`, `TP`, `TR`) e nos cupons cambiais (`DOL`, `DOC`, `DCL`). Nos interpoladores baseados em fatores de desconto em capitalização `simple` ou `compounded`, a extrapolação à esquerda com `EXTRAP_FLAT_FORWARD` mantém a taxa instantânea inicial constante em $(0, t_1]$ antes de reconverter o desconto para o regime nominal configurado.
