@@ -1,6 +1,6 @@
 import datetime
 import math
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -49,10 +49,11 @@ class _BaseFuture:
         maturity_date: Union[datetime.date, str],
         calendar_name: str = "B3",
         contract_multiplier: Optional[float] = None,
+        holidays: Any = None,
     ):
         self.ticker = ticker.strip().upper()
         self.maturity_date = _to_date(maturity_date)
-        self.calendar = get_calendar(calendar_name)
+        self.calendar = get_calendar(calendar_name, holidays=holidays)
         if contract_multiplier is not None:
             self.MULTIPLIER = float(contract_multiplier)
 
@@ -252,13 +253,14 @@ class SwapDIxPRE:
         fixed_rate: float,
         fixed_direction: int = 1,
         calendar_name: str = "B3",
+        holidays: Any = None,
     ):
         self.notional = float(notional)
         self.start_date = _to_date(start_date)
         self.maturity_date = _to_date(maturity_date)
         self.fixed_rate = float(fixed_rate)
         self.fixed_direction = 1 if fixed_direction >= 0 else -1
-        self.calendar = get_calendar(calendar_name)
+        self.calendar = get_calendar(calendar_name, holidays=holidays)
 
     def risk_metrics(
         self,
@@ -309,13 +311,14 @@ class SwapDIxIPCA:
         ipca_coupon_rate: float,
         ipca_direction: int = 1,
         calendar_name: str = "B3",
+        holidays: Any = None,
     ):
         self.notional = float(notional)
         self.start_date = _to_date(start_date)
         self.maturity_date = _to_date(maturity_date)
         self.ipca_coupon_rate = float(ipca_coupon_rate)
         self.ipca_direction = 1 if ipca_direction >= 0 else -1
-        self.calendar = get_calendar(calendar_name)
+        self.calendar = get_calendar(calendar_name, holidays=holidays)
 
     def risk_metrics(
         self,
@@ -350,12 +353,13 @@ class NDFContract:
         strike_brl: float,
         direction: int = 1,
         calendar_name: str = "B3",
+        holidays: Any = None,
     ):
         self.notional_usd = float(notional_usd)
         self.maturity_date = _to_date(maturity_date)
         self.strike_brl = float(strike_brl)
         self.direction = 1 if direction >= 0 else -1
-        self.calendar = get_calendar(calendar_name)
+        self.calendar = get_calendar(calendar_name, holidays=holidays)
 
     def mtm(
         self,

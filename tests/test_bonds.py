@@ -467,4 +467,92 @@ def test_tpf_modified_duration_sloped_curve():
     assert abs(ntnb.modified_duration(base_date, curve_real) - expected_md_b) < 1e-6
 
 
+def test_tpf_offline_series_and_empirical_real_discount():
+    import os
+    import pandas as pd
+    from bz_pricing.core.calendars import get_calendar
+    from bz_pricing.bonds.builder import TPFBuilder
+    from bz_pricing.core.vna_engine import VNAEngine
+    from bz_pricing.data.loaders import B3DataLoader
+
+    base_date = datetime.date(2026, 10, 30)
+    # 1. Histórico mensal sintético completo para garantir operação 100% offline desde 2000 até 2026
+    months = pd.date_range("2000-06-01", "2026-10-01", freq="MS")
+    ipca_hist = pd.Series(0.004, index=months)
+    ipca_projs = pd.Series([0.0045], index=[pd.Timestamp("2026-11-01")])
+
+    ntnb = NTNB(datetime.date(2030, 8, 15), coupon_rate=0.06)
+    vna_off = ntnb.calculate_vna(
+        base_date,
+        ipca_proj=0.0035,
+        ipca_history=ipca_hist,
+        ipca_projections=ipca_projs,
+        allow_download=False,
+    )
+    assert vna_off > 1000.0
+    real_crv = FlatCurve(0.065)
+    pu_off, df_off = ntnb.present_value(
+        base_date, real_crv, ipca_proj=0.0035, ipca_history=ipca_hist, allow_download=False, return_cashflows=True
+    )
+    pu_vna = ntnb.present_value(base_date, real_crv, vna=vna_off)
+    assert abs(pu_off - pu_vna) < 1e-6
+    assert abs(
+        ntnb.dv01(base_date, real_crv, ipca_proj=0.0035, ipca_history=ipca_hist, allow_download=False)
+        - ntnb.dv01(base_date, real_crv, vna=vna_off)
+    ) < 1e-9
+
+    # Sem vna nem ipca_history com allow_download=False deve falhar explicitamente
+    with pytest.raises(ValueError):
+        ntnb.present_value(base_date, real_crv, allow_download=False)
+
+    # NTNBPrincipal offline
+    ntnbp = NTNBPrincipal(datetime.date(2035, 5, 15))
+    vna_p = ntnbp.calculate_vna(base_date, ipca_proj=0.0035, ipca_history=ipca_hist, allow_download=False)
+    assert abs(vna_p - vna_off) < 1e-6
+    assert abs(
+        ntnbp.present_value(base_date, real_crv, ipca_proj=0.0035, ipca_history=ipca_hist, allow_download=False)
+        - ntnbp.present_value(base_date, real_crv, vna=vna_p)
+    ) < 1e-6
+
+    # NTNC offline por séries de IGP-M e por razão de Números-Índice FGV
+    ntnc = NTNC(datetime.date(2031, 1, 1), coupon_rate=0.12)
+    vna_c_hist = ntnc.calculate_vna(base_date, igpm_proj=0.005, igpm_history=ipca_hist, allow_download=False)
+    vna_c_idx = ntnc.calculate_vna(
+        base_date, base_index=100.0, current_index=670.0, igpm_proj=0.005, allow_download=False
+    )
+    assert vna_c_hist > 1000.0 and vna_c_idx > 6700.0
+    assert abs(
+        ntnc.present_value(
+            base_date, real_crv, base_index=100.0, current_index=670.0, igpm_proj=0.005, allow_download=False
+        )
+        - ntnc.present_value(base_date, real_crv, vna=vna_c_idx)
+    ) < 1e-6
+
+    # Custom holidays isolado na instância de TPF
+    ltn_std = LTN(datetime.date(2027, 1, 4))
+    ltn_custom = LTN(datetime.date(2027, 1, 4), holidays=["2026-11-16"])
+    assert ltn_custom.calendar.bizdays(base_date, ltn_custom.maturity_date) == (
+        ltn_std.calendar.bizdays(base_date, ltn_std.maturity_date) - 1
+    )
+
+    # E7: TPFBuilder com real_discount=True usa VNA na data-base consistente com real_curve
+    eng = VNAEngine(base_vna_date=datetime.date(2000, 7, 15), base_vna_value=1000.0)
+    eng.ipca_history = ipca_hist
+    eng.ipca_projections = pd.Series(0.004, index=pd.date_range("2026-11-01", "2035-06-01", freq="MS"))
+    cal = get_calendar("B3")
+    ldr = B3DataLoader(data_dir="dados/b3")
+    builder = TPFBuilder(ldr, cal)
+    gb_real = builder.build_from_empirical_cashflows(
+        base_date, "NTN-B", datetime.date(2028, 8, 15), vna_engine=eng, real_discount=True
+    )
+    gb_nom = builder.build_from_empirical_cashflows(
+        base_date, "NTN-B", datetime.date(2028, 8, 15), vna_engine=eng, real_discount=False
+    )
+    assert gb_nom.present_value(real_crv) > gb_real.present_value(real_crv)
+    ntnb_short = NTNB(datetime.date(2028, 8, 15), coupon_rate=0.06)
+    pu_expected = ntnb_short.present_value(base_date, real_crv, vna_engine=eng)
+    assert abs(gb_real.present_value(real_crv) - pu_expected) / pu_expected < 1e-4
+
+
+
 

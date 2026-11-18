@@ -62,6 +62,7 @@ class _BaseOption:
         exercise: str = "EUROPEAN",
         calendar_name: str = "B3",
         multiplier: float = 1.0,
+        holidays: Any = None,
     ):
         self.ticker = ticker.strip().upper()
         self.maturity_date = self._normalize_date(maturity_date)
@@ -75,7 +76,7 @@ class _BaseOption:
         if ex_t not in ("EUROPEAN", "AMERICAN"):
             raise ValueError(f"exercise inválido: {exercise}. Use 'EUROPEAN' ou 'AMERICAN'.")
         self.exercise = ex_t
-        self.calendar = get_calendar(calendar_name)
+        self.calendar = get_calendar(calendar_name, holidays=holidays)
         self.multiplier = float(multiplier)
 
     @staticmethod
@@ -87,10 +88,62 @@ class _BaseOption:
         return datetime.date.fromisoformat(str(d).strip()[:10])
 
     @staticmethod
-    def _get_rate_for_du(rate_or_curve: Union[float, Curve], du: int) -> float:
+    def _get_rate_for_du(rate_or_curve: Union[float, Curve], du: int, dc: int = 0) -> float:
         if isinstance(rate_or_curve, Curve):
-            return float(rate_or_curve.get_rate(max(1, int(du))))
+            interp = getattr(rate_or_curve, "interpolator", None)
+            basis = getattr(rate_or_curve, "day_count_basis", None)
+            if basis is None and interp is not None:
+                basis = getattr(interp, "day_count_basis", None)
+            if basis is not None and abs(float(basis) - 252.0) > 1e-6:
+                t_query = float(dc) if dc > 0 else float(du)
+                return float(rate_or_curve.get_rate(max(1.0, t_query), float(dc)))
+            return float(rate_or_curve.get_rate(max(1, int(du)), max(0, int(dc))))
         return float(rate_or_curve)
+
+    @staticmethod
+    def _resolve_cont_rate(
+        rate_or_curve: Union[float, Curve],
+        du: int,
+        dc: int = 0,
+        default_conv: str = "exp_252",
+    ) -> float:
+        if du <= 0:
+            return 0.0
+        t_du = du / 252.0
+        if isinstance(rate_or_curve, Curve):
+            interp = getattr(rate_or_curve, "interpolator", None)
+            meta = (
+                rate_or_curve
+                if hasattr(rate_or_curve, "day_count_basis")
+                else (interp if interp is not None and hasattr(interp, "day_count_basis") else None)
+            )
+            if meta is not None:
+                basis = float(meta.day_count_basis)
+                comp = str(meta.compounding).strip().lower()
+                freq = int(getattr(meta, "freq", 1))
+                if abs(basis - 252.0) > 1e-6:
+                    dc_eff = float(dc) if dc > 0 else float(du) * (basis / 252.0)
+                    r_val = float(rate_or_curve.get_rate(max(1.0, dc_eff), float(dc_eff)))
+                    tau = dc_eff / basis
+                else:
+                    r_val = float(rate_or_curve.get_rate(max(1, int(du)), max(0, int(dc))))
+                    tau = t_du
+                if comp in ("continuous", "cont"):
+                    df = math.exp(-r_val * tau)
+                elif comp in ("simple", "simple_linear", "linear"):
+                    df = 1.0 / max(1e-12, 1.0 + r_val * tau)
+                elif comp in ("exponential", "exponential_b3", "exp_252", "b3"):
+                    df = (1.0 + max(-0.99, r_val)) ** (-tau)
+                else:
+                    k = float(max(1, freq))
+                    df = (1.0 + max(-0.99, r_val) / k) ** (-k * tau)
+                return -math.log(max(1e-12, df)) / t_du
+
+        r_raw = _BaseOption._get_rate_for_du(rate_or_curve, du, dc)
+        if default_conv == "simple_360":
+            dc_eff = float(dc) if dc > 0 else float(du)
+            return math.log(max(1e-8, 1.0 + r_raw * (dc_eff / 360.0))) / t_du
+        return math.log(1.0 + max(-0.99, r_raw))
 
     def _resolve_vol(self, vol_or_surface: Any, du: int, forward: float) -> float:
         if hasattr(vol_or_surface, "get_vol"):
@@ -124,11 +177,10 @@ class EquityOption(_BaseOption):
         carry_or_div_yield: Union[float, Curve] = 0.0,
     ):
         du_n = self.du(base_date)
+        dc_n = self.dc(base_date)
         t_n = du_n / 252.0
-        r_eff = self._get_rate_for_du(pre_rate_or_curve, du_n)
-        q_eff = self._get_rate_for_du(carry_or_div_yield, du_n)
-        r_cont = math.log(1.0 + max(-0.99, r_eff))
-        q_cont = math.log(1.0 + max(-0.99, q_eff))
+        r_cont = self._resolve_cont_rate(pre_rate_or_curve, du_n, dc_n, default_conv="exp_252")
+        q_cont = self._resolve_cont_rate(carry_or_div_yield, du_n, dc_n, default_conv="exp_252")
         return du_n, t_n, r_cont, q_cont
 
     def risk_metrics(
@@ -232,13 +284,8 @@ class FXOption(_BaseOption):
         du_n = self.du(base_date)
         dc_n = self.dc(base_date)
         t_n = du_n / 252.0
-        r_pre = self._get_rate_for_du(pre_rate_or_curve, du_n)
-        r_ddi = self._get_rate_for_du(cupom_limpo_or_curve, du_n)
-        r_cont = math.log(1.0 + max(-0.99, r_pre))
-        if du_n > 0:
-            q_cont = (252.0 / du_n) * math.log(max(1e-8, 1.0 + r_ddi * (dc_n / 360.0)))
-        else:
-            q_cont = 0.0
+        r_cont = self._resolve_cont_rate(pre_rate_or_curve, du_n, dc_n, default_conv="exp_252")
+        q_cont = self._resolve_cont_rate(cupom_limpo_or_curve, du_n, dc_n, default_conv="simple_360")
         fwd_est = float(spot_ptax) * math.exp((r_cont - q_cont) * t_n) if spot_ptax is not None else self.strike
         vol_val = self._resolve_vol(vol, du_n, fwd_est)
         if du_n > 0:
@@ -348,9 +395,9 @@ class IDIOption(_BaseOption):
         vol: float,
     ) -> Dict[str, float]:
         du_n = self.du(base_date)
+        dc_n = self.dc(base_date)
         t_n = du_n / 252.0
-        r_eff = self._get_rate_for_du(pre_rate_or_curve, du_n)
-        r_cont = math.log(1.0 + max(-0.99, r_eff))
+        r_cont = self._resolve_cont_rate(pre_rate_or_curve, du_n, dc_n, default_conv="exp_252")
         idi_fwd = float(idi_spot) * math.exp(r_cont * t_n)
         vol_val = self._resolve_vol(vol, du_n, idi_fwd)
 
@@ -390,9 +437,9 @@ class IDIOption(_BaseOption):
         pre_rate_or_curve: Union[float, Curve],
     ) -> float:
         du_n = self.du(base_date)
+        dc_n = self.dc(base_date)
         t_n = du_n / 252.0
-        r_eff = self._get_rate_for_du(pre_rate_or_curve, du_n)
-        r_cont = math.log(1.0 + max(-0.99, r_eff))
+        r_cont = self._resolve_cont_rate(pre_rate_or_curve, du_n, dc_n, default_conv="exp_252")
         idi_fwd = float(idi_spot) * math.exp(r_cont * t_n)
         return float(
             _cy_iv_black76(float(market_price), idi_fwd, self.strike, r_cont, t_n, self.option_type == "CALL")
@@ -416,6 +463,7 @@ class DI1Option(_BaseOption):
         option_type: str = "CALL",
         calendar_name: str = "B3",
         dc_basis: float = 360.0,
+        holidays: Any = None,
     ):
         super().__init__(
             ticker=ticker,
@@ -424,6 +472,7 @@ class DI1Option(_BaseOption):
             option_type=option_type,
             exercise="EUROPEAN",
             calendar_name=calendar_name,
+            holidays=holidays,
         )
         self.underlying_maturity_date = self._normalize_date(underlying_maturity_date)
         self.dc_basis = float(dc_basis)
@@ -520,9 +569,10 @@ class CorradoSuOption(_BaseOption):
         carry_or_div_yield: Union[float, Curve] = 0.0,
     ) -> float:
         du_n = self.du(base_date)
+        dc_n = self.dc(base_date)
         t_n = du_n / 252.0
-        r_cont = math.log(1.0 + max(-0.99, self._get_rate_for_du(pre_rate_or_curve, du_n)))
-        q_cont = math.log(1.0 + max(-0.99, self._get_rate_for_du(carry_or_div_yield, du_n)))
+        r_cont = self._resolve_cont_rate(pre_rate_or_curve, du_n, dc_n, default_conv="exp_252")
+        q_cont = self._resolve_cont_rate(carry_or_div_yield, du_n, dc_n, default_conv="exp_252")
         fwd_est = float(spot) * math.exp((r_cont - q_cont) * t_n)
         vol_val = self._resolve_vol(vol, du_n, fwd_est)
         return float(
@@ -597,8 +647,9 @@ def price_options_portfolio(
             bsm_params.append((1 if opt.option_type == "CALL" else 0, 0, spot_ptax, opt.strike, r_c, q_c, t_n, sig_eff))
         elif isinstance(opt, IDIOption):
             du_n = opt.du(base_date)
+            dc_n = opt.dc(base_date)
             t_n = du_n / 252.0
-            r_c = math.log(1.0 + max(-0.99, opt._get_rate_for_du(pos["pre_rate_or_curve"], du_n)))
+            r_c = opt._resolve_cont_rate(pos["pre_rate_or_curve"], du_n, dc_n, default_conv="exp_252")
             fwd = float(pos["idi_spot"]) * math.exp(r_c * t_n)
             sig = opt._resolve_vol(pos["vol"], du_n, fwd)
             b76_idx.append(i)
@@ -628,9 +679,10 @@ def price_options_portfolio(
             r_out[i] = np.nan
         elif isinstance(opt, EquityOption):
             du_n = opt.du(base_date)
+            dc_n = opt.dc(base_date)
             t_n = du_n / 252.0
-            r_c = math.log(1.0 + max(-0.99, opt._get_rate_for_du(pos["pre_rate_or_curve"], du_n)))
-            q_c = math.log(1.0 + max(-0.99, opt._get_rate_for_du(pos.get("carry_or_div_yield", 0.0), du_n)))
+            r_c = opt._resolve_cont_rate(pos["pre_rate_or_curve"], du_n, dc_n, default_conv="exp_252")
+            q_c = opt._resolve_cont_rate(pos.get("carry_or_div_yield", 0.0), du_n, dc_n, default_conv="exp_252")
             S_val = float(pos["spot"])
             fwd_est = S_val * math.exp((r_c - q_c) * t_n)
             sig = opt._resolve_vol(pos["vol"], du_n, fwd_est)
@@ -721,6 +773,7 @@ class Swaption(_BaseOption):
         payment_dates: Optional[List[Union[datetime.date, str]]] = None,
         swap_convention: str = "periodic",
         calendar_name: str = "B3",
+        holidays: Any = None,
     ):
         opt_norm = option_type.strip().upper()
         if opt_norm in ("PAYER", "CALL"):
@@ -739,6 +792,7 @@ class Swaption(_BaseOption):
             option_type=mapped,
             exercise="EUROPEAN",
             calendar_name=calendar_name,
+            holidays=holidays,
         )
         self.swaption_side = "PAYER" if mapped == "CALL" else "RECEIVER"
         self.swap_maturity_date = self._normalize_date(swap_maturity_date) if swap_maturity_date else None
@@ -896,6 +950,7 @@ class CapFloor(_BaseOption):
         option_type: str = "CAP",
         notional: float = 1_000_000.0,
         calendar_name: str = "B3",
+        holidays: Any = None,
     ):
         if len(fixing_dates) != len(payment_dates) or not fixing_dates:
             raise ValueError("fixing_dates e payment_dates devem ser não vazios e de mesmo tamanho.")
@@ -915,6 +970,7 @@ class CapFloor(_BaseOption):
             option_type=mapped,
             exercise="EUROPEAN",
             calendar_name=calendar_name,
+            holidays=holidays,
         )
         self.capfloor_type = "CAP" if mapped == "CALL" else "FLOOR"
         self.notional = float(notional)
@@ -1021,6 +1077,7 @@ class BarrierOption(_BaseOption):
         rebate: float = 0.0,
         monitoring_steps: Optional[int] = None,
         calendar_name: str = "B3",
+        holidays: Any = None,
     ):
         super().__init__(
             ticker=ticker,
@@ -1029,6 +1086,7 @@ class BarrierOption(_BaseOption):
             option_type=option_type,
             exercise="EUROPEAN",
             calendar_name=calendar_name,
+            holidays=holidays,
         )
         bt = barrier_type.strip().lower()
         if bt not in ("down-and-out", "down-and-in", "up-and-out", "up-and-in"):
@@ -1049,9 +1107,10 @@ class BarrierOption(_BaseOption):
         carry_or_div_yield: Union[float, Curve] = 0.0,
     ) -> float:
         du_n = self.du(base_date)
+        dc_n = self.dc(base_date)
         t_n = du_n / 252.0
-        r_cont = math.log(1.0 + max(-0.99, self._get_rate_for_du(pre_rate_or_curve, du_n)))
-        q_cont = math.log(1.0 + max(-0.99, self._get_rate_for_du(carry_or_div_yield, du_n)))
+        r_cont = self._resolve_cont_rate(pre_rate_or_curve, du_n, dc_n, default_conv="exp_252")
+        q_cont = self._resolve_cont_rate(carry_or_div_yield, du_n, dc_n, default_conv="exp_252")
         fwd_est = float(spot) * math.exp((r_cont - q_cont) * t_n)
         vol_val = self._resolve_vol(vol, du_n, fwd_est)
 
@@ -1097,6 +1156,7 @@ class AsianOption(_BaseOption):
         average_type: str = "arithmetic",
         n_fixings: Optional[int] = None,
         calendar_name: str = "B3",
+        holidays: Any = None,
     ):
         super().__init__(
             ticker=ticker,
@@ -1105,6 +1165,7 @@ class AsianOption(_BaseOption):
             option_type=option_type,
             exercise="EUROPEAN",
             calendar_name=calendar_name,
+            holidays=holidays,
         )
         avg = average_type.strip().lower()
         if avg not in ("arithmetic", "geometric"):
@@ -1121,9 +1182,10 @@ class AsianOption(_BaseOption):
         carry_or_div_yield: Union[float, Curve] = 0.0,
     ) -> float:
         du_n = self.du(base_date)
+        dc_n = self.dc(base_date)
         t_n = du_n / 252.0
-        r_cont = math.log(1.0 + max(-0.99, self._get_rate_for_du(pre_rate_or_curve, du_n)))
-        q_cont = math.log(1.0 + max(-0.99, self._get_rate_for_du(carry_or_div_yield, du_n)))
+        r_cont = self._resolve_cont_rate(pre_rate_or_curve, du_n, dc_n, default_conv="exp_252")
+        q_cont = self._resolve_cont_rate(carry_or_div_yield, du_n, dc_n, default_conv="exp_252")
         fwd_est = float(spot) * math.exp((r_cont - q_cont) * t_n)
         vol_val = self._resolve_vol(vol, du_n, fwd_est)
         n_fix = self.n_fixings if (self.n_fixings is not None and self.n_fixings > 0) else 0

@@ -247,3 +247,47 @@ def test_offshore_interpolators_parametric_and_bootstrapping():
     cm = CurveManager(allow_download=False)
     mgr_sofr = cm.get_curve("SOFR_OIS", data=dict(zip(ois_dcs, ois_pars)), method="monotone_convex")
     assert abs(mgr_sofr.get_rate(ois_dcs[-1]) - bz_ois_mc.get_rate(ois_dcs[-1])) < 1e-14
+
+
+def test_left_extrapolation_non_continuous_compounding_e5():
+    from bz_pricing.core.curves import SimpleCurve
+    from bz_pricing.core.interpolators import (
+        LogCubicDiscountInterpolator,
+        LogLinearDiscountInterpolator,
+        MonotoneConvexInterpolator,
+    )
+
+    t_nodes = np.array([90.0, 180.0, 360.0], dtype=float)
+    y_nodes = np.array([0.045, 0.048, 0.050], dtype=float)
+
+    ll_flat = LogLinearDiscountInterpolator(0, 1, 360.0, "simple")
+    ll_fwd = LogLinearDiscountInterpolator(1, 1, 360.0, "simple")
+    ll_cont = LogLinearDiscountInterpolator(0, 1, 360.0, "continuous")
+
+    crv_flat = SimpleCurve(t_nodes, y_nodes, ll_flat)
+    crv_fwd = SimpleCurve(t_nodes, y_nodes, ll_fwd)
+    crv_cont = SimpleCurve(t_nodes, y_nodes, ll_cont)
+
+    # Em t = 45 < t_0 = 90: extrapolação flat simples preserva 0.045 exato;
+    # flat-forward simples mantém f instantânea constante em (0, t_0], logo a taxa simples equivalente difere ligeiramente de y_0.
+    assert abs(crv_flat.get_rate(45.0) - 0.045) < 1e-12
+    assert abs(crv_cont.get_rate(45.0) - 0.045) < 1e-12
+    tau0 = 90.0 / 360.0
+    f0 = math.log(1.0 + 0.045 * tau0) / tau0
+    tau_mid = 45.0 / 360.0
+    expected_fwd_simple = (math.exp(f0 * tau_mid) - 1.0) / tau_mid
+    assert abs(crv_fwd.get_rate(45.0) - expected_fwd_simple) < 1e-12
+    assert abs(crv_fwd.get_rate(45.0) - 0.045) > 1e-5
+
+    # LogCubic e MonotoneConvex também avaliam (0, t_0] via curva de desconto em regime simples (sem salto para y_0)
+    for cls in (LogCubicDiscountInterpolator, MonotoneConvexInterpolator):
+        interp_s = cls(0, 1, 360.0, "simple")
+        interp_c = cls(0, 1, 360.0, "continuous")
+        crv_s = SimpleCurve(t_nodes, y_nodes, interp_s)
+        crv_c = SimpleCurve(t_nodes, y_nodes, interp_c)
+        assert abs(crv_s.get_rate(90.0) - 0.045) < 1e-12
+        assert abs(crv_c.get_rate(90.0) - 0.045) < 1e-12
+        r_s_45 = crv_s.get_rate(45.0)
+        assert 0.040 < r_s_45 < 0.048
+        assert crv_s.get_rate(0.0) == 0.045
+

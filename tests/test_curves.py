@@ -318,6 +318,82 @@ def test_user_component_vertices_offline():
     assert abs(c_zus_fd.get_rate(90.0) - expected_90) < 1e-4
 
 
+def test_offline_calendars_ois_schedule_configs_and_provider_guard():
+    import math
+    from bz_pricing.core.calendars import get_calendar
+    from bz_pricing.curves.configs import CURVE_CONFIGS
+    from bz_pricing.curves.offshore import (
+        _coupon_schedule_dc,
+        bootstrap_ois_curve,
+        bootstrap_treasury_curve,
+    )
+
+    # O1 / E2: calendários embutidos offline e custom holidays sem mutar singleton B3
+    cal_b3 = get_calendar("B3", allow_download=False)
+    cal_us = get_calendar("US", allow_download=False)
+    cal_tgt = get_calendar("TARGET", allow_download=False)
+    cal_uk = get_calendar("UK", allow_download=False)
+    cal_act = get_calendar("ACTUAL", allow_download=False)
+    assert cal_b3 is not None and cal_us is not None and cal_tgt is not None and cal_uk is not None and cal_act is not None
+
+    # 2026-11-02 (Finados BR) é feriado na B3, mas dia útil nos EUA; 2026-07-03 (obs. 4 de Julho) é feriado US
+    assert not cal_b3.isbizday(datetime.date(2026, 11, 2))
+    assert cal_us.isbizday(datetime.date(2026, 11, 2))
+    assert not cal_us.isbizday(datetime.date(2026, 7, 3))
+    assert not cal_tgt.isbizday(datetime.date(2026, 12, 26))
+    assert not cal_uk.isbizday(datetime.date(2026, 8, 31))
+    assert cal_act.bizdays(datetime.date(2026, 10, 30), datetime.date(2026, 11, 2)) == 3
+
+    du_std = cal_b3.bizdays(datetime.date(2026, 10, 30), datetime.date(2026, 12, 1))
+    cal_custom = get_calendar("B3", holidays=["2026-11-16"])
+    assert cal_custom.bizdays(datetime.date(2026, 10, 30), datetime.date(2026, 12, 1)) == du_std - 1
+    assert cal_b3.bizdays(datetime.date(2026, 10, 30), datetime.date(2026, 12, 1)) == du_std
+
+    # E1: espaçamento anual civil (365, 730, 1095 DC) sob ACT/360 em OIS e Treasury reproduz PV par = 1.0
+    ois_cal_dcs = [90.0, 180.0, 365.0, 730.0, 1095.0, 1825.0]
+    ois_cal_pars = [0.0430, 0.0438, 0.0446, 0.0458, 0.0467, 0.0480]
+    ois_crv = bootstrap_ois_curve(
+        ois_cal_dcs, ois_cal_pars, convention="ACT/360", payment_freq_months=12, method="monotone_convex"
+    )
+    for dc_m, y_par in zip(ois_cal_dcs, ois_cal_pars):
+        pts = _coupon_schedule_dc(dc_m, 1.0, 360.0)
+        pv = 0.0
+        prev = 0.0
+        for j, pt in enumerate(pts):
+            df = math.exp(-ois_crv.get_rate(pt) * (pt / 360.0))
+            amt = y_par * ((pt - prev) / 360.0) + (1.0 if j == len(pts) - 1 else 0.0)
+            pv += amt * df
+            prev = pt
+        assert abs(pv - 1.0) < 1e-11
+
+    ust_cal_dcs = [90.0, 182.0, 365.0, 730.0, 1095.0]
+    ust_cal_pars = [0.0440, 0.0446, 0.0454, 0.0462, 0.0470]
+    ust_crv = bootstrap_treasury_curve(ust_cal_dcs, ust_cal_pars, coupon_freq=2, day_count_basis=365.25, method="monotone_convex")
+    assert ust_crv.get_rate(730.0) > 0.0
+
+    # E4: configuração de moedas offshore SGP (SONIA), SYD (TONA) e TONA_OIS
+    assert CURVE_CONFIGS["SGP"]["curve_a"] == "SONIA_OIS"
+    assert CURVE_CONFIGS["SYD"]["curve_a"] == "TONA_OIS"
+    assert "TONA_OIS" in CURVE_CONFIGS and CURVE_CONFIGS["TONA_OIS"]["convention"] == "ACT/365"
+
+    # O4: _extract_provider_vertices não toca self.loader quando allow_download=False
+    class _BrokenLoader:
+        data_dir = "dados/b3"
+        def get_curve_instruments(self, *args, **kwargs):
+            raise AssertionError("Não deve consultar loader com allow_download=False")
+
+    mgr_off = CurveManager(loader=_BrokenLoader(), builder=B3CurveBuilder(), allow_download=False)
+    df_many = pd.DataFrame({
+        "day252": np.arange(1, 70, dtype=int) * 5,
+        "day360": np.arange(1, 70, dtype=int) * 7,
+        "rate": np.linspace(12.5, 13.8, 69),
+    })
+    for c_name in ("PRE", "DAP", "DOC"):
+        crv_o = mgr_off.get_curve(c_name, datetime.date(2026, 10, 30), data=df_many, allow_download=False)
+        assert crv_o.get_rate(25.0, 35.0) > 0.0
+
+
+
 
 
 

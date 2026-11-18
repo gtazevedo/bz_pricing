@@ -37,8 +37,9 @@ class TituloPublico:
         maturity_date: Optional[Union[datetime.date, str]] = None,
         calendar_name: str = 'B3',
         custom_cashflows: Any = None,
+        holidays: Any = None,
     ):
-        self.calendar = get_calendar(calendar_name)
+        self.calendar = get_calendar(calendar_name, holidays=holidays)
         self.custom_cashflows = custom_cashflows
         if maturity_date is None and custom_cashflows is not None:
             parsed = self._parse_custom_cashflows_raw(custom_cashflows)
@@ -188,6 +189,8 @@ class TituloPublico:
         ipca_proj: Optional[float] = None,
         vna_engine: Optional[VNAEngine] = None,
         allow_download: bool = True,
+        ipca_history: Any = None,
+        ipca_projections: Any = None,
     ) -> float:
         if vna is not None:
             return float(vna)
@@ -199,7 +202,17 @@ class TituloPublico:
             return float(math.trunc((float(base_vna) * ipca_f) * 1e6) / 1e6)
         if vna_engine is not None:
             return float(vna_engine.calculate_vna(base_date, cal=self.calendar, anniversary_day=15, ipca_proj=ipca_proj, truncate_monthly=False))
-        return float(calculate_ntnb_vna(base_date, ipca_proj=ipca_proj, cal=self.calendar, allow_download=allow_download, truncate_monthly=False))
+        return float(
+            calculate_ntnb_vna(
+                base_date,
+                ipca_proj=ipca_proj,
+                ipca_history=ipca_history,
+                ipca_projections=ipca_projections,
+                cal=self.calendar,
+                allow_download=allow_download,
+                truncate_monthly=False,
+            )
+        )
 
 
 class LTN(TituloPublico):
@@ -208,8 +221,8 @@ class LTN(TituloPublico):
     Valor nominal no vencimento de R$ 1.000,00 (ou fluxos customizados do usuário).
     """
     def __init__(self, maturity_date: Optional[Union[datetime.date, str]] = None, face_value: float = 1000.0,
-                 calendar_name: str = 'B3', custom_cashflows: Any = None):
-        super().__init__(maturity_date, calendar_name, custom_cashflows=custom_cashflows)
+                 calendar_name: str = 'B3', custom_cashflows: Any = None, holidays: Any = None):
+        super().__init__(maturity_date, calendar_name, custom_cashflows=custom_cashflows, holidays=holidays)
         self.face_value = face_value
 
     def cashflow_table(self, base_date: Union[datetime.date, str], curve: Curve, custom_cashflows: Any = None) -> pd.DataFrame:
@@ -291,8 +304,9 @@ class NTNF(TituloPublico):
     Taxa de cupom editalícia de 10,00% a.a. e cupons pagos em 01/01 e 01/07 (ou fluxos customizados).
     """
     def __init__(self, maturity_date: Optional[Union[datetime.date, str]] = None, coupon_rate: float = 0.10,
-                 face_value: float = 1000.0, calendar_name: str = 'B3', custom_cashflows: Any = None):
-        super().__init__(maturity_date, calendar_name, custom_cashflows=custom_cashflows)
+                 face_value: float = 1000.0, calendar_name: str = 'B3', custom_cashflows: Any = None,
+                 holidays: Any = None):
+        super().__init__(maturity_date, calendar_name, custom_cashflows=custom_cashflows, holidays=holidays)
         self.coupon_rate = coupon_rate
         self.face_value = face_value
 
@@ -416,8 +430,8 @@ class LFT(TituloPublico):
     Precificada a partir da cotação de ágio/deságio aplicada sobre o VNA da LFT.
     """
     def __init__(self, maturity_date: Optional[Union[datetime.date, str]] = None, calendar_name: str = 'B3',
-                 custom_cashflows: Any = None):
-        super().__init__(maturity_date, calendar_name, custom_cashflows=custom_cashflows)
+                 custom_cashflows: Any = None, holidays: Any = None):
+        super().__init__(maturity_date, calendar_name, custom_cashflows=custom_cashflows, holidays=holidays)
 
     def cashflow_table(self, base_date: Union[datetime.date, str], agio_curve: Curve, vna: float = None,
                        custom_cashflows: Any = None) -> pd.DataFrame:
@@ -522,8 +536,8 @@ class NTNB(TituloPublico):
     Taxa de cupom editalícia de 6,00% a.a. aplicada sobre o Valor Nominal Atualizado (VNA).
     """
     def __init__(self, maturity_date: Optional[Union[datetime.date, str]] = None, coupon_rate: float = 0.06,
-                 calendar_name: str = 'B3', custom_cashflows: Any = None):
-        super().__init__(maturity_date, calendar_name, custom_cashflows=custom_cashflows)
+                 calendar_name: str = 'B3', custom_cashflows: Any = None, holidays: Any = None):
+        super().__init__(maturity_date, calendar_name, custom_cashflows=custom_cashflows, holidays=holidays)
         self.coupon_rate = coupon_rate
 
     def calculate_vna(
@@ -535,6 +549,8 @@ class NTNB(TituloPublico):
         base_vna: Optional[float] = None,
         base_vna_date: Optional[Union[datetime.date, str]] = None,
         allow_download: bool = True,
+        ipca_history: Any = None,
+        ipca_projections: Any = None,
     ) -> float:
         """Calcula o VNA oficial/projetado da NTN-B na data de referência."""
         base_dt = self._normalize_date(base_date)
@@ -546,6 +562,8 @@ class NTNB(TituloPublico):
             ipca_proj=ipca_proj,
             vna_engine=vna_engine,
             allow_download=allow_download,
+            ipca_history=ipca_history,
+            ipca_projections=ipca_projections,
         )
 
     def get_coupon_dates(self, base_date: Union[datetime.date, str]) -> List[datetime.date]:
@@ -572,11 +590,13 @@ class NTNB(TituloPublico):
     def cashflow_table(self, base_date: Union[datetime.date, str], real_curve: Curve, vna: float = None,
                        inflation_curve: Curve = None, base_vna: float = None, base_vna_date: Union[datetime.date, str] = None,
                        ipca_proj: Optional[float] = None, vna_engine: Optional[VNAEngine] = None,
-                       allow_download: bool = True, custom_cashflows: Any = None) -> pd.DataFrame:
+                       allow_download: bool = True, custom_cashflows: Any = None,
+                       ipca_history: Any = None, ipca_projections: Any = None) -> pd.DataFrame:
         base_date = self._normalize_date(base_date)
         vna_val = self._resolve_ntnb_vna(
             base_date, vna=vna, inflation_curve=inflation_curve, base_vna=base_vna,
-            base_vna_date=base_vna_date, ipca_proj=ipca_proj, vna_engine=vna_engine, allow_download=allow_download,
+            base_vna_date=base_vna_date, ipca_proj=ipca_proj, vna_engine=vna_engine,
+            allow_download=allow_download, ipca_history=ipca_history, ipca_projections=ipca_projections,
         )
         cf = custom_cashflows if custom_cashflows is not None else self.custom_cashflows
         if cf is not None:
@@ -615,11 +635,13 @@ class NTNB(TituloPublico):
                       inflation_curve: Curve = None, base_vna: float = None, base_vna_date: Union[datetime.date, str] = None,
                       ipca_proj: Optional[float] = None, vna_engine: Optional[VNAEngine] = None,
                       allow_download: bool = True, return_cashflows: bool = False,
-                      custom_cashflows: Any = None) -> Union[float, Tuple[float, pd.DataFrame]]:
+                      custom_cashflows: Any = None, ipca_history: Any = None,
+                      ipca_projections: Any = None) -> Union[float, Tuple[float, pd.DataFrame]]:
         base_date = self._normalize_date(base_date)
         vna_val = self._resolve_ntnb_vna(
             base_date, vna=vna, inflation_curve=inflation_curve, base_vna=base_vna,
-            base_vna_date=base_vna_date, ipca_proj=ipca_proj, vna_engine=vna_engine, allow_download=allow_download,
+            base_vna_date=base_vna_date, ipca_proj=ipca_proj, vna_engine=vna_engine,
+            allow_download=allow_download, ipca_history=ipca_history, ipca_projections=ipca_projections,
         )
         cf = custom_cashflows if custom_cashflows is not None else self.custom_cashflows
         if cf is not None:
@@ -642,6 +664,8 @@ class NTNB(TituloPublico):
                 ipca_proj=ipca_proj,
                 vna_engine=vna_engine,
                 allow_download=allow_download,
+                ipca_history=ipca_history,
+                ipca_projections=ipca_projections,
             )
             return pu, df_flows
         return pu
@@ -672,9 +696,13 @@ class NTNB(TituloPublico):
 
     def dv01(self, base_date: Union[datetime.date, str], real_curve: Curve, vna: float = None,
              ipca_proj: Optional[float] = None, vna_engine: Optional[VNAEngine] = None,
-             allow_download: bool = True, custom_cashflows: Any = None) -> float:
+             allow_download: bool = True, custom_cashflows: Any = None,
+             ipca_history: Any = None, ipca_projections: Any = None) -> float:
         base_date = self._normalize_date(base_date)
-        vna_val = self._resolve_ntnb_vna(base_date, vna=vna, ipca_proj=ipca_proj, vna_engine=vna_engine, allow_download=allow_download)
+        vna_val = self._resolve_ntnb_vna(
+            base_date, vna=vna, ipca_proj=ipca_proj, vna_engine=vna_engine,
+            allow_download=allow_download, ipca_history=ipca_history, ipca_projections=ipca_projections,
+        )
         cf = custom_cashflows if custom_cashflows is not None else self.custom_cashflows
         if cf is not None:
             return self._custom_metrics(base_date, real_curve, cf, vna=vna_val)["dv01"]
@@ -691,8 +719,8 @@ class NTNBPrincipal(TituloPublico):
     Nota do Tesouro Nacional - Série B Principal (título indexado ao IPCA sem cupons intermediários).
     """
     def __init__(self, maturity_date: Optional[Union[datetime.date, str]] = None, calendar_name: str = 'B3',
-                 custom_cashflows: Any = None):
-        super().__init__(maturity_date, calendar_name, custom_cashflows=custom_cashflows)
+                 custom_cashflows: Any = None, holidays: Any = None):
+        super().__init__(maturity_date, calendar_name, custom_cashflows=custom_cashflows, holidays=holidays)
 
     def calculate_vna(
         self,
@@ -703,6 +731,8 @@ class NTNBPrincipal(TituloPublico):
         base_vna: Optional[float] = None,
         base_vna_date: Optional[Union[datetime.date, str]] = None,
         allow_download: bool = True,
+        ipca_history: Any = None,
+        ipca_projections: Any = None,
     ) -> float:
         """Calcula o VNA oficial/projetado da NTN-B Principal na data de referência."""
         base_dt = self._normalize_date(base_date)
@@ -714,16 +744,20 @@ class NTNBPrincipal(TituloPublico):
             ipca_proj=ipca_proj,
             vna_engine=vna_engine,
             allow_download=allow_download,
+            ipca_history=ipca_history,
+            ipca_projections=ipca_projections,
         )
 
     def cashflow_table(self, base_date: Union[datetime.date, str], real_curve: Curve, vna: float = None,
                        inflation_curve: Curve = None, base_vna: float = None, base_vna_date: Union[datetime.date, str] = None,
                        ipca_proj: Optional[float] = None, vna_engine: Optional[VNAEngine] = None,
-                       allow_download: bool = True, custom_cashflows: Any = None) -> pd.DataFrame:
+                       allow_download: bool = True, custom_cashflows: Any = None,
+                       ipca_history: Any = None, ipca_projections: Any = None) -> pd.DataFrame:
         base_date = self._normalize_date(base_date)
         vna_val = self._resolve_ntnb_vna(
             base_date, vna=vna, inflation_curve=inflation_curve, base_vna=base_vna,
-            base_vna_date=base_vna_date, ipca_proj=ipca_proj, vna_engine=vna_engine, allow_download=allow_download,
+            base_vna_date=base_vna_date, ipca_proj=ipca_proj, vna_engine=vna_engine,
+            allow_download=allow_download, ipca_history=ipca_history, ipca_projections=ipca_projections,
         )
         cf = custom_cashflows if custom_cashflows is not None else self.custom_cashflows
         if cf is not None:
@@ -758,11 +792,13 @@ class NTNBPrincipal(TituloPublico):
                       inflation_curve: Curve = None, base_vna: float = None, base_vna_date: Union[datetime.date, str] = None,
                       ipca_proj: Optional[float] = None, vna_engine: Optional[VNAEngine] = None,
                       allow_download: bool = True, return_cashflows: bool = False,
-                      custom_cashflows: Any = None) -> Union[float, Tuple[float, pd.DataFrame]]:
+                      custom_cashflows: Any = None, ipca_history: Any = None,
+                      ipca_projections: Any = None) -> Union[float, Tuple[float, pd.DataFrame]]:
         base_date = self._normalize_date(base_date)
         vna_val = self._resolve_ntnb_vna(
             base_date, vna=vna, inflation_curve=inflation_curve, base_vna=base_vna,
-            base_vna_date=base_vna_date, ipca_proj=ipca_proj, vna_engine=vna_engine, allow_download=allow_download,
+            base_vna_date=base_vna_date, ipca_proj=ipca_proj, vna_engine=vna_engine,
+            allow_download=allow_download, ipca_history=ipca_history, ipca_projections=ipca_projections,
         )
         cf = custom_cashflows if custom_cashflows is not None else self.custom_cashflows
         if cf is not None:
@@ -798,9 +834,13 @@ class NTNBPrincipal(TituloPublico):
 
     def dv01(self, base_date: Union[datetime.date, str], real_curve: Curve, vna: float = None,
              ipca_proj: Optional[float] = None, vna_engine: Optional[VNAEngine] = None,
-             allow_download: bool = True, custom_cashflows: Any = None) -> float:
+             allow_download: bool = True, custom_cashflows: Any = None,
+             ipca_history: Any = None, ipca_projections: Any = None) -> float:
         base_date = self._normalize_date(base_date)
-        vna_val = self._resolve_ntnb_vna(base_date, vna=vna, ipca_proj=ipca_proj, vna_engine=vna_engine, allow_download=allow_download)
+        vna_val = self._resolve_ntnb_vna(
+            base_date, vna=vna, ipca_proj=ipca_proj, vna_engine=vna_engine,
+            allow_download=allow_download, ipca_history=ipca_history, ipca_projections=ipca_projections,
+        )
         cf = custom_cashflows if custom_cashflows is not None else self.custom_cashflows
         if cf is not None:
             return self._custom_metrics(base_date, real_curve, cf, vna=vna_val)["dv01"]
@@ -815,8 +855,8 @@ class NTNC(TituloPublico):
     Taxa de cupom editalícia de 6,00% ou 12,00% a.a. (padrão 12% para série 2031) aplicada sobre o VNA do IGP-M.
     """
     def __init__(self, maturity_date: Optional[Union[datetime.date, str]] = None, coupon_rate: Optional[float] = None,
-                 calendar_name: str = 'B3', custom_cashflows: Any = None):
-        super().__init__(maturity_date, calendar_name, custom_cashflows=custom_cashflows)
+                 calendar_name: str = 'B3', custom_cashflows: Any = None, holidays: Any = None):
+        super().__init__(maturity_date, calendar_name, custom_cashflows=custom_cashflows, holidays=holidays)
         if coupon_rate is None:
             if self.nominal_maturity_date is not None and self.nominal_maturity_date.year == 2031:
                 self.coupon_rate = 0.12
@@ -855,6 +895,10 @@ class NTNC(TituloPublico):
         vna_engine: Optional[VNAEngine] = None,
         inflation_curve: Optional[Curve] = None,
         allow_download: bool = True,
+        igpm_history: Any = None,
+        igpm_projections: Any = None,
+        base_index: Optional[float] = None,
+        current_index: Optional[float] = None,
     ) -> float:
         """Calcula o VNA da NTN-C a partir do VNE/data-base pelo IGP-M (aniversário dia 1)."""
         base_dt = self._normalize_date(base_date)
@@ -866,12 +910,27 @@ class NTNC(TituloPublico):
             return float(math.trunc((float(vne) * igpm_f) * 1e6) / 1e6)
         if vna_engine is not None:
             return float(vna_engine.calculate_vna(base_dt, cal=self.calendar, anniversary_day=1, ipca_proj=igpm_proj, truncate_monthly=False))
-        return float(calculate_ntnc_vna(base_dt, vne=vne, base_date=base_vna_date, igpm_proj=igpm_proj, cal=self.calendar, allow_download=allow_download))
+        return float(
+            calculate_ntnc_vna(
+                base_dt,
+                vne=vne,
+                base_date=base_vna_date,
+                igpm_proj=igpm_proj,
+                igpm_history=igpm_history,
+                igpm_projections=igpm_projections,
+                cal=self.calendar,
+                allow_download=allow_download,
+                base_index=base_index,
+                current_index=current_index,
+            )
+        )
 
     def cashflow_table(self, base_date: Union[datetime.date, str], real_curve: Curve, vna: float = None,
                        inflation_curve: Curve = None, base_vna: float = None, base_vna_date: Union[datetime.date, str] = None,
                        igpm_proj: Optional[float] = None, vna_engine: Optional[VNAEngine] = None,
-                       allow_download: bool = True, custom_cashflows: Any = None) -> pd.DataFrame:
+                       allow_download: bool = True, custom_cashflows: Any = None,
+                       igpm_history: Any = None, igpm_projections: Any = None,
+                       base_index: Optional[float] = None, current_index: Optional[float] = None) -> pd.DataFrame:
         base_date = self._normalize_date(base_date)
         if vna is not None:
             vna_val = float(vna)
@@ -884,6 +943,10 @@ class NTNC(TituloPublico):
                 vna_engine=vna_engine,
                 inflation_curve=inflation_curve,
                 allow_download=allow_download,
+                igpm_history=igpm_history,
+                igpm_projections=igpm_projections,
+                base_index=base_index,
+                current_index=current_index,
             )
         cf = custom_cashflows if custom_cashflows is not None else self.custom_cashflows
         if cf is not None:
@@ -922,7 +985,9 @@ class NTNC(TituloPublico):
                       inflation_curve: Curve = None, base_vna: float = None, base_vna_date: Union[datetime.date, str] = None,
                       igpm_proj: Optional[float] = None, vna_engine: Optional[VNAEngine] = None,
                       allow_download: bool = True, return_cashflows: bool = False,
-                      custom_cashflows: Any = None) -> Union[float, Tuple[float, pd.DataFrame]]:
+                      custom_cashflows: Any = None, igpm_history: Any = None,
+                      igpm_projections: Any = None, base_index: Optional[float] = None,
+                      current_index: Optional[float] = None) -> Union[float, Tuple[float, pd.DataFrame]]:
         base_date = self._normalize_date(base_date)
         vna_val = (
             float(vna)
@@ -935,6 +1000,10 @@ class NTNC(TituloPublico):
                 vna_engine=vna_engine,
                 inflation_curve=inflation_curve,
                 allow_download=allow_download,
+                igpm_history=igpm_history,
+                igpm_projections=igpm_projections,
+                base_index=base_index,
+                current_index=current_index,
             )
         )
         cf = custom_cashflows if custom_cashflows is not None else self.custom_cashflows
@@ -957,6 +1026,10 @@ class NTNC(TituloPublico):
                 igpm_proj=igpm_proj,
                 vna_engine=vna_engine,
                 allow_download=allow_download,
+                igpm_history=igpm_history,
+                igpm_projections=igpm_projections,
+                base_index=base_index,
+                current_index=current_index,
             )
             return pu, df_flows
         return pu
@@ -987,9 +1060,24 @@ class NTNC(TituloPublico):
 
     def dv01(self, base_date: Union[datetime.date, str], real_curve: Curve, vna: float = None,
              igpm_proj: Optional[float] = None, vna_engine: Optional[VNAEngine] = None,
-             allow_download: bool = True, custom_cashflows: Any = None) -> float:
+             allow_download: bool = True, custom_cashflows: Any = None,
+             igpm_history: Any = None, igpm_projections: Any = None,
+             base_index: Optional[float] = None, current_index: Optional[float] = None) -> float:
         base_date = self._normalize_date(base_date)
-        vna_val = float(vna) if vna is not None else self.calculate_vna(base_date, igpm_proj=igpm_proj, vna_engine=vna_engine, allow_download=allow_download)
+        vna_val = (
+            float(vna)
+            if vna is not None
+            else self.calculate_vna(
+                base_date,
+                igpm_proj=igpm_proj,
+                vna_engine=vna_engine,
+                allow_download=allow_download,
+                igpm_history=igpm_history,
+                igpm_projections=igpm_projections,
+                base_index=base_index,
+                current_index=current_index,
+            )
+        )
         cf = custom_cashflows if custom_cashflows is not None else self.custom_cashflows
         if cf is not None:
             return self._custom_metrics(base_date, real_curve, cf, vna=vna_val)["dv01"]

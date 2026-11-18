@@ -151,15 +151,31 @@ def _normalize_dc_and_rates(
     return dc_sorted.astype(np.float64), r_arr[order][uniq_idx].astype(np.float64)
 
 
-def _coupon_schedule_dc(maturity_dc: float, step_days: float) -> List[float]:
-    """Gera agenda de datas de pagamento até maturity_dc caminhando de trás para frente."""
-    if maturity_dc <= step_days + 1e-6:
+def _coupon_schedule_dc(maturity_dc: float, freq_per_year: float, basis: float) -> List[float]:
+    """Gera agenda de datas de pagamento até maturity_dc respeitando convenções de ano civil e base."""
+    if freq_per_year <= 0.0:
         return [float(maturity_dc)]
+    single_max = max(float(basis), 365.25) / float(freq_per_year) + 1.5
+    if maturity_dc <= single_max:
+        return [float(maturity_dc)]
+
+    step_basis = float(basis) / float(freq_per_year)
+    step_cal = 365.0 / float(freq_per_year)
+    n_basis = int(round(maturity_dc / step_basis))
+    n_cal = max(1, int(round(maturity_dc / step_cal)))
+
+    if n_basis >= 1 and abs(maturity_dc - n_basis * step_basis) <= 1.5:
+        step_use = step_basis
+    elif abs(maturity_dc - n_cal * step_cal) <= 5.0 * n_cal:
+        step_use = maturity_dc / float(n_cal)
+    else:
+        step_use = step_cal
+
     pts: List[float] = []
     cur = float(maturity_dc)
     while cur > 1e-6:
         pts.append(cur)
-        cur -= float(step_days)
+        cur -= float(step_use)
     pts.reverse()
     return pts
 
@@ -278,7 +294,8 @@ def bootstrap_ois_curve(
         raw_method, day_count_basis=basis, compounding=compounding, extrap_left=0, extrap_right=extrap_r
     )
 
-    step_days = basis * (float(payment_freq_months) / 12.0) if payment_freq_months > 0 else 1e9
+    freq_per_year = (12.0 / float(payment_freq_months)) if payment_freq_months > 0 else 0.0
+    single_max = (max(basis, 365.25) / freq_per_year + 1.5) if freq_per_year > 0.0 else 1e9
 
     settled_dc: List[float] = []
     settled_y: List[float] = []
@@ -313,11 +330,11 @@ def bootstrap_ois_curve(
             y_sol = _zero_rate_from_df(df_end, dc_v, basis, compounding)
         else:
             par_r = float(payload)
-            if dc_v <= step_days + 1e-6:
+            if dc_v <= single_max:
                 df_v = 1.0 / (1.0 + par_r * (dc_v / basis))
                 y_sol = _zero_rate_from_df(df_v, dc_v, basis, compounding)
             else:
-                pay_dates = _coupon_schedule_dc(dc_v, step_days)
+                pay_dates = _coupon_schedule_dc(dc_v, freq_per_year, basis)
                 schedule: List[Tuple[float, float]] = []
                 prev_d = 0.0
                 for j, d_pay in enumerate(pay_dates):
@@ -382,18 +399,19 @@ def bootstrap_treasury_curve(
         raw_method, day_count_basis=basis, compounding=compounding, extrap_left=0, extrap_right=extrap_r
     )
 
-    step_days = basis / float(max(1, int(coupon_freq)))
+    freq_per_year = float(max(1, int(coupon_freq)))
+    single_max = max(basis, 365.25) / freq_per_year + 1.5
     settled_dc: List[float] = []
     settled_y: List[float] = []
     schedules_by_idx: Dict[int, List[Tuple[float, float]]] = {}
 
     for dc_v, y_par in zip(dc_arr, y_arr):
-        if dc_v <= step_days + 1e-6:
+        if dc_v <= single_max:
             # Título de período único / zero-cupom (Treasury Bill ou par de 6M)
             df_v = 1.0 / (1.0 + float(y_par) * (dc_v / basis))
             y_sol = _zero_rate_from_df(df_v, dc_v, basis, compounding)
         else:
-            pay_dates = _coupon_schedule_dc(dc_v, step_days)
+            pay_dates = _coupon_schedule_dc(dc_v, freq_per_year, basis)
             schedule: List[Tuple[float, float]] = []
             prev_d = 0.0
             for j, d_pay in enumerate(pay_dates):

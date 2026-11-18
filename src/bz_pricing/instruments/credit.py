@@ -112,12 +112,17 @@ class Debenture:
                  vna_engine: Optional[VNAEngine] = None,
                  is_pct_di: Optional[bool] = None,
                  custom_cashflows: Any = None,
-                 di_daily_rates: Any = None):
+                 di_daily_rates: Any = None,
+                 holidays: Any = None,
+                 allow_download: bool = True,
+                 vna_history: Any = None,
+                 vna_projections: Any = None,
+                 vna_proj: Optional[float] = None):
         self.ticker = ticker.strip().upper()
         self.indexador = indexador.strip().upper()
         self.coupon_rate = 0.0 if (coupon_rate is None or (isinstance(coupon_rate, float) and math.isnan(coupon_rate))) else float(coupon_rate)
         self.nominal_value = float(nominal_value)
-        self.calendar = get_calendar(calendar_name)
+        self.calendar = get_calendar(calendar_name, holidays=holidays)
         self.multiplicador_di = float(multiplicador_di)
         self.amortizacao_sobre_vne = bool(amortizacao_sobre_vne)
         self.coupon_day_count = coupon_day_count.strip().upper()
@@ -126,6 +131,10 @@ class Debenture:
         self._is_pct_di_override = is_pct_di
         self.custom_cashflows = custom_cashflows
         self.di_daily_rates = di_daily_rates
+        self.allow_download = bool(allow_download)
+        self.vna_history = vna_history
+        self.vna_projections = vna_projections
+        self.vna_proj = vna_proj
 
         if maturity_date:
             self.nominal_maturity_date = self._normalize_date(maturity_date)
@@ -262,6 +271,8 @@ class Debenture:
         indexador: str = "PRE",
         nominal_value: float = 1000.0,
         calendar_name: str = "B3",
+        holidays: Any = None,
+        allow_download: bool = True,
     ) -> "Debenture":
         """Constrói um ativo de renda fixa diretamente a partir de fluxos de caixa fornecidos pelo usuário."""
         return cls(
@@ -271,6 +282,8 @@ class Debenture:
             nominal_value=nominal_value,
             calendar_name=calendar_name,
             custom_cashflows=custom_cashflows,
+            holidays=holidays,
+            allow_download=allow_download,
         )
 
     @classmethod
@@ -294,6 +307,12 @@ class Debenture:
         anniversary_day: Optional[int] = None,
         vna_engine: Optional[VNAEngine] = None,
         is_pct_di: Optional[bool] = None,
+        di_daily_rates: Any = None,
+        holidays: Any = None,
+        allow_download: bool = True,
+        vna_history: Any = None,
+        vna_projections: Any = None,
+        vna_proj: Optional[float] = None,
     ) -> "Debenture":
         """Constrói uma debênture gerando a agenda de eventos a partir de parâmetros contratuais ou cronograma de amortização."""
         df_cf = CRICRAClient.build_schedule(
@@ -321,25 +340,45 @@ class Debenture:
             anniversary_day=anniversary_day,
             vna_engine=vna_engine,
             is_pct_di=is_pct_di,
+            di_daily_rates=di_daily_rates,
+            holidays=holidays,
+            allow_download=allow_download,
+            vna_history=vna_history,
+            vna_projections=vna_projections,
+            vna_proj=vna_proj,
         )
 
     @classmethod
     def from_ticker(cls, ticker: str, client: Optional[DebenturesClient] = None,
-                    calendar_name: str = "B3") -> "Debenture":
+                    calendar_name: str = "B3",
+                    characteristics: Optional[Dict[str, Any]] = None,
+                    cashflows_df: Optional[pd.DataFrame] = None,
+                    past_events_df: Optional[pd.DataFrame] = None,
+                    holidays: Any = None,
+                    allow_download: bool = True) -> "Debenture":
         """
         Constrói uma instância de Debenture a partir dos dados extraídos do SND
-        (agenda de eventos futuros, eventos passados liquidados e características cadastrais).
+        (agenda de eventos futuros, eventos passados liquidados e características cadastrais)
+        ou diretamente a partir de dicionário e DataFrames fornecidos offline.
         """
-        if client is None:
-            client = DebenturesClient()
-
-        carac = client.get_characteristics(ticker)
-        future_cf = client.get_cashflows(ticker)
-        past_events = client.get_event_pus(ticker)
+        if characteristics is None or cashflows_df is None:
+            if not allow_download:
+                raise ValueError(
+                    f"Modo offline (allow_download=False): forneça 'characteristics' e 'cashflows_df' para {ticker}."
+                )
+            if client is None:
+                client = DebenturesClient()
+            carac = characteristics if characteristics is not None else client.get_characteristics(ticker)
+            future_cf = cashflows_df if cashflows_df is not None else client.get_cashflows(ticker)
+            past_events = past_events_df if past_events_df is not None else client.get_event_pus(ticker)
+        else:
+            carac = characteristics
+            future_cf = cashflows_df
+            past_events = past_events_df if past_events_df is not None else pd.DataFrame()
 
         # Mescla eventos passados e futuros para compor o ciclo integral do ativo
         combined_rows = []
-        if not past_events.empty:
+        if past_events is not None and not past_events.empty:
             for _, r in past_events.iterrows():
                 combined_rows.append({
                     "data_evento": r["data"],
@@ -352,7 +391,7 @@ class Debenture:
                     "liquidado": r.get("liquidacao", "LIQUIDADO")
                 })
 
-        if not future_cf.empty:
+        if future_cf is not None and not future_cf.empty:
             for _, r in future_cf.iterrows():
                 combined_rows.append({
                     "data_evento": r["data_evento"],
@@ -401,7 +440,9 @@ class Debenture:
             nominal_value=vne_num,
             calendar_name=calendar_name,
             multiplicador_di=mult_num,
-            amortizacao_sobre_vne=amort_vne
+            amortizacao_sobre_vne=amort_vne,
+            holidays=holidays,
+            allow_download=allow_download,
         )
 
     def _get_rate_for_du(self, discount_rate_or_curve: Union[float, Curve], du: int) -> float:
@@ -414,7 +455,11 @@ class Debenture:
     def resolve_vna(self, base_date: Union[datetime.date, str],
                     vna: Optional[float] = None,
                     vna_engine: Optional[VNAEngine] = None,
-                    truncate_monthly: bool = False) -> float:
+                    truncate_monthly: bool = False,
+                    vna_history: Any = None,
+                    vna_projections: Any = None,
+                    vna_proj: Optional[float] = None,
+                    allow_download: Optional[bool] = None) -> float:
         """
         Retorna o VNA na data de referência. Se não for informado explicitamente,
         utiliza o valor nominal para papéis não corrigidos por inflação ou calcula
@@ -436,21 +481,67 @@ class Debenture:
                         base_a = float(self.nominal_value) if self.amortizacao_sobre_vne else saldo
                         saldo = max(0.0, saldo - math.trunc((base_a * (perc / 100.0)) * self._value_scale) / self._value_scale)
             return saldo
+        dl = self.allow_download if allow_download is None else bool(allow_download)
+        hist = vna_history if vna_history is not None else self.vna_history
+        projs = vna_projections if vna_projections is not None else self.vna_projections
+        proj_val = vna_proj if vna_proj is not None else self.vna_proj
+
         engine = vna_engine or self.vna_engine
-        if engine is None:
-            if self.issue_date is None:
-                raise ValueError(
-                    f"Para calcular o VNA automático de {self.ticker} ({self.indexador}), "
-                    "informe 'issue_date' ou passe 'vna' / 'vna_engine' explicitamente."
+        if engine is not None:
+            return float(
+                engine.calculate_vna(
+                    base_dt,
+                    self.calendar,
+                    anniversary_day=self.anniversary_day,
+                    ipca_proj=proj_val,
+                    truncate_monthly=truncate_monthly,
                 )
-            engine = VNAEngine.from_bcb(
-                base_vna_date=self.issue_date,
-                base_vna_value=self.nominal_value,
-                indicator=self.indexador,
-                ref_date=base_dt,
             )
-            self.vna_engine = engine
-        return float(engine.calculate_vna(base_dt, self.calendar, anniversary_day=self.anniversary_day, truncate_monthly=truncate_monthly))
+        if self.issue_date is None:
+            raise ValueError(
+                f"Para calcular o VNA automático de {self.ticker} ({self.indexador}), "
+                "informe 'issue_date' ou passe 'vna' / 'vna_engine' explicitamente."
+            )
+        if hist is not None:
+            from bz_pricing.core.vna_engine import _coerce_monthly_series
+
+            engine = VNAEngine(base_vna_date=self.issue_date, base_vna_value=self.nominal_value)
+            engine.ipca_history = _coerce_monthly_series(hist)
+            if projs is not None:
+                engine.ipca_projections = _coerce_monthly_series(projs)
+            return float(
+                engine.calculate_vna(
+                    base_dt,
+                    self.calendar,
+                    anniversary_day=self.anniversary_day,
+                    ipca_proj=proj_val,
+                    truncate_monthly=truncate_monthly,
+                )
+            )
+        if not dl:
+            raise ValueError(
+                f"Modo offline (allow_download=False): informe 'vna', 'vna_engine' ou 'vna_history' para {self.ticker} ({self.indexador})."
+            )
+        engine = VNAEngine.from_bcb(
+            base_vna_date=self.issue_date,
+            base_vna_value=self.nominal_value,
+            indicator=self.indexador,
+            ref_date=base_dt,
+        )
+        if projs is not None:
+            from bz_pricing.core.vna_engine import _coerce_monthly_series
+
+            engine.ipca_projections = _coerce_monthly_series(projs)
+        self.vna_engine = engine
+        return float(
+            engine.calculate_vna(
+                base_dt,
+                self.calendar,
+                anniversary_day=self.anniversary_day,
+                ipca_proj=proj_val,
+                truncate_monthly=truncate_monthly,
+            )
+        )
 
     def calculate_vna(
         self,
@@ -461,7 +552,7 @@ class Debenture:
         history: Any = None,
         projections: Any = None,
         vna_engine: Optional[VNAEngine] = None,
-        allow_download: bool = True,
+        allow_download: Optional[bool] = None,
     ) -> float:
         """
         Calcula o VNA a partir do VNE (`nominal_value` ou `vne`) e data-base (`issue_date` ou `base_vna_date`)
@@ -470,8 +561,12 @@ class Debenture:
         from bz_pricing.core.vna_engine import calculate_vna_from_vne
 
         base_dt = self._normalize_date(base_date)
-        if vna_engine is not None or (history is None and proj is None and allow_download and ("IPCA" in self.indexador or "IGP" in self.indexador) and vne is None and base_vna_date is None):
-            return self.resolve_vna(base_dt, vna_engine=vna_engine)
+        dl = self.allow_download if allow_download is None else bool(allow_download)
+        hist = history if history is not None else self.vna_history
+        projs = projections if projections is not None else self.vna_projections
+        proj_val = proj if proj is not None else self.vna_proj
+        if vna_engine is not None or (hist is None and proj_val is None and dl and ("IPCA" in self.indexador or "IGP" in self.indexador) and vne is None and base_vna_date is None):
+            return self.resolve_vna(base_dt, vna_engine=vna_engine, allow_download=dl)
 
         vne_val = float(vne) if vne is not None else float(self.nominal_value)
         ref_start = self._normalize_date(base_vna_date) if base_vna_date is not None else self.issue_date
@@ -485,24 +580,35 @@ class Debenture:
             target_date=base_dt,
             indexador=self.indexador,
             anniversary_day=self.anniversary_day,
-            proj=proj,
-            history=history,
-            projections=projections,
+            proj=proj_val,
+            history=hist,
+            projections=projs,
             cal=self.calendar,
-            allow_download=allow_download,
+            allow_download=dl,
         )
 
     def pu_par(self, base_date: Union[datetime.date, str], vna: Optional[float] = None,
                last_coupon_date: Union[datetime.date, str] = None,
                fator_di_acumulado: Optional[float] = None,
                di_daily_rates: Any = None,
-               allow_download: bool = True) -> float:
+               allow_download: Optional[bool] = None,
+               vna_history: Any = None,
+               vna_projections: Any = None,
+               vna_proj: Optional[float] = None) -> float:
         """
         Calcula o PU Par na data de referência:
         PU Par = VNA * (1 + Juros_Acruados)
         """
+        dl = self.allow_download if allow_download is None else bool(allow_download)
         base_date = self._normalize_date(base_date)
-        vna = self.resolve_vna(base_date, vna=vna)
+        vna = self.resolve_vna(
+            base_date,
+            vna=vna,
+            vna_history=vna_history,
+            vna_projections=vna_projections,
+            vna_proj=vna_proj,
+            allow_download=dl,
+        )
 
         if not self._is_di_linked() and self.coupon_rate <= 0.0:
             return vna
@@ -536,7 +642,7 @@ class Debenture:
                     multiplicador=self.multiplicador_di,
                     round_factor_8=False,
                     di_daily_rates=di_daily_rates,
-                    allow_download=allow_download,
+                    allow_download=dl,
                 )
             )
             return math.trunc((vna * f_di) * self._value_scale) / self._value_scale
@@ -551,7 +657,7 @@ class Debenture:
                     multiplicador=1.0,
                     round_factor_8=True,
                     di_daily_rates=di_daily_rates,
-                    allow_download=allow_download,
+                    allow_download=dl,
                 )
             )
             f_spr = round(math.pow(1.0 + self.coupon_rate, du_passado / 252.0), 9)
@@ -607,12 +713,18 @@ class Debenture:
                        di_curve: Optional[Union[float, Curve]] = None,
                        pu_par_val: Optional[float] = None,
                        fator_di_acumulado: Optional[float] = None,
-                       custom_cashflows: Any = None) -> pd.DataFrame:
+                       custom_cashflows: Any = None,
+                       di_daily_rates: Any = None,
+                       vna_history: Any = None,
+                       vna_projections: Any = None,
+                       vna_proj: Optional[float] = None,
+                       allow_download: Optional[bool] = None) -> pd.DataFrame:
         """
         Retorna a decomposição analítica fluxo a fluxo dos eventos futuros de juros e amortização,
         com as respectivas taxas, fatores de desconto T-14 e valores presentes.
         Para debêntures indexadas ao DI (DI + Spread ou % do DI), exige o parâmetro 'di_curve'.
         """
+        dl = self.allow_download if allow_download is None else bool(allow_download)
         base_date = self._normalize_date(base_date)
         cf = custom_cashflows if custom_cashflows is not None else self.custom_cashflows
         if cf is not None:
@@ -638,7 +750,14 @@ class Debenture:
                 })
             return pd.DataFrame(rows)
 
-        vna = self.resolve_vna(base_date, vna=vna)
+        vna = self.resolve_vna(
+            base_date,
+            vna=vna,
+            vna_history=vna_history,
+            vna_projections=vna_projections,
+            vna_proj=vna_proj,
+            allow_download=dl,
+        )
         is_di = self._is_di_linked()
         is_pct_di = self._is_pct_di()
 
@@ -670,7 +789,14 @@ class Debenture:
             pu_par_atual = (
                 float(pu_par_val)
                 if pu_par_val is not None
-                else self.pu_par(base_date, vna, last_coupon_date=last_coupon_date, fator_di_acumulado=fator_di_acumulado)
+                else self.pu_par(
+                    base_date,
+                    vna,
+                    last_coupon_date=last_coupon_date,
+                    fator_di_acumulado=fator_di_acumulado,
+                    di_daily_rates=di_daily_rates,
+                    allow_download=dl,
+                )
             )
             fator_acruado_di = (pu_par_atual / vna) if vna > 0.0 else 1.0
 
@@ -868,12 +994,26 @@ class Debenture:
                       return_cashflows: bool = False,
                       di_curve: Optional[Union[float, Curve]] = None,
                       pu_par_val: Optional[float] = None,
-                      fator_di_acumulado: Optional[float] = None) -> Union[float, Tuple[float, pd.DataFrame]]:
+                      fator_di_acumulado: Optional[float] = None,
+                      custom_cashflows: Any = None,
+                      di_daily_rates: Any = None,
+                      vna_history: Any = None,
+                      vna_projections: Any = None,
+                      vna_proj: Optional[float] = None,
+                      allow_download: Optional[bool] = None) -> Union[float, Tuple[float, pd.DataFrame]]:
         """
         Calcula o Valor Presente (PU da Operação marcado a mercado) da debênture.
         Se return_cashflows=True, retorna a tupla (pu, df_fluxos).
         """
-        vna_atual = self.resolve_vna(base_date, vna=vna)
+        dl = self.allow_download if allow_download is None else bool(allow_download)
+        vna_atual = self.resolve_vna(
+            base_date,
+            vna=vna,
+            vna_history=vna_history,
+            vna_projections=vna_projections,
+            vna_proj=vna_proj,
+            allow_download=dl,
+        )
         df_flows = self.cashflow_table(
             base_date=base_date,
             discount_rate_or_curve=discount_rate_or_curve,
@@ -881,7 +1021,13 @@ class Debenture:
             last_coupon_date=last_coupon_date,
             di_curve=di_curve,
             pu_par_val=pu_par_val,
-            fator_di_acumulado=fator_di_acumulado
+            fator_di_acumulado=fator_di_acumulado,
+            custom_cashflows=custom_cashflows,
+            di_daily_rates=di_daily_rates,
+            vna_history=vna_history,
+            vna_projections=vna_projections,
+            vna_proj=vna_proj,
+            allow_download=dl,
         )
 
         if df_flows.empty:
@@ -899,25 +1045,54 @@ class Debenture:
                 last_coupon_date: Union[datetime.date, str] = None,
                 di_curve: Optional[Union[float, Curve]] = None,
                 pu_par_val: Optional[float] = None,
-                fator_di_acumulado: Optional[float] = None) -> float:
+                fator_di_acumulado: Optional[float] = None,
+                custom_cashflows: Any = None,
+                di_daily_rates: Any = None,
+                vna_history: Any = None,
+                vna_projections: Any = None,
+                vna_proj: Optional[float] = None,
+                allow_download: Optional[bool] = None) -> float:
         """
         Calcula a cotação percentual sobre o PU Par (% PU Par):
         Cotação = (PU_Operacao / PU_Par) * 100
         """
-        vna_atual = self.resolve_vna(base_date, vna=vna)
+        dl = self.allow_download if allow_download is None else bool(allow_download)
+        vna_atual = self.resolve_vna(
+            base_date,
+            vna=vna,
+            vna_history=vna_history,
+            vna_projections=vna_projections,
+            vna_proj=vna_proj,
+            allow_download=dl,
+        )
         pu_par_atual = (
             float(pu_par_val)
             if pu_par_val is not None
-            else self.pu_par(base_date, vna_atual, last_coupon_date=last_coupon_date, fator_di_acumulado=fator_di_acumulado)
+            else self.pu_par(
+                base_date,
+                vna_atual,
+                last_coupon_date=last_coupon_date,
+                fator_di_acumulado=fator_di_acumulado,
+                di_daily_rates=di_daily_rates,
+                allow_download=dl,
+            )
         )
         if pu_par_atual <= 0.0:
             return 100.0
         pu_val = self.present_value(
-            base_date, discount_rate_or_curve, vna_atual,
+            base_date,
+            discount_rate_or_curve,
+            vna_atual,
             last_coupon_date=last_coupon_date,
             di_curve=di_curve,
             pu_par_val=pu_par_atual,
-            fator_di_acumulado=fator_di_acumulado
+            fator_di_acumulado=fator_di_acumulado,
+            custom_cashflows=custom_cashflows,
+            di_daily_rates=di_daily_rates,
+            vna_history=vna_history,
+            vna_projections=vna_projections,
+            vna_proj=vna_proj,
+            allow_download=dl,
         )
         return math.trunc((pu_val / pu_par_atual) * 1e6) / 1e4
 
@@ -927,7 +1102,13 @@ class Debenture:
                  last_coupon_date: Union[datetime.date, str] = None,
                  di_curve: Optional[Union[float, Curve]] = None,
                  pu_par_val: Optional[float] = None,
-                 fator_di_acumulado: Optional[float] = None) -> float:
+                 fator_di_acumulado: Optional[float] = None,
+                 custom_cashflows: Any = None,
+                 di_daily_rates: Any = None,
+                 vna_history: Any = None,
+                 vna_projections: Any = None,
+                 vna_proj: Optional[float] = None,
+                 allow_download: Optional[bool] = None) -> float:
         """
         Calcula a Macaulay Duration em dias úteis (DU).
         """
@@ -938,7 +1119,13 @@ class Debenture:
             last_coupon_date=last_coupon_date,
             di_curve=di_curve,
             pu_par_val=pu_par_val,
-            fator_di_acumulado=fator_di_acumulado
+            fator_di_acumulado=fator_di_acumulado,
+            custom_cashflows=custom_cashflows,
+            di_daily_rates=di_daily_rates,
+            vna_history=vna_history,
+            vna_projections=vna_projections,
+            vna_proj=vna_proj,
+            allow_download=allow_download,
         )
         if df_flows.empty:
             return 0.0
@@ -957,7 +1144,13 @@ class Debenture:
                           last_coupon_date: Union[datetime.date, str] = None,
                           di_curve: Optional[Union[float, Curve]] = None,
                           pu_par_val: Optional[float] = None,
-                          fator_di_acumulado: Optional[float] = None) -> float:
+                          fator_di_acumulado: Optional[float] = None,
+                          custom_cashflows: Any = None,
+                          di_daily_rates: Any = None,
+                          vna_history: Any = None,
+                          vna_projections: Any = None,
+                          vna_proj: Optional[float] = None,
+                          allow_download: Optional[bool] = None) -> float:
         """
         Calcula a Duration Modificada em anos (base BUS/252):
         D_mod = (1 / P) * sum( (t_k / (1 + y_k)) * PV_k ), onde t_k = DU_k / 252.
@@ -969,7 +1162,13 @@ class Debenture:
             last_coupon_date=last_coupon_date,
             di_curve=di_curve,
             pu_par_val=pu_par_val,
-            fator_di_acumulado=fator_di_acumulado
+            fator_di_acumulado=fator_di_acumulado,
+            custom_cashflows=custom_cashflows,
+            di_daily_rates=di_daily_rates,
+            vna_history=vna_history,
+            vna_projections=vna_projections,
+            vna_proj=vna_proj,
+            allow_download=allow_download,
         )
         if df_flows.empty:
             return 0.0
@@ -988,25 +1187,56 @@ class Debenture:
              last_coupon_date: Union[datetime.date, str] = None,
              di_curve: Optional[Union[float, Curve]] = None,
              pu_par_val: Optional[float] = None,
-             fator_di_acumulado: Optional[float] = None) -> float:
+             fator_di_acumulado: Optional[float] = None,
+             custom_cashflows: Any = None,
+             di_daily_rates: Any = None,
+             vna_history: Any = None,
+             vna_projections: Any = None,
+             vna_proj: Optional[float] = None,
+             allow_download: Optional[bool] = None) -> float:
         """
         Calcula o DV01 (Dollar Value of 01), variação monetária do PU para 1 ponto base (0,01% a.a.)
         de deslocamento paralelo na taxa de desconto:
         DV01 = PU * D_mod * 0.0001.
         """
+        dl = self.allow_download if allow_download is None else bool(allow_download)
+        vna_atual = self.resolve_vna(
+            base_date,
+            vna=vna,
+            vna_history=vna_history,
+            vna_projections=vna_projections,
+            vna_proj=vna_proj,
+            allow_download=dl,
+        )
         pu_val = self.present_value(
-            base_date, discount_rate_or_curve, vna,
+            base_date,
+            discount_rate_or_curve,
+            vna_atual,
             last_coupon_date=last_coupon_date,
             di_curve=di_curve,
             pu_par_val=pu_par_val,
-            fator_di_acumulado=fator_di_acumulado
+            fator_di_acumulado=fator_di_acumulado,
+            custom_cashflows=custom_cashflows,
+            di_daily_rates=di_daily_rates,
+            vna_history=vna_history,
+            vna_projections=vna_projections,
+            vna_proj=vna_proj,
+            allow_download=dl,
         )
         d_mod = self.modified_duration(
-            base_date, discount_rate_or_curve, vna,
+            base_date,
+            discount_rate_or_curve,
+            vna_atual,
             last_coupon_date=last_coupon_date,
             di_curve=di_curve,
             pu_par_val=pu_par_val,
-            fator_di_acumulado=fator_di_acumulado
+            fator_di_acumulado=fator_di_acumulado,
+            custom_cashflows=custom_cashflows,
+            di_daily_rates=di_daily_rates,
+            vna_history=vna_history,
+            vna_projections=vna_projections,
+            vna_proj=vna_proj,
+            allow_download=dl,
         )
         return float(pu_val * d_mod * 0.0001)
 
@@ -1016,7 +1246,13 @@ class Debenture:
                   last_coupon_date: Union[datetime.date, str] = None,
                   di_curve: Optional[Union[float, Curve]] = None,
                   pu_par_val: Optional[float] = None,
-                  fator_di_acumulado: Optional[float] = None) -> float:
+                  fator_di_acumulado: Optional[float] = None,
+                  custom_cashflows: Any = None,
+                  di_daily_rates: Any = None,
+                  vna_history: Any = None,
+                  vna_projections: Any = None,
+                  vna_proj: Optional[float] = None,
+                  allow_download: Optional[bool] = None) -> float:
         """
         Calcula a Convexidade Analítica em anos^2 (base BUS/252):
         C = (1 / P) * sum( (t_k * (t_k + 1) / (1 + y_k)^2) * PV_k ), onde t_k = DU_k / 252.
@@ -1028,7 +1264,13 @@ class Debenture:
             last_coupon_date=last_coupon_date,
             di_curve=di_curve,
             pu_par_val=pu_par_val,
-            fator_di_acumulado=fator_di_acumulado
+            fator_di_acumulado=fator_di_acumulado,
+            custom_cashflows=custom_cashflows,
+            di_daily_rates=di_daily_rates,
+            vna_history=vna_history,
+            vna_projections=vna_projections,
+            vna_proj=vna_proj,
+            allow_download=allow_download,
         )
         if df_flows.empty:
             return 0.0
@@ -1059,7 +1301,12 @@ class Debenture:
                       last_coupon_date: Union[datetime.date, str] = None,
                       di_curve: Optional[Union[float, Curve]] = None,
                       pu_par_val: Optional[float] = None,
-                      fator_di_acumulado: Optional[float] = None) -> float:
+                      fator_di_acumulado: Optional[float] = None,
+                      di_daily_rates: Any = None,
+                      vna_history: Any = None,
+                      vna_projections: Any = None,
+                      vna_proj: Optional[float] = None,
+                      allow_download: Optional[bool] = None) -> float:
         """
         Calcula a taxa nominal com gross-up de IR (Lei 12.431 / ativos incentivados)
         conforme metodologia ANBIMA de Z-Spread: retorna a alíquota regressiva de IR
@@ -1067,8 +1314,16 @@ class Debenture:
         """
         from scipy.optimize import brentq
 
+        dl = self.allow_download if allow_download is None else bool(allow_download)
         base_dt = self._normalize_date(base_date)
-        vna_atual = self.resolve_vna(base_dt, vna=vna)
+        vna_atual = self.resolve_vna(
+            base_dt,
+            vna=vna,
+            vna_history=vna_history,
+            vna_projections=vna_projections,
+            vna_proj=vna_proj,
+            allow_download=dl,
+        )
         pu_target, df_flows = self.present_value(
             base_dt,
             float(discount_rate),
@@ -1078,6 +1333,11 @@ class Debenture:
             di_curve=di_curve,
             pu_par_val=pu_par_val,
             fator_di_acumulado=fator_di_acumulado,
+            di_daily_rates=di_daily_rates,
+            vna_history=vna_history,
+            vna_projections=vna_projections,
+            vna_proj=vna_proj,
+            allow_download=dl,
         )
         if df_flows.empty or pu_target <= 0.0:
             return float(discount_rate)
@@ -1134,7 +1394,12 @@ class Debenture:
                  last_coupon_date: Union[datetime.date, str] = None,
                  di_curve: Optional[Union[float, Curve]] = None,
                  pu_par_val: Optional[float] = None,
-                 fator_di_acumulado: Optional[float] = None) -> float:
+                 fator_di_acumulado: Optional[float] = None,
+                 di_daily_rates: Any = None,
+                 vna_history: Any = None,
+                 vna_projections: Any = None,
+                 vna_proj: Optional[float] = None,
+                 allow_download: Optional[bool] = None) -> float:
         """
         Calcula o Z-Spread conforme metodologia oficial ANBIMA (Agosto/2025):
         - CDI + spread: o Z-spread é a própria taxa indicativa (`discount_rate`).
@@ -1144,6 +1409,7 @@ class Debenture:
           ativo livre de risco de duration mais próxima (NTN-B ou ETTJ) e `i_eff`
           considera o gross-up de IR quando `incentivada=True`.
         """
+        dl = self.allow_download if allow_download is None else bool(allow_download)
         if self._is_pct_di():
             if ettj_pre_rate_or_curve is None:
                 raise ValueError(
@@ -1158,6 +1424,11 @@ class Debenture:
                 di_curve=di_curve,
                 pu_par_val=pu_par_val,
                 fator_di_acumulado=fator_di_acumulado,
+                di_daily_rates=di_daily_rates,
+                vna_history=vna_history,
+                vna_projections=vna_projections,
+                vna_proj=vna_proj,
+                allow_download=dl,
             )
             j_rate = self._get_rate_for_du(ettj_pre_rate_or_curve, dur_du)
             t_pct = float(discount_rate)
@@ -1181,6 +1452,11 @@ class Debenture:
                 di_curve=di_curve,
                 pu_par_val=pu_par_val,
                 fator_di_acumulado=fator_di_acumulado,
+                di_daily_rates=di_daily_rates,
+                vna_history=vna_history,
+                vna_projections=vna_projections,
+                vna_proj=vna_proj,
+                allow_download=dl,
             )
             if incentivada
             else float(discount_rate)
@@ -1196,23 +1472,52 @@ class Debenture:
                      fator_di_acumulado: Optional[float] = None,
                      risk_free_rate: Optional[float] = None,
                      ettj_pre_rate_or_curve: Optional[Union[float, Curve]] = None,
-                     incentivada: bool = False) -> Dict[str, float]:
+                     incentivada: bool = False,
+                     custom_cashflows: Any = None,
+                     di_daily_rates: Any = None,
+                     vna_history: Any = None,
+                     vna_projections: Any = None,
+                     vna_proj: Optional[float] = None,
+                     allow_download: Optional[bool] = None) -> Dict[str, float]:
         """
         Consolida as métricas de precificação e sensibilidade da debênture na data de referência.
         """
-        vna_atual = self.resolve_vna(base_date, vna=vna)
+        dl = self.allow_download if allow_download is None else bool(allow_download)
+        vna_atual = self.resolve_vna(
+            base_date,
+            vna=vna,
+            vna_history=vna_history,
+            vna_projections=vna_projections,
+            vna_proj=vna_proj,
+            allow_download=dl,
+        )
         pu_par_atual = (
             float(pu_par_val)
             if pu_par_val is not None
-            else self.pu_par(base_date, vna_atual, last_coupon_date=last_coupon_date, fator_di_acumulado=fator_di_acumulado)
+            else self.pu_par(
+                base_date,
+                vna_atual,
+                last_coupon_date=last_coupon_date,
+                fator_di_acumulado=fator_di_acumulado,
+                di_daily_rates=di_daily_rates,
+                allow_download=dl,
+            )
         )
         pu_val, df_flows = self.present_value(
-            base_date, discount_rate_or_curve, vna_atual,
+            base_date,
+            discount_rate_or_curve,
+            vna_atual,
             last_coupon_date=last_coupon_date,
             return_cashflows=True,
             di_curve=di_curve,
             pu_par_val=pu_par_atual,
-            fator_di_acumulado=fator_di_acumulado
+            fator_di_acumulado=fator_di_acumulado,
+            custom_cashflows=custom_cashflows,
+            di_daily_rates=di_daily_rates,
+            vna_history=vna_history,
+            vna_projections=vna_projections,
+            vna_proj=vna_proj,
+            allow_download=dl,
         )
         cot_val = math.trunc((pu_val / pu_par_atual) * 1e6) / 1e4 if pu_par_atual > 0.0 else 100.0
 
@@ -1264,6 +1569,11 @@ class Debenture:
                         di_curve=di_curve,
                         pu_par_val=pu_par_atual,
                         fator_di_acumulado=fator_di_acumulado,
+                        di_daily_rates=di_daily_rates,
+                        vna_history=vna_history,
+                        vna_projections=vna_projections,
+                        vna_proj=vna_proj,
+                        allow_download=dl,
                     )
                     if incentivada
                     else r_scalar
@@ -1281,7 +1591,12 @@ class Debenture:
             di_curve: Optional[Union[float, Curve]] = None,
             pu_par_val: Optional[float] = None,
             fator_di_acumulado: Optional[float] = None,
-            xtol: float = 1e-10) -> float:
+            xtol: float = 1e-10,
+            di_daily_rates: Any = None,
+            vna_history: Any = None,
+            vna_projections: Any = None,
+            vna_proj: Optional[float] = None,
+            allow_download: Optional[bool] = None) -> float:
         """
         Calcula o Yield to Maturity (ou Yield to Call em Letras Financeiras subordinadas)
         implícito a partir de um PU de mercado (`target_pu`), na convenção de cotação do
@@ -1294,8 +1609,16 @@ class Debenture:
         if pu_obj <= 0.0:
             raise ValueError("'target_pu' deve ser estritamente positivo.")
 
+        dl = self.allow_download if allow_download is None else bool(allow_download)
         base_dt = self._normalize_date(base_date)
-        vna_atual = self.resolve_vna(base_dt, vna=vna)
+        vna_atual = self.resolve_vna(
+            base_dt,
+            vna=vna,
+            vna_history=vna_history,
+            vna_projections=vna_projections,
+            vna_proj=vna_proj,
+            allow_download=dl,
+        )
         pu_par_atual = pu_par_val
         if pu_par_atual is None and self._is_di_linked():
             pu_par_atual = self.pu_par(
@@ -1303,6 +1626,8 @@ class Debenture:
                 vna_atual,
                 last_coupon_date=last_coupon_date,
                 fator_di_acumulado=fator_di_acumulado,
+                di_daily_rates=di_daily_rates,
+                allow_download=dl,
             )
 
         def _obj(rate: float) -> float:
@@ -1314,6 +1639,11 @@ class Debenture:
                 di_curve=di_curve,
                 pu_par_val=pu_par_atual,
                 fator_di_acumulado=fator_di_acumulado,
+                di_daily_rates=di_daily_rates,
+                vna_history=vna_history,
+                vna_projections=vna_projections,
+                vna_proj=vna_proj,
+                allow_download=dl,
             )
             return float(pu_val - pu_obj)
 
@@ -1335,7 +1665,12 @@ class Debenture:
             di_curve: Optional[Union[float, Curve]] = None,
             pu_par_val: Optional[float] = None,
             fator_di_acumulado: Optional[float] = None,
-            xtol: float = 1e-10) -> float:
+            xtol: float = 1e-10,
+            di_daily_rates: Any = None,
+            vna_history: Any = None,
+            vna_projections: Any = None,
+            vna_proj: Optional[float] = None,
+            allow_download: Optional[bool] = None) -> float:
         """
         Calcula a Taxa Interna de Retorno (TIR) efetiva anual em base 252 dias úteis
         sobre os fluxos futuros projetados do ativo para o PU informado (`target_pu`).
@@ -1347,8 +1682,16 @@ class Debenture:
         if pu_obj <= 0.0:
             raise ValueError("'target_pu' deve ser estritamente positivo.")
 
+        dl = self.allow_download if allow_download is None else bool(allow_download)
         base_dt = self._normalize_date(base_date)
-        vna_atual = self.resolve_vna(base_dt, vna=vna)
+        vna_atual = self.resolve_vna(
+            base_dt,
+            vna=vna,
+            vna_history=vna_history,
+            vna_projections=vna_projections,
+            vna_proj=vna_proj,
+            allow_download=dl,
+        )
         pu_par_atual = pu_par_val
         if pu_par_atual is None and self._is_di_linked():
             pu_par_atual = self.pu_par(
@@ -1356,6 +1699,8 @@ class Debenture:
                 vna_atual,
                 last_coupon_date=last_coupon_date,
                 fator_di_acumulado=fator_di_acumulado,
+                di_daily_rates=di_daily_rates,
+                allow_download=dl,
             )
 
         df_flows = self.cashflow_table(
@@ -1366,6 +1711,11 @@ class Debenture:
             di_curve=di_curve,
             pu_par_val=pu_par_atual,
             fator_di_acumulado=fator_di_acumulado,
+            di_daily_rates=di_daily_rates,
+            vna_history=vna_history,
+            vna_projections=vna_projections,
+            vna_proj=vna_proj,
+            allow_download=dl,
         )
         if df_flows.empty:
             raise ValueError(f"Não há fluxos futuros após {base_dt} para o cálculo de TIR de {self.ticker}.")
@@ -1402,11 +1752,17 @@ class Debenture:
         pu_par_val: Optional[float] = None,
         fator_di_acumulado: Optional[float] = None,
         custom_cashflows: Any = None,
+        di_daily_rates: Any = None,
+        vna_history: Any = None,
+        vna_projections: Any = None,
+        vna_proj: Optional[float] = None,
+        allow_download: Optional[bool] = None,
     ) -> Dict[str, float]:
         """
         Calcula o Valor Presente ajustado ao risco de crédito (Duffie-Singleton / Jarrow-Turnbull),
         retornando `pv_risky`, `pv_risk_free`, `cva`, `expected_loss_pct` e `survival_at_maturity`.
         """
+        dl = self.allow_download if allow_download is None else bool(allow_download)
         base_dt = self._normalize_date(base_date)
         df_flows = self.cashflow_table(
             base_dt,
@@ -1417,6 +1773,11 @@ class Debenture:
             pu_par_val=pu_par_val,
             fator_di_acumulado=fator_di_acumulado,
             custom_cashflows=custom_cashflows,
+            di_daily_rates=di_daily_rates,
+            vna_history=vna_history,
+            vna_projections=vna_projections,
+            vna_proj=vna_proj,
+            allow_download=dl,
         )
         if df_flows.empty:
             return {"pv_risky": 0.0, "pv_risk_free": 0.0, "cva": 0.0, "expected_loss_pct": 0.0, "survival_at_maturity": 1.0}
@@ -1428,20 +1789,51 @@ class Debenture:
             hz = hazard_curve
             recovery_rate = hz.recovery_rate
 
-        cf_arr = df_flows["fluxo_nominal"].to_numpy(dtype=np.float64)
-        df_arr = 1.0 / np.maximum(1e-12, df_flows["fator_desconto"].to_numpy(dtype=np.float64))
-        du_arr = df_flows["du"].to_numpy(dtype=np.int32)
-        q_arr = np.array([hz.survival_prob(int(d)) for d in du_arr], dtype=np.float64)
-
         has_custom = (custom_cashflows is not None or self.custom_cashflows is not None)
-        principal_ref = float(vna) if vna is not None else (float(self.nominal_value) if has_custom else self.resolve_vna(base_dt))
-        outstanding_arr = np.empty(len(cf_arr), dtype=np.float64)
+        principal_ref = (
+            float(vna)
+            if vna is not None
+            else (
+                float(self.nominal_value)
+                if has_custom
+                else self.resolve_vna(
+                    base_dt,
+                    vna_history=vna_history,
+                    vna_projections=vna_projections,
+                    vna_proj=vna_proj,
+                    allow_download=dl,
+                )
+            )
+        )
+
+        # Consolida fluxos de mesma data (du) preservando o saldo devedor antes de cada amortização
+        grouped_cf: Dict[int, float] = {}
+        grouped_df: Dict[int, float] = {}
+        grouped_princ: Dict[int, float] = {}
+        du_series = df_flows["du"].to_numpy(dtype=np.int32)
+        fl_series = df_flows["fluxo_nominal"].to_numpy(dtype=np.float64)
+        fd_series = df_flows["fator_desconto"].to_numpy(dtype=np.float64)
+        ev_series = df_flows["evento"].astype(str).tolist()
+        for du_i, fl_i, fd_i, ev_i in zip(du_series, fl_series, fd_series, ev_series):
+            d_k = int(du_i)
+            grouped_cf[d_k] = grouped_cf.get(d_k, 0.0) + float(fl_i)
+            if d_k not in grouped_df:
+                grouped_df[d_k] = 1.0 / max(1e-12, float(fd_i))
+            ev_l = ev_i.lower()
+            if "amort" in ev_l or "venc" in ev_l or "princ" in ev_l or "resgate" in ev_l:
+                grouped_princ[d_k] = grouped_princ.get(d_k, 0.0) + float(fl_i)
+
+        sorted_dus = sorted(grouped_cf.keys())
+        du_arr = np.array(sorted_dus, dtype=np.int32)
+        cf_arr = np.array([grouped_cf[d_k] for d_k in sorted_dus], dtype=np.float64)
+        df_arr = np.array([grouped_df[d_k] for d_k in sorted_dus], dtype=np.float64)
+        q_arr = np.array([hz.survival_prob(int(d_k)) for d_k in sorted_dus], dtype=np.float64)
+
+        outstanding_arr = np.empty(len(sorted_dus), dtype=np.float64)
         saldo_rem = principal_ref
-        for idx_f, (ev_s, fl_v) in enumerate(zip(df_flows["evento"].astype(str), cf_arr)):
+        for idx_f, d_k in enumerate(sorted_dus):
             outstanding_arr[idx_f] = max(0.0, saldo_rem)
-            ev_l = ev_s.lower()
-            if "amort" in ev_l or "vencimento" in ev_l:
-                saldo_rem = max(0.0, saldo_rem - float(fl_v))
+            saldo_rem = max(0.0, saldo_rem - grouped_princ.get(d_k, 0.0))
 
         if _cy_risky_bond_pv is not None:
             pv_r, pv_rf, cva = _cy_risky_bond_pv(
@@ -1479,6 +1871,11 @@ class Debenture:
         fator_di_acumulado: Optional[float] = None,
         custom_cashflows: Any = None,
         xtol: float = 1e-8,
+        di_daily_rates: Any = None,
+        vna_history: Any = None,
+        vna_projections: Any = None,
+        vna_proj: Optional[float] = None,
+        allow_download: Optional[bool] = None,
     ) -> float:
         """Inverte a intensidade constante de default (hazard rate anualizado) implícita no PU de mercado."""
         from scipy.optimize import brentq
@@ -1495,6 +1892,11 @@ class Debenture:
                 pu_par_val=pu_par_val,
                 fator_di_acumulado=fator_di_acumulado,
                 custom_cashflows=custom_cashflows,
+                di_daily_rates=di_daily_rates,
+                vna_history=vna_history,
+                vna_projections=vna_projections,
+                vna_proj=vna_proj,
+                allow_download=allow_download,
             )["pv_risky"] - float(market_pu)
 
         f0 = _obj(0.0)
@@ -1520,6 +1922,11 @@ class Debenture:
         pu_par_val: Optional[float] = None,
         fator_di_acumulado: Optional[float] = None,
         custom_cashflows: Any = None,
+        di_daily_rates: Any = None,
+        vna_history: Any = None,
+        vna_projections: Any = None,
+        vna_proj: Optional[float] = None,
+        allow_download: Optional[bool] = None,
     ) -> float:
         """Sensibilidade do PV com risco a um choque paralelo de +1 bp (0,0001) na curva de hazard rate."""
         if hazard_curve is None:
@@ -1527,22 +1934,30 @@ class Debenture:
                 base_date, risk_free_rate_or_curve, hazard_rate=hazard_rate, recovery_rate=recovery_rate,
                 vna=vna, last_coupon_date=last_coupon_date, di_curve=di_curve,
                 pu_par_val=pu_par_val, fator_di_acumulado=fator_di_acumulado, custom_cashflows=custom_cashflows,
+                di_daily_rates=di_daily_rates, vna_history=vna_history, vna_projections=vna_projections,
+                vna_proj=vna_proj, allow_download=allow_download,
             )["pv_risky"]
             p1 = self.risky_present_value(
                 base_date, risk_free_rate_or_curve, hazard_rate=hazard_rate + 1e-4, recovery_rate=recovery_rate,
                 vna=vna, last_coupon_date=last_coupon_date, di_curve=di_curve,
                 pu_par_val=pu_par_val, fator_di_acumulado=fator_di_acumulado, custom_cashflows=custom_cashflows,
+                di_daily_rates=di_daily_rates, vna_history=vna_history, vna_projections=vna_projections,
+                vna_proj=vna_proj, allow_download=allow_download,
             )["pv_risky"]
         else:
             p0 = self.risky_present_value(
                 base_date, risk_free_rate_or_curve, hazard_curve=hazard_curve,
                 vna=vna, last_coupon_date=last_coupon_date, di_curve=di_curve,
                 pu_par_val=pu_par_val, fator_di_acumulado=fator_di_acumulado, custom_cashflows=custom_cashflows,
+                di_daily_rates=di_daily_rates, vna_history=vna_history, vna_projections=vna_projections,
+                vna_proj=vna_proj, allow_download=allow_download,
             )["pv_risky"]
             p1 = self.risky_present_value(
                 base_date, risk_free_rate_or_curve, hazard_curve=hazard_curve.shifted(1e-4),
                 vna=vna, last_coupon_date=last_coupon_date, di_curve=di_curve,
                 pu_par_val=pu_par_val, fator_di_acumulado=fator_di_acumulado, custom_cashflows=custom_cashflows,
+                di_daily_rates=di_daily_rates, vna_history=vna_history, vna_projections=vna_projections,
+                vna_proj=vna_proj, allow_download=allow_download,
             )["pv_risky"]
         return float(abs(p0 - p1))
 
@@ -1580,7 +1995,12 @@ class CertificadoRecebiveis(Debenture):
                  vna_engine: Optional[VNAEngine] = None,
                  is_pct_di: Optional[bool] = None,
                  custom_cashflows: Any = None,
-                 di_daily_rates: Any = None):
+                 di_daily_rates: Any = None,
+                 holidays: Any = None,
+                 allow_download: bool = True,
+                 vna_history: Any = None,
+                 vna_projections: Any = None,
+                 vna_proj: Optional[float] = None):
         super().__init__(
             ticker=ticker,
             maturity_date=maturity_date,
@@ -1599,6 +2019,11 @@ class CertificadoRecebiveis(Debenture):
             is_pct_di=is_pct_di,
             custom_cashflows=custom_cashflows,
             di_daily_rates=di_daily_rates,
+            holidays=holidays,
+            allow_download=allow_download,
+            vna_history=vna_history,
+            vna_projections=vna_projections,
+            vna_proj=vna_proj,
         )
         self.securitizadora = securitizadora.strip()
         self.lastro = (lastro or self.DEFAULT_LASTRO).strip()
@@ -1627,7 +2052,13 @@ class CertificadoRecebiveis(Debenture):
                       serie: str = "",
                       emissao: str = "",
                       anniversary_day: Optional[int] = None,
-                      vna_engine: Optional[VNAEngine] = None):
+                      vna_engine: Optional[VNAEngine] = None,
+                      di_daily_rates: Any = None,
+                      holidays: Any = None,
+                      allow_download: bool = True,
+                      vna_history: Any = None,
+                      vna_projections: Any = None,
+                      vna_proj: Optional[float] = None):
         """
         Constrói um Certificado de Recebíveis (CRI ou CRA) gerando automaticamente
         a agenda de eventos financeiros a partir dos parâmetros do termo de securitização.
@@ -1659,19 +2090,37 @@ class CertificadoRecebiveis(Debenture):
             serie=serie,
             emissao=emissao,
             anniversary_day=anniversary_day,
-            vna_engine=vna_engine
+            vna_engine=vna_engine,
+            di_daily_rates=di_daily_rates,
+            holidays=holidays,
+            allow_download=allow_download,
+            vna_history=vna_history,
+            vna_projections=vna_projections,
+            vna_proj=vna_proj,
         )
 
     @classmethod
     def from_ticker(cls, ticker: str, client: Optional[CRICRAClient] = None,
-                    calendar_name: str = "B3") -> "CertificadoRecebiveis":
+                    calendar_name: str = "B3",
+                    characteristics: Optional[Dict[str, Any]] = None,
+                    cashflows_df: Optional[pd.DataFrame] = None,
+                    holidays: Any = None,
+                    allow_download: bool = True) -> "CertificadoRecebiveis":
         """
-        Constrói automaticamente um CRI ou CRA a partir do portal ANBIMA Data,
-        carregando características cadastrais e agenda de eventos financeiros.
+        Constrói automaticamente um CRI ou CRA a partir do portal ANBIMA Data
+        ou diretamente a partir de dicionário cadastral e DataFrame de eventos offline.
         """
-        cli = client or CRICRAClient()
-        carac = cli.get_asset_characteristics(ticker)
-        df_cf = cli.get_asset_cashflows(ticker)
+        if characteristics is None or cashflows_df is None:
+            if not allow_download:
+                raise ValueError(
+                    f"Modo offline (allow_download=False): forneça 'characteristics' e 'cashflows_df' para {ticker}."
+                )
+            cli = client or CRICRAClient()
+            carac = characteristics if characteristics is not None else cli.get_asset_characteristics(ticker)
+            df_cf = cashflows_df if cashflows_df is not None else cli.get_asset_cashflows(ticker)
+        else:
+            carac = characteristics
+            df_cf = cashflows_df
 
         idx_obj = carac.get("indexador") or {}
         indice = idx_obj.get("nome", "IPCA") if isinstance(idx_obj, dict) else str(idx_obj)
@@ -1721,6 +2170,8 @@ class CertificadoRecebiveis(Debenture):
             securitizadora=securitizadora,
             serie=str(carac.get("numero_serie") or ""),
             is_pct_di=is_pct_di_remun,
+            holidays=holidays,
+            allow_download=allow_download,
         )
 
 
@@ -1768,7 +2219,13 @@ class CotaFIDC(CertificadoRecebiveis):
                  anniversary_day: Optional[int] = None,
                  vna_engine: Optional[VNAEngine] = None,
                  is_pct_di: Optional[bool] = None,
-                 custom_cashflows: Any = None):
+                 custom_cashflows: Any = None,
+                 di_daily_rates: Any = None,
+                 holidays: Any = None,
+                 allow_download: bool = True,
+                 vna_history: Any = None,
+                 vna_projections: Any = None,
+                 vna_proj: Optional[float] = None):
         vne = float(cota_emissao) if cota_emissao is not None else float(nominal_value)
         super().__init__(
             ticker=ticker,
@@ -1787,6 +2244,12 @@ class CotaFIDC(CertificadoRecebiveis):
             vna_engine=vna_engine,
             is_pct_di=is_pct_di,
             custom_cashflows=custom_cashflows,
+            di_daily_rates=di_daily_rates,
+            holidays=holidays,
+            allow_download=allow_download,
+            vna_history=vna_history,
+            vna_projections=vna_projections,
+            vna_proj=vna_proj,
         )
         self.classe_cota = classe_cota.strip().upper()
         self.cnpj_fundo = cnpj_fundo.strip()
@@ -1816,7 +2279,13 @@ class CotaFIDC(CertificadoRecebiveis):
                       administrador: str = "",
                       custodiante: str = "",
                       anniversary_day: Optional[int] = None,
-                      vna_engine: Optional[VNAEngine] = None):
+                      vna_engine: Optional[VNAEngine] = None,
+                      di_daily_rates: Any = None,
+                      holidays: Any = None,
+                      allow_download: bool = True,
+                      vna_history: Any = None,
+                      vna_projections: Any = None,
+                      vna_proj: Optional[float] = None):
         """Constrói uma CotaFIDC gerando automaticamente a agenda de eventos financeiros."""
         df_cf = CRICRAClient.build_schedule(
             issue_date=issue_date,
@@ -1847,6 +2316,12 @@ class CotaFIDC(CertificadoRecebiveis):
             custodiante=custodiante,
             anniversary_day=anniversary_day,
             vna_engine=vna_engine,
+            di_daily_rates=di_daily_rates,
+            holidays=holidays,
+            allow_download=allow_download,
+            vna_history=vna_history,
+            vna_projections=vna_projections,
+            vna_proj=vna_proj,
         )
 
 
@@ -1882,7 +2357,13 @@ class LetraFinanceira(CertificadoRecebiveis):
                  anniversary_day: Optional[int] = None,
                  vna_engine: Optional[VNAEngine] = None,
                  is_pct_di: Optional[bool] = None,
-                 custom_cashflows: Any = None):
+                 custom_cashflows: Any = None,
+                 di_daily_rates: Any = None,
+                 holidays: Any = None,
+                 allow_download: bool = True,
+                 vna_history: Any = None,
+                 vna_projections: Any = None,
+                 vna_proj: Optional[float] = None):
         self.classe = classe.strip().upper()
         self.emissor = emissor.strip()
         self.call_date = self._normalize_date(call_date) if call_date is not None else None
@@ -1908,6 +2389,12 @@ class LetraFinanceira(CertificadoRecebiveis):
             vna_engine=vna_engine,
             is_pct_di=is_pct_di,
             custom_cashflows=custom_cashflows,
+            di_daily_rates=di_daily_rates,
+            holidays=holidays,
+            allow_download=allow_download,
+            vna_history=vna_history,
+            vna_projections=vna_projections,
+            vna_proj=vna_proj,
         )
 
     @classmethod
@@ -1923,12 +2410,18 @@ class LetraFinanceira(CertificadoRecebiveis):
                     classe: str = "SENIOR",
                     emissor: str = "",
                     call_date: Optional[Union[datetime.date, str]] = None,
-                    is_pct_di: Optional[bool] = None) -> "LetraFinanceira":
+                    is_pct_di: Optional[bool] = None,
+                    di_daily_rates: Any = None,
+                    holidays: Any = None,
+                    allow_download: bool = True,
+                    vna_history: Any = None,
+                    vna_projections: Any = None,
+                    vna_proj: Optional[float] = None) -> "LetraFinanceira":
         """Constrói uma Letra Financeira bullet (sem cupons intermediários)."""
         cls_norm = classe.strip().upper()
         horizon = call_date if (call_date is not None and cls_norm in ("SUBORDINADA", "COMPLEMENTAR")) else maturity_date
         horizon_dt = horizon if isinstance(horizon, datetime.date) else pd.to_datetime(horizon, dayfirst="/" in str(horizon)).date()
-        cal = get_calendar(calendar_name)
+        cal = get_calendar(calendar_name, holidays=holidays)
         pg_dt = cal.adjust_next(horizon_dt)
         df_cf = pd.DataFrame([
             {"data_evento": horizon_dt, "data_pagamento": pg_dt, "evento": "Juros", "tipo": "Juros", "taxa_percentual": 0.0},
@@ -1948,6 +2441,12 @@ class LetraFinanceira(CertificadoRecebiveis):
             emissor=emissor,
             call_date=call_date,
             is_pct_di=is_pct_di,
+            di_daily_rates=di_daily_rates,
+            holidays=holidays,
+            allow_download=allow_download,
+            vna_history=vna_history,
+            vna_projections=vna_projections,
+            vna_proj=vna_proj,
         )
 
     @staticmethod
@@ -2044,6 +2543,12 @@ def price_credit_portfolio(
             risk_free_rate=pos.get("risk_free_rate"),
             ettj_pre_rate_or_curve=pos.get("ettj_pre_rate_or_curve"),
             incentivada=bool(pos.get("incentivada", False)),
+            custom_cashflows=pos.get("custom_cashflows"),
+            di_daily_rates=pos.get("di_daily_rates"),
+            vna_history=pos.get("vna_history"),
+            vna_projections=pos.get("vna_projections"),
+            vna_proj=pos.get("vna_proj"),
+            allow_download=pos.get("allow_download"),
         )
         rows.append({
             "ticker": inst.ticker,

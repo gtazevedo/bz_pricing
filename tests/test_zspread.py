@@ -320,4 +320,87 @@ def test_credit_offline_di_and_resolve_vna_consistency():
     assert abs(pu_par - 1000.0 * round((1.00055 ** 3) * round(1.015 ** (3 / 252.0), 9), 9)) < 0.05
 
 
+def test_credit_offline_propagation_and_risky_consolidation_e6():
+    import pandas as pd
+    from bz_pricing.instruments import CRA, CRI, CotaFIDC, Debenture, LetraFinanceira
+
+    base_dt = datetime.date(2026, 10, 30)
+    months = pd.date_range("2025-12-01", "2026-10-01", freq="MS")
+    ipca_hist = pd.Series(0.004, index=months)
+
+    # 1. Propagação 100% offline de vna_history e bloqueio explícito com allow_download=False
+    deb = Debenture.from_schedule(
+        "DEB-OFF-IPCA",
+        issue_date="2026-01-15",
+        maturity_date="2028-01-15",
+        indexador="IPCA",
+        coupon_rate=0.06,
+        coupon_freq="anual",
+        amort_type="bullet",
+        allow_download=False,
+    )
+    with pytest.raises(ValueError):
+        deb.present_value(base_dt, 0.07)
+
+    vna_off = deb.resolve_vna(base_dt, vna_history=ipca_hist, vna_proj=0.003, allow_download=False)
+    assert vna_off > 1000.0
+    pu_off = deb.present_value(base_dt, 0.07, vna_history=ipca_hist, vna_proj=0.003, allow_download=False)
+    pu_exp = deb.present_value(base_dt, 0.07, vna=vna_off)
+    assert abs(pu_off - pu_exp) < 1e-6
+    assert abs(deb.ytm(base_dt, pu_off, vna_history=ipca_hist, vna_proj=0.003, allow_download=False) - 0.07) < 1e-6
+
+    # 2. from_ticker offline (Debenture & CRI) com características + cashflows_df
+    carac_deb = {
+        "Data de Vencimento": "2028-01-15",
+        "Data de Emissao": "2026-01-15",
+        "indice": "PRE",
+        "Juros Criterio Novo - Taxa": "11,5",
+        "Valor Nominal na Emissao": "1000,00",
+        "Percentual Multiplicador/Rentabilidade": "100",
+        "Tipo de Amortizacao": "Vencimento",
+    }
+    cf_deb = pd.DataFrame([
+        {"data_evento": "2027-01-15", "data_pagamento": "2027-01-15", "evento": "Juros", "tipo": "Juros", "taxa_percentual": 11.5},
+        {"data_evento": "2028-01-15", "data_pagamento": "2028-01-15", "evento": "Juros", "tipo": "Juros", "taxa_percentual": 11.5},
+        {"data_evento": "2028-01-15", "data_pagamento": "2028-01-15", "evento": "Vencimento", "tipo": "Vencimento", "taxa_percentual": 100.0},
+    ])
+    deb_off_tk = Debenture.from_ticker("DEB-TK", characteristics=carac_deb, cashflows_df=cf_deb, allow_download=False)
+    assert deb_off_tk.present_value(base_dt, 0.12, allow_download=False) > 900.0
+
+    cri = CRI.from_schedule(
+        "CRI-OFF", "2026-01-15", "2028-01-15", indexador="IPCA", coupon_rate=0.07, allow_download=False, vna_history=ipca_hist, vna_proj=0.003
+    )
+    fidc = CotaFIDC.from_schedule(
+        "FIDC-OFF", "2026-01-15", "2028-01-15", indexador="PRE", coupon_rate=0.14, allow_download=False
+    )
+    lf = LetraFinanceira.from_bullet(
+        "LF-OFF", "2026-01-15", "2028-01-15", indexador="PRE", coupon_rate=0.13, allow_download=False
+    )
+    assert cri.present_value(base_dt, 0.07) > 900.0
+    assert fidc.present_value(base_dt, 0.14) > 900.0
+    assert lf.present_value(base_dt, 0.13) > 900.0
+
+    # 3. E6: consolidação por DU e reconhecimento de "Principal" / "Cupom + Principal" em risky_present_value
+    # Mesma agenda amortizante com "Amortizacao" vs "Principal" na mesma data deve produzir CVA idêntico e invariante à ordem das linhas
+    flows_amort = [
+        (datetime.date(2027, 4, 30), 60.0, "Juros"),
+        (datetime.date(2027, 4, 30), 500.0, "Amortização"),
+        (datetime.date(2028, 4, 28), 30.0, "Juros"),
+        (datetime.date(2028, 4, 28), 500.0, "Vencimento"),
+    ]
+    flows_princ_swapped = [
+        (datetime.date(2027, 4, 30), 500.0, "Principal"),
+        (datetime.date(2027, 4, 30), 60.0, "Juros"),
+        (datetime.date(2028, 4, 28), 530.0, "Cupom + Principal"),
+    ]
+    d1 = Debenture.from_cashflows("D1", flows_amort, indexador="PRE", nominal_value=1000.0)
+    d2 = Debenture.from_cashflows("D2", flows_princ_swapped, indexador="PRE", nominal_value=1000.0)
+    r1 = d1.risky_present_value(base_dt, 0.12, hazard_rate=0.04, recovery_rate=0.40)
+    r2 = d2.risky_present_value(base_dt, 0.12, hazard_rate=0.04, recovery_rate=0.40)
+    assert abs(r1["pv_risk_free"] - r2["pv_risk_free"]) < 1e-6
+    assert abs(r1["pv_risky"] - r2["pv_risky"]) < 1e-6
+    assert abs(r1["cva"] - r2["cva"]) < 1e-6
+
+
+
 

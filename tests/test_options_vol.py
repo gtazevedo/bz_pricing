@@ -684,4 +684,44 @@ def test_bbg_surface_real_b3_bova11_calibration():
     assert math.isfinite(surf_bbg.get_vol(dus["2026-11-19"] + 10, spot))
 
 
+def test_fx_option_offshore_dc_and_linear360_curves_e3():
+    from bz_pricing.core.calendars import get_calendar
+    from bz_pricing.core.curves import FlatCurve, SimpleCurve
+    from bz_pricing.core.interpolators import Linear360Interpolator
+    from bz_pricing.curves.offshore import bootstrap_ois_curve
+
+    base_dt = datetime.date(2026, 10, 30)
+    mat_dt = datetime.date(2027, 4, 30)
+    cal = get_calendar("B3")
+    du_n = cal.bizdays(base_dt, mat_dt)
+    dc_n = (mat_dt - base_dt).days
+
+    # 1. Curva Linear360 com t_sec_nodes (DC) distintos por prazo: _get_rate_for_du deve passar dc_n
+    t_du = np.array([21.0, 126.0, 252.0], dtype=np.float64)
+    t_dc = np.array([30.0, 182.0, 365.0], dtype=np.float64)
+    y_cup = np.array([0.042, 0.050, 0.054], dtype=np.float64)
+    doc_curve = SimpleCurve(t_du, y_cup, Linear360Interpolator(0, 0), t_sec_nodes=t_dc)
+
+    opt = FXOption("DOLK27C", mat_dt, strike=5.65, option_type="CALL")
+    pre_crv = FlatCurve(0.145)
+    m_curve = opt.risk_metrics(base_dt, spot_ptax=5.60, pre_rate_or_curve=pre_crv, cupom_limpo_or_curve=doc_curve, vol=0.14)
+    r_ddi_exact = doc_curve.get_rate(du_n, dc_n)
+    q_expected_b3 = (252.0 / du_n) * math.log(1.0 + r_ddi_exact * (dc_n / 360.0))
+    assert abs(m_curve["q_cont"] - q_expected_b3) < 1e-12
+
+    # 2. Curva offshore contínua ACT/360 (SOFR OIS): DF_for = exp(-q_cont * T_du) == exp(-r_sofr * dc_n / 360)
+    sofr_crv = bootstrap_ois_curve([30.0, 90.0, 180.0, 360.0], [0.043, 0.0435, 0.044, 0.045], convention="ACT/360")
+    m_off = opt.risk_metrics(base_dt, spot_ptax=5.60, pre_rate_or_curve=pre_crv, cupom_limpo_or_curve=sofr_crv, vol=0.14)
+    r_sofr = sofr_crv.get_rate(float(dc_n))
+    df_for_expected = math.exp(-r_sofr * (dc_n / 360.0))
+    df_for_actual = math.exp(-m_off["q_cont"] * (du_n / 252.0))
+    assert abs(df_for_actual - df_for_expected) < 1e-12
+    assert m_off["price"] > 0.0
+
+    # Custom holidays também isolados em opção
+    opt_cust = FXOption("DOLK27C", mat_dt, strike=5.65, holidays=["2026-11-16"])
+    assert opt_cust.du(base_dt) == du_n - 1
+
+
+
 

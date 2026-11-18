@@ -321,6 +321,24 @@ cdef class LogLinearDiscountInterpolator(Interpolator):
         self._compounding = _coerce_compounding(compounding)
         self._freq = max(1, freq)
 
+    @property
+    def day_count_basis(self):
+        return self._day_count_basis
+
+    @property
+    def compounding(self):
+        if self._compounding == EXPONENTIAL_B3:
+            return "exponential"
+        if self._compounding == SIMPLE_LINEAR:
+            return "simple"
+        if self._compounding == COMPOUND_ANNUAL:
+            return "compound"
+        return "continuous"
+
+    @property
+    def freq(self):
+        return self._freq
+
     cdef tuple _eval_ln_df_and_fwd(self, double t, double *t_nodes, double *y_nodes, int n_nodes):
         if n_nodes <= 0:
             raise ValueError("Nós de interpolação vazios.")
@@ -378,7 +396,9 @@ cdef class LogLinearDiscountInterpolator(Interpolator):
         return (lna + slope * (tau - ta), -slope)
 
     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
-        if n_nodes <= 1 or t <= 0.0 or (t <= t_nodes[0] and self._extrap_left == EXTRAP_FLAT):
+        if n_nodes <= 1 or t <= 0.0:
+            return y_nodes[0]
+        if t <= t_nodes[0] and self._extrap_left == EXTRAP_FLAT and self._compounding == CONTINUOUS:
             return y_nodes[0]
         if t >= t_nodes[n_nodes - 1] and self._extrap_right == EXTRAP_FLAT:
             return y_nodes[n_nodes - 1]
@@ -408,6 +428,24 @@ cdef class LogCubicDiscountInterpolator(Interpolator):
         self._day_count_basis = day_count_basis
         self._compounding = _coerce_compounding(compounding)
         self._freq = max(1, freq)
+
+    @property
+    def day_count_basis(self):
+        return self._day_count_basis
+
+    @property
+    def compounding(self):
+        if self._compounding == EXPONENTIAL_B3:
+            return "exponential"
+        if self._compounding == SIMPLE_LINEAR:
+            return "simple"
+        if self._compounding == COMPOUND_ANNUAL:
+            return "compound"
+        return "continuous"
+
+    @property
+    def freq(self):
+        return self._freq
 
     cdef tuple _eval_ln_df_and_fwd(self, double t, double *t_nodes, double *y_nodes, int n_nodes):
         if n_nodes <= 0:
@@ -518,7 +556,7 @@ cdef class LogCubicDiscountInterpolator(Interpolator):
             free(xs); free(ys); free(h); free(d); free(slopes)
 
     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
-        if n_nodes <= 1 or t <= 0.0 or (t <= t_nodes[0] and self._extrap_left == EXTRAP_FLAT):
+        if n_nodes <= 1 or t <= 0.0:
             return y_nodes[0]
         if t >= t_nodes[n_nodes - 1] and self._extrap_right == EXTRAP_FLAT:
             return y_nodes[n_nodes - 1]
@@ -549,6 +587,24 @@ cdef class MonotoneConvexInterpolator(Interpolator):
         self._compounding = _coerce_compounding(compounding)
         self._freq = max(1, freq)
         self._enforce_positivity = enforce_positivity
+
+    @property
+    def day_count_basis(self):
+        return self._day_count_basis
+
+    @property
+    def compounding(self):
+        if self._compounding == EXPONENTIAL_B3:
+            return "exponential"
+        if self._compounding == SIMPLE_LINEAR:
+            return "simple"
+        if self._compounding == COMPOUND_ANNUAL:
+            return "compound"
+        return "continuous"
+
+    @property
+    def freq(self):
+        return self._freq
 
     cdef tuple _eval_ln_df_and_fwd(self, double t, double *t_nodes, double *y_nodes, int n_nodes):
         if n_nodes <= 0:
@@ -701,7 +757,7 @@ cdef class MonotoneConvexInterpolator(Interpolator):
             free(taus); free(zcum); free(fd); free(fnodes)
 
     cdef double interpolate(self, double t, double *t_nodes, double *y_nodes, int n_nodes, double t_sec=0.0, double *t_sec_nodes=NULL) except *:
-        if n_nodes <= 1 or t <= 0.0 or (t <= t_nodes[0] and self._extrap_left == EXTRAP_FLAT):
+        if n_nodes <= 1 or t <= 0.0:
             return y_nodes[0]
         if t >= t_nodes[n_nodes - 1] and self._extrap_right == EXTRAP_FLAT:
             return y_nodes[n_nodes - 1]

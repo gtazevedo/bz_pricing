@@ -145,6 +145,10 @@ cdef class SimpleCurve(Curve):
             return None
         return np.asarray(self._t_sec_nodes)
 
+    @property
+    def interpolator(self):
+        return self._interpolator
+
 
 cdef class ComplexCurve(Curve):
     """
@@ -636,6 +640,24 @@ cdef class NelsonSiegelCurve(Curve):
             "lambda1": self._lambda1,
         }
 
+    @property
+    def day_count_basis(self):
+        return self._day_count_basis
+
+    @property
+    def compounding(self):
+        if self._compounding == EXPONENTIAL_B3:
+            return "exponential"
+        if self._compounding == SIMPLE_LINEAR:
+            return "simple"
+        if self._compounding == COMPOUND_ANNUAL:
+            return "compound"
+        return "continuous"
+
+    @property
+    def freq(self):
+        return self._freq
+
 
 cdef class SvenssonCurve(Curve):
     """Curva paramétrica de Svensson (1994), padrão oficial de bancos centrais (Fed, BCE) e ANBIMA."""
@@ -740,3 +762,21 @@ cdef class SvenssonCurve(Curve):
             "lambda1": self._lambda1,
             "lambda2": self._lambda2,
         }
+
+    @property
+    def day_count_basis(self):
+        return self._day_count_basis
+
+    @property
+    def compounding(self):
+        if self._compounding == EXPONENTIAL_B3:
+            return "exponential"
+        if self._compounding == SIMPLE_LINEAR:
+            return "simple"
+        if self._compounding == COMPOUND_ANNUAL:
+            return "compound"
+        return "continuous"
+
+    @property
+    def freq(self):
+        return self._freq

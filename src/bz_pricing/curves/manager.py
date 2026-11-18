@@ -127,31 +127,31 @@ class CurveManager:
                     'tp_curve', 'tp_data', 'media_tbf', 'tbf_factor'
                 ])
                 if data is not None and not is_contracts_df and not has_comp_kwargs:
-                    return self._build_from_nodes_data(curve_name, config, base_date, data, **kwargs)
+                    return self._build_from_nodes_data(curve_name, config, base_date, data, allow_download=allow_download, **kwargs)
                 return self._build_derived_curve(curve_name, config, base_date, data=data, allow_download=allow_download, **kwargs)
             elif curve_type == "flat":
                 return self._build_flat_curve(curve_name, config, base_date, data=data, allow_download=allow_download, **kwargs)
             elif curve_type == "spread":
                 has_spread_kwargs = any(k in kwargs for k in ['curve_a', 'curve_a_data', 'data_a', 'curve_b', 'curve_b_data', 'data_b'])
                 if data is not None and not has_spread_kwargs:
-                    return self._build_from_nodes_data(curve_name, config, base_date, data, **kwargs)
+                    return self._build_from_nodes_data(curve_name, config, base_date, data, allow_download=allow_download, **kwargs)
                 return self._build_spread_curve(curve_name, config, base_date, data=data, allow_download=allow_download, **kwargs)
             elif curve_type == "equity_index":
                 return self._build_equity_index_curve(curve_name, config, base_date, data=data, allow_download=allow_download, **kwargs)
             elif curve_type == "convenience_yield":
                 has_cy_kwargs = any(k in kwargs for k in ['spot_price', 'spot', 'futures_curve', 'futures_data', 'pre_curve', 'pre_data'])
                 if data is not None and not has_cy_kwargs:
-                    return self._build_from_nodes_data(curve_name, config, base_date, data, **kwargs)
+                    return self._build_from_nodes_data(curve_name, config, base_date, data, allow_download=allow_download, **kwargs)
                 return self._build_convenience_yield_curve(curve_name, config, base_date, data=data, allow_download=allow_download, **kwargs)
             elif curve_type == "currency_forward":
                 has_fwd_kwargs = any(k in kwargs for k in ['spot_rate', 'spot_price', 'ptax', 'spot', 'pre_curve', 'pre_data', 'foreign_curve', 'foreign_data'])
                 if data is not None and not has_fwd_kwargs:
-                    return self._build_from_nodes_data(curve_name, config, base_date, data, **kwargs)
+                    return self._build_from_nodes_data(curve_name, config, base_date, data, allow_download=allow_download, **kwargs)
                 return self._build_currency_forward_curve(curve_name, config, base_date, data=data, allow_download=allow_download, **kwargs)
             elif curve_type == "derived_zero_coupon":
                 has_zc_kwargs = any(k in kwargs for k in ['forward_curve', 'fwd_curve', 'forward_data', 'fwd_data'])
                 if data is not None and not has_zc_kwargs:
-                    return self._build_from_nodes_data(curve_name, config, base_date, data, **kwargs)
+                    return self._build_from_nodes_data(curve_name, config, base_date, data, allow_download=allow_download, **kwargs)
                 return self._build_zero_coupon_curve(curve_name, config, base_date, data=data, allow_download=allow_download, **kwargs)
             elif curve_type in ("ois", "treasury"):
                 return self._build_offshore_curve(curve_name, config, base_date, data=data, allow_download=allow_download, **kwargs)
@@ -403,7 +403,7 @@ class CurveManager:
         all_rows = plateaus + long_knots
         return pd.DataFrame(all_rows, columns=['du_start', 'DU', 'DC', 'rate', 'e_inf'])
 
-    def _extract_provider_vertices(self, df_ref: pd.DataFrame, curve_name: str, config: dict, base_date: datetime.date) -> pd.DataFrame:
+    def _extract_provider_vertices(self, df_ref: pd.DataFrame, curve_name: str, config: dict, base_date: datetime.date, allow_download: bool = False) -> pd.DataFrame:
         """
         Extrai apenas os vértices primários de provedores de swaps ou vencimentos futuros subjacentes
         a partir de tabelas referenciais diárias, de modo que os prazos intermediários sejam
@@ -420,6 +420,9 @@ class CurveManager:
         if c_name in ['ZUS', 'LIB', 'ZEU', 'ZMX', 'SDE'] or prod in ['LIB', 'SDE'] or (interp_cls and interp_cls.__name__ == 'Linear360Interpolator'):
             if 'day360' in df_ref.columns and 'rate' in df_ref.columns:
                 return self._extract_linear360_knots(df_ref)
+
+        if not allow_download:
+            return df_ref
 
         # 2. Cupom Cambial Limpo (DOC, DCL)
         if c_name in ['DOC', 'DCL'] or prod in ['DOC', 'DCL']:
@@ -476,7 +479,7 @@ class CurveManager:
 
         return df_ref
 
-    def _build_from_nodes_data(self, curve_name: str, config: dict, base_date: datetime.date, data: any, **kwargs) -> SimpleCurve:
+    def _build_from_nodes_data(self, curve_name: str, config: dict, base_date: datetime.date, data: any, allow_download: bool = False, **kwargs) -> SimpleCurve:
         """
         Constrói a curva a partir de nós de prazos e taxas (DataFrame, Series, dict ou list).
         Preserva as regras de interpolação, contagem de dias (DU vs DC), extrapolação e arredondamento do configs.py.
@@ -500,7 +503,7 @@ class CurveManager:
             raise ValueError(f"Formato de dados não suportado: {type(data)}")
 
         if kwargs.get("filter_provider_knots", True) and isinstance(df, pd.DataFrame) and len(df) > 50:
-            df = self._extract_provider_vertices(df, curve_name, config, base_date)
+            df = self._extract_provider_vertices(df, curve_name, config, base_date, allow_download=allow_download)
 
         interp_cls = config.get("interpolator_class")
         if interp_cls is None:
@@ -599,7 +602,7 @@ class CurveManager:
                 if any(k in cols_lower for k in ['xprtndt', 'maturity', 'vencimento', 'cdinstr', 'ticker']):
                     is_contracts_df = True
             if not is_contracts_df and not (isinstance(data, pd.DataFrame) and 'AdjstdQtTax' in data.columns):
-                return self._build_from_nodes_data(curve_name, config, base_date, data, **kwargs)
+                return self._build_from_nodes_data(curve_name, config, base_date, data, allow_download=allow_download, **kwargs)
             df = data.copy()
         else:
             if not allow_download:
@@ -659,7 +662,7 @@ class CurveManager:
                             stacklevel=2,
                         )
 
-                return self._build_from_nodes_data(curve_name, config, base_date, df_ref, **kwargs)
+                return self._build_from_nodes_data(curve_name, config, base_date, df_ref, allow_download=allow_download, **kwargs)
             elif curve_name == "LTN":
                 df = self.loader.get_anbima_bonds(base_date, "LTN")
             else:
