@@ -25,6 +25,9 @@ from .derivatives import (
     SwapDIxPRE,
     SwapDIxIPCA,
     NDFContract,
+    OISSwap,
+    SOFRFuture,
+    CrossCurrencySwap,
     price_di1_portfolio,
 )
 from .options import (
@@ -72,6 +75,9 @@ __all__ = [
     "SwapDIxPRE",
     "SwapDIxIPCA",
     "NDFContract",
+    "OISSwap",
+    "SOFRFuture",
+    "CrossCurrencySwap",
     "price_di1_portfolio",
     "EquityOption",
     "FXOption",

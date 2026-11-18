@@ -723,5 +723,58 @@ def test_fx_option_offshore_dc_and_linear360_curves_e3():
     assert opt_cust.du(base_dt) == du_n - 1
 
 
+def test_swaption_and_capfloor_offshore_conventions():
+    from bz_pricing.core.curves import SimpleCurve
+    from bz_pricing.core.interpolators import LogLinearDiscountInterpolator
+    from bz_pricing.curves.offshore import bootstrap_ois_curve
+    from bz_pricing.instruments import CapFloor, Swaption
+
+    base_dt = datetime.date(2026, 10, 30)
+    sofr = bootstrap_ois_curve([90.0, 180.0, 360.0, 720.0, 1080.0, 1800.0], [0.041, 0.0415, 0.042, 0.043, 0.044, 0.045], convention="ACT/360")
+
+    # 1. Swaption offshore SOFR ACT/360 anual gerando agenda automaticamente via payment_freq_months=12
+    swpt_pay = Swaption(
+        "SWPT-SOFR-1Y2Y-P",
+        expiry_date="2027-10-29",
+        swap_maturity_date="2029-10-30",
+        strike_rate=0.044,
+        option_type="PAYER",
+        notional=10_000_000.0,
+        calendar_name="US",
+        day_count="ACT/360",
+        payment_freq_months=12,
+    )
+    swpt_rec = Swaption(
+        "SWPT-SOFR-1Y2Y-R",
+        expiry_date="2027-10-29",
+        swap_maturity_date="2029-10-30",
+        strike_rate=0.044,
+        option_type="RECEIVER",
+        notional=10_000_000.0,
+        calendar_name="US",
+        day_count="ACT/360",
+        payment_freq_months=12,
+    )
+    m_p = swpt_pay.risk_metrics(base_dt, sofr, vol=0.22, model="black76")
+    m_r = swpt_rec.risk_metrics(base_dt, sofr, vol=0.22, model="black76")
+    # Paridade Payer - Receiver = Annuity * (F - K) * Notional
+    parity = 10_000_000.0 * m_p["annuity"] * (m_p["forward_swap_rate"] - 0.044)
+    assert abs((m_p["price"] - m_r["price"]) - parity) < 1e-6
+
+    m_bac = swpt_pay.risk_metrics(base_dt, sofr, vol=0.0085, model="bachelier")
+    assert m_bac["price"] > 0.0
+
+    # 2. Cap vs Floor offshore ACT/360 vs paridade Cap - Floor = Swap
+    fixings = [datetime.date(2027, 4, 30), datetime.date(2027, 10, 29)]
+    payments = [datetime.date(2027, 10, 29), datetime.date(2028, 4, 28)]
+    cap = CapFloor("CAP-SOFR", fixings, payments, strike_rate=0.043, option_type="CAP", notional=5_000_000.0, calendar_name="US", day_count="ACT/360")
+    flr = CapFloor("FLR-SOFR", fixings, payments, strike_rate=0.043, option_type="FLOOR", notional=5_000_000.0, calendar_name="US", day_count="ACT/360")
+    df_c = cap.cashflow_table(base_dt, sofr, vol=0.20)
+    df_f = flr.cashflow_table(base_dt, sofr, vol=0.20)
+    swap_from_caplets = (5_000_000.0 * df_c["tau"] * df_c["df_pay"] * (df_c["forward_rate"] - 0.043)).sum()
+    assert abs((df_c["caplet_pv"].sum() - df_f["caplet_pv"].sum()) - swap_from_caplets) < 1e-6
+
+
+
 
 

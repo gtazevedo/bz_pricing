@@ -7,6 +7,12 @@ import pandas as pd
 
 from bz_pricing.core.calendars import get_calendar
 from bz_pricing.core.curves import Curve
+from bz_pricing.instruments.offshore_bonds import (
+    _generate_schedule_dates,
+    _normalize_day_count,
+    _resolve_discount_factor,
+    _year_fraction_bond,
+)
 
 try:
     from bz_pricing.core.options_core import (
@@ -774,6 +780,9 @@ class Swaption(_BaseOption):
         swap_convention: str = "periodic",
         calendar_name: str = "B3",
         holidays: Any = None,
+        day_count: str = "BUS/252",
+        rate_compounding: str = "auto",
+        payment_freq_months: Optional[int] = None,
     ):
         opt_norm = option_type.strip().upper()
         if opt_norm in ("PAYER", "CALL"):
@@ -785,6 +794,10 @@ class Swaption(_BaseOption):
         conv_norm = swap_convention.strip().lower()
         if conv_norm not in ("periodic", "b3_zero"):
             raise ValueError(f"swap_convention inválido: {swap_convention}. Use 'periodic' ou 'b3_zero'.")
+        dc_upper = str(day_count).strip().upper()
+        self.day_count = "BUS/252" if dc_upper in ("BUS/252", "DU/252") else _normalize_day_count(dc_upper)
+        self.rate_compounding = str(rate_compounding).strip().lower()
+        self.payment_freq_months = int(payment_freq_months) if payment_freq_months is not None else None
         super().__init__(
             ticker=ticker,
             maturity_date=expiry_date,
@@ -809,7 +822,8 @@ class Swaption(_BaseOption):
     ):
         base_dt = self._normalize_date(base_date)
         du_exp = self.du(base_dt)
-        t_exp = du_exp / 252.0
+        is_bus252 = self.day_count == "BUS/252"
+        t_exp = (du_exp / 252.0) if is_bus252 else _year_fraction_bond(base_dt, self.maturity_date, self.day_count, freq=1)
 
         if forward_swap_rate is not None and annuity is not None:
             return du_exp, t_exp, float(forward_swap_rate), float(annuity)
@@ -817,39 +831,90 @@ class Swaption(_BaseOption):
         if self.payment_dates:
             pay_dates = sorted(d for d in self.payment_dates if d > self.maturity_date)
         elif self.swap_maturity_date is not None:
-            pay_dates = [self.swap_maturity_date]
+            if self.payment_freq_months is not None and self.payment_freq_months > 0:
+                pay_dates = _generate_schedule_dates(
+                    self.maturity_date, self.swap_maturity_date, self.payment_freq_months, cal=self.calendar
+                )[1:]
+            else:
+                pay_dates = [self.swap_maturity_date]
         else:
             raise ValueError("Informe 'swap_maturity_date', 'payment_dates' ou ('forward_swap_rate', 'annuity').")
 
         if not pay_dates:
             raise ValueError("Não há datas de pagamento do swap posteriores ao vencimento da swaption.")
 
-        r_exp = self._get_rate_for_du(pre_rate_or_curve, max(1, du_exp))
-        df_exp = (1.0 + r_exp) ** (-du_exp / 252.0) if du_exp > 0 else 1.0
+        if is_bus252 and self.rate_compounding == "auto" and not (
+            hasattr(pre_rate_or_curve, "day_count_basis")
+            or (
+                getattr(pre_rate_or_curve, "interpolator", None) is not None
+                and hasattr(pre_rate_or_curve.interpolator, "day_count_basis")
+                and abs(float(pre_rate_or_curve.interpolator.day_count_basis) - 252.0) > 1e-6
+            )
+        ):
+            r_exp = self._get_rate_for_du(pre_rate_or_curve, max(1, du_exp))
+            df_exp = (1.0 + r_exp) ** (-du_exp / 252.0) if du_exp > 0 else 1.0
 
+            if self.swap_convention == "b3_zero":
+                du_end = max(du_exp + 1, int(self.calendar.bizdays(base_dt, pay_dates[-1])))
+                r_end = self._get_rate_for_du(pre_rate_or_curve, du_end)
+                df_end = (1.0 + r_end) ** (-du_end / 252.0)
+                tau_swap = max(1e-12, (du_end - du_exp) / 252.0)
+                fwd_calc = math.pow(df_exp / max(1e-15, df_end), 1.0 / tau_swap) - 1.0
+                fwd_rate = float(forward_swap_rate) if forward_swap_rate is not None else fwd_calc
+                ann_calc = df_exp * tau_swap / max(1e-8, 1.0 + fwd_rate)
+                ann_eff = float(annuity) if annuity is not None else ann_calc
+                return du_exp, t_exp, fwd_rate, ann_eff
+
+            prev_du = du_exp
+            ann_val = 0.0
+            for pdt in pay_dates:
+                du_i = max(prev_du + 1, int(self.calendar.bizdays(base_dt, pdt)))
+                tau_i = (du_i - prev_du) / 252.0
+                r_i = self._get_rate_for_du(pre_rate_or_curve, du_i)
+                df_i = (1.0 + r_i) ** (-du_i / 252.0)
+                ann_val += tau_i * df_i
+                prev_du = du_i
+
+            r_end = self._get_rate_for_du(pre_rate_or_curve, prev_du)
+            df_end = (1.0 + r_end) ** (-prev_du / 252.0)
+            fwd_rate = float(forward_swap_rate) if forward_swap_rate is not None else ((df_exp - df_end) / max(1e-12, ann_val))
+            ann_eff = float(annuity) if annuity is not None else ann_val
+            return du_exp, t_exp, fwd_rate, ann_eff
+
+        _, df_exp = _resolve_discount_factor(
+            pre_rate_or_curve, base_dt, self.maturity_date, self.calendar, self.day_count, self.rate_compounding
+        )
         if self.swap_convention == "b3_zero":
-            du_end = max(du_exp + 1, int(self.calendar.bizdays(base_dt, pay_dates[-1])))
-            r_end = self._get_rate_for_du(pre_rate_or_curve, du_end)
-            df_end = (1.0 + r_end) ** (-du_end / 252.0)
-            tau_swap = max(1e-12, (du_end - du_exp) / 252.0)
+            end_dt = pay_dates[-1]
+            _, df_end = _resolve_discount_factor(
+                pre_rate_or_curve, base_dt, end_dt, self.calendar, self.day_count, self.rate_compounding
+            )
+            tau_swap = (
+                max(1e-12, (int(self.calendar.bizdays(self.maturity_date, end_dt))) / 252.0)
+                if is_bus252
+                else max(1e-12, _year_fraction_bond(self.maturity_date, end_dt, self.day_count, freq=1))
+            )
             fwd_calc = math.pow(df_exp / max(1e-15, df_end), 1.0 / tau_swap) - 1.0
             fwd_rate = float(forward_swap_rate) if forward_swap_rate is not None else fwd_calc
             ann_calc = df_exp * tau_swap / max(1e-8, 1.0 + fwd_rate)
             ann_eff = float(annuity) if annuity is not None else ann_calc
             return du_exp, t_exp, fwd_rate, ann_eff
 
-        prev_du = du_exp
+        prev_dt = self.maturity_date
         ann_val = 0.0
+        df_end = df_exp
         for pdt in pay_dates:
-            du_i = max(prev_du + 1, int(self.calendar.bizdays(base_dt, pdt)))
-            tau_i = (du_i - prev_du) / 252.0
-            r_i = self._get_rate_for_du(pre_rate_or_curve, du_i)
-            df_i = (1.0 + r_i) ** (-du_i / 252.0)
+            tau_i = (
+                max(1e-12, int(self.calendar.bizdays(prev_dt, pdt)) / 252.0)
+                if is_bus252
+                else max(1e-12, _year_fraction_bond(prev_dt, pdt, self.day_count, freq=1))
+            )
+            _, df_i = _resolve_discount_factor(
+                pre_rate_or_curve, base_dt, pdt, self.calendar, self.day_count, self.rate_compounding
+            )
             ann_val += tau_i * df_i
-            prev_du = du_i
-
-        r_end = self._get_rate_for_du(pre_rate_or_curve, prev_du)
-        df_end = (1.0 + r_end) ** (-prev_du / 252.0)
+            df_end = df_i
+            prev_dt = pdt
 
         fwd_rate = float(forward_swap_rate) if forward_swap_rate is not None else ((df_exp - df_end) / max(1e-12, ann_val))
         ann_eff = float(annuity) if annuity is not None else ann_val
@@ -951,6 +1016,8 @@ class CapFloor(_BaseOption):
         notional: float = 1_000_000.0,
         calendar_name: str = "B3",
         holidays: Any = None,
+        day_count: str = "BUS/252",
+        rate_compounding: str = "auto",
     ):
         if len(fixing_dates) != len(payment_dates) or not fixing_dates:
             raise ValueError("fixing_dates e payment_dates devem ser não vazios e de mesmo tamanho.")
@@ -961,6 +1028,9 @@ class CapFloor(_BaseOption):
             mapped = "PUT"
         else:
             raise ValueError(f"option_type inválido para CapFloor: {option_type}. Use 'CAP' ou 'FLOOR'.")
+        dc_upper = str(day_count).strip().upper()
+        self.day_count = "BUS/252" if dc_upper in ("BUS/252", "DU/252") else _normalize_day_count(dc_upper)
+        self.rate_compounding = str(rate_compounding).strip().lower()
         self.fixing_dates = [self._normalize_date(d) for d in fixing_dates]
         self.payment_dates = [self._normalize_date(d) for d in payment_dates]
         super().__init__(
@@ -986,19 +1056,40 @@ class CapFloor(_BaseOption):
         base_dt = self._normalize_date(base_date)
         is_call = self.option_type == "CALL"
         mdl = model.strip().lower()
+        is_bus252 = self.day_count == "BUS/252"
+        use_legacy_b3 = is_bus252 and self.rate_compounding == "auto" and not (
+            hasattr(pre_rate_or_curve, "day_count_basis")
+            or (
+                getattr(pre_rate_or_curve, "interpolator", None) is not None
+                and hasattr(pre_rate_or_curve.interpolator, "day_count_basis")
+                and abs(float(pre_rate_or_curve.interpolator.day_count_basis) - 252.0) > 1e-6
+            )
+        )
         rows = []
         for idx, (f_dt, p_dt) in enumerate(zip(self.fixing_dates, self.payment_dates)):
             if p_dt <= base_dt:
                 continue
             du_fix = max(0, int(self.calendar.bizdays(base_dt, f_dt)))
             du_pay = max(du_fix + 1, int(self.calendar.bizdays(base_dt, p_dt)))
-            t_fix = du_fix / 252.0
-            tau = (du_pay - du_fix) / 252.0
+            if is_bus252:
+                t_fix = du_fix / 252.0
+                tau = (du_pay - du_fix) / 252.0
+            else:
+                t_fix = _year_fraction_bond(base_dt, f_dt, self.day_count, freq=1)
+                tau = _year_fraction_bond(f_dt, p_dt, self.day_count, freq=1)
 
-            r_fix = self._get_rate_for_du(pre_rate_or_curve, max(1, du_fix))
-            df_fix = (1.0 + r_fix) ** (-du_fix / 252.0) if du_fix > 0 else 1.0
-            r_pay = self._get_rate_for_du(pre_rate_or_curve, du_pay)
-            df_pay = (1.0 + r_pay) ** (-du_pay / 252.0)
+            if use_legacy_b3:
+                r_fix = self._get_rate_for_du(pre_rate_or_curve, max(1, du_fix))
+                df_fix = (1.0 + r_fix) ** (-du_fix / 252.0) if du_fix > 0 else 1.0
+                r_pay = self._get_rate_for_du(pre_rate_or_curve, du_pay)
+                df_pay = (1.0 + r_pay) ** (-du_pay / 252.0)
+            else:
+                _, df_fix = _resolve_discount_factor(
+                    pre_rate_or_curve, base_dt, f_dt, self.calendar, self.day_count, self.rate_compounding
+                )
+                _, df_pay = _resolve_discount_factor(
+                    pre_rate_or_curve, base_dt, p_dt, self.calendar, self.day_count, self.rate_compounding
+                )
 
             fwd_i = float(forward_rates[idx]) if forward_rates is not None else (((df_fix / df_pay) - 1.0) / max(1e-12, tau))
             vol_i = self._resolve_vol(vol, max(1, du_fix), fwd_i)

@@ -93,6 +93,170 @@ def _year_fraction_bond(
     return float((d2 - d1).days) / 365.25
 
 
+def _modified_following(cal: Any, dt: datetime.date) -> datetime.date:
+    adj = cal.following(dt)
+    if adj.month != dt.month:
+        # Volta para o último dia útil anterior dentro do mesmo mês
+        prev_fn = getattr(cal, "preceding", None)
+        if prev_fn is not None:
+            return prev_fn(dt)
+        cur = dt - datetime.timedelta(days=1)
+        while not cal.isbizday(cur):
+            cur -= datetime.timedelta(days=1)
+        return cur
+    return adj
+
+
+def _generate_schedule_dates(
+    start_date: datetime.date,
+    maturity_date: datetime.date,
+    payment_freq_months: int,
+    cal: Any = None,
+    date_adjustment: str = "modified_following",
+) -> List[datetime.date]:
+    """Gera sequência de datas [start_date, ..., maturity_date] regressivamente pelo período em meses."""
+    if payment_freq_months <= 0:
+        dates = [start_date, maturity_date]
+    else:
+        eom = _is_end_of_month(maturity_date)
+        raw: List[datetime.date] = [maturity_date]
+        k = 1
+        while True:
+            prev_dt = _add_months(maturity_date, -k * int(payment_freq_months), end_of_month=eom)
+            if prev_dt <= start_date:
+                break
+            raw.append(prev_dt)
+            k += 1
+        raw.append(start_date)
+        raw.reverse()
+        dates = raw
+
+    adj_norm = str(date_adjustment).strip().lower()
+    if cal is None or adj_norm in ("unadjusted", "none"):
+        return sorted(set(dates))
+
+    out: List[datetime.date] = [dates[0]]
+    for d in dates[1:]:
+        if adj_norm == "following":
+            adj = cal.following(d)
+        else:
+            adj = _modified_following(cal, d)
+        if adj > out[-1]:
+            out.append(adj)
+    return out
+
+
+class _ShiftedCurve(Curve):
+    """Envoltório leve de deslocamento paralelo (+shift) preservando metadados de convenção."""
+
+    def __init__(self, base_curve: Curve, shift: float, default_basis: float = 365.0):
+        super().__init__()
+        self._base = base_curve
+        self._shift = float(shift)
+        self._default_basis = float(default_basis)
+
+    @property
+    def interpolator(self):
+        return getattr(self._base, "interpolator", None)
+
+    @property
+    def day_count_basis(self):
+        b = getattr(self._base, "day_count_basis", None)
+        if b is not None:
+            return float(b)
+        interp = self.interpolator
+        if interp is not None and hasattr(interp, "day_count_basis"):
+            return float(interp.day_count_basis)
+        return None
+
+    @property
+    def compounding(self):
+        c = getattr(self._base, "compounding", None)
+        if c is not None:
+            return c
+        interp = self.interpolator
+        if interp is not None and hasattr(interp, "compounding"):
+            return interp.compounding
+        return None
+
+    @property
+    def freq(self):
+        f = getattr(self._base, "freq", None)
+        if f is not None:
+            return f
+        interp = self.interpolator
+        if interp is not None and hasattr(interp, "freq"):
+            return interp.freq
+        return 1
+
+    def get_rate(self, t: float, t_sec: float = 0.0) -> float:
+        return float(self._base.get_rate(t, t_sec)) + self._shift
+
+    def discount_factor(self, t: float) -> float:
+        if t <= 0.0:
+            return 1.0
+        basis = self.day_count_basis or self._default_basis
+        tau = float(t) / float(basis)
+        _, df_base = _curve_zero_rate_and_df(self._base, float(t), tau)
+        return float(df_base) * math.exp(-self._shift * tau)
+
+
+def _resolve_discount_factor(
+    rate_or_curve: Union[float, Curve],
+    base_dt: datetime.date,
+    target_dt: datetime.date,
+    cal: Any,
+    day_count: str = "ACT/360",
+    rate_compounding: str = "auto",
+) -> Tuple[float, float]:
+    """Calcula (taxa, fator_desconto) entre base_dt e target_dt em convenções onshore ou offshore."""
+    if target_dt <= base_dt:
+        return 0.0, 1.0
+    dc_upper = str(day_count).strip().upper()
+    is_bus252 = dc_upper in ("BUS/252", "DU/252")
+    dc_days = float((target_dt - base_dt).days)
+    if is_bus252:
+        du_days = max(0, int(cal.bizdays(base_dt, target_dt)))
+        tau = float(du_days) / 252.0
+    else:
+        du_days = 0
+        tau = _year_fraction_bond(base_dt, target_dt, day_count, freq=1)
+
+    comp = str(rate_compounding).strip().lower()
+    if isinstance(rate_or_curve, Curve):
+        if hasattr(rate_or_curve, "discount_factor"):
+            return _curve_zero_rate_and_df(rate_or_curve, dc_days, tau)
+        interp = getattr(rate_or_curve, "interpolator", None)
+        basis_meta = getattr(rate_or_curve, "day_count_basis", None)
+        if basis_meta is None and interp is not None:
+            basis_meta = getattr(interp, "day_count_basis", None)
+        if basis_meta is not None and abs(float(basis_meta) - 252.0) > 1e-6:
+            return _curve_zero_rate_and_df(rate_or_curve, dc_days, tau)
+
+        t_query = float(max(1, du_days)) if is_bus252 else float(max(1.0, dc_days))
+        r_val = float(rate_or_curve.get_rate(t_query, dc_days))
+    else:
+        r_val = float(rate_or_curve)
+
+    if comp == "auto":
+        comp_eff = "exponential_252" if is_bus252 else "continuous"
+    else:
+        comp_eff = comp
+
+    if comp_eff in ("continuous", "cont"):
+        df = math.exp(-r_val * tau)
+    elif comp_eff in ("simple", "simple_linear", "linear"):
+        df = 1.0 / max(1e-12, 1.0 + r_val * tau)
+    elif comp_eff in ("exponential_252", "exponential", "exponential_b3", "exp_252", "b3"):
+        df = math.pow(1.0 + max(-0.99, r_val), -tau)
+    else:
+        raise ValueError(
+            f"rate_compounding inválido: '{rate_compounding}'. "
+            "Use 'auto', 'exponential_252', 'continuous' ou 'simple'."
+        )
+    return r_val, float(df)
+
+
 def _curve_zero_rate_and_df(curve: Curve, dc: float, tau_fallback: float) -> Tuple[float, float]:
     """Avalia a curva zero offshore (SimpleCurve, ParametricCurve ou FlatCurve) no prazo dc."""
     if dc <= 0.0:

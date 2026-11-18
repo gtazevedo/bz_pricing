@@ -25,6 +25,11 @@ from bz_pricing.instruments.offshore_bonds import (
     USTreasuryBill,
     USTreasuryNoteBond,
 )
+from bz_pricing.instruments.derivatives import (
+    OISSwap,
+    SOFRFuture,
+    CrossCurrencySwap,
+)
 from bz_pricing.core.vna_engine import (
     VNAEngine,
     calculate_vna_from_vne,
@@ -58,6 +63,9 @@ __all__ = [
     "USTreasuryNoteBond",
     "TIPS",
     "OffshoreBond",
+    "OISSwap",
+    "SOFRFuture",
+    "CrossCurrencySwap",
     "VNAEngine",
     "calculate_vna_from_vne",
     "calculate_ntnb_vna",
