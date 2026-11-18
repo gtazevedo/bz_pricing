@@ -7,61 +7,27 @@ import pandas as pd
 
 from bz_pricing.core.calendars import get_calendar
 from bz_pricing.core.curves import Curve
+from bz_pricing.core.options_core import (
+    asian_price_greeks as _cy_asian_greeks,
+    bachelier_price_greeks as _cy_bachelier,
+    barrier_bsm_price_greeks as _cy_barrier_bsm_greeks,
+    black76_price_greeks as _cy_black76,
+    bsm_price_greeks as _cy_bsm,
+    corrado_su_price_greeks as _cy_corrado_su_greeks,
+    crr_american_discrete_div_price_greeks as _cy_crr_discrete_greeks,
+    crr_american_price_greeks as _cy_crr_american_greeks,
+    implied_vol_bachelier as _cy_iv_bachelier,
+    implied_vol_black76 as _cy_iv_black76,
+    implied_vol_bsm as _cy_iv_bsm,
+    price_black76_batch as _cy_price_b76_batch,
+    price_options_batch as _cy_price_batch,
+)
 from bz_pricing.instruments.offshore_bonds import (
     _generate_schedule_dates,
     _normalize_day_count,
     _resolve_discount_factor,
     _year_fraction_bond,
 )
-
-try:
-    from bz_pricing.core.options_core import (
-        asian_arithmetic_tw_price as _cy_asian_arith,
-        asian_geometric_price as _cy_asian_geom,
-        asian_price_greeks as _cy_asian_greeks,
-        bachelier_price_greeks as _cy_bachelier,
-        barrier_bsm_price as _cy_barrier_bsm,
-        barrier_bsm_price_greeks as _cy_barrier_bsm_greeks,
-        black76_price_greeks as _cy_black76,
-        bsm_price_greeks as _cy_bsm,
-        corrado_su_price as _cy_corrado_su,
-        corrado_su_price_greeks as _cy_corrado_su_greeks,
-        crr_american_discrete_div_price_greeks as _cy_crr_discrete_greeks,
-        crr_american_price as _cy_crr_american,
-        crr_american_price_greeks as _cy_crr_american_greeks,
-        implied_vol_bachelier as _cy_iv_bachelier,
-        implied_vol_black76 as _cy_iv_black76,
-        implied_vol_bsm as _cy_iv_bsm,
-        price_black76_batch as _cy_price_b76_batch,
-        price_options_batch as _cy_price_batch,
-    )
-except ImportError:
-    _cy_bsm = None
-    _cy_black76 = None
-    _cy_bachelier = None
-    _cy_barrier_bsm = None
-    _cy_barrier_bsm_greeks = None
-    _cy_asian_geom = None
-    _cy_asian_arith = None
-    _cy_asian_greeks = None
-    _cy_crr_american = None
-    _cy_crr_american_greeks = None
-    _cy_crr_discrete_greeks = None
-    _cy_corrado_su = None
-    _cy_corrado_su_greeks = None
-    _cy_iv_bsm = None
-    _cy_iv_black76 = None
-    _cy_iv_bachelier = None
-    _cy_price_b76_batch = None
-    _cy_price_batch = None
-
-
-def _norm_cdf_py(x: float) -> float:
-    return 0.5 * (1.0 + math.erf(x / math.sqrt(2.0)))
-
-
-def _norm_pdf_py(x: float) -> float:
-    return math.exp(-0.5 * x * x) / math.sqrt(2.0 * math.pi)
 
 
 class _BaseOption:
@@ -261,9 +227,6 @@ class EquityOption(_BaseOption):
         du_n, t_n, r_cont, q_cont = self._resolve_params(base_dt, pre_rate_or_curve, carry_or_div_yield)
         is_call = self.option_type == "CALL"
 
-        if _cy_bsm is None:
-            raise RuntimeError("Extensão Cython 'options_core' não compilada.")
-
         d_src = discrete_dividends if discrete_dividends is not None else self.discrete_dividends
         p_src = prop_dividends if prop_dividends is not None else self.prop_dividends
         div_t, div_a = self._prepare_dividend_arrays(base_dt, t_n, d_src)
@@ -289,7 +252,7 @@ class EquityOption(_BaseOption):
             _, _, _, _, _, _, vanna, volga = _cy_bsm(
                 float(spot), self.strike, r_cont, q_cont, t_n, vol_val, is_call
             )
-            if has_divs and _cy_crr_discrete_greeks is not None:
+            if has_divs:
                 price, delta, gamma, vega, theta, rho = _cy_crr_discrete_greeks(
                     float(spot),
                     self.strike,
@@ -304,15 +267,10 @@ class EquityOption(_BaseOption):
                     prop_t,
                     prop_y,
                 )
-            elif _cy_crr_american_greeks is not None:
+            else:
                 price, delta, gamma, vega, theta, rho = _cy_crr_american_greeks(
                     float(spot), self.strike, r_cont, q_cont, t_n, vol_val, is_call, int(crr_steps)
                 )
-            else:
-                price = _cy_crr_american(
-                    float(spot), self.strike, r_cont, q_cont, t_n, vol_val, is_call, int(crr_steps)
-                )
-                delta = gamma = vega = theta = rho = np.nan
 
         return {
             "du": float(du_n),
@@ -371,7 +329,7 @@ class EquityOption(_BaseOption):
         p_src = prop_dividends if prop_dividends is not None else self.prop_dividends
         div_t, div_a = self._prepare_dividend_arrays(base_dt, t_n, d_src)
         prop_t, prop_y = self._prepare_dividend_arrays(base_dt, t_n, p_src)
-        if self.exercise == "EUROPEAN" and _cy_iv_bsm is not None:
+        if self.exercise == "EUROPEAN":
             pv_div = float(np.sum(div_a * np.exp(-r_cont * div_t))) if len(div_t) else 0.0
             prod_prop = float(np.prod(1.0 - np.clip(prop_y, 0.0, 0.999))) if len(prop_t) else 1.0
             spot_eff = max(1e-8, (float(spot) - pv_div) * prod_prop)
@@ -520,7 +478,7 @@ class IDIOption(_BaseOption):
     """
     Opção sobre Índice de Taxa Média de Depósitos Interfinanceiros (IDI - B3):
     - S_n = IDI_0 * exp(r_n * T_n)
-    - Black-76 descontado por exp(-r_n * T_n).
+    - Black-76 lognormal ou modelo Normal de Bachelier descontado por exp(-r_n * T_n).
     """
 
     def risk_metrics(
@@ -529,32 +487,61 @@ class IDIOption(_BaseOption):
         idi_spot: float,
         pre_rate_or_curve: Union[float, Curve],
         vol: float,
+        model: str = "black76",
+        idi_forward: Optional[float] = None,
     ) -> Dict[str, float]:
         du_n = self.du(base_date)
         dc_n = self.dc(base_date)
         t_n = du_n / 252.0
         r_cont = self._resolve_cont_rate(pre_rate_or_curve, du_n, dc_n, default_conv="exp_252")
-        idi_fwd = float(idi_spot) * math.exp(r_cont * t_n)
+        idi_fwd = float(idi_forward) if idi_forward is not None else float(idi_spot) * math.exp(r_cont * t_n)
         vol_val = self._resolve_vol(vol, du_n, idi_fwd)
+        is_call = self.option_type == "CALL"
+        mdl = model.strip().lower()
 
-        price, delta, gamma, vega, theta, rho, vanna, volga = _cy_black76(
-            idi_fwd, self.strike, r_cont, t_n, vol_val, self.option_type == "CALL"
-        )
-        return {
-            "du": float(du_n),
-            "T": t_n,
-            "idi_forward": idi_fwd,
-            "r_cont": r_cont,
-            "price": float(price),
-            "delta": float(delta),
-            "gamma": float(gamma),
-            "vega": float(vega),
-            "vega_1pct": float(vega * 0.01),
-            "theta": float(theta),
-            "rho": float(rho),
-            "vanna": float(vanna),
-            "volga": float(volga),
-        }
+        if mdl == "bachelier":
+            df_r = math.exp(-r_cont * t_n)
+            price, delta, gamma, vega, theta = _cy_bachelier(
+                idi_fwd, self.strike, df_r, t_n, vol_val, is_call
+            )
+            return {
+                "du": float(du_n),
+                "T": t_n,
+                "idi_forward": idi_fwd,
+                "r_cont": r_cont,
+                "df_r": df_r,
+                "model": mdl,
+                "price": float(price),
+                "delta": float(delta),
+                "gamma": float(gamma),
+                "vega": float(vega),
+                "vega_1pct": float(vega * 0.01),
+                "theta": float(theta),
+                "rho": float(-t_n * price),
+                "vanna": 0.0,
+                "volga": 0.0,
+            }
+        if mdl == "black76":
+            price, delta, gamma, vega, theta, rho, vanna, volga = _cy_black76(
+                idi_fwd, self.strike, r_cont, t_n, vol_val, is_call
+            )
+            return {
+                "du": float(du_n),
+                "T": t_n,
+                "idi_forward": idi_fwd,
+                "r_cont": r_cont,
+                "model": mdl,
+                "price": float(price),
+                "delta": float(delta),
+                "gamma": float(gamma),
+                "vega": float(vega),
+                "vega_1pct": float(vega * 0.01),
+                "theta": float(theta),
+                "rho": float(rho),
+                "vanna": float(vanna),
+                "volga": float(volga),
+            }
+        raise ValueError(f"Modelo inválido para IDIOption: {model}. Use 'black76' ou 'bachelier'.")
 
     def price(
         self,
@@ -562,8 +549,10 @@ class IDIOption(_BaseOption):
         idi_spot: float,
         pre_rate_or_curve: Union[float, Curve],
         vol: float,
+        model: str = "black76",
+        idi_forward: Optional[float] = None,
     ) -> float:
-        return self.risk_metrics(base_date, idi_spot, pre_rate_or_curve, vol)["price"]
+        return self.risk_metrics(base_date, idi_spot, pre_rate_or_curve, vol, model=model, idi_forward=idi_forward)["price"]
 
     def implied_volatility(
         self,
@@ -571,20 +560,29 @@ class IDIOption(_BaseOption):
         market_price: float,
         idi_spot: float,
         pre_rate_or_curve: Union[float, Curve],
+        model: str = "black76",
+        idi_forward: Optional[float] = None,
     ) -> float:
         du_n = self.du(base_date)
         dc_n = self.dc(base_date)
         t_n = du_n / 252.0
         r_cont = self._resolve_cont_rate(pre_rate_or_curve, du_n, dc_n, default_conv="exp_252")
-        idi_fwd = float(idi_spot) * math.exp(r_cont * t_n)
-        return float(
-            _cy_iv_black76(float(market_price), idi_fwd, self.strike, r_cont, t_n, self.option_type == "CALL")
-        )
+        idi_fwd = float(idi_forward) if idi_forward is not None else float(idi_spot) * math.exp(r_cont * t_n)
+        is_call = self.option_type == "CALL"
+        mdl = model.strip().lower()
+        if mdl == "bachelier":
+            df_r = math.exp(-r_cont * t_n)
+            return float(_cy_iv_bachelier(float(market_price), idi_fwd, self.strike, df_r, t_n, is_call))
+        if mdl == "black76":
+            return float(
+                _cy_iv_black76(float(market_price), idi_fwd, self.strike, r_cont, t_n, is_call)
+            )
+        raise ValueError(f"Modelo inválido para IDIOption: {model}. Use 'black76' ou 'bachelier'.")
 
 
 class DI1Option(_BaseOption):
     """
-    Opção sobre Contrato Futuro de DI1 (Black-76 adaptado ao FRA de DI, padrão B3):
+    Opção sobre Contrato Futuro de DI1 (Black-76 ou Normal de Bachelier adaptado ao FRA de DI, padrão B3):
     - S' = (PU_C / PU_L - 1) / (T_L_dc - T_C_dc)
     - K' = ((1 + K)^(T_L_du - T_C_du) - 1) / (T_L_dc - T_C_dc)
     - delta_annuity = PU_L * (T_L_dc - T_C_dc) / (1 + K' * (T_L_dc - T_C_dc))
@@ -643,16 +641,28 @@ class DI1Option(_BaseOption):
         pu_c: float,
         pu_l: float,
         vol: float,
+        model: str = "black76",
     ) -> Dict[str, float]:
         t_c_dc, s_prime, k_prime, delta_annuity = self._resolve_di1_params(base_date, pu_c, pu_l)
-        undisc_price, delta, gamma, vega, theta, _, vanna, volga = _cy_black76(
-            s_prime, k_prime, 0.0, t_c_dc, float(vol), self.option_type == "CALL"
-        )
+        is_call = self.option_type == "CALL"
+        mdl = model.strip().lower()
+        if mdl == "bachelier":
+            undisc_price, delta, gamma, vega, theta = _cy_bachelier(
+                s_prime, k_prime, 1.0, t_c_dc, float(vol), is_call
+            )
+            vanna = volga = 0.0
+        elif mdl == "black76":
+            undisc_price, delta, gamma, vega, theta, _, vanna, volga = _cy_black76(
+                s_prime, k_prime, 0.0, t_c_dc, float(vol), is_call
+            )
+        else:
+            raise ValueError(f"Modelo inválido para DI1Option: {model}. Use 'black76' ou 'bachelier'.")
         return {
             "T_dc": t_c_dc,
             "S_prime": s_prime,
             "K_prime": k_prime,
             "delta_annuity": delta_annuity,
+            "model": mdl,
             "price": float(delta_annuity * undisc_price),
             "delta": float(delta_annuity * delta),
             "gamma": float(delta_annuity * gamma),
@@ -669,8 +679,9 @@ class DI1Option(_BaseOption):
         pu_c: float,
         pu_l: float,
         vol: float,
+        model: str = "black76",
     ) -> float:
-        return self.risk_metrics(base_date, pu_c, pu_l, vol)["price"]
+        return self.risk_metrics(base_date, pu_c, pu_l, vol, model=model)["price"]
 
     def implied_volatility(
         self,
@@ -678,14 +689,21 @@ class DI1Option(_BaseOption):
         market_price: float,
         pu_c: float,
         pu_l: float,
+        model: str = "black76",
     ) -> float:
         t_c_dc, s_prime, k_prime, delta_annuity = self._resolve_di1_params(base_date, pu_c, pu_l)
         if delta_annuity <= 0.0:
             raise ValueError("delta_annuity deve ser positivo para inversão de volatilidade implícita.")
         undisc_target = float(market_price) / delta_annuity
-        return float(
-            _cy_iv_black76(undisc_target, s_prime, k_prime, 0.0, t_c_dc, self.option_type == "CALL")
-        )
+        is_call = self.option_type == "CALL"
+        mdl = model.strip().lower()
+        if mdl == "bachelier":
+            return float(_cy_iv_bachelier(undisc_target, s_prime, k_prime, 1.0, t_c_dc, is_call))
+        if mdl == "black76":
+            return float(
+                _cy_iv_black76(undisc_target, s_prime, k_prime, 0.0, t_c_dc, is_call)
+            )
+        raise ValueError(f"Modelo inválido para DI1Option: {model}. Use 'black76' ou 'bachelier'.")
 
 
 class CorradoSuOption(_BaseOption):
@@ -711,33 +729,17 @@ class CorradoSuOption(_BaseOption):
         q_cont = self._resolve_cont_rate(carry_or_div_yield, du_n, dc_n, default_conv="exp_252")
         fwd_est = float(spot) * math.exp((r_cont - q_cont) * t_n)
         vol_val = self._resolve_vol(vol, du_n, fwd_est)
-        if _cy_corrado_su_greeks is not None:
-            price, delta, gamma, vega, theta, rho = _cy_corrado_su_greeks(
-                float(spot),
-                self.strike,
-                r_cont,
-                q_cont,
-                t_n,
-                vol_val,
-                float(kappa3),
-                float(kappa4),
-                self.option_type == "CALL",
-            )
-        else:
-            price = float(
-                _cy_corrado_su(
-                    float(spot),
-                    self.strike,
-                    r_cont,
-                    q_cont,
-                    t_n,
-                    vol_val,
-                    float(kappa3),
-                    float(kappa4),
-                    self.option_type == "CALL",
-                )
-            )
-            delta = gamma = vega = theta = rho = np.nan
+        price, delta, gamma, vega, theta, rho = _cy_corrado_su_greeks(
+            float(spot),
+            self.strike,
+            r_cont,
+            q_cont,
+            t_n,
+            vol_val,
+            float(kappa3),
+            float(kappa4),
+            self.option_type == "CALL",
+        )
         return {
             "du": float(du_n),
             "T": t_n,
@@ -786,8 +788,6 @@ def price_options_portfolio(
     """
     if not positions:
         return pd.DataFrame()
-    if _cy_price_batch is None or _cy_price_b76_batch is None:
-        raise RuntimeError("Extensão Cython 'options_core' não compilada.")
 
     n = len(positions)
     bsm_idx: List[int] = []
@@ -1429,37 +1429,19 @@ class BarrierOption(_BaseOption):
                 shift = beta_bgk * vol_val * math.sqrt(dt_mon)
                 h_eff = self.barrier * math.exp(shift if self.is_up else -shift)
 
-        if _cy_barrier_bsm_greeks is not None:
-            price, delta, gamma, vega, theta, rho = _cy_barrier_bsm_greeks(
-                float(spot),
-                self.strike,
-                h_eff,
-                r_cont,
-                q_cont,
-                t_n,
-                vol_val,
-                self.option_type == "CALL",
-                self.is_up,
-                self.is_out,
-                self.rebate,
-            )
-        else:
-            price = float(
-                _cy_barrier_bsm(
-                    float(spot),
-                    self.strike,
-                    h_eff,
-                    r_cont,
-                    q_cont,
-                    t_n,
-                    vol_val,
-                    self.option_type == "CALL",
-                    self.is_up,
-                    self.is_out,
-                    self.rebate,
-                )
-            )
-            delta = gamma = vega = theta = rho = np.nan
+        price, delta, gamma, vega, theta, rho = _cy_barrier_bsm_greeks(
+            float(spot),
+            self.strike,
+            h_eff,
+            r_cont,
+            q_cont,
+            t_n,
+            vol_val,
+            self.option_type == "CALL",
+            self.is_up,
+            self.is_out,
+            self.rebate,
+        )
 
         return {
             "du": float(du_n),
@@ -1539,14 +1521,9 @@ class AsianOption(_BaseOption):
         vol_val = self._resolve_vol(vol, du_n, fwd_est)
         n_fix = self.n_fixings if (self.n_fixings is not None and self.n_fixings > 0) else 0
         is_geom = self.average_type == "geometric"
-        if _cy_asian_greeks is not None:
-            price, delta, gamma, vega, theta, rho = _cy_asian_greeks(
-                float(spot), self.strike, r_cont, q_cont, t_n, vol_val, self.option_type == "CALL", n_fix, is_geom
-            )
-        else:
-            fn = _cy_asian_geom if is_geom else _cy_asian_arith
-            price = float(fn(float(spot), self.strike, r_cont, q_cont, t_n, vol_val, self.option_type == "CALL", n_fix))
-            delta = gamma = vega = theta = rho = np.nan
+        price, delta, gamma, vega, theta, rho = _cy_asian_greeks(
+            float(spot), self.strike, r_cont, q_cont, t_n, vol_val, self.option_type == "CALL", n_fix, is_geom
+        )
         return {
             "du": float(du_n),
             "T": t_n,

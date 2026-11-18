@@ -932,6 +932,188 @@ def test_exotic_options_greeks_and_portfolio():
     assert abs(float(df_port.loc[df_port["ticker"] == "PETR-KO", "delta"].iloc[0]) - rm_bc["delta"]) < 1e-12
 
 
+def test_idi_di1_normal_bachelier_and_revalidation_2d():
+    import os
+    import pandas as pd
+    from bz_pricing.core.calendars import get_calendar
+    from bz_pricing.curves import CurveManager
+    from bz_pricing.data.loaders import B3DataLoader
+    from bz_pricing.volatility import infer_forward_from_put_call_parity, validate_slice_out_of_sample
+
+    # 1. IDIOption e DI1Option em Black-76 e Bachelier Normal
+    base_dt = datetime.date(2026, 10, 30)
+    idi_spot = 539229.27
+    fwd_jan = 550844.05
+    r_pre = 0.1364
+    sigma_n_idi = 384.28
+    idi_c = IDIOption("IDIF27C550600", "2027-01-04", 550600.0, "CALL")
+    rm_in = idi_c.risk_metrics(base_dt, idi_spot, r_pre, sigma_n_idi, model="bachelier", idi_forward=fwd_jan)
+    iv_in_rt = idi_c.implied_volatility(base_dt, rm_in["price"], idi_spot, r_pre, model="bachelier", idi_forward=fwd_jan)
+    assert rm_in["model"] == "bachelier"
+    assert abs(rm_in["idi_forward"] - fwd_jan) < 1e-9
+    assert abs(iv_in_rt - sigma_n_idi) < 1e-7
+
+    # Verifica delta normal de IDIOption por diferença finita (passo pequeno h=0.01)
+    h_fwd = 0.01
+    p_up = idi_c.price(base_dt, idi_spot, r_pre, sigma_n_idi, model="bachelier", idi_forward=fwd_jan + h_fwd)
+    p_dn = idi_c.price(base_dt, idi_spot, r_pre, sigma_n_idi, model="bachelier", idi_forward=fwd_jan - h_fwd)
+    assert abs(rm_in["delta"] - (p_up - p_dn) / (2.0 * h_fwd)) < 1e-6
+
+    # DI1Option em modelo Normal de Bachelier
+    di1_c = DI1Option("DI1C14", "2027-02-01", "2028-01-03", strike_rate=0.145, option_type="CALL")
+    rm_dn = di1_c.risk_metrics(base_dt, pu_c=97100.0, pu_l=85800.0, vol=0.012, model="bachelier")
+    iv_dn_rt = di1_c.implied_volatility(base_dt, rm_dn["price"], pu_c=97100.0, pu_l=85800.0, model="bachelier")
+    assert rm_dn["model"] == "bachelier" and rm_dn["price"] > 0.0
+    assert abs(iv_dn_rt - 0.012) < 1e-8
+
+    # 2. Revalidação 2D real de IDI (2026-10-30): Black-76 e Normal com ancoragem ATM
+    if not (os.path.exists("dados/b3/BVBG_IN_20261030.csv") and os.path.exists("dados/b3/BVBG_SPRD_20261030.csv")):
+        return
+
+    loader = B3DataLoader(data_dir="dados/b3")
+    curva_pre = CurveManager(loader=loader, allow_download=True).get_curve("PRE", base_dt)
+    idi_opts = loader.load_options(base_dt, asst="IDI", only_priced=True, auto_download=False)
+    cal = get_calendar()
+
+    du_jan = cal.bizdays(base_dt, datetime.date(2027, 1, 4))
+    r_jan = math.log(1.0 + curva_pre.get_rate(du_jan))
+    df_jan = math.exp(-r_jan * (du_jan / 252.0))
+    fwd_jan_mkt = infer_forward_from_put_call_parity(
+        idi_opts[idi_opts["XprtnDt"] == "2027-01-04"], discount_factor=df_jan
+    )
+    spot_mkt = fwd_jan_mkt * df_jan
+
+    fwds, rs, strikes_by_du = {}, {}, {}
+    m_band = np.linspace(0.996, 1.003, 15)
+    for vt in ("lognormal", "normal"):
+        slices_svi, slices_sabr = {}, {}
+        for exp_str in ("2027-01-04", "2027-04-01"):
+            sub = idi_opts[idi_opts["XprtnDt"] == exp_str].sort_values("ExrcPric").reset_index(drop=True)
+            du_i = cal.bizdays(base_dt, pd.to_datetime(exp_str).date())
+            r_i = math.log(1.0 + curva_pre.get_rate(du_i))
+            fwd_i = spot_mkt * math.exp(r_i * (du_i / 252.0))
+            fwds[du_i] = fwd_i
+            rs[du_i] = r_i
+            strikes_by_du[du_i] = np.unique(sub["ExrcPric"].values)
+
+            oos_svi = validate_slice_out_of_sample(
+                sub["ExrcPric"].values,
+                sub["RefPric"].values,
+                sub["option_type"].values,
+                fwd_i,
+                r_i,
+                du_i,
+                model="svi",
+                otm_only=True,
+                vega_weighted=True,
+                split_mode="interpolation",
+                vol_type=vt,
+                anchor_atm=True,
+            )
+            oos_sabr = validate_slice_out_of_sample(
+                sub["ExrcPric"].values,
+                sub["RefPric"].values,
+                sub["option_type"].values,
+                fwd_i,
+                r_i,
+                du_i,
+                model="sabr",
+                otm_only=True,
+                vega_weighted=True,
+                split_mode="interpolation",
+                vol_type=vt,
+                anchor_atm=True,
+            )
+            assert oos_svi["rmse_vol_bps"] < 2.0
+            assert oos_sabr["rmse_vol_bps"] < 2.5
+            assert abs(float(oos_svi["slice"].implied_vol(0.0)) - float(oos_svi["slice"].atm_vol)) < 1e-12
+            assert abs(float(oos_sabr["slice"].implied_vol(fwd_i)) - float(oos_sabr["slice"].atm_vol)) < 1e-12
+            slices_svi[du_i] = oos_svi["slice"]
+            slices_sabr[du_i] = oos_sabr["slice"]
+
+        surf_sabr = VolatilitySurface.from_sabr_slices(slices_sabr, slice_forwards=fwds)
+        assert surf_sabr.vol_type == vt
+        arb_sabr = surf_sabr.check_no_arbitrage(fwds, rs, strikes=strikes_by_du, moneyness_grid=m_band)
+        assert arb_sabr["passed"] is True
+        if vt == "lognormal":
+            surf_svi = VolatilitySurface.from_svi_slices(slices_svi, slice_forwards=fwds)
+            arb_svi = surf_svi.check_no_arbitrage(fwds, rs, strikes=strikes_by_du, moneyness_grid=m_band)
+            assert arb_svi["passed"] is True
+
+
+def test_normal_vol_anchoring_and_surface_persistence(tmp_path):
+    from bz_pricing.volatility import BloombergMixtureSurface, LognormalMixtureSlice
+
+    # 1. Ancoragem ATM exata em SABR Normal e SVI Normal
+    fwd = 550000.0
+    t_val = 42.0 / 252.0
+    ks = np.linspace(548000.0, 552000.0, 9)
+    true_n = SABRSlice(alpha=400.0, beta=0.0, rho=-0.25, nu=1.8, F=fwd, T=t_val, vol_type="normal")
+    vols_n = true_n.implied_vol(ks)
+    atm_forced = 415.0
+
+    fit_sabr_n = SABRSlice.fit(fwd, ks, vols_n, t_val, beta=0.0, vol_type="normal", anchor_atm=True, atm_vol=atm_forced)
+    assert abs(float(fit_sabr_n.implied_vol(fwd)) - atm_forced) < 1e-12
+
+    fit_svi_n = SVISlice.fit(np.log(ks / fwd), vols_n, t_val, vol_type="normal", anchor_atm=True, atm_vol=atm_forced)
+    assert abs(float(fit_svi_n.implied_vol(0.0)) - atm_forced) < 1e-12
+
+    # 2. Persistência completa (to_dict/from_dict, to_json/from_json, save/load)
+    # 2a. VolatilitySurface SABR Normal
+    s_n2 = SABRSlice.fit(fwd * 1.02, ks * 1.02, vols_n * 1.2, t_val * 2.0, beta=0.0, vol_type="normal", anchor_atm=True)
+    surf_n = VolatilitySurface.from_sabr_slices({42: fit_sabr_n, 84: s_n2}, slice_forwards={42: fwd, 84: fwd * 1.02})
+    path_sabr = tmp_path / "surf_sabr_normal.json"
+    surf_n.save(path_sabr)
+    surf_n_ld = VolatilitySurface.load(path_sabr)
+    assert surf_n_ld.vol_type == "normal"
+    for d_q, k_q in ((42, 550000.0), (63, 555000.0), (84, 561000.0)):
+        assert abs(surf_n.get_vol(d_q, strike=k_q) - surf_n_ld.get_vol(d_q, strike=k_q)) < 1e-12
+
+    # 2b. VolatilitySurface SVI Lognormal
+    svi_l = SVISlice(0.01, 0.04, -0.35, 0.01, 0.12, 0.25, vol_type="lognormal", atm_vol=0.22)
+    surf_svi = VolatilitySurface.from_svi_slices({63: svi_l}, slice_forwards={63: 100.0})
+    surf_svi_rt = VolatilitySurface.from_json(surf_svi.to_json())
+    assert abs(surf_svi.get_vol(63, strike=95.0, forward=100.0) - surf_svi_rt.get_vol(63, strike=95.0, forward=100.0)) < 1e-12
+    assert abs(surf_svi_rt._slices[63].atm_vol - 0.22) < 1e-12
+
+    # 2c. BloombergMixtureSurface & VolatilitySurface(bloomberg_mixture)
+    sl_mix1 = LognormalMixtureSlice([0.60, 0.35], [0.88, 1.24], [0.22, 0.14], forward=100.0, T=0.25)
+    sl_mix2 = LognormalMixtureSlice([0.55, 0.38], [0.85, 1.32], [0.30, 0.20], forward=104.0, T=0.50)
+    bbg_surf = BloombergMixtureSurface({63: sl_mix1, 126: sl_mix2})
+    path_bbg = tmp_path / "bbg_surf.json"
+    bbg_surf.save(path_bbg)
+    bbg_ld = BloombergMixtureSurface.load(path_bbg)
+    assert abs(bbg_surf.get_vol(90, strike=95.0, forward=102.0) - bbg_ld.get_vol(90, strike=95.0, forward=102.0)) < 1e-12
+    surf_bbg_w = VolatilitySurface.from_bloomberg_mixture(bbg_surf)
+    surf_bbg_rt = VolatilitySurface.from_json(surf_bbg_w.to_json())
+    assert abs(surf_bbg_w.get_vol(90, strike=95.0, forward=102.0) - surf_bbg_rt.get_vol(90, strike=95.0, forward=102.0)) < 1e-12
+
+    # 2d. Grid strike & grid delta
+    surf_grid = VolatilitySurface.from_strike_grid([63, 126], [90.0, 100.0, 110.0], [[0.30, 0.25, 0.28], [0.31, 0.26, 0.29]])
+    surf_grid_rt = VolatilitySurface.from_dict(surf_grid.to_dict())
+    assert abs(surf_grid.get_vol(90, strike=95.0) - surf_grid_rt.get_vol(90, strike=95.0)) < 1e-12
+
+
+def test_cython_mandatory_no_import_fallbacks():
+    import pathlib
+    import re
+    from bz_pricing.volatility.surface import exp_smile_interp, monotone_cubic_interp
+
+    src_root = pathlib.Path(__file__).resolve().parents[1] / "src" / "bz_pricing"
+    offenders = []
+    for py_file in sorted(src_root.rglob("*.py")):
+        txt = py_file.read_text(encoding="utf-8")
+        if re.search(r"try:\s*\n(?:.*\n)*?.*from\s+bz_pricing\.core\..*\n(?:.*\n)*?except\s+ImportError", txt):
+            offenders.append(str(py_file))
+    assert not offenders, f"Encontrados try/except ImportError proibidos para Cython: {offenders}"
+
+    val_mc = monotone_cubic_interp([1.0, 2.0, 3.0], [0.20, 0.22, 0.25], 1.5)
+    val_exp = exp_smile_interp([1.0, 3.0], [0.20, 0.30], 2.0)
+    assert 0.20 < val_mc < 0.22
+    assert abs(val_exp - math.sqrt(0.20 * 0.30)) < 1e-12
+
+
+
 
 
 

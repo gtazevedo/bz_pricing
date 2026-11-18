@@ -653,6 +653,126 @@ cpdef double implied_vol_black76(
     return implied_vol_bsm(target_price, F, K, r, r, T, is_call, tol, max_iter)
 
 
+cpdef double sabr_normal_implied_vol(
+    double F,
+    double K,
+    double T,
+    double alpha,
+    double beta,
+    double rho,
+    double nu,
+) noexcept nogil:
+    """Fórmula assintótica de Hagan et al. (2002) para volatilidade implícita Normal (Bachelier) no modelo SABR."""
+    if T <= 0.0 or alpha <= 0.0:
+        return 0.0
+    if beta > 0.0 and (F <= 0.0 or K <= 0.0):
+        return 0.0
+
+    cdef double rho_clamped = rho
+    if rho_clamped > 0.999999:
+        rho_clamped = 0.999999
+    elif rho_clamped < -0.999999:
+        rho_clamped = -0.999999
+
+    cdef double term1, term2, term3, fk_pow, pref, z, x_z, factor_b, arg_log
+    cdef double one_minus_beta = 1.0 - beta
+    cdef double f1b, k1b, int_inv_u, log_fk
+
+    if fabs(F - K) < 1e-12:
+        if fabs(beta) < 1e-12:
+            return alpha * (1.0 + ((2.0 - 3.0 * rho_clamped * rho_clamped) * nu * nu / 24.0) * T)
+        fk_pow = pow(F, one_minus_beta)
+        term1 = (-beta * (2.0 - beta) * alpha * alpha) / (24.0 * fk_pow * fk_pow)
+        term2 = (rho_clamped * beta * nu * alpha) / (4.0 * fk_pow)
+        term3 = ((2.0 - 3.0 * rho_clamped * rho_clamped) * nu * nu) / 24.0
+        return alpha * pow(F, beta) * (1.0 + (term1 + term2 + term3) * T)
+
+    if fabs(beta) < 1e-12:
+        pref = alpha
+        z = (nu / alpha) * (F - K)
+        arg_log = fmax(1e-15, (sqrt(1.0 - 2.0 * rho_clamped * z + z * z) + z - rho_clamped) / (1.0 - rho_clamped))
+        x_z = log(arg_log)
+        factor_b = z / x_z if fabs(x_z) > 1e-12 else 1.0
+        term3 = ((2.0 - 3.0 * rho_clamped * rho_clamped) * nu * nu) / 24.0
+        return pref * factor_b * (1.0 + term3 * T)
+
+    if fabs(one_minus_beta) < 1e-12:
+        log_fk = log(F / K)
+        pref = alpha * (F - K) / log_fk
+        z = (nu / alpha) * log_fk
+        fk_pow = 1.0
+    else:
+        f1b = pow(F, one_minus_beta)
+        k1b = pow(K, one_minus_beta)
+        int_inv_u = (f1b - k1b) / one_minus_beta
+        pref = alpha * (F - K) / int_inv_u
+        z = (nu / alpha) * int_inv_u
+        fk_pow = pow(F * K, 0.5 * one_minus_beta)
+
+    arg_log = fmax(1e-15, (sqrt(1.0 - 2.0 * rho_clamped * z + z * z) + z - rho_clamped) / (1.0 - rho_clamped))
+    x_z = log(arg_log)
+    factor_b = z / x_z if fabs(x_z) > 1e-12 else 1.0
+
+    term1 = (-beta * (2.0 - beta) * alpha * alpha) / (24.0 * fk_pow * fk_pow)
+    term2 = (rho_clamped * beta * nu * alpha) / (4.0 * fk_pow)
+    term3 = ((2.0 - 3.0 * rho_clamped * rho_clamped) * nu * nu) / 24.0
+    return pref * factor_b * (1.0 + (term1 + term2 + term3) * T)
+
+
+cpdef double sabr_alpha_from_atm_vol(
+    double F,
+    double T,
+    double sigma_atm,
+    double beta,
+    double rho,
+    double nu,
+    bint is_normal=False,
+) noexcept nogil:
+    """Resolve o parâmetro alpha de Hagan et al. (2002) tal que sigma_SABR(F, F) == sigma_atm."""
+    if sigma_atm <= 0.0:
+        return 1e-8
+    cdef double rho_c = rho
+    if rho_c > 0.999999:
+        rho_c = 0.999999
+    elif rho_c < -0.999999:
+        rho_c = -0.999999
+
+    cdef double one_minus_beta = 1.0 - beta
+    cdef double fk_pow = 1.0 if fabs(one_minus_beta) < 1e-12 else pow(fmax(1e-12, F), one_minus_beta)
+    cdef double f_scale = pow(fmax(1e-12, F), beta) if is_normal else (1.0 / fk_pow)
+    cdef double term3 = ((2.0 - 3.0 * rho_c * rho_c) * nu * nu) / 24.0
+
+    if is_normal and fabs(beta) < 1e-12:
+        return sigma_atm / fmax(1e-12, 1.0 + term3 * T)
+
+    if T <= 0.0:
+        return sigma_atm / fmax(1e-12, f_scale)
+
+    cdef double c1 = (
+        (-beta * (2.0 - beta)) / (24.0 * fk_pow * fk_pow)
+        if is_normal
+        else (one_minus_beta * one_minus_beta) / (24.0 * fk_pow * fk_pow)
+    )
+    cdef double c2 = (rho_c * beta * nu) / (4.0 * fk_pow)
+    cdef double alpha = sigma_atm / fmax(1e-12, f_scale)
+    cdef double fx, dfx, step, corr
+    cdef int it
+
+    for it in range(25):
+        corr = 1.0 + (c1 * alpha * alpha + c2 * alpha + term3) * T
+        fx = f_scale * alpha * corr - sigma_atm
+        if fabs(fx) < 1e-14 * fmax(1.0, sigma_atm):
+            return alpha
+        dfx = f_scale * (1.0 + (3.0 * c1 * alpha * alpha + 2.0 * c2 * alpha + term3) * T)
+        if fabs(dfx) < 1e-15:
+            break
+        step = fx / dfx
+        alpha = fmax(1e-12, alpha - step)
+        if fabs(step) < 1e-14 * fmax(1.0, alpha):
+            return alpha
+    return alpha
+
+
 cpdef double svi_total_variance(
     double k,
     double a,
@@ -731,6 +851,29 @@ cpdef double sabr_implied_vol(
     term2 = (rho * beta * nu * alpha) / (4.0 * fk_pow)
     term3 = ((2.0 - 3.0 * rho * rho) * nu * nu) / 24.0
     return factor_a * factor_b * (1.0 + (term1 + term2 + term3) * T)
+
+
+cpdef np.ndarray[np.float64_t, ndim=1] sabr_eval_vec(
+    double F,
+    double[:] K_arr,
+    double T,
+    double alpha,
+    double beta,
+    double rho,
+    double nu,
+    bint is_normal=False,
+):
+    cdef Py_ssize_t n = K_arr.shape[0]
+    cdef Py_ssize_t i
+    cdef np.ndarray[np.float64_t, ndim=1] out = np.empty(n, dtype=np.float64)
+    cdef double[:] out_v = out
+    with nogil:
+        for i in range(n):
+            if is_normal:
+                out_v[i] = sabr_normal_implied_vol(F, K_arr[i], T, alpha, beta, rho, nu)
+            else:
+                out_v[i] = sabr_implied_vol(F, K_arr[i], T, alpha, beta, rho, nu)
+    return out
 
 
 cpdef tuple price_options_batch(
@@ -898,36 +1041,54 @@ cpdef double implied_vol_bachelier(
     if T <= 0.0 or df_r <= 0.0:
         return 0.0
     cdef double intrinsic = df_r * (fmax(F - K, 0.0) if is_call else fmax(K - F, 0.0))
+    if target_price < intrinsic - 1e-10:
+        return NAN
     if target_price <= intrinsic + 1e-12:
-        return 1e-8
+        return 0.0
 
-    cdef double low = 1e-7
-    cdef double high = 1.0
-    cdef double sigma_n = 0.01
+    cdef double sqrt_T = sqrt(T)
+    cdef double time_val = fmax(1e-15, target_price - intrinsic)
+    cdef double sigma_0 = fmax(
+        1e-4,
+        time_val / fmax(1e-15, df_r * sqrt_T * INV_SQRT_2PI) + 0.35 * fabs(F - K) / sqrt_T,
+    )
+    cdef double low = 1e-10
+    cdef double high = fmax(1.0, 2.0 * sigma_0)
     cdef double price, delta, gamma, vega, theta, diff
     cdef int it
+
+    for it in range(60):
+        _bachelier_core(F, K, df_r, T, high, is_call, &price, &delta, &gamma, &vega, &theta)
+        if price >= target_price or high > 1e12:
+            break
+        high *= 2.0
+
+    cdef double sigma_n = sigma_0
+    if sigma_n <= low or sigma_n >= high:
+        sigma_n = 0.5 * (low + high)
+    cdef double eff_tol = fmin(tol, 1e-10 * fmax(1.0, target_price))
 
     for it in range(max_iter):
         _bachelier_core(F, K, df_r, T, sigma_n, is_call, &price, &delta, &gamma, &vega, &theta)
         diff = price - target_price
-        if fabs(diff) < tol:
+        if fabs(diff) < eff_tol:
             return sigma_n
         if diff < 0.0 and sigma_n > low:
             low = sigma_n
         elif diff > 0.0 and sigma_n < high:
             high = sigma_n
-        if vega > 1e-12:
+        if vega > 1e-15:
             sigma_n = sigma_n - diff / vega
             if sigma_n <= low or sigma_n >= high:
                 sigma_n = 0.5 * (low + high)
         else:
             sigma_n = 0.5 * (low + high)
 
-    for it in range(60):
+    for it in range(80):
         sigma_n = 0.5 * (low + high)
         _bachelier_core(F, K, df_r, T, sigma_n, is_call, &price, &delta, &gamma, &vega, &theta)
         diff = price - target_price
-        if fabs(diff) < tol or (high - low) < tol:
+        if fabs(diff) < eff_tol or (high - low) < 1e-10 * fmax(1.0, sigma_n):
             return sigma_n
         if diff < 0.0:
             low = sigma_n
@@ -1315,4 +1476,110 @@ cpdef tuple asian_price_greeks(
                 theta = (p_td - price) / dT
 
     return (price, delta, gamma, vega, theta, rho)
+
+
+cpdef double monotone_cubic_eval(
+    double[:] x_nodes,
+    double[:] y_nodes,
+    double x_eval,
+) noexcept nogil:
+    """Interpolação por spline cúbico monótono de Fritsch-Carlson em C puro."""
+    cdef int n = <int>x_nodes.shape[0]
+    if n <= 0:
+        return NAN
+    if n == 1 or x_eval <= x_nodes[0]:
+        return y_nodes[0]
+    if x_eval >= x_nodes[n - 1]:
+        return y_nodes[n - 1]
+
+    cdef double *d = <double *>malloc((n - 1) * sizeof(double))
+    cdef double *m = <double *>malloc(n * sizeof(double))
+    if d == NULL or m == NULL:
+        free(d); free(m)
+        return NAN
+
+    cdef int i
+    cdef double dx, alpha, beta, tau, denom_fc
+    for i in range(n - 1):
+        dx = x_nodes[i + 1] - x_nodes[i]
+        d[i] = (y_nodes[i + 1] - y_nodes[i]) / dx if fabs(dx) > 1e-15 else 0.0
+
+    m[0] = d[0]
+    m[n - 1] = d[n - 2]
+    for i in range(1, n - 1):
+        if d[i - 1] * d[i] > 0.0:
+            m[i] = 0.5 * (d[i - 1] + d[i])
+        else:
+            m[i] = 0.0
+
+    for i in range(n - 1):
+        if fabs(d[i]) < 1e-15:
+            m[i] = 0.0
+            m[i + 1] = 0.0
+        else:
+            alpha = m[i] / d[i]
+            beta = m[i + 1] / d[i]
+            denom_fc = 3.0 * (alpha + beta - 2.0)
+            if not (
+                (alpha + beta - 2.0 <= 0.0)
+                or (2.0 * alpha + beta - 3.0 <= 0.0)
+                or (alpha + 2.0 * beta - 3.0 <= 0.0)
+                or (fabs(denom_fc) > 1e-15 and alpha - ((2.0 * alpha + beta - 3.0) * (2.0 * alpha + beta - 3.0)) / denom_fc >= 0.0)
+            ):
+                tau = 3.0 / sqrt(alpha * alpha + beta * beta)
+                m[i] = tau * alpha * d[i]
+                m[i + 1] = tau * beta * d[i]
+
+    cdef int lo = 0
+    cdef int hi = n - 2
+    cdef int mid
+    while lo < hi:
+        mid = (lo + hi + 1) // 2
+        if x_nodes[mid] <= x_eval:
+            lo = mid
+        else:
+            hi = mid - 1
+
+    cdef double h = x_nodes[lo + 1] - x_nodes[lo]
+    cdef double t = (x_eval - x_nodes[lo]) / h if fabs(h) > 1e-15 else 0.0
+    cdef double t2 = t * t
+    cdef double t3 = t2 * t
+    cdef double res = (
+        y_nodes[lo] * (2.0 * t3 - 3.0 * t2 + 1.0)
+        + h * m[lo] * (t3 - 2.0 * t2 + t)
+        + y_nodes[lo + 1] * (-2.0 * t3 + 3.0 * t2)
+        + h * m[lo + 1] * (t3 - t2)
+    )
+    free(d)
+    free(m)
+    return res
+
+
+cpdef double exp_smile_eval(
+    double[:] x_nodes,
+    double[:] y_nodes,
+    double x_eval,
+) noexcept nogil:
+    """Interpolação exponencial por partes com busca binária O(log n) em C puro."""
+    cdef int n = <int>x_nodes.shape[0]
+    if n <= 0:
+        return NAN
+    if n == 1 or x_eval <= x_nodes[0]:
+        return y_nodes[0]
+    if x_eval >= x_nodes[n - 1]:
+        return y_nodes[n - 1]
+
+    cdef int lo = 0
+    cdef int hi = n - 2
+    cdef int mid
+    while lo < hi:
+        mid = (lo + hi + 1) // 2
+        if x_nodes[mid] <= x_eval:
+            lo = mid
+        else:
+            hi = mid - 1
+
+    cdef double dx = x_nodes[lo + 1] - x_nodes[lo]
+    cdef double w = (x_eval - x_nodes[lo]) / dx if fabs(dx) > 1e-15 else 0.0
+    return y_nodes[lo] * pow(y_nodes[lo + 1] / y_nodes[lo], w)
 

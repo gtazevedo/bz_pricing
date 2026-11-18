@@ -1,18 +1,36 @@
+import json
 import math
-from typing import Callable, Dict, Iterable, List, Optional, Sequence, Tuple, Union
+from pathlib import Path
+from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tuple, Union
 
 import numpy as np
 from scipy.optimize import least_squares
 
 from bz_pricing.core.options_core import (
+    bachelier_price_greeks as _cy_bachelier,
     black76_price_greeks as _cy_black76,
+    exp_smile_eval as _cy_exp_smile_eval,
+    implied_vol_bachelier as _cy_iv_bachelier,
     implied_vol_black76 as _cy_iv_black76,
+    monotone_cubic_eval as _cy_monotone_cubic_eval,
     norm_cdf as _cy_norm_cdf,
     norm_ppf as _cy_norm_ppf,
+    sabr_alpha_from_atm_vol as _cy_sabr_alpha_from_atm,
+    sabr_eval_vec as _cy_sabr_eval_vec,
     sabr_implied_vol as _cy_sabr_vol,
+    sabr_normal_implied_vol as _cy_sabr_normal_vol,
     svi_eval_vec as _cy_svi_eval_vec,
     svi_total_variance as _cy_svi_total_var,
 )
+
+
+def _normalize_vol_type(vol_type: str) -> str:
+    vt = str(vol_type).strip().lower()
+    if vt in ("lognormal", "black", "black76", "bsm"):
+        return "lognormal"
+    if vt in ("normal", "bachelier"):
+        return "normal"
+    raise ValueError(f"vol_type inválido: {vol_type}. Use 'lognormal' ou 'normal'.")
 
 
 def delta_to_strike(delta_fwd: float, forward_price: float, vol: float, T: float) -> float:
@@ -35,90 +53,50 @@ def strike_to_delta(strike: float, forward_price: float, vol: float, T: float) -
 
 def monotone_cubic_interp(x_nodes: Sequence[float], y_nodes: Sequence[float], x_eval: float) -> float:
     """
-    Interpolação por spline cúbico monótono de Fritsch-Carlson (padrão B3 para smile de
-    volatilidade e estrutura temporal de IDI).
+    Interpolação por spline cúbico monótono de Fritsch-Carlson via núcleo Cython.
     """
-    x = np.asarray(x_nodes, dtype=np.float64)
-    y = np.asarray(y_nodes, dtype=np.float64)
-    n = len(x)
-    if n == 0:
+    x = np.ascontiguousarray(x_nodes, dtype=np.float64)
+    y = np.ascontiguousarray(y_nodes, dtype=np.float64)
+    if len(x) == 0:
         raise ValueError("Nós de interpolação vazios.")
-    if n == 1 or x_eval <= x[0]:
-        return float(y[0])
-    if x_eval >= x[-1]:
-        return float(y[-1])
-
-    d = np.diff(y) / np.diff(x)
-    m = np.zeros(n, dtype=np.float64)
-    m[0] = d[0]
-    m[-1] = d[-1]
-    for i in range(1, n - 1):
-        if d[i - 1] * d[i] > 0.0:
-            m[i] = 0.5 * (d[i - 1] + d[i])
-        else:
-            m[i] = 0.0
-
-    for i in range(n - 1):
-        if abs(d[i]) < 1e-15:
-            m[i] = 0.0
-            m[i + 1] = 0.0
-        else:
-            alpha = m[i] / d[i]
-            beta = m[i + 1] / d[i]
-            cond_ok = (
-                (alpha + beta - 2.0 <= 0.0)
-                or (2.0 * alpha + beta - 3.0 <= 0.0)
-                or (alpha + 2.0 * beta - 3.0 <= 0.0)
-                or (alpha - ((2.0 * alpha + beta - 3.0) ** 2) / (3.0 * (alpha + beta - 2.0)) >= 0.0)
-            )
-            if not cond_ok:
-                tau = 3.0 / math.sqrt(alpha * alpha + beta * beta)
-                m[i] = tau * alpha * d[i]
-                m[i + 1] = tau * beta * d[i]
-
-    idx = int(np.searchsorted(x, x_eval, side="right") - 1)
-    idx = max(0, min(n - 2, idx))
-    h = x[idx + 1] - x[idx]
-    t = (x_eval - x[idx]) / h
-    t2 = t * t
-    t3 = t2 * t
-    h00 = 2.0 * t3 - 3.0 * t2 + 1.0
-    h10 = t3 - 2.0 * t2 + t
-    h01 = -2.0 * t3 + 3.0 * t2
-    h11 = t3 - t2
-    return float(y[idx] * h00 + h * m[idx] * h10 + y[idx + 1] * h01 + h * m[idx + 1] * h11)
+    return float(_cy_monotone_cubic_eval(x, y, float(x_eval)))
 
 
 def exp_smile_interp(x_nodes: Sequence[float], y_nodes: Sequence[float], x_eval: float) -> float:
-    """Interpolação exponencial por partes entre vértices do smile."""
-    x = np.asarray(x_nodes, dtype=np.float64)
-    y = np.asarray(y_nodes, dtype=np.float64)
+    """Interpolação exponencial por partes entre vértices do smile via núcleo Cython."""
+    x = np.ascontiguousarray(x_nodes, dtype=np.float64)
+    y = np.ascontiguousarray(y_nodes, dtype=np.float64)
     if len(x) == 0:
         raise ValueError("Nós de interpolação vazios.")
-    if len(x) == 1 or x_eval <= x[0]:
-        return float(y[0])
-    if x_eval >= x[-1]:
-        return float(y[-1])
-    idx = int(np.searchsorted(x, x_eval, side="right") - 1)
-    idx = max(0, min(len(x) - 2, idx))
-    w = (x_eval - x[idx]) / (x[idx + 1] - x[idx])
-    return float(y[idx] * ((y[idx + 1] / y[idx]) ** w))
+    return float(_cy_exp_smile_eval(x, y, float(x_eval)))
 
 
 class SVISlice:
     """
     Fatia temporal parametrizada por SVI (Stochastic Volatility Inspired - Gatheral / B3 / Bloomberg):
         w(k) = a + b * (rho * (k - m) + sqrt((k - m)^2 + sigma^2))
-    onde k = ln(K / F_n) e w(k) = sigma_BS^2 * T.
+    onde k = ln(K / F_n) e w(k) = sigma^2 * T (lognormal ou normal).
     """
 
-    def __init__(self, a: float, b: float, rho: float, m: float, sigma: float, T: float):
+    def __init__(
+        self,
+        a: float,
+        b: float,
+        rho: float,
+        m: float,
+        sigma: float,
+        T: float,
+        vol_type: str = "lognormal",
+        atm_vol: Optional[float] = None,
+    ):
         self.a = float(a)
         self.b = float(b)
         self.rho = float(rho)
         self.m = float(m)
         self.sigma = float(sigma)
         self.T = float(T)
+        self.vol_type = _normalize_vol_type(vol_type)
+        self.atm_vol = float(atm_vol) if atm_vol is not None else None
 
     def total_variance(self, k: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
         if isinstance(k, np.ndarray):
@@ -129,8 +107,34 @@ class SVISlice:
         w = self.total_variance(k)
         t_eff = max(1e-8, self.T)
         if isinstance(w, np.ndarray):
-            return np.sqrt(np.maximum(w, 1e-12) / t_eff)
-        return math.sqrt(max(w, 1e-12) / t_eff)
+            return np.sqrt(np.maximum(w, 1e-16) / t_eff)
+        return math.sqrt(max(w, 1e-16) / t_eff)
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "kind": "SVISlice",
+            "a": self.a,
+            "b": self.b,
+            "rho": self.rho,
+            "m": self.m,
+            "sigma": self.sigma,
+            "T": self.T,
+            "vol_type": self.vol_type,
+            "atm_vol": self.atm_vol,
+        }
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "SVISlice":
+        return cls(
+            a=float(data["a"]),
+            b=float(data["b"]),
+            rho=float(data["rho"]),
+            m=float(data["m"]),
+            sigma=float(data["sigma"]),
+            T=float(data["T"]),
+            vol_type=str(data.get("vol_type", "lognormal")),
+            atm_vol=float(data["atm_vol"]) if data.get("atm_vol") is not None else None,
+        )
 
     @classmethod
     def fit(
@@ -140,11 +144,19 @@ class SVISlice:
         T: float,
         weights: Optional[Sequence[float]] = None,
         input_is_total_var: bool = False,
+        vol_type: str = "lognormal",
+        anchor_atm: bool = False,
+        atm_vol: Optional[float] = None,
     ) -> "SVISlice":
-        """Calibra os 5 parâmetros (a, b, rho, m, sigma) por mínimos quadrados não lineares."""
+        """
+        Calibra a fatia SVI por mínimos quadrados não lineares adaptados à escala da variância total,
+        com suporte opcional a ancoragem ATM exata (`anchor_atm=True` / `atm_vol`) e volatilidade normal.
+        """
+        vt = _normalize_vol_type(vol_type)
         k_np = np.asarray(k_arr, dtype=np.float64)
         vals = np.asarray(vols_or_w, dtype=np.float64)
-        w_target = vals if input_is_total_var else (vals * vals * float(T))
+        t_eff = max(1e-8, float(T))
+        w_target = vals if input_is_total_var else (vals * vals * t_eff)
         if weights is None:
             wt = np.ones_like(k_np)
         else:
@@ -152,64 +164,178 @@ class SVISlice:
             wt_mean = float(np.mean(w_raw)) if len(w_raw) > 0 else 1.0
             wt = np.sqrt(w_raw / wt_mean) if wt_mean > 0.0 else np.ones_like(k_np)
 
-        w_mean = max(1e-12, float(np.mean(w_target)))
+        w_mean = max(1e-16, float(np.mean(w_target)))
+        w_max = max(1e-16, float(np.max(w_target)))
         w_min = float(np.min(w_target))
-        w_span = max(1e-12, float(np.max(w_target) - w_min))
-        k_span = max(1e-3, float(np.max(k_np) - np.min(k_np)))
-        b0 = min(1.5, max(1e-4, w_span / k_span))
-        sig0 = min(0.5, max(1e-3, k_span * 0.25))
-        x0 = np.array([max(1e-12, w_min * 0.8), b0, -0.3, float(np.mean(k_np)), sig0], dtype=np.float64)
-        lb = np.array([-0.5, 1e-6, -0.999, -2.0, 1e-4], dtype=np.float64)
-        ub = np.array([2.0, 5.0, 0.999, 2.0, 2.0], dtype=np.float64)
+        w_span = max(1e-16, w_max - w_min)
+        k_min_v = float(np.min(k_np))
+        k_max_v = float(np.max(k_np))
+        k_span = max(1e-4, k_max_v - k_min_v)
+        idx_min = int(np.argmin(w_target))
+
+        m0 = float(k_np[idx_min])
+        sig0 = max(1e-5, min(0.5, 0.1 * k_span))
+        b0 = max(1e-6, w_span / max(1e-4, 0.5 * k_span))
 
         k_chk = np.unique(
-            np.concatenate([np.linspace(min(-0.1, float(np.min(k_np)) * 1.5), max(0.1, float(np.max(k_np)) * 1.5), 41), k_np])
+            np.concatenate([np.linspace(min(-0.1, k_min_v * 1.5), max(0.1, k_max_v * 1.5), 41), k_np])
+        )
+
+        use_anchor = bool(anchor_atm or (atm_vol is not None))
+        atm_target: Optional[float] = None
+        if use_anchor:
+            if atm_vol is not None:
+                atm_target = float(atm_vol)
+            else:
+                ord_k = np.argsort(k_np)
+                ks_u, u_idx = np.unique(k_np[ord_k], return_index=True)
+                vs_u = np.sqrt(np.maximum(w_target[ord_k][u_idx], 1e-16) / t_eff)
+                if ks_u[0] <= 0.0 <= ks_u[-1] and len(ks_u) >= 2:
+                    atm_target = monotone_cubic_interp(ks_u, vs_u, 0.0)
+                else:
+                    atm_target = float(vs_u[int(np.argmin(np.abs(ks_u)))])
+            w_atm = (atm_target * atm_target) * t_eff
+
+            b_ub = max(5.0, 20.0 * b0) if vt == "normal" else max(5.0, min(20.0, 20.0 * b0))
+            m_lb = k_min_v - k_span
+            m_ub = k_max_v + k_span
+            sig_ub = max(2.0, 2.0 * k_span)
+            x0 = np.clip(
+                np.array([b0, 0.0, m0, sig0], dtype=np.float64),
+                np.array([1e-8, -0.998, m_lb + 1e-6, 1e-6]),
+                np.array([b_ub * 0.99, 0.998, m_ub - 1e-6, sig_ub * 0.99]),
+            )
+            lb = np.array([1e-8, -0.999, m_lb, 1e-7], dtype=np.float64)
+            ub = np.array([b_ub, 0.999, m_ub, sig_ub], dtype=np.float64)
+
+            def _res_anchored(params):
+                b, rho, m, sig = params
+                a = w_atm - b * (-rho * m + math.sqrt(m * m + sig * sig))
+                w_pred = _cy_svi_eval_vec(k_np, float(a), float(b), float(rho), float(m), float(sig))
+                min_w = a + b * sig * math.sqrt(max(1e-8, 1.0 - rho * rho))
+                pen_w = max(0.0, 1e-16 - min_w) / w_mean * 100.0
+                if vt == "lognormal":
+                    pen_lee = max(0.0, b * (1.0 + abs(rho)) - (2.0 - 1e-6)) * 50.0
+                    dk = k_chk - m
+                    sq = np.sqrt(dk * dk + sig * sig)
+                    w_g = np.maximum(1e-16, a + b * (rho * dk + sq))
+                    wp = b * (rho + dk / sq)
+                    wpp = (b * sig * sig) / (sq * sq * sq)
+                    term1 = (1.0 - (k_chk * wp) / (2.0 * w_g)) ** 2
+                    term2 = 0.25 * (wp * wp) * (1.0 / w_g + 0.25)
+                    g_k = term1 - term2 + 0.5 * wpp
+                    pen_bfly = float(np.sqrt(np.sum(np.maximum(0.0, -g_k) ** 2))) * 25.0
+                else:
+                    pen_lee = 0.0
+                    pen_bfly = 0.0
+                return np.concatenate([wt * (w_pred - w_target) / w_mean, [pen_w, pen_lee, pen_bfly]])
+
+            res = least_squares(_res_anchored, x0, bounds=(lb, ub), x_scale="jac", max_nfev=2500)
+            b, rho, m, sig = [float(v) for v in res.x]
+            a = w_atm - b * (-rho * m + math.sqrt(m * m + sig * sig))
+            return cls(a, b, rho, m, sig, float(T), vol_type=vt, atm_vol=atm_target)
+
+        a0 = max(-0.5 * w_max, w_min * 0.6)
+        m_lb = k_min_v - k_span
+        m_ub = k_max_v + k_span
+        b_ub = max(5.0, 20.0 * b0)
+        sig_ub = max(2.0, 2.0 * k_span)
+        lb = np.array([-2.0 * w_max, 1e-8, -0.999, m_lb, 1e-7], dtype=np.float64)
+        ub = np.array([2.0 * w_max, b_ub, 0.999, m_ub, sig_ub], dtype=np.float64)
+        x0 = np.clip(
+            np.array([a0, b0, 0.0, m0, sig0], dtype=np.float64),
+            lb + 1e-9,
+            ub - 1e-9,
         )
 
         def _res(params):
             a, b, rho, m, sig = params
             w_pred = _cy_svi_eval_vec(k_np, float(a), float(b), float(rho), float(m), float(sig))
-            # Penaliza eventual variância mínima negativa e violação de Lee nas asas
             min_w = a + b * sig * math.sqrt(max(1e-8, 1.0 - rho * rho))
-            pen_w = max(0.0, 1e-12 - min_w) / w_mean * 100.0
-            pen_lee = max(0.0, b * (1.0 + abs(rho)) - (2.0 - 1e-6)) * 50.0
-
-            # Condição analítica de ausência de arbitragem borboleta (Gatheral-Jacquier, 2014): g(k) >= 0
-            dk = k_chk - m
-            sq = np.sqrt(dk * dk + sig * sig)
-            w_g = np.maximum(1e-12, a + b * (rho * dk + sq))
-            wp = b * (rho + dk / sq)
-            wpp = (b * sig * sig) / (sq * sq * sq)
-            term1 = (1.0 - (k_chk * wp) / (2.0 * w_g)) ** 2
-            term2 = 0.25 * (wp * wp) * (1.0 / w_g + 0.25)
-            g_k = term1 - term2 + 0.5 * wpp
-            pen_bfly = float(np.sqrt(np.sum(np.maximum(0.0, -g_k) ** 2))) * 25.0
+            pen_w = max(0.0, 1e-16 - min_w) / w_mean * 100.0
+            if vt == "lognormal":
+                pen_lee = max(0.0, b * (1.0 + abs(rho)) - (2.0 - 1e-6)) * 50.0
+                dk = k_chk - m
+                sq = np.sqrt(dk * dk + sig * sig)
+                w_g = np.maximum(1e-16, a + b * (rho * dk + sq))
+                wp = b * (rho + dk / sq)
+                wpp = (b * sig * sig) / (sq * sq * sq)
+                term1 = (1.0 - (k_chk * wp) / (2.0 * w_g)) ** 2
+                term2 = 0.25 * (wp * wp) * (1.0 / w_g + 0.25)
+                g_k = term1 - term2 + 0.5 * wpp
+                pen_bfly = float(np.sqrt(np.sum(np.maximum(0.0, -g_k) ** 2))) * 25.0
+            else:
+                pen_lee = 0.0
+                pen_bfly = 0.0
 
             return np.concatenate([wt * (w_pred - w_target) / w_mean, [pen_w, pen_lee, pen_bfly]])
 
-        res = least_squares(_res, x0, bounds=(lb, ub), x_scale="jac", max_nfev=2000)
+        res = least_squares(_res, x0, bounds=(lb, ub), x_scale="jac", max_nfev=2500)
         a, b, rho, m, sig = [float(v) for v in res.x]
-        return cls(a, b, rho, m, sig, float(T))
+        return cls(a, b, rho, m, sig, float(T), vol_type=vt)
 
 
 class SABRSlice:
     """
     Fatia temporal parametrizada pelo modelo SABR (Hagan et al., 2002), adotado pela B3
-    para construção de smiles de opções sobre juros (DI1 / IDI).
+    para smiles de opções sobre juros (DI1 / IDI), em volatilidade lognormal ou normal.
     """
 
-    def __init__(self, alpha: float, beta: float, rho: float, nu: float, F: float, T: float):
+    def __init__(
+        self,
+        alpha: float,
+        beta: float,
+        rho: float,
+        nu: float,
+        F: float,
+        T: float,
+        vol_type: str = "lognormal",
+        atm_vol: Optional[float] = None,
+    ):
         self.alpha = float(alpha)
         self.beta = float(beta)
         self.rho = float(rho)
         self.nu = float(nu)
         self.F = float(F)
         self.T = float(T)
+        self.vol_type = _normalize_vol_type(vol_type)
+        self.atm_vol = float(atm_vol) if atm_vol is not None else None
 
     def implied_vol(self, K: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
+        is_norm = self.vol_type == "normal"
         if isinstance(K, np.ndarray):
-            return np.array([float(_cy_sabr_vol(self.F, float(k), self.T, self.alpha, self.beta, self.rho, self.nu)) for k in K])
+            return _cy_sabr_eval_vec(
+                self.F, K.astype(np.float64), self.T, self.alpha, self.beta, self.rho, self.nu, is_norm
+            )
+        if is_norm:
+            return float(_cy_sabr_normal_vol(self.F, float(K), self.T, self.alpha, self.beta, self.rho, self.nu))
         return float(_cy_sabr_vol(self.F, float(K), self.T, self.alpha, self.beta, self.rho, self.nu))
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "kind": "SABRSlice",
+            "alpha": self.alpha,
+            "beta": self.beta,
+            "rho": self.rho,
+            "nu": self.nu,
+            "F": self.F,
+            "T": self.T,
+            "vol_type": self.vol_type,
+            "atm_vol": self.atm_vol,
+        }
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "SABRSlice":
+        return cls(
+            alpha=float(data["alpha"]),
+            beta=float(data["beta"]),
+            rho=float(data["rho"]),
+            nu=float(data["nu"]),
+            F=float(data["F"]),
+            T=float(data["T"]),
+            vol_type=str(data.get("vol_type", "lognormal")),
+            atm_vol=float(data["atm_vol"]) if data.get("atm_vol") is not None else None,
+        )
 
     @classmethod
     def fit(
@@ -218,10 +344,19 @@ class SABRSlice:
         K_arr: Sequence[float],
         vols: Sequence[float],
         T: float,
-        beta: float = 0.5,
+        beta: Optional[float] = None,
         weights: Optional[Sequence[float]] = None,
+        vol_type: str = "lognormal",
+        anchor_atm: bool = False,
+        atm_vol: Optional[float] = None,
     ) -> "SABRSlice":
-        """Calibra (alpha, rho, nu) com beta fixo sobre um smile de volatilidades implícitas."""
+        """
+        Calibra (alpha, rho, nu) com beta fixo sobre um smile lognormal ou normal,
+        com suporte opcional a ancoragem exata da volatilidade ATM via equação cúbica de Hagan.
+        """
+        vt = _normalize_vol_type(vol_type)
+        is_norm = vt == "normal"
+        beta_val = (0.0 if is_norm else 0.5) if beta is None else float(beta)
         k_np = np.asarray(K_arr, dtype=np.float64)
         v_np = np.asarray(vols, dtype=np.float64)
         if weights is None:
@@ -230,21 +365,58 @@ class SABRSlice:
             w_raw = np.maximum(0.0, np.asarray(weights, dtype=np.float64))
             w_mean = float(np.mean(w_raw)) if len(w_raw) > 0 else 1.0
             wt = np.sqrt(w_raw / w_mean) if w_mean > 0.0 else np.ones_like(k_np)
-        atm_v = float(np.median(v_np))
-        alpha0 = max(1e-4, atm_v * (float(F) ** (1.0 - float(beta))))
-        ub_alpha = max(10.0, alpha0 * 20.0)
-        x0 = np.array([min(ub_alpha * 0.95, alpha0), -0.2, 0.4], dtype=np.float64)
-        lb = np.array([1e-5, -0.999, 1e-4], dtype=np.float64)
-        ub = np.array([ub_alpha, 0.999, 5.0], dtype=np.float64)
+
+        v_scale = max(1e-8, float(np.median(v_np)))
+        fwd = float(F)
+        t_val = float(T)
+
+        use_anchor = bool(anchor_atm or (atm_vol is not None))
+        if use_anchor:
+            if atm_vol is not None:
+                atm_target = float(atm_vol)
+            else:
+                ord_k = np.argsort(k_np)
+                ks_u, u_idx = np.unique(k_np[ord_k], return_index=True)
+                vs_u = v_np[ord_k][u_idx]
+                if ks_u[0] <= fwd <= ks_u[-1] and len(ks_u) >= 2:
+                    atm_target = monotone_cubic_interp(ks_u, vs_u, fwd)
+                else:
+                    atm_target = float(vs_u[int(np.argmin(np.abs(ks_u - fwd)))])
+
+            x0_a = np.array([-0.1, 0.5], dtype=np.float64)
+            lb_a = np.array([-0.999, 1e-4], dtype=np.float64)
+            ub_a = np.array([0.999, 10.0], dtype=np.float64)
+
+            def _res_anchored(params):
+                rh, nu = float(params[0]), float(params[1])
+                al = _cy_sabr_alpha_from_atm(fwd, t_val, atm_target, beta_val, rh, nu, is_norm)
+                pred = _cy_sabr_eval_vec(fwd, k_np, t_val, al, beta_val, rh, nu, is_norm)
+                return wt * (pred - v_np) / v_scale
+
+            res = least_squares(_res_anchored, x0_a, bounds=(lb_a, ub_a), x_scale="jac", max_nfev=1500)
+            rh, nu = float(res.x[0]), float(res.x[1])
+            al = float(_cy_sabr_alpha_from_atm(fwd, t_val, atm_target, beta_val, rh, nu, is_norm))
+            return cls(al, beta_val, rh, nu, fwd, t_val, vol_type=vt, atm_vol=atm_target)
+
+        alpha0 = (
+            max(1e-6, v_scale / max(1e-12, fwd ** beta_val))
+            if is_norm
+            else max(1e-6, v_scale * (fwd ** (1.0 - beta_val)))
+        )
+        lb_alpha = max(1e-10, alpha0 * 1e-4)
+        ub_alpha = max(10.0, alpha0 * 50.0)
+        x0 = np.array([min(ub_alpha * 0.95, max(lb_alpha * 1.05, alpha0)), -0.2, 0.5], dtype=np.float64)
+        lb = np.array([lb_alpha, -0.999, 1e-4], dtype=np.float64)
+        ub = np.array([ub_alpha, 0.999, 10.0], dtype=np.float64)
 
         def _res(params):
-            al, rh, nu = params
-            pred = np.array([_cy_sabr_vol(float(F), float(k), float(T), float(al), float(beta), float(rh), float(nu)) for k in k_np])
-            return wt * (pred - v_np)
+            al, rh, nu = float(params[0]), float(params[1]), float(params[2])
+            pred = _cy_sabr_eval_vec(fwd, k_np, t_val, al, beta_val, rh, nu, is_norm)
+            return wt * (pred - v_np) / v_scale
 
-        res = least_squares(_res, x0, bounds=(lb, ub), max_nfev=1000)
+        res = least_squares(_res, x0, bounds=(lb, ub), x_scale="jac", max_nfev=1500)
         al, rh, nu = [float(v) for v in res.x]
-        return cls(al, float(beta), rh, nu, float(F), float(T))
+        return cls(al, beta_val, rh, nu, fwd, t_val, vol_type=vt)
 
 
 class VolatilitySurface:
@@ -262,11 +434,13 @@ class VolatilitySurface:
         smile_interp: str = "monotone_cubic",
         time_interp: str = "total_variance",
         slice_forwards: Optional[Dict[int, float]] = None,
+        vol_type: str = "lognormal",
     ):
         self.dus = sorted([int(d) for d in dus])
         self.smile_mode = smile_mode
         self.smile_interp = smile_interp
         self.time_interp = time_interp
+        self.vol_type = _normalize_vol_type(vol_type)
         self._slices: Dict[int, object] = {}
         self.slice_forwards: Dict[int, float] = {int(k): float(v) for k, v in slice_forwards.items()} if slice_forwards else {}
         self._bbg_surface = None
@@ -285,8 +459,10 @@ class VolatilitySurface:
         slices_by_du: Dict[int, SVISlice],
         time_interp: str = "total_variance",
         slice_forwards: Optional[Dict[int, float]] = None,
+        vol_type: Optional[str] = None,
     ) -> "VolatilitySurface":
-        surf = cls(list(slices_by_du.keys()), smile_mode="svi", smile_interp="svi", time_interp=time_interp, slice_forwards=slice_forwards)
+        inferred_vt = vol_type or (next(iter(slices_by_du.values())).vol_type if slices_by_du else "lognormal")
+        surf = cls(list(slices_by_du.keys()), smile_mode="svi", smile_interp="svi", time_interp=time_interp, slice_forwards=slice_forwards, vol_type=inferred_vt)
         surf._slices = {int(k): v for k, v in slices_by_du.items()}
         return surf
 
@@ -296,9 +472,11 @@ class VolatilitySurface:
         slices_by_du: Dict[int, SABRSlice],
         time_interp: str = "total_variance",
         slice_forwards: Optional[Dict[int, float]] = None,
+        vol_type: Optional[str] = None,
     ) -> "VolatilitySurface":
         fwds = slice_forwards if slice_forwards is not None else {int(k): float(v.F) for k, v in slices_by_du.items()}
-        surf = cls(list(slices_by_du.keys()), smile_mode="sabr", smile_interp="sabr", time_interp=time_interp, slice_forwards=fwds)
+        inferred_vt = vol_type or (next(iter(slices_by_du.values())).vol_type if slices_by_du else "lognormal")
+        surf = cls(list(slices_by_du.keys()), smile_mode="sabr", smile_interp="sabr", time_interp=time_interp, slice_forwards=fwds, vol_type=inferred_vt)
         surf._slices = {int(k): v for k, v in slices_by_du.items()}
         return surf
 
@@ -500,14 +678,113 @@ class VolatilitySurface:
         v_a = (vol_a * vol_a) * t_a
         v_p = (vol_p * vol_p) * t_p
         v_eval = v_a + ((v_p - v_a) / (t_p - t_a)) * (t_eval - t_a)
-        return math.sqrt(max(1e-12, v_eval) / t_eval)
+        return math.sqrt(max(1e-16, v_eval) / t_eval)
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Serializa a superfície completa (grade ou paramétrica) para dicionário JSON-compatível."""
+        slices_ser: Dict[str, Any] = {}
+        for du_k in self.dus:
+            sl = self._slices.get(du_k)
+            if sl is None:
+                continue
+            if hasattr(sl, "to_dict"):
+                slices_ser[str(du_k)] = sl.to_dict()
+            else:
+                x_n, y_n = sl
+                slices_ser[str(du_k)] = {
+                    "kind": "GridSlice",
+                    "x": np.asarray(x_n, dtype=float).tolist(),
+                    "y": np.asarray(y_n, dtype=float).tolist(),
+                }
+        out: Dict[str, Any] = {
+            "kind": "VolatilitySurface",
+            "dus": [int(d) for d in self.dus],
+            "smile_mode": self.smile_mode,
+            "smile_interp": self.smile_interp,
+            "time_interp": self.time_interp,
+            "vol_type": self.vol_type,
+            "slice_forwards": {str(k): float(v) for k, v in self.slice_forwards.items()},
+            "slices": slices_ser,
+        }
+        if self._bbg_surface is not None and hasattr(self._bbg_surface, "to_dict"):
+            out["bbg_surface"] = self._bbg_surface.to_dict()
+        return out
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "VolatilitySurface":
+        """Reconstrói uma `VolatilitySurface` a partir de dicionário serializado."""
+        smile_mode = str(data["smile_mode"])
+        if smile_mode == "bloomberg_mixture" and "bbg_surface" in data:
+            from bz_pricing.volatility.bloomberg_surface import BloombergMixtureSurface
+
+            bbg_obj = BloombergMixtureSurface.from_dict(data["bbg_surface"])
+            fwds = {int(k): float(v) for k, v in data.get("slice_forwards", {}).items()}
+            return cls.from_bloomberg_mixture(
+                bbg_obj,
+                time_interp=str(data.get("time_interp", "monotone_cubic")),
+                slice_forwards=fwds if fwds else None,
+            )
+
+        fwds = {int(k): float(v) for k, v in data.get("slice_forwards", {}).items()}
+        surf = cls(
+            dus=[int(d) for d in data["dus"]],
+            smile_mode=smile_mode,
+            smile_interp=str(data.get("smile_interp", "monotone_cubic")),
+            time_interp=str(data.get("time_interp", "total_variance")),
+            slice_forwards=fwds if fwds else None,
+            vol_type=str(data.get("vol_type", "lognormal")),
+        )
+        for du_str, s_data in data.get("slices", {}).items():
+            du_i = int(du_str)
+            kind = str(s_data.get("kind", ""))
+            if kind == "SVISlice" or smile_mode == "svi":
+                surf._slices[du_i] = SVISlice.from_dict(s_data)
+            elif kind == "SABRSlice" or smile_mode == "sabr":
+                surf._slices[du_i] = SABRSlice.from_dict(s_data)
+            elif kind == "LognormalMixtureSlice":
+                from bz_pricing.volatility.bloomberg_surface import LognormalMixtureSlice
+
+                surf._slices[du_i] = LognormalMixtureSlice.from_dict(s_data)
+            else:
+                surf._slices[du_i] = (
+                    np.asarray(s_data["x"], dtype=np.float64),
+                    np.asarray(s_data["y"], dtype=np.float64),
+                )
+        return surf
+
+    def to_json(self) -> str:
+        """Serializa a superfície para string JSON."""
+        return json.dumps(self.to_dict(), ensure_ascii=False, indent=2)
+
+    @classmethod
+    def from_json(cls, json_str: str) -> "VolatilitySurface":
+        """Reconstrói a superfície a partir de string JSON."""
+        return cls.from_dict(json.loads(json_str))
+
+    def save(self, path: Union[str, Path]) -> None:
+        """Salva a superfície serializada em arquivo JSON no caminho especificado."""
+        p = Path(path)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(self.to_json(), encoding="utf-8")
+
+    @classmethod
+    def load(cls, path: Union[str, Path]) -> "VolatilitySurface":
+        """Carrega uma superfície serializada de arquivo JSON."""
+        return cls.from_json(Path(path).read_text(encoding="utf-8"))
+
+    def _call_price_for_vol(self, fwd: float, strike: float, r_c: float, t_val: float, vol: float) -> float:
+        if self.vol_type == "normal":
+            df_r = math.exp(-r_c * t_val)
+            return float(_cy_bachelier(fwd, strike, df_r, t_val, vol, True)[0])
+        return float(_cy_black76(fwd, strike, r_c, t_val, vol, True)[0])
 
     def check_no_arbitrage(
         self,
         forward_by_du: Union[float, Dict[int, float], Callable[[int], float]],
         r_cont_by_du: Union[float, Dict[int, float], Callable[[int], float]],
-        strikes: Optional[Sequence[float]] = None,
+        strikes: Optional[Union[Sequence[float], Dict[int, Sequence[float]]]] = None,
         tol: float = 1e-8,
+        moneyness_grid: Optional[Sequence[float]] = None,
     ) -> Dict[str, Union[bool, int]]:
         """
         Audita os critérios estáticos e de calendário de não arbitragem:
@@ -532,27 +809,32 @@ class VolatilitySurface:
             r_c = _resolve(r_cont_by_du, du)
             t_val = du / 252.0
             price_tol = tol * max(fwd, 1.0)
-            k_grid = np.linspace(0.7 * fwd, 1.3 * fwd, 25) if strikes is None else np.asarray(strikes, dtype=np.float64)
-            calls = []
-            for k in k_grid:
-                vol = self.get_vol(du, strike=float(k), forward=fwd)
-                calls.append(_cy_black76(fwd, float(k), r_c, t_val, vol, True)[0])
+            if isinstance(strikes, dict):
+                k_grid = np.asarray(strikes[du], dtype=np.float64)
+            elif strikes is not None:
+                k_grid = np.asarray(strikes, dtype=np.float64)
+            else:
+                k_grid = np.linspace(0.7 * fwd, 1.3 * fwd, 25)
+            calls = [self._call_price_for_vol(fwd, float(k), r_c, t_val, self.get_vol(du, strike=float(k), forward=fwd)) for k in k_grid]
             calls_arr = np.asarray(calls, dtype=np.float64)
             mono_viol += int(np.sum(np.diff(calls_arr) > price_tol))
             if len(calls_arr) >= 3:
-                d2 = np.diff(calls_arr, n=2)
-                bfly_viol += int(np.sum(d2 < -price_tol))
+                dk = np.maximum(1e-12, np.diff(k_grid))
+                slopes = np.diff(calls_arr) / dk
+                dk_mid = 0.5 * (dk[:-1] + dk[1:])
+                bfly_vals = np.diff(slopes) * dk_mid
+                bfly_viol += int(np.sum(bfly_vals < -price_tol))
 
         if len(self.dus) >= 2:
-            if strikes is None:
-                moneyness_grid = np.linspace(0.8, 1.2, 13)
-                for m_val in moneyness_grid:
+            if moneyness_grid is not None or strikes is None or isinstance(strikes, dict):
+                m_grid = np.linspace(0.8, 1.2, 13) if moneyness_grid is None else np.asarray(moneyness_grid, dtype=np.float64)
+                for m_val in m_grid:
                     tot_vars = []
                     for du in self.dus:
                         fwd = _resolve(forward_by_du, du)
                         vol = self.get_vol(du, strike=float(m_val * fwd), forward=fwd)
                         tot_vars.append(vol * vol * (du / 252.0))
-                    var_tol = tol * max(1.0, float(np.mean(tot_vars)))
+                    var_tol = tol * max(1e-12, float(np.mean(tot_vars)))
                     cal_viol += int(np.sum(np.diff(tot_vars) < -var_tol))
             else:
                 k_grid = np.asarray(strikes, dtype=np.float64)
@@ -562,7 +844,7 @@ class VolatilitySurface:
                         fwd = _resolve(forward_by_du, du)
                         vol = self.get_vol(du, strike=float(k), forward=fwd)
                         tot_vars.append(vol * vol * (du / 252.0))
-                    var_tol = tol * max(1.0, float(np.mean(tot_vars)))
+                    var_tol = tol * max(1e-12, float(np.mean(tot_vars)))
                     cal_viol += int(np.sum(np.diff(tot_vars) < -var_tol))
 
         return {
@@ -574,7 +856,7 @@ class VolatilitySurface:
 
     def wing_slope_check(self) -> Dict[str, object]:
         """
-        Verifica o limite de momentos de Lee (2004) nas asas das fatias SVI:
+        Verifica o limite de momentos de Lee (2004) nas asas das fatias SVI lognormais:
             b * (1 + |rho|) <= 2, com b >= 0 e |rho| < 1.
         """
         details = []
@@ -583,7 +865,7 @@ class VolatilitySurface:
             sl = self._slices.get(du) if self._slices else None
             if isinstance(sl, SVISlice):
                 max_slope = float(sl.b * (1.0 + abs(sl.rho)))
-                ok = (sl.b >= 0.0) and (abs(sl.rho) < 1.0) and (max_slope <= 2.0 + 1e-9)
+                ok = (sl.b >= 0.0) and (abs(sl.rho) < 1.0) and (sl.vol_type == "normal" or max_slope <= 2.0 + 1e-9)
                 all_ok = all_ok and ok
                 details.append({
                     "du": du,
@@ -616,14 +898,13 @@ class VolatilitySurface:
         t_val = du / 252.0
         calls = np.array(
             [
-                _cy_black76(
+                self._call_price_for_vol(
                     float(forward),
                     float(k),
                     float(r_cont),
                     t_val,
                     self.get_vol(du, strike=float(k), forward=float(forward)),
-                    True,
-                )[0]
+                )
                 for k in k_grid
             ],
             dtype=np.float64,
@@ -826,36 +1107,74 @@ def validate_slice_out_of_sample(
     du: int,
     train_mask: Optional[Sequence[bool]] = None,
     model: str = "svi",
-    sabr_beta: float = 0.5,
+    sabr_beta: Optional[float] = None,
     otm_only: bool = True,
     vega_weighted: bool = False,
     split_mode: str = "alternating",
+    vol_type: str = "lognormal",
+    anchor_atm: bool = False,
+    atm_vol: Optional[float] = None,
 ) -> Dict[str, object]:
     """
-    Calibra uma fatia (SVI ou SABR) no conjunto de treino e avalia o re-apreçamento
-    fora da amostra (out-of-sample) em bps de volatilidade implícita e em prêmio.
-    Suporta filtro OTM (`otm_only`), ponderação por vega (`vega_weighted`) e partições
-    `split_mode` em {'alternating', 'interpolation', 'wings'}.
+    Calibra uma fatia (SVI, SABR ou Bloomberg Mixture) em espaço lognormal ou normal (Bachelier)
+    no conjunto de treino e avalia o re-apreçamento fora da amostra (out-of-sample).
+    Suporta ancoragem ATM (`anchor_atm`, `atm_vol`), filtro OTM inteligente (`otm_only`),
+    ponderação por vega (`vega_weighted`) e partições `split_mode` em {'alternating', 'interpolation', 'wings'}.
     """
+    vt = _normalize_vol_type(vol_type)
+    is_norm = vt == "normal"
+    fwd = float(forward)
+    r_c = float(r_cont)
+    t_val = du / 252.0
+    df_r = math.exp(-r_c * t_val)
+
     k_arr = np.asarray(strikes, dtype=np.float64)
     p_arr = np.asarray(market_prices, dtype=np.float64)
     is_call_arr = np.array([str(t).lower().startswith("c") for t in option_types], dtype=bool)
-    t_val = du / 252.0
 
-    mkt_vols = np.array(
-        [
-            _cy_iv_black76(float(p), float(forward), float(k), float(r_cont), t_val, bool(ic))
-            for p, k, ic in zip(p_arr, k_arr, is_call_arr)
-        ],
-        dtype=np.float64,
-    )
-
-    valid = np.isfinite(mkt_vols) & (mkt_vols > 1e-4)
-    if otm_only:
-        otm_mask = (is_call_arr & (k_arr >= float(forward) * (1.0 - 1e-12))) | (
-            (~is_call_arr) & (k_arr <= float(forward) * (1.0 + 1e-12))
+    if is_norm:
+        mkt_vols = np.array(
+            [
+                _cy_iv_bachelier(float(p), fwd, float(k), df_r, t_val, bool(ic))
+                for p, k, ic in zip(p_arr, k_arr, is_call_arr)
+            ],
+            dtype=np.float64,
         )
-        keep = valid & otm_mask
+        valid = np.isfinite(mkt_vols) & (mkt_vols > 1e-8)
+    else:
+        mkt_vols = np.array(
+            [
+                _cy_iv_black76(float(p), fwd, float(k), r_c, t_val, bool(ic))
+                for p, k, ic in zip(p_arr, k_arr, is_call_arr)
+            ],
+            dtype=np.float64,
+        )
+        valid = np.isfinite(mkt_vols) & (mkt_vols > 1e-4)
+
+    if otm_only:
+        has_call_k: Dict[float, bool] = {}
+        has_put_k: Dict[float, bool] = {}
+        for k_v, ic_v, ok_v in zip(k_arr, is_call_arr, valid):
+            if not ok_v:
+                continue
+            kr = round(float(k_v), 8)
+            if ic_v:
+                has_call_k[kr] = True
+            else:
+                has_put_k[kr] = True
+        strict_otm = (is_call_arr & (k_arr >= fwd * (1.0 - 1e-12))) | (
+            (~is_call_arr) & (k_arr <= fwd * (1.0 + 1e-12))
+        )
+        unpaired = np.array(
+            [not (has_call_k.get(round(float(k_v), 8), False) and has_put_k.get(round(float(k_v), 8), False)) for k_v in k_arr],
+            dtype=bool,
+        )
+        keep = valid & strict_otm
+        # Caso uma asa inteira fique vazia após corte estrito, preserva pontas válidas sem par no strike
+        if not np.any(keep & is_call_arr & (k_arr >= fwd * (1.0 - 1e-12))):
+            keep = keep | (valid & unpaired & is_call_arr)
+        if not np.any(keep & (~is_call_arr) & (k_arr <= fwd * (1.0 + 1e-12))):
+            keep = keep | (valid & unpaired & (~is_call_arr))
     else:
         keep = valid
 
@@ -901,25 +1220,54 @@ def validate_slice_out_of_sample(
 
     fit_weights = None
     if vega_weighted:
-        vegas = np.array(
-            [
-                _cy_black76(float(forward), float(k), float(r_cont), t_val, float(v), bool(ic))[3]
-                for k, v, ic in zip(k_arr[mask], mkt_vols[mask], is_call_arr[mask])
-            ],
-            dtype=np.float64,
-        )
+        if is_norm:
+            vegas = np.array(
+                [
+                    _cy_bachelier(fwd, float(k), df_r, t_val, float(v), bool(ic))[3]
+                    for k, v, ic in zip(k_arr[mask], mkt_vols[mask], is_call_arr[mask])
+                ],
+                dtype=np.float64,
+            )
+        else:
+            vegas = np.array(
+                [
+                    _cy_black76(fwd, float(k), r_c, t_val, float(v), bool(ic))[3]
+                    for k, v, ic in zip(k_arr[mask], mkt_vols[mask], is_call_arr[mask])
+                ],
+                dtype=np.float64,
+            )
         fit_weights = np.maximum(vegas, 1e-12)
 
-    if model.lower() == "svi":
-        k_log_train = np.log(k_arr[mask] / float(forward))
-        fitted_slice = SVISlice.fit(k_log_train, mkt_vols[mask], t_val, weights=fit_weights)
-        pred_vols_test = fitted_slice.implied_vol(np.log(k_arr[~mask] / float(forward)))
-    elif model.lower() == "sabr":
+    mdl_low = model.lower()
+    if mdl_low == "svi":
+        k_log_train = np.log(k_arr[mask] / fwd)
+        fitted_slice = SVISlice.fit(
+            k_log_train,
+            mkt_vols[mask],
+            t_val,
+            weights=fit_weights,
+            vol_type=vt,
+            anchor_atm=anchor_atm,
+            atm_vol=atm_vol,
+        )
+        pred_vols_test = fitted_slice.implied_vol(np.log(k_arr[~mask] / fwd))
+    elif mdl_low == "sabr":
+        beta_eff = (0.0 if is_norm else 0.5) if sabr_beta is None else float(sabr_beta)
         fitted_slice = SABRSlice.fit(
-            float(forward), k_arr[mask], mkt_vols[mask], t_val, beta=sabr_beta, weights=fit_weights
+            fwd,
+            k_arr[mask],
+            mkt_vols[mask],
+            t_val,
+            beta=beta_eff,
+            weights=fit_weights,
+            vol_type=vt,
+            anchor_atm=anchor_atm,
+            atm_vol=atm_vol,
         )
         pred_vols_test = fitted_slice.implied_vol(k_arr[~mask])
-    elif model.lower() in ("bloomberg_mixture", "bbg", "lognormal_mixture"):
+    elif mdl_low in ("bloomberg_mixture", "bbg", "lognormal_mixture"):
+        if is_norm:
+            raise ValueError("Modelo 'bloomberg_mixture' suporta apenas vol_type='lognormal'.")
         from bz_pricing.volatility.bloomberg_surface import LognormalMixtureSlice
 
         types_train = ["CALL" if bool(ic) else "PUT" for ic in is_call_arr[mask]]
@@ -927,27 +1275,41 @@ def validate_slice_out_of_sample(
             strikes=k_arr[mask],
             market_prices=p_arr[mask],
             option_types=types_train,
-            forward=float(forward),
-            r_cont=float(r_cont),
+            forward=fwd,
+            r_cont=r_c,
             T=t_val,
         )
-        pred_vols_test = np.asarray(fitted_slice.implied_vol(k_arr[~mask], r_cont=float(r_cont)), dtype=np.float64)
+        pred_vols_test = np.asarray(fitted_slice.implied_vol(k_arr[~mask], r_cont=r_c), dtype=np.float64)
     else:
         raise ValueError(f"Modelo '{model}' não suportado; use 'svi', 'sabr' ou 'bloomberg_mixture'.")
 
-    pred_prices_test = np.array(
-        [
-            _cy_black76(float(forward), float(k), float(r_cont), t_val, float(v), bool(ic))[0]
-            for k, v, ic in zip(k_arr[~mask], pred_vols_test, is_call_arr[~mask])
-        ],
-        dtype=np.float64,
-    )
+    if is_norm:
+        pred_prices_test = np.array(
+            [
+                _cy_bachelier(fwd, float(k), df_r, t_val, float(v), bool(ic))[0]
+                for k, v, ic in zip(k_arr[~mask], pred_vols_test, is_call_arr[~mask])
+            ],
+            dtype=np.float64,
+        )
+        vol_diff = pred_vols_test - mkt_vols[~mask]
+        vol_err_bps = (vol_diff / max(1.0, fwd)) * 1e4
+        rmse_vol_norm = float(np.sqrt(np.mean(vol_diff ** 2)))
+    else:
+        pred_prices_test = np.array(
+            [
+                _cy_black76(fwd, float(k), r_c, t_val, float(v), bool(ic))[0]
+                for k, v, ic in zip(k_arr[~mask], pred_vols_test, is_call_arr[~mask])
+            ],
+            dtype=np.float64,
+        )
+        vol_err_bps = (pred_vols_test - mkt_vols[~mask]) * 1e4
+        rmse_vol_norm = float("nan")
 
-    vol_err_bps = (pred_vols_test - mkt_vols[~mask]) * 1e4
     price_err = pred_prices_test - p_arr[~mask]
 
     return {
         "slice": fitted_slice,
+        "vol_type": vt,
         "train_strikes": k_arr[mask],
         "test_strikes": k_arr[~mask],
         "test_market_vols": mkt_vols[~mask],
@@ -956,6 +1318,7 @@ def validate_slice_out_of_sample(
         "test_pred_prices": pred_prices_test,
         "rmse_vol_bps": float(np.sqrt(np.mean(vol_err_bps ** 2))),
         "mae_vol_bps": float(np.mean(np.abs(vol_err_bps))),
+        "rmse_vol_norm": rmse_vol_norm,
         "rmse_price": float(np.sqrt(np.mean(price_err ** 2))),
         "mae_price": float(np.mean(np.abs(price_err))),
     }

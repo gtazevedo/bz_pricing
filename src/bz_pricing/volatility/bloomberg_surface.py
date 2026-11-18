@@ -1,5 +1,7 @@
+import json
 import math
-from typing import Dict, List, Optional, Sequence, Tuple, Union
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -722,6 +724,28 @@ class LognormalMixtureSlice:
         self.etas = np.log(np.maximum(1e-12, self.xi[1:] / self.xi[:-1]))
         self.k_min_damp = float(k_min_damp) if k_min_damp is not None else 0.9 * self.F
 
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "kind": "LognormalMixtureSlice",
+            "weights": self.p.tolist(),
+            "xis": self.xi.tolist(),
+            "sigmas_total": self.Sigma.tolist(),
+            "forward": self.F,
+            "T": self.T,
+            "k_min_damp": self.k_min_damp,
+        }
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "LognormalMixtureSlice":
+        return cls(
+            weights=data["weights"],
+            xis=data["xis"],
+            sigmas_total=data["sigmas_total"],
+            forward=float(data["forward"]),
+            T=float(data["T"]),
+            k_min_damp=float(data["k_min_damp"]) if data.get("k_min_damp") is not None else None,
+        )
+
     @staticmethod
     def _reconstruct_xis(weights: np.ndarray, etas: np.ndarray) -> np.ndarray:
         p_sum = float(np.sum(weights))
@@ -1197,3 +1221,33 @@ class BloombergMixtureSurface:
             prev_sig = sl.Sigma
             prev_p_surv = sl.P_survival
         return cls(fitted)
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "kind": "BloombergMixtureSurface",
+            "heston_params": list(self.heston_params) if self.heston_params is not None else None,
+            "slices": {str(du_k): sl.to_dict() for du_k, sl in self.slices.items()},
+        }
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "BloombergMixtureSurface":
+        slices = {int(k): LognormalMixtureSlice.from_dict(v) for k, v in data["slices"].items()}
+        hp_raw = data.get("heston_params")
+        hp = (float(hp_raw[0]), float(hp_raw[1]), float(hp_raw[2])) if hp_raw is not None else None
+        return cls(slices_by_du=slices, heston_params=hp)
+
+    def to_json(self) -> str:
+        return json.dumps(self.to_dict(), ensure_ascii=False, indent=2)
+
+    @classmethod
+    def from_json(cls, json_str: str) -> "BloombergMixtureSurface":
+        return cls.from_dict(json.loads(json_str))
+
+    def save(self, path: Union[str, Path]) -> None:
+        p = Path(path)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(self.to_json(), encoding="utf-8")
+
+    @classmethod
+    def load(cls, path: Union[str, Path]) -> "BloombergMixtureSurface":
+        return cls.from_json(Path(path).read_text(encoding="utf-8"))

@@ -5,21 +5,17 @@ import numpy as np
 import pandas as pd
 
 from bz_pricing.core.calendars import get_calendar
+from bz_pricing.core.credit_core import (
+    compute_credit_cashflows as _cy_compute_credit_cashflows,
+    compute_custom_credit_flows as _cy_compute_custom_credit_flows,
+    evaluate_gross_up_pv as _cy_evaluate_gross_up_pv,
+    risky_bond_pv as _cy_risky_bond_pv,
+    survival_probability_piecewise as _cy_survival_prob,
+)
 from bz_pricing.core.curves import Curve
 from bz_pricing.core.vna_engine import VNAEngine
 from bz_pricing.data.cricra import CRICRAClient
 from bz_pricing.data.debentures import DebenturesClient
-
-try:
-    from bz_pricing.core.credit_core import compute_credit_cashflows as _cy_compute_credit_cashflows
-    from bz_pricing.core.credit_core import evaluate_gross_up_pv as _cy_evaluate_gross_up_pv
-    from bz_pricing.core.credit_core import risky_bond_pv as _cy_risky_bond_pv
-    from bz_pricing.core.credit_core import survival_probability_piecewise as _cy_survival_prob
-except ImportError:
-    _cy_compute_credit_cashflows = None
-    _cy_evaluate_gross_up_pv = None
-    _cy_risky_bond_pv = None
-    _cy_survival_prob = None
 
 
 class HazardRateCurve:
@@ -62,20 +58,7 @@ class HazardRateCurve:
 
     def survival_prob(self, du: int) -> float:
         t = max(0.0, float(du) / 252.0)
-        if _cy_survival_prob is not None:
-            return float(_cy_survival_prob(t, self.t_nodes, self.lambda_nodes))
-        if t <= 0.0:
-            return 1.0
-        integral = 0.0
-        t_prev = 0.0
-        for tk, lam in zip(self.t_nodes, self.lambda_nodes):
-            if t <= tk:
-                integral += lam * (t - t_prev)
-                return math.exp(-integral)
-            integral += lam * (tk - t_prev)
-            t_prev = tk
-        integral += self.lambda_nodes[-1] * (t - t_prev)
-        return math.exp(-integral)
+        return float(_cy_survival_prob(t, self.t_nodes, self.lambda_nodes))
 
     def default_prob(self, du: int) -> float:
         return 1.0 - self.survival_prob(du)
@@ -729,26 +712,37 @@ class Debenture:
         cf = custom_cashflows if custom_cashflows is not None else self.custom_cashflows
         if cf is not None:
             parsed = self._parse_custom_cashflows(cf)
-            rows = []
-            for dt, tipo, fl_nom in parsed:
-                if dt <= base_date:
-                    continue
-                du_d = int(self.calendar.bizdays(base_date, dt))
-                r_desc = self._get_rate_for_du(discount_rate_or_curve, du_d)
-                df_d = math.trunc(math.pow(1.0 + r_desc, du_d / 252.0) * 1e14) / 1e14 if du_d > 0 else 1.0
-                rows.append({
-                    "data_evento": dt,
-                    "data_pagamento": dt,
-                    "du": du_d,
-                    "evento": tipo,
-                    "tipo": "Custom",
-                    "taxa_cupom": 0.0,
-                    "fluxo_nominal": fl_nom,
-                    "taxa_desconto": r_desc,
-                    "fator_desconto": df_d,
-                    "valor_presente": fl_nom / df_d,
-                })
-            return pd.DataFrame(rows)
+            filtered = [(dt, tipo, fl_nom) for dt, tipo, fl_nom in parsed if dt > base_date]
+            if not filtered:
+                df_empty = pd.DataFrame(columns=[
+                    "data_evento", "data_pagamento", "du", "evento", "tipo",
+                    "taxa_cupom", "fluxo_nominal", "taxa_desconto", "fator_desconto", "valor_presente"
+                ])
+                df_empty.attrs["cython_metrics"] = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+                return df_empty
+
+            d_list = [x[0] for x in filtered]
+            tipo_list_c = [x[1] for x in filtered]
+            fl_arr = np.array([x[2] for x in filtered], dtype=np.float64)
+            du_arr_c = np.array([int(self.calendar.bizdays(base_date, dt)) for dt in d_list], dtype=np.int32)
+            r_desc_arr_c = np.array([self._get_rate_for_du(discount_rate_or_curve, int(d_u)) for d_u in du_arr_c], dtype=np.float64)
+            df_arr_c, pv_arr_c, metrics_c = _cy_compute_custom_credit_flows(
+                du_arr_c, fl_arr, r_desc_arr_c, float(self._value_scale)
+            )
+            df_custom = pd.DataFrame({
+                "data_evento": d_list,
+                "data_pagamento": d_list,
+                "du": du_arr_c,
+                "evento": tipo_list_c,
+                "tipo": ["Custom"] * len(filtered),
+                "taxa_cupom": np.zeros(len(filtered), dtype=np.float64),
+                "fluxo_nominal": fl_arr,
+                "taxa_desconto": r_desc_arr_c,
+                "fator_desconto": df_arr_c,
+                "valor_presente": pv_arr_c,
+            })
+            df_custom.attrs["cython_metrics"] = metrics_c
+            return df_custom
 
         vna = self.resolve_vna(
             base_date,
@@ -800,192 +794,92 @@ class Debenture:
             )
             fator_acruado_di = (pu_par_atual / vna) if vna > 0.0 else 1.0
 
-        if _cy_compute_credit_cashflows is not None:
-            d_ev_list = future_df["data_evento"].tolist()
-            d_pg_list = future_df["data_pagamento"].tolist()
-            ev_raw = future_df["evento"].astype(str).str.strip().tolist()
-            tipo_list = future_df["tipo"].astype(str).str.strip().tolist()
-            perc_raw = pd.to_numeric(future_df["taxa_percentual"], errors="coerce").fillna(0.0).to_numpy(dtype=np.float64)
+        d_ev_list = future_df["data_evento"].tolist()
+        d_pg_list = future_df["data_pagamento"].tolist()
+        ev_raw = future_df["evento"].astype(str).str.strip().tolist()
+        tipo_list = future_df["tipo"].astype(str).str.strip().tolist()
+        perc_raw = pd.to_numeric(future_df["taxa_percentual"], errors="coerce").fillna(0.0).to_numpy(dtype=np.float64)
 
-            keep_idx = []
-            du_list = []
-            yf_list = []
-            ev_codes = []
-            ev_labels = []
-            r_desc_list = []
-            r_di_list = []
-            prev_dt = prev_event_date
+        keep_idx = []
+        du_list = []
+        yf_list = []
+        ev_codes = []
+        ev_labels = []
+        r_desc_list = []
+        r_di_list = []
+        prev_dt = prev_event_date
 
-            for idx, (ev_str, d_pg) in enumerate(zip(ev_raw, d_pg_list)):
-                ev_low = ev_str.lower()
-                if "juros" in ev_low:
-                    code = 0
-                    label = "Juros"
-                elif "amort" in ev_low or "vencimento" in ev_low:
-                    code = 2 if "vencimento" in ev_low else 1
-                    label = ev_str
-                else:
-                    continue
-
-                du_d = self.calendar.bizdays(base_date, d_pg)
-                yf_p = self._coupon_year_fraction(prev_dt, d_pg) if (code == 0 and not is_di) else 0.0
-                if code == 0:
-                    prev_dt = d_pg
-
-                keep_idx.append(idx)
-                du_list.append(du_d)
-                yf_list.append(yf_p)
-                ev_codes.append(code)
-                ev_labels.append(label)
-                r_desc_list.append(self._get_rate_for_du(discount_rate_or_curve, du_d))
-                r_di_list.append(self._get_rate_for_du(di_curve, du_d) if is_di else 0.0)
-
-            if not keep_idx:
-                return pd.DataFrame(columns=[
-                    "data_evento", "data_pagamento", "du", "evento", "tipo",
-                    "taxa_cupom", "fluxo_nominal", "taxa_desconto", "fator_desconto", "valor_presente"
-                ])
-
-            du_arr = np.asarray(du_list, dtype=np.int32)
-            yf_arr = np.asarray(yf_list, dtype=np.float64)
-            perc_arr = perc_raw[keep_idx]
-            ev_arr = np.asarray(ev_codes, dtype=np.int32)
-            r_desc_arr = np.asarray(r_desc_list, dtype=np.float64)
-            r_di_arr = np.asarray(r_di_list, dtype=np.float64)
-
-            taxa_cupom_arr, fluxo_arr, taxa_desc_arr, df_arr, pv_arr, _ = _cy_compute_credit_cashflows(
-                du_arr,
-                yf_arr,
-                perc_arr,
-                ev_arr,
-                r_desc_arr,
-                r_di_arr,
-                float(vna),
-                float(fator_acruado_di),
-                float(self.coupon_rate),
-                float(self.multiplicador_di),
-                float(self._value_scale),
-                bool(self._is_cricra),
-                bool(is_di),
-                bool(is_pct_di),
-                bool(self.amortizacao_sobre_vne),
-            )
-
-            return pd.DataFrame({
-                "data_evento": [d_ev_list[i] for i in keep_idx],
-                "data_pagamento": [d_pg_list[i] for i in keep_idx],
-                "du": du_arr,
-                "evento": ev_labels,
-                "tipo": [tipo_list[i] for i in keep_idx],
-                "taxa_cupom": taxa_cupom_arr,
-                "fluxo_nominal": fluxo_arr,
-                "taxa_desconto": taxa_desc_arr,
-                "fator_desconto": df_arr,
-                "valor_presente": pv_arr,
-            })
-
-        rows = []
-        saldo_vna = vna
-        prev_du_di = 0
-        prev_f_di = 1.0
-
-        for _, row in future_df.iterrows():
-            d_ev = row["data_evento"]
-            d_pg = row["data_pagamento"]
-            evento = str(row["evento"]).strip()
-            evento_lower = evento.lower()
-            tipo = str(row["tipo"]).strip()
-            perc = float(row.get("taxa_percentual", 0.0))
-
-            du_desc = self.calendar.bizdays(base_date, d_pg)
-            r_desc = self._get_rate_for_du(discount_rate_or_curve, du_desc)
-
-            if is_di:
-                r_di = self._get_rate_for_du(di_curve, du_desc)
-                f_di_acum = math.pow(1.0 + r_di, du_desc / 252.0)
-                if is_pct_di:
-                    di_d = math.pow(1.0 + r_di, 1.0 / 252.0) - 1.0
-                    df_val = math.trunc(math.pow(1.0 + di_d * r_desc, du_desc) * 1e14) / 1e14
-                else:
-                    df_val = math.trunc((f_di_acum * math.pow(1.0 + r_desc, du_desc / 252.0)) * 1e14) / 1e14
-                taxa_desconto_eff = (math.pow(df_val, 252.0 / du_desc) - 1.0) if du_desc > 0 else 0.0
+        for idx, (ev_str, d_pg) in enumerate(zip(ev_raw, d_pg_list)):
+            ev_low = ev_str.lower()
+            if "juros" in ev_low:
+                code = 0
+                label = "Juros"
+            elif "amort" in ev_low or "vencimento" in ev_low:
+                code = 2 if "vencimento" in ev_low else 1
+                label = ev_str
             else:
-                # Fator de desconto T-14
-                df_val = math.trunc(math.pow(1.0 + r_desc, du_desc / 252.0) * 1e14) / 1e14
-                taxa_desconto_eff = r_desc
+                continue
 
-            if "juros" in evento_lower:
-                if is_di:
-                    if is_pct_di:
-                        f_pct_acum = math.pow(1.0 + di_d * self.multiplicador_di, du_desc)
-                        if prev_du_di == 0:
-                            f_cupom = (fator_acruado_di * f_pct_acum) - 1.0
-                        else:
-                            f_cupom = (f_pct_acum / prev_f_di) - 1.0
-                        r_cupom = self.multiplicador_di
-                        prev_du_di = du_desc
-                        prev_f_di = f_pct_acum
-                    else:
-                        r_cupom = (perc / 100.0) if perc > 0.0 else self.coupon_rate
-                        if prev_du_di == 0:
-                            f_spr_rem = math.pow(1.0 + r_cupom, du_desc / 252.0)
-                            f_cupom = (fator_acruado_di * f_di_acum * f_spr_rem) - 1.0
-                        else:
-                            du_p = du_desc - prev_du_di
-                            f_di_p = f_di_acum / prev_f_di
-                            f_spr_p = math.pow(1.0 + r_cupom, du_p / 252.0)
-                            f_cupom = (f_di_p * f_spr_p) - 1.0
-                        prev_du_di = du_desc
-                        prev_f_di = f_di_acum
-                else:
-                    # O período contratual de contagem de juros ocorre entre as datas de liquidação (d_pg)
-                    yf_period = self._coupon_year_fraction(prev_event_date, d_pg)
-                    r_cupom = (perc / 100.0) if perc > 0.0 else self.coupon_rate
-                    f_cupom_raw = math.pow(1.0 + r_cupom, yf_period) - 1.0
-                    f_cupom = round(f_cupom_raw, 9) if self._is_cricra else math.trunc(f_cupom_raw * 1e9) / 1e9
+            du_d = self.calendar.bizdays(base_date, d_pg)
+            yf_p = self._coupon_year_fraction(prev_dt, d_pg) if (code == 0 and not is_di) else 0.0
+            if code == 0:
+                prev_dt = d_pg
 
-                # Critério SND (T-6) para debêntures e ANBIMA (T-8) para CRI/CRA
-                valor_fluxo = math.trunc((saldo_vna * f_cupom) * self._value_scale) / self._value_scale
-                pv_val = valor_fluxo / df_val
+            keep_idx.append(idx)
+            du_list.append(du_d)
+            yf_list.append(yf_p)
+            ev_codes.append(code)
+            ev_labels.append(label)
+            r_desc_list.append(self._get_rate_for_du(discount_rate_or_curve, du_d))
+            r_di_list.append(self._get_rate_for_du(di_curve, du_d) if is_di else 0.0)
 
-                rows.append({
-                    "data_evento": d_ev,
-                    "data_pagamento": d_pg,
-                    "du": du_desc,
-                    "evento": "Juros",
-                    "tipo": tipo,
-                    "taxa_cupom": r_cupom,
-                    "fluxo_nominal": valor_fluxo,
-                    "taxa_desconto": taxa_desconto_eff,
-                    "fator_desconto": df_val,
-                    "valor_presente": pv_val
-                })
-                prev_event_date = d_pg
+        if not keep_idx:
+            df_empty = pd.DataFrame(columns=[
+                "data_evento", "data_pagamento", "du", "evento", "tipo",
+                "taxa_cupom", "fluxo_nominal", "taxa_desconto", "fator_desconto", "valor_presente"
+            ])
+            df_empty.attrs["cython_metrics"] = (float(vna), 0.0, 0.0, 0.0, 0.0, 0.0)
+            return df_empty
 
-            elif "amort" in evento_lower or "vencimento" in evento_lower:
-                if "vencimento" in evento_lower or perc <= 0.0 or (not self.amortizacao_sobre_vne and perc >= 100.0):
-                    valor_fluxo = math.trunc(saldo_vna * self._value_scale) / self._value_scale
-                    saldo_vna = 0.0
-                else:
-                    base_amort = vna if self.amortizacao_sobre_vne else saldo_vna
-                    valor_fluxo = min(saldo_vna, math.trunc((base_amort * (perc / 100.0)) * self._value_scale) / self._value_scale)
-                    saldo_vna -= valor_fluxo
+        du_arr = np.asarray(du_list, dtype=np.int32)
+        yf_arr = np.asarray(yf_list, dtype=np.float64)
+        perc_arr = perc_raw[keep_idx]
+        ev_arr = np.asarray(ev_codes, dtype=np.int32)
+        r_desc_arr = np.asarray(r_desc_list, dtype=np.float64)
+        r_di_arr = np.asarray(r_di_list, dtype=np.float64)
 
-                pv_val = valor_fluxo / df_val
-                rows.append({
-                    "data_evento": d_ev,
-                    "data_pagamento": d_pg,
-                    "du": du_desc,
-                    "evento": evento,
-                    "tipo": tipo,
-                    "taxa_cupom": 0.0,
-                    "fluxo_nominal": valor_fluxo,
-                    "taxa_desconto": taxa_desconto_eff,
-                    "fator_desconto": df_val,
-                    "valor_presente": pv_val
-                })
+        taxa_cupom_arr, fluxo_arr, taxa_desc_arr, df_arr, pv_arr, metrics_tup = _cy_compute_credit_cashflows(
+            du_arr,
+            yf_arr,
+            perc_arr,
+            ev_arr,
+            r_desc_arr,
+            r_di_arr,
+            float(vna),
+            float(fator_acruado_di),
+            float(self.coupon_rate),
+            float(self.multiplicador_di),
+            float(self._value_scale),
+            bool(self._is_cricra),
+            bool(is_di),
+            bool(is_pct_di),
+            bool(self.amortizacao_sobre_vne),
+        )
 
-        return pd.DataFrame(rows)
+        df_out = pd.DataFrame({
+            "data_evento": [d_ev_list[i] for i in keep_idx],
+            "data_pagamento": [d_pg_list[i] for i in keep_idx],
+            "du": du_arr,
+            "evento": ev_labels,
+            "tipo": [tipo_list[i] for i in keep_idx],
+            "taxa_cupom": taxa_cupom_arr,
+            "fluxo_nominal": fluxo_arr,
+            "taxa_desconto": taxa_desc_arr,
+            "fator_desconto": df_arr,
+            "valor_presente": pv_arr,
+        })
+        df_out.attrs["cython_metrics"] = metrics_tup
+        return df_out
 
     def present_value(self, base_date: Union[datetime.date, str],
                       discount_rate_or_curve: Union[float, Curve],
@@ -1130,13 +1024,7 @@ class Debenture:
         if df_flows.empty:
             return 0.0
 
-        total_pv = df_flows["valor_presente"].sum()
-        if total_pv <= 0.0:
-            return 0.0
-
-        dur = (df_flows["du"] * df_flows["valor_presente"]).sum() / total_pv
-        # Critério ANBIMA: truncamento em 2 casas decimais (T-2)
-        return math.trunc(float(dur) * 100.0) / 100.0
+        return float(df_flows.attrs["cython_metrics"][1])
 
     def modified_duration(self, base_date: Union[datetime.date, str],
                           discount_rate_or_curve: Union[float, Curve],
@@ -1173,13 +1061,7 @@ class Debenture:
         if df_flows.empty:
             return 0.0
 
-        total_pv = df_flows["valor_presente"].sum()
-        if total_pv <= 0.0:
-            return 0.0
-
-        t_anos = df_flows["du"] / 252.0
-        d_mod = ((t_anos / (1.0 + df_flows["taxa_desconto"])) * df_flows["valor_presente"]).sum() / total_pv
-        return float(d_mod)
+        return float(df_flows.attrs["cython_metrics"][3])
 
     def dv01(self, base_date: Union[datetime.date, str],
              discount_rate_or_curve: Union[float, Curve],
@@ -1199,19 +1081,10 @@ class Debenture:
         de deslocamento paralelo na taxa de desconto:
         DV01 = PU * D_mod * 0.0001.
         """
-        dl = self.allow_download if allow_download is None else bool(allow_download)
-        vna_atual = self.resolve_vna(
-            base_date,
+        df_flows = self.cashflow_table(
+            base_date=base_date,
+            discount_rate_or_curve=discount_rate_or_curve,
             vna=vna,
-            vna_history=vna_history,
-            vna_projections=vna_projections,
-            vna_proj=vna_proj,
-            allow_download=dl,
-        )
-        pu_val = self.present_value(
-            base_date,
-            discount_rate_or_curve,
-            vna_atual,
             last_coupon_date=last_coupon_date,
             di_curve=di_curve,
             pu_par_val=pu_par_val,
@@ -1221,24 +1094,12 @@ class Debenture:
             vna_history=vna_history,
             vna_projections=vna_projections,
             vna_proj=vna_proj,
-            allow_download=dl,
+            allow_download=allow_download,
         )
-        d_mod = self.modified_duration(
-            base_date,
-            discount_rate_or_curve,
-            vna_atual,
-            last_coupon_date=last_coupon_date,
-            di_curve=di_curve,
-            pu_par_val=pu_par_val,
-            fator_di_acumulado=fator_di_acumulado,
-            custom_cashflows=custom_cashflows,
-            di_daily_rates=di_daily_rates,
-            vna_history=vna_history,
-            vna_projections=vna_projections,
-            vna_proj=vna_proj,
-            allow_download=dl,
-        )
-        return float(pu_val * d_mod * 0.0001)
+        if df_flows.empty:
+            return 0.0
+
+        return float(df_flows.attrs["cython_metrics"][4])
 
     def convexity(self, base_date: Union[datetime.date, str],
                   discount_rate_or_curve: Union[float, Curve],
@@ -1275,14 +1136,7 @@ class Debenture:
         if df_flows.empty:
             return 0.0
 
-        total_pv = df_flows["valor_presente"].sum()
-        if total_pv <= 0.0:
-            return 0.0
-
-        t_anos = df_flows["du"] / 252.0
-        f_conv = (t_anos * (t_anos + 1.0)) / np.power(1.0 + df_flows["taxa_desconto"], 2.0)
-        conv = (f_conv * df_flows["valor_presente"]).sum() / total_pv
-        return float(conv)
+        return float(df_flows.attrs["cython_metrics"][5])
 
     @staticmethod
     def _ir_regressive_rate(calendar_days: int) -> float:
@@ -1376,10 +1230,7 @@ class Debenture:
             return float(brentq(_pv_diff, low, high, xtol=1e-10))
 
         def _pv_diff(rate: float) -> float:
-            if _cy_evaluate_gross_up_pv is not None:
-                return float(_cy_evaluate_gross_up_pv(du_i32, flows_arr, float(rate)) - pu_target)
-            disc = np.power(1.0 + rate, du_arr / 252.0)
-            return float(np.sum(flows_arr / disc) - pu_target)
+            return float(_cy_evaluate_gross_up_pv(du_i32, flows_arr, float(rate)) - pu_target)
 
         low = max(-0.90, float(discount_rate) - 0.05)
         high = float(discount_rate) + 0.50
@@ -1533,13 +1384,12 @@ class Debenture:
                 "convexity": 0.0
             }
 
-        total_pv = df_flows["valor_presente"].sum()
-        t_anos = df_flows["du"] / 252.0
-        dur_du = math.trunc(((df_flows["du"] * df_flows["valor_presente"]).sum() / total_pv) * 100.0) / 100.0
-        dur_anos = float((t_anos * df_flows["valor_presente"]).sum() / total_pv)
-        d_mod = float(((t_anos / (1.0 + df_flows["taxa_desconto"])) * df_flows["valor_presente"]).sum() / total_pv)
-        dv01_val = float(pu_val * d_mod * 0.0001)
-        conv_val = float(((t_anos * (t_anos + 1.0)) / np.power(1.0 + df_flows["taxa_desconto"], 2.0) * df_flows["valor_presente"]).sum() / total_pv)
+        _, dur_du, dur_anos, d_mod, dv01_val, conv_val = df_flows.attrs["cython_metrics"]
+        dur_du = float(dur_du)
+        dur_anos = float(dur_anos)
+        d_mod = float(d_mod)
+        dv01_val = float(dv01_val)
+        conv_val = float(conv_val)
 
         out: Dict[str, float] = {
             "pu_par": pu_par_atual,
@@ -1725,9 +1575,7 @@ class Debenture:
         flows_arr = df_flows["fluxo_nominal"].to_numpy(dtype=np.float64)
 
         def _obj(rate: float) -> float:
-            if _cy_evaluate_gross_up_pv is not None:
-                return float(_cy_evaluate_gross_up_pv(du_i32, flows_arr, float(rate)) - pu_obj)
-            return float(np.sum(flows_arr / np.power(1.0 + rate, du_arr / 252.0)) - pu_obj)
+            return float(_cy_evaluate_gross_up_pv(du_i32, flows_arr, float(rate)) - pu_obj)
 
         low, high = -0.90, 5.0
         f_low = _obj(low)
@@ -1835,20 +1683,9 @@ class Debenture:
             outstanding_arr[idx_f] = max(0.0, saldo_rem)
             saldo_rem = max(0.0, saldo_rem - grouped_princ.get(d_k, 0.0))
 
-        if _cy_risky_bond_pv is not None:
-            pv_r, pv_rf, cva = _cy_risky_bond_pv(
-                cf_arr, df_arr, q_arr, float(recovery_rate), principal_ref, outstanding_arr
-            )
-        else:
-            pv_rf = float(np.sum(cf_arr * df_arr))
-            q_prev = np.concatenate([[1.0], q_arr[:-1]])
-            df_prev = np.concatenate([[1.0], df_arr[:-1]])
-            df_mid = 0.5 * (df_prev + df_arr)
-            pv_r = float(
-                np.sum(cf_arr * df_arr * q_arr)
-                + float(recovery_rate) * np.sum(outstanding_arr * df_mid * np.maximum(0.0, q_prev - q_arr))
-            )
-            cva = pv_rf - pv_r
+        pv_r, pv_rf, cva = _cy_risky_bond_pv(
+            cf_arr, df_arr, q_arr, float(recovery_rate), principal_ref, outstanding_arr
+        )
 
         return {
             "pv_risky": float(pv_r),

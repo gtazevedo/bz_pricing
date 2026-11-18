@@ -8,12 +8,8 @@ import pandas as pd
 from scipy.optimize import brentq
 
 from bz_pricing.core.calendars import get_calendar
+from bz_pricing.core.credit_core import risky_bond_pv as _cy_risky_bond_pv
 from bz_pricing.core.curves import Curve
-
-try:
-    from bz_pricing.core.credit_core import risky_bond_pv as _cy_risky_bond_pv
-except ImportError:
-    _cy_risky_bond_pv = None
 
 
 def _to_date(d: Union[datetime.date, str]) -> datetime.date:
@@ -1006,20 +1002,9 @@ class OffshoreBond(USTreasuryNoteBond):
             q_arr = np.exp(-lam * taus)
 
         outstanding_arr = np.full(len(cfs), self.face_value, dtype=np.float64)
-        if _cy_risky_bond_pv is not None:
-            pv_r, pv_rf, cva = _cy_risky_bond_pv(
-                cfs, dfs, q_arr, float(recovery_rate), float(self.face_value), outstanding_arr
-            )
-        else:
-            pv_rf = float(np.sum(cfs * dfs))
-            q_prev = np.concatenate([[1.0], q_arr[:-1]])
-            df_prev = np.concatenate([[1.0], dfs[:-1]])
-            df_mid = 0.5 * (df_prev + dfs)
-            pv_r = float(
-                np.sum(cfs * dfs * q_arr)
-                + float(recovery_rate) * np.sum(outstanding_arr * df_mid * np.maximum(0.0, q_prev - q_arr))
-            )
-            cva = pv_rf - pv_r
+        pv_r, pv_rf, cva = _cy_risky_bond_pv(
+            cfs, dfs, q_arr, float(recovery_rate), float(self.face_value), outstanding_arr
+        )
 
         return {
             "pv_risky": float(pv_r),
