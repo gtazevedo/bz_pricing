@@ -629,6 +629,14 @@ class VolatilitySurface:
         if forward is None:
             if du in self.slice_forwards:
                 return float(self.slice_forwards[du])
+            if self.slice_forwards:
+                keys = sorted(self.slice_forwards.keys())
+                if du <= keys[0]:
+                    return float(self.slice_forwards[keys[0]])
+                if du >= keys[-1]:
+                    return float(self.slice_forwards[keys[-1]])
+                vals = [math.log(max(1e-12, float(self.slice_forwards[k]))) for k in keys]
+                return math.exp(float(np.interp(du, keys, vals)))
             return None
         return float(forward)
 

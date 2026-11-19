@@ -5,7 +5,7 @@
 
 import numpy as np
 cimport numpy as np
-from libc.math cimport exp, log, sqrt, erf, fabs, pow, fmax, fmin, NAN
+from libc.math cimport exp, log, sqrt, erf, erfc, fabs, pow, fmax, fmin, NAN, isnan, floor
 from libc.stdlib cimport malloc, free
 
 cdef double INV_SQRT_2PI = 0.3989422804014327
@@ -17,6 +17,8 @@ cdef inline double _norm_pdf(double x) noexcept nogil:
 
 
 cdef inline double _norm_cdf(double x) noexcept nogil:
+    if x < 0.0:
+        return 0.5 * erfc(-x * INV_SQRT_2)
     return 0.5 * (1.0 + erf(x * INV_SQRT_2))
 
 
@@ -122,10 +124,11 @@ cdef void _bsm_core(
     cdef double df_q = exp(-q * T)
     cdef double df_r = exp(-r * T)
     cdef double pdf_d1 = _norm_pdf(d1)
-    cdef double cdf_d1 = _norm_cdf(d1)
-    cdef double cdf_d2 = _norm_cdf(d2)
+    cdef double cdf_d1, cdf_d2, cdf_md1, cdf_md2
 
     if is_call:
+        cdf_d1 = _norm_cdf(d1)
+        cdf_d2 = _norm_cdf(d2)
         out_price[0] = S * df_q * cdf_d1 - K * df_r * cdf_d2
         out_delta[0] = df_q * cdf_d1
         out_theta[0] = (
@@ -135,14 +138,16 @@ cdef void _bsm_core(
         )
         out_rho[0] = K * T * df_r * cdf_d2
     else:
-        out_price[0] = K * df_r * (1.0 - cdf_d2) - S * df_q * (1.0 - cdf_d1)
-        out_delta[0] = df_q * (cdf_d1 - 1.0)
+        cdf_md1 = _norm_cdf(-d1)
+        cdf_md2 = _norm_cdf(-d2)
+        out_price[0] = K * df_r * cdf_md2 - S * df_q * cdf_md1
+        out_delta[0] = -df_q * cdf_md1
         out_theta[0] = (
             -(S * df_q * pdf_d1 * sigma) / (2.0 * sqrt_T)
-            + r * K * df_r * (1.0 - cdf_d2)
-            - q * S * df_q * (1.0 - cdf_d1)
+            + r * K * df_r * cdf_md2
+            - q * S * df_q * cdf_md1
         )
-        out_rho[0] = -K * T * df_r * (1.0 - cdf_d2)
+        out_rho[0] = -K * T * df_r * cdf_md2
 
     out_gamma[0] = (df_q * pdf_d1) / (S * sig_sqrt_T)
     out_vega[0] = S * df_q * pdf_d1 * sqrt_T
@@ -591,7 +596,7 @@ cpdef double implied_vol_bsm(
     double tol=1e-9,
     int max_iter=100,
 ) noexcept nogil:
-    """Inversão de volatilidade implícita via Newton-Raphson com fallback por bisseção."""
+    """Inversão de volatilidade implícita via Newton-Raphson com tolerância relativa e bisseção segura."""
     if T <= 0.0 or S <= 0.0 or K <= 0.0:
         return 0.0
 
@@ -599,39 +604,55 @@ cpdef double implied_vol_bsm(
     cdef double df_r = exp(-r * T)
     cdef double intrinsic = fmax(S * df_q - K * df_r, 0.0) if is_call else fmax(K * df_r - S * df_q, 0.0)
     cdef double upper_bound = (S * df_q) if is_call else (K * df_r)
-    if target_price <= intrinsic + 1e-12:
-        return NAN
-    if target_price >= upper_bound - 1e-12:
+    if intrinsic > 0.0:
+        if target_price <= intrinsic + 1e-12 * fmax(1.0, intrinsic):
+            return NAN
+    else:
+        if target_price <= 0.0:
+            return NAN
+    if target_price >= upper_bound - 1e-12 * fmax(1.0, upper_bound):
         return NAN
 
-    cdef double low = 1e-5
-    cdef double high = 5.0
-    cdef double sigma = 0.25
+    cdef double low = 1e-6
+    cdef double high = 10.0
     cdef double price, delta, gamma, vega, theta, rho, vanna, volga, diff
+    _bsm_core(S, K, r, q, T, low, is_call, &price, &delta, &gamma, &vega, &theta, &rho, &vanna, &volga)
+    if target_price < price:
+        return NAN
+    _bsm_core(S, K, r, q, T, high, is_call, &price, &delta, &gamma, &vega, &theta, &rho, &vanna, &volga)
+    if target_price > price:
+        return NAN
+
+    cdef double price_tol = fmax(1e-300, tol * fmin(1.0, target_price))
+    cdef double sigma = 0.25
     cdef int it
 
     for it in range(max_iter):
         _bsm_core(S, K, r, q, T, sigma, is_call, &price, &delta, &gamma, &vega, &theta, &rho, &vanna, &volga)
         diff = price - target_price
-        if fabs(diff) < tol:
+        if fabs(diff) <= price_tol:
             return sigma
         if diff < 0.0 and sigma > low:
             low = sigma
         elif diff > 0.0 and sigma < high:
             high = sigma
 
-        if vega > 1e-10:
+        if vega > 1e-300:
             sigma = sigma - diff / vega
+            if fabs(diff) <= tol * vega and fabs(diff) <= 1e-6 * fmax(target_price, 1e-300):
+                return sigma if (low <= sigma <= high) else 0.5 * (low + high)
             if sigma <= low or sigma >= high:
                 sigma = 0.5 * (low + high)
         else:
             sigma = 0.5 * (low + high)
+        if (high - low) < tol * 0.1:
+            return 0.5 * (low + high)
 
-    for it in range(60):
+    for it in range(80):
         sigma = 0.5 * (low + high)
         _bsm_core(S, K, r, q, T, sigma, is_call, &price, &delta, &gamma, &vega, &theta, &rho, &vanna, &volga)
         diff = price - target_price
-        if fabs(diff) < tol or (high - low) < tol:
+        if fabs(diff) <= price_tol or (high - low) < tol * 0.1:
             return sigma
         if diff < 0.0:
             low = sigma
@@ -1582,4 +1603,394 @@ cpdef double exp_smile_eval(
     cdef double dx = x_nodes[lo + 1] - x_nodes[lo]
     cdef double w = (x_eval - x_nodes[lo]) / dx if fabs(dx) > 1e-15 else 0.0
     return y_nodes[lo] * pow(y_nodes[lo + 1] / y_nodes[lo], w)
+
+
+cpdef np.ndarray[np.int64_t, ndim=1] longest_monotonic_subsequence(
+    double[:] values,
+    bint non_increasing=True,
+):
+    """Retorna os índices da maior subsequência monótona em C puro preservando o desempate determinístico."""
+    cdef int n = <int>values.shape[0]
+    if n == 0:
+        return np.empty(0, dtype=np.int64)
+
+    cdef int* dp = <int *>malloc(n * sizeof(int))
+    cdef int* parent = <int *>malloc(n * sizeof(int))
+    if dp == NULL or parent == NULL:
+        if dp != NULL:
+            free(dp)
+        if parent != NULL:
+            free(parent)
+        raise MemoryError("Falha ao alocar buffers em longest_monotonic_subsequence.")
+
+    cdef int i, j
+    cdef int best_len = 1
+    cdef int best_idx = 0
+    cdef double vi, vj
+    cdef bint cond
+
+    with nogil:
+        for i in range(n):
+            dp[i] = 1
+            parent[i] = -1
+            vi = values[i]
+            for j in range(i):
+                vj = values[j]
+                if non_increasing:
+                    cond = vi <= vj + 1e-12
+                else:
+                    cond = vi >= vj - 1e-12
+                if cond and dp[j] + 1 > dp[i]:
+                    dp[i] = dp[j] + 1
+                    parent[i] = j
+            if dp[i] >= best_len:
+                best_len = dp[i]
+                best_idx = i
+
+    cdef np.ndarray[np.int64_t, ndim=1] out = np.empty(best_len, dtype=np.int64)
+    cdef int cur = best_idx
+    cdef int pos = best_len - 1
+    while cur != -1 and pos >= 0:
+        out[pos] = cur
+        cur = parent[cur]
+        pos -= 1
+
+    free(dp)
+    free(parent)
+    return out
+
+
+cpdef double implied_vol_american_crr(
+    double target_price,
+    double S,
+    double K,
+    double r,
+    double q,
+    double T,
+    bint is_call,
+    int steps=150,
+    object div_times=None,
+    object div_amounts=None,
+    object prop_div_times=None,
+    object prop_div_yields=None,
+    double tol=1e-7,
+    int max_iter=60,
+):
+    """Inversão de volatilidade implícita americana via árvore CRR suavizada em Cython."""
+    if T <= 0.0 or S <= 0.0 or K <= 0.0 or target_price <= 0.0:
+        return NAN
+
+    cdef double intrinsic = fmax(S - K, 0.0) if is_call else fmax(K - S, 0.0)
+    cdef double upper_bound = S if is_call else K
+    if target_price <= intrinsic + 1e-12 * fmax(1.0, intrinsic):
+        return NAN
+    if target_price >= upper_bound - 1e-12 * fmax(1.0, upper_bound):
+        return NAN
+
+    cdef np.ndarray[np.float64_t, ndim=1] dt_arr
+    cdef np.ndarray[np.float64_t, ndim=1] da_arr
+    cdef np.ndarray[np.float64_t, ndim=1] pt_arr
+    cdef np.ndarray[np.float64_t, ndim=1] py_arr
+    cdef int n_div = 0
+    cdef int n_prop = 0
+    cdef double* dt_ptr = NULL
+    cdef double* da_ptr = NULL
+    cdef double* pt_ptr = NULL
+    cdef double* py_ptr = NULL
+
+    if div_times is not None and len(div_times) > 0:
+        dt_arr = np.ascontiguousarray(div_times, dtype=np.float64)
+        da_arr = np.ascontiguousarray(div_amounts, dtype=np.float64)
+        n_div = <int>dt_arr.shape[0]
+        if <int>da_arr.shape[0] != n_div:
+            raise ValueError("div_times e div_amounts devem possuir o mesmo tamanho.")
+        dt_ptr = &dt_arr[0]
+        da_ptr = &da_arr[0]
+
+    if prop_div_times is not None and len(prop_div_times) > 0:
+        pt_arr = np.ascontiguousarray(prop_div_times, dtype=np.float64)
+        py_arr = np.ascontiguousarray(prop_div_yields, dtype=np.float64)
+        n_prop = <int>pt_arr.shape[0]
+        if <int>py_arr.shape[0] != n_prop:
+            raise ValueError("prop_div_times e prop_div_yields devem possuir o mesmo tamanho.")
+        pt_ptr = &pt_arr[0]
+        py_ptr = &py_arr[0]
+
+    cdef int eff_steps = steps if steps >= 4 else 4
+    cdef double dt_step = T / <double>eff_steps
+    cdef double vol_floor = fmax(1e-3, fabs(r - q) * sqrt(dt_step) * 1.25)
+    cdef double grid[9]
+    grid[0] = vol_floor
+    grid[1] = fmax(vol_floor * 2.0, 0.02)
+    grid[2] = 0.05
+    grid[3] = 0.15
+    grid[4] = 0.35
+    grid[5] = 0.75
+    grid[6] = 1.5
+    grid[7] = 3.0
+    grid[8] = 6.0
+
+    cdef int i, it
+    cdef double v_prev = NAN
+    cdef double p_prev = NAN
+    cdef double v_cur, p_cur
+    cdef double v_lo = NAN, v_hi = NAN
+    cdef double p_lo_val = NAN, p_hi_val = NAN
+    cdef bint first_valid = False
+    cdef double first_p = NAN
+    cdef double v_mid, p_mid, f_lo, f_hi, f_mid, v_sec
+
+    with nogil:
+        for i in range(9):
+            v_cur = grid[i]
+            if v_cur < vol_floor:
+                continue
+            if first_valid and v_cur <= v_prev + 1e-12:
+                continue
+            p_cur = _crr_disc_smoothed(
+                S, K, r, q, T, v_cur, is_call, eff_steps,
+                dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop,
+            )
+            if isnan(p_cur):
+                continue
+            if not first_valid:
+                first_valid = True
+                first_p = p_cur
+                if target_price < first_p - 1e-12:
+                    return NAN
+                if fabs(p_cur - target_price) <= tol:
+                    return v_cur
+            else:
+                if (p_prev - target_price) * (p_cur - target_price) <= 0.0:
+                    v_lo = v_prev
+                    p_lo_val = p_prev
+                    v_hi = v_cur
+                    p_hi_val = p_cur
+                    break
+            v_prev = v_cur
+            p_prev = p_cur
+
+        if isnan(v_lo) or isnan(v_hi):
+            return NAN
+
+        f_lo = p_lo_val - target_price
+        f_hi = p_hi_val - target_price
+        if fabs(f_lo) <= tol:
+            return v_lo
+        if fabs(f_hi) <= tol:
+            return v_hi
+
+        for it in range(max_iter):
+            if fabs(f_hi - f_lo) > 1e-15:
+                v_sec = v_hi - f_hi * (v_hi - v_lo) / (f_hi - f_lo)
+            else:
+                v_sec = 0.5 * (v_lo + v_hi)
+
+            # Mantém passo estritamente interior para evitar estagnação de secante
+            if v_sec <= v_lo + 0.05 * (v_hi - v_lo) or v_sec >= v_hi - 0.05 * (v_hi - v_lo):
+                v_mid = 0.5 * (v_lo + v_hi)
+            else:
+                v_mid = v_sec
+
+            p_mid = _crr_disc_smoothed(
+                S, K, r, q, T, v_mid, is_call, eff_steps,
+                dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop,
+            )
+            if isnan(p_mid):
+                v_mid = 0.5 * (v_lo + v_hi)
+                p_mid = _crr_disc_smoothed(
+                    S, K, r, q, T, v_mid, is_call, eff_steps,
+                    dt_ptr, da_ptr, n_div, pt_ptr, py_ptr, n_prop,
+                )
+                if isnan(p_mid):
+                    return NAN
+
+            f_mid = p_mid - target_price
+            if fabs(f_mid) <= tol or (v_hi - v_lo) <= tol:
+                return v_mid
+            if (f_lo < 0.0 and f_mid < 0.0) or (f_lo > 0.0 and f_mid > 0.0):
+                v_lo = v_mid
+                f_lo = f_mid
+            else:
+                v_hi = v_mid
+                f_hi = f_mid
+
+        return 0.5 * (v_lo + v_hi)
+
+
+cpdef np.ndarray[np.float64_t, ndim=1] bloomberg_mixture_prices_vec(
+    double[:] strikes,
+    np.ndarray[np.uint8_t, ndim=1] is_call,
+    double F,
+    double r,
+    double T,
+    double[:] p_weights,
+    double[:] xis,
+    double[:] sigmas_total,
+    double q_default,
+    double beta_sigma=1.0,
+):
+    """Avaliação vetorizada em C puro dos prêmios europeus sob a mistura de lognormais com default."""
+    cdef int m = <int>strikes.shape[0]
+    cdef int n = <int>p_weights.shape[0]
+    if <int>is_call.shape[0] != m or <int>xis.shape[0] != n or <int>sigmas_total.shape[0] != n:
+        raise ValueError("Dimensões incompatíveis em bloomberg_mixture_prices_vec.")
+
+    cdef np.ndarray[np.float64_t, ndim=1] out = np.empty(m, dtype=np.float64)
+    cdef double t_eff = T if T > 1e-8 else 1e-8
+    cdef double sqrt_T = sqrt(t_eff)
+    cdef double df_r = exp(-r * t_eff)
+    cdef int i, l
+    cdef bint ic
+    cdef double kf, tot, vol_l, price, delta, gamma, vega, theta, rho, vanna, volga
+
+    with nogil:
+        for i in range(m):
+            kf = strikes[i]
+            ic = is_call[i] != 0
+            tot = 0.0
+            for l in range(n):
+                vol_l = (beta_sigma * sigmas_total[l]) / sqrt_T
+                if vol_l < 1e-8:
+                    vol_l = 1e-8
+                _bsm_core(
+                    xis[l] * F, kf, r, r, t_eff, vol_l, ic,
+                    &price, &delta, &gamma, &vega, &theta, &rho, &vanna, &volga,
+                )
+                tot += p_weights[l] * price
+            if (not ic) and q_default > 0.0:
+                tot += df_r * q_default * kf
+            out[i] = tot
+    return out
+
+
+cpdef tuple bloomberg_mixture_prices_and_jac(
+    double[:] strikes,
+    np.ndarray[np.uint8_t, ndim=1] is_call,
+    double F,
+    double r,
+    double T,
+    double[:] vec,
+    int n_components,
+    bint allow_default,
+    double fixed_q_default=0.0,
+):
+    """Avalia prêmios e Jacobiano analítico exato da mistura de lognormais em relação a (u, eta, Sigma, Q)."""
+    cdef int n = n_components
+    cdef int m = <int>strikes.shape[0]
+    cdef int n_params = (3 * n - 1) if allow_default else (3 * n - 2)
+    if n < 2 or <int>vec.shape[0] != n_params or <int>is_call.shape[0] != m:
+        raise ValueError("Dimensões incompatíveis em bloomberg_mixture_prices_and_jac.")
+
+    cdef np.ndarray[np.float64_t, ndim=1] prices_out = np.empty(m, dtype=np.float64)
+    cdef np.ndarray[np.float64_t, ndim=2] jac_out = np.empty((m, n_params), dtype=np.float64)
+
+    cdef double t_eff = T if T > 1e-8 else 1e-8
+    cdef double sqrt_T = sqrt(t_eff)
+    cdef double inv_sqrt_T = 1.0 / sqrt_T
+    cdef double df_r = exp(-r * t_eff)
+
+    cdef double* logits = <double *>malloc(n * sizeof(double))
+    cdef double* s_w = <double *>malloc(n * sizeof(double))
+    cdef double* p_w = <double *>malloc(n * sizeof(double))
+    cdef double* rel_m = <double *>malloc(n * sizeof(double))
+    cdef double* xis = <double *>malloc(n * sizeof(double))
+    cdef double* sig_t = <double *>malloc(n * sizeof(double))
+    cdef double* b_vals = <double *>malloc(n * sizeof(double))
+    cdef double* delta_vals = <double *>malloc(n * sizeof(double))
+    cdef double* vega_vals = <double *>malloc(n * sizeof(double))
+    if (
+        logits == NULL or s_w == NULL or p_w == NULL or rel_m == NULL
+        or xis == NULL or sig_t == NULL or b_vals == NULL or delta_vals == NULL or vega_vals == NULL
+    ):
+        free(logits); free(s_w); free(p_w); free(rel_m); free(xis)
+        free(sig_t); free(b_vals); free(delta_vals); free(vega_vals)
+        raise MemoryError("Falha ao alocar buffers da mistura lognormal.")
+
+    cdef int i, l, j, k
+    cdef double q_def = vec[3 * n - 2] if allow_default else fixed_q_default
+    if q_def < 0.0:
+        q_def = 0.0
+    if q_def > 0.999:
+        q_def = 0.999
+    cdef double p_surv = 1.0 - q_def
+    cdef double p_surv_safe = p_surv if p_surv > 1e-12 else 1e-12
+    cdef double max_l, sum_exp, denom_xi, cum_eta, d_inv
+    cdef double kf, vol_l, pr, dl, gm, vg, th, rh, vn, vo
+    cdef double sum_pB, A, tail_px, sk, pk
+    cdef bint ic
+
+    with nogil:
+        logits[0] = 0.0
+        max_l = 0.0
+        for l in range(1, n):
+            logits[l] = vec[l - 1]
+            if logits[l] > max_l:
+                max_l = logits[l]
+        sum_exp = 0.0
+        for l in range(n):
+            s_w[l] = exp(logits[l] - max_l)
+            sum_exp += s_w[l]
+        for l in range(n):
+            s_w[l] /= sum_exp
+            p_w[l] = p_surv * s_w[l]
+
+        cum_eta = 0.0
+        rel_m[0] = 1.0
+        for l in range(1, n):
+            cum_eta += vec[(n - 1) + (l - 1)]
+            rel_m[l] = exp(cum_eta)
+
+        denom_xi = 0.0
+        for l in range(n):
+            denom_xi += p_w[l] * rel_m[l]
+        d_inv = 1.0 / (denom_xi if denom_xi > 1e-12 else 1e-12)
+        for l in range(n):
+            xis[l] = rel_m[l] * d_inv
+            sig_t[l] = vec[(2 * n - 2) + l]
+
+        for i in range(m):
+            kf = strikes[i]
+            ic = is_call[i] != 0
+            sum_pB = 0.0
+            A = 0.0
+            for l in range(n):
+                vol_l = sig_t[l] * inv_sqrt_T
+                if vol_l < 1e-8:
+                    vol_l = 1e-8
+                _bsm_core(
+                    xis[l] * F, kf, r, r, t_eff, vol_l, ic,
+                    &pr, &dl, &gm, &vg, &th, &rh, &vn, &vo,
+                )
+                b_vals[l] = pr
+                delta_vals[l] = dl
+                vega_vals[l] = vg
+                sum_pB += p_w[l] * pr
+                A += p_w[l] * xis[l] * F * dl
+
+            prices_out[i] = sum_pB + (0.0 if ic else df_r * q_def * kf)
+
+            for k in range(1, n):
+                sk = s_w[k]
+                pk = p_w[k]
+                jac_out[i, k - 1] = pk * b_vals[k] - sk * sum_pB - (pk * xis[k] - sk) * A
+
+            for j in range(n - 1):
+                tail_px = 0.0
+                sk = 0.0
+                for l in range(j + 1, n):
+                    pk = p_w[l] * xis[l]
+                    tail_px += pk * F * delta_vals[l]
+                    sk += pk
+                jac_out[i, (n - 1) + j] = tail_px - sk * A
+
+            for l in range(n):
+                jac_out[i, (2 * n - 2) + l] = p_w[l] * vega_vals[l] * inv_sqrt_T
+
+            if allow_default:
+                jac_out[i, 3 * n - 2] = (A - sum_pB) / p_surv_safe + (0.0 if ic else df_r * kf)
+
+    free(logits); free(s_w); free(p_w); free(rel_m); free(xis)
+    free(sig_t); free(b_vals); free(delta_vals); free(vega_vals)
+    return (prices_out, jac_out)
 

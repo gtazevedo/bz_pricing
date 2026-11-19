@@ -1,4 +1,4 @@
-from bz_pricing.core.curves import SimpleCurve, FlatCurve, NelsonSiegelCurve, SvenssonCurve
+from bz_pricing.core.curves import BloombergConvenienceYieldCurve, FlatCurve, NelsonSiegelCurve, SimpleCurve, SvenssonCurve
 from bz_pricing.core.interpolators import (
     MonotoneConvexInterpolator,
     LogLinearDiscountInterpolator,
@@ -14,6 +14,7 @@ __all__ = [
     "FlatCurve",
     "NelsonSiegelCurve",
     "SvenssonCurve",
+    "BloombergConvenienceYieldCurve",
     "MonotoneConvexInterpolator",
     "LogLinearDiscountInterpolator",
     "LogCubicDiscountInterpolator",

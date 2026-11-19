@@ -8,7 +8,7 @@ from bcb import sgs
 from bz_pricing.curves.builder import B3CurveBuilder
 from bz_pricing.data.loaders import B3DataLoader
 from bz_pricing.data.scrapers import B3Scraper
-from bz_pricing.core.curves import Curve, SimpleCurve, FlatCurve
+from bz_pricing.core.curves import BloombergConvenienceYieldCurve, Curve, FlatCurve, SimpleCurve
 from bz_pricing.curves.configs import CURVE_CONFIGS
 from bz_pricing.curves.exceptions import DataUnavailableError
 
@@ -1286,13 +1286,15 @@ class CurveManager:
         return None
 
     def get_stock_future_curve(self, ticker: str, base_date: any = None, spot_price: float = None, 
-                               data: any = None, futures_data: any = None, allow_download: bool = None, **kwargs) -> tuple:
+                               data: any = None, futures_data: any = None, allow_download: bool = None,
+                               cy_model: str = "b3", **kwargs) -> tuple:
         """
         Constrói o par de curvas para um futuro de ação específico (ex: 'PETRP' ou 'VALEO'):
         Retorna (futures_curve, convenience_yield_curve).
         
         Suporta passagem de contratos externos via `data` ou `futures_data`, preço spot via `spot_price`,
-        e curva pré via `pre_curve` ou `pre_data`.
+        curva pré via `pre_curve` ou `pre_data` e escolha do modelo de convenience yield via
+        `cy_model='b3'` (padrão) ou `'bloomberg'`.
         """
         if allow_download is None:
             allow_download = self.allow_download
@@ -1334,13 +1336,74 @@ class CurveManager:
         )
 
         pre_curve = self._resolve_curve_input("pre_curve", "PRE", base_date, allow_download, kwargs.get("pre_curve"), kwargs.get("pre_data"))
-        cy_curve = self.builder.build_convenience_yield_curve(
-            spot_price=spot,
-            futures_curve=fut_curve,
-            pre_curve=pre_curve,
-            config_name="CYI"
-        )
+        if str(cy_model).strip().lower() in ("bloomberg", "bbg"):
+            bbg_keys = (
+                "is_index", "seasonality_dates", "seasonality_amounts", "seasonality_weights",
+                "start_bin_frac", "day_count_basis", "compounding", "pre_compounding",
+                "ex_div_times", "ex_div_weights", "declared_div_times", "declared_div_amounts",
+                "long_fwd_yield", "augment_yield", "augment_div_pv", "augment_horizon",
+            )
+            bbg_kwargs = {k: kwargs[k] for k in bbg_keys if k in kwargs}
+            cy_curve = self.builder.build_bloomberg_convenience_yield_curve(
+                spot_price=spot,
+                futures_curve_or_data=fut_curve,
+                pre_curve=pre_curve,
+                **bbg_kwargs,
+            )
+        else:
+            cy_curve = self.builder.build_convenience_yield_curve(
+                spot_price=spot,
+                futures_curve=fut_curve,
+                pre_curve=pre_curve,
+                config_name="CYI"
+            )
         return fut_curve, cy_curve
+
+    def get_implied_convenience_yield_curve(
+        self,
+        base_date: any,
+        spot_price: float,
+        pre_curve: Curve = None,
+        pre_data: any = None,
+        options_data: pd.DataFrame = None,
+        futures_data: any = None,
+        allow_download: bool = None,
+        **kwargs,
+    ) -> BloombergConvenienceYieldCurve:
+        """
+        Constrói a estrutura a termo `BloombergConvenienceYieldCurve` de forma offline a partir de
+        cotações de opções, contratos futuros ou fusão de ambos.
+        """
+        if allow_download is None:
+            allow_download = self.allow_download
+        if isinstance(base_date, str):
+            base_date = pd.to_datetime(base_date, dayfirst="/" in base_date).date()
+        pre_eff = self._resolve_curve_input("pre_curve", "PRE", base_date, allow_download, pre_curve, pre_data)
+        if options_data is not None and futures_data is not None:
+            return BloombergConvenienceYieldCurve.from_futures_and_options(
+                spot_price=float(spot_price),
+                futures_curve_or_data=futures_data,
+                df_options=options_data,
+                pre_curve=pre_eff,
+                base_date=base_date,
+                **kwargs,
+            )
+        if options_data is not None:
+            return BloombergConvenienceYieldCurve.from_options_chain(
+                df_options=options_data,
+                spot_price=float(spot_price),
+                pre_curve=pre_eff,
+                base_date=base_date,
+                **kwargs,
+            )
+        if futures_data is not None:
+            return BloombergConvenienceYieldCurve.from_futures(
+                spot_price=float(spot_price),
+                futures_curve_or_data=futures_data,
+                pre_curve=pre_eff,
+                **kwargs,
+            )
+        raise ValueError("Informe `options_data`, `futures_data` ou ambos para construir a curva implícita.")
 
     # =========================================================================
     # CONSULTAS EXTERNAS VIA SGS / OLINDA

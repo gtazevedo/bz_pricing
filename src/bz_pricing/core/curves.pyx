@@ -4,7 +4,7 @@
 
 from bz_pricing.core.interpolators cimport Interpolator
 import numpy as np
-from libc.math cimport round, pow, trunc, exp, log, fabs
+from libc.math cimport round, pow, trunc, exp, log, fabs, floor, fmax
 from bz_pricing.core.conventions cimport EXPONENTIAL_B3, SIMPLE_LINEAR, COMPOUND_ANNUAL, CONTINUOUS
 
 cdef class Curve:
@@ -780,3 +780,873 @@ cdef class SvenssonCurve(Curve):
     @property
     def freq(self):
         return self._freq
+
+
+cdef double _cum_season_exact_c(
+    const double* weights,
+    int n_bins,
+    double t_a,
+    double t_b,
+    double start_bin_frac,
+) noexcept nogil:
+    """Integral exata da densidade sazonal por partes em [t_a, t_b] (em anos); para pesos uniformes retorna t_b - t_a."""
+    if t_b <= t_a or n_bins <= 0 or weights == NULL:
+        return 0.0
+    cdef double pos = start_bin_frac + t_a * (<double>n_bins)
+    cdef double u_end = start_bin_frac + t_b * (<double>n_bins)
+    cdef double acc = 0.0
+    cdef double nxt
+    cdef int k_floor, bin_idx
+    while pos < u_end - 1e-13:
+        k_floor = <int>floor(pos + 1e-12)
+        nxt = <double>(k_floor + 1)
+        if nxt > u_end:
+            nxt = u_end
+        bin_idx = k_floor % n_bins
+        if bin_idx < 0:
+            bin_idx += n_bins
+        acc += weights[bin_idx] * (nxt - pos)
+        pos = nxt
+    return acc
+
+
+cpdef double cum_seasonality_exact(double[:] weights, double t_a, double t_b, double start_bin_frac=0.0):
+    """Integração analítica exata por faixas sazonais mensais (12) ou semanais (52)."""
+    cdef int n_bins = <int>weights.shape[0]
+    if n_bins <= 0:
+        return 0.0
+    cdef double[::1] w_c = np.ascontiguousarray(weights, dtype=np.float64)
+    return _cum_season_exact_c(&w_c[0], n_bins, t_a, t_b, start_bin_frac)
+
+
+cdef int _infer_pre_compounding(Curve pre_curve, int default_comp, object pre_compounding) except -1:
+    cdef str pc_str = str(pre_compounding).strip().lower() if pre_compounding is not None else "auto"
+    cdef str interp_name
+    if pc_str != "auto":
+        return _coerce_curve_compounding(pre_compounding)
+    if hasattr(pre_curve, "compounding"):
+        return _coerce_curve_compounding(pre_curve.compounding)
+    if isinstance(pre_curve, SimpleCurve):
+        interp_name = pre_curve.interpolator.__class__.__name__
+        if interp_name in (
+            "MonotoneConvexInterpolator",
+            "LogLinearDiscountInterpolator",
+            "LogCubicDiscountInterpolator",
+            "LinearZeroInterpolator",
+            "CubicSplineDiscountInterpolator",
+        ):
+            return CONTINUOUS
+    return default_comp
+
+
+cdef inline double _curve_pre_cont(Curve pre_curve, int pre_comp, double t, double t_sec, double tau) except *:
+    cdef double r_raw = pre_curve.get_rate(t, t_sec)
+    if pre_comp == CONTINUOUS:
+        return r_raw
+    if pre_comp == SIMPLE_LINEAR:
+        if tau <= 1e-12:
+            return r_raw
+        return log(fmax(1e-12, 1.0 + r_raw * tau)) / tau
+    return log(fmax(1e-12, 1.0 + r_raw))
+
+
+cdef class BloombergConvenienceYieldCurve(Curve):
+    """
+    Estrutura a termo de Convenience Yield e Dividendos Implícitos segundo o modelo Bloomberg:
+    - Interpola ações em valor presente acumulado de dividendos (D_pv) respeitando sazonalidade
+      mensal ou datas ex-dividendo discretas com capitalização pelos juros sem risco;
+    - Interpola índices em rendimento contínuo acumulado com sazonalidade semanal (52 semanas);
+    - Extrapola o longo prazo pelo rendimento a termo anualizado do par mais longo com janela >= 1 ano
+      (ou aumentado por previsões até 1 ano);
+    - Permite isolar o custo de aluguel (borrow cost) a partir de dividendos declarados.
+    """
+
+    def __init__(
+        self,
+        double spot_price,
+        Curve pre_curve,
+        object t_nodes,
+        object fwd_nodes,
+        bint is_index=False,
+        object seasonality_weights=None,
+        double start_bin_frac=0.0,
+        double day_count_basis=252.0,
+        object compounding="exponential",
+        object pre_compounding="auto",
+        object ex_div_times=None,
+        object ex_div_weights=None,
+        object declared_div_times=None,
+        object declared_div_amounts=None,
+        object long_fwd_yield=None,
+        object augment_yield=None,
+        object augment_div_pv=None,
+        double augment_horizon=1.0,
+        int round_decimals=-1,
+        str round_mode="round",
+        dict diagnostics=None,
+    ):
+        super().__init__(round_decimals, round_mode)
+        if spot_price <= 0.0 or day_count_basis <= 0.0:
+            raise ValueError("spot_price e day_count_basis devem ser estritamente positivos.")
+        self._spot_price = spot_price
+        self._pre_curve = pre_curve
+        self._is_index = is_index
+        self._start_bin_frac = start_bin_frac
+        self._day_count_basis = day_count_basis
+        self._compounding = _coerce_curve_compounding(compounding)
+        self._pre_compounding = _infer_pre_compounding(pre_curve, self._compounding, pre_compounding)
+
+        t_arr = np.asarray(t_nodes, dtype=np.float64).ravel()
+        f_arr = np.asarray(fwd_nodes, dtype=np.float64).ravel()
+        if t_arr.shape[0] != f_arr.shape[0]:
+            raise ValueError("t_nodes e fwd_nodes devem ter o mesmo tamanho.")
+        if t_arr.shape[0] > 0:
+            mask = (t_arr > 0.0) & (f_arr > 0.0)
+            t_arr = t_arr[mask]
+            f_arr = f_arr[mask]
+            order = np.argsort(t_arr)
+            t_arr = t_arr[order]
+            f_arr = f_arr[order]
+
+        self._n_nodes = <int>t_arr.shape[0]
+        self._t_nodes = np.ascontiguousarray(t_arr, dtype=np.float64)
+        self._fwd_nodes = np.ascontiguousarray(f_arr, dtype=np.float64)
+
+        cdef int default_bins = 52 if is_index else 12
+        if seasonality_weights is None:
+            w_arr = np.full(default_bins, 1.0 / default_bins, dtype=np.float64)
+        else:
+            w_arr = np.maximum(0.0, np.asarray(seasonality_weights, dtype=np.float64).ravel())
+            w_sum = float(np.sum(w_arr))
+            if w_sum > 0.0:
+                w_arr = w_arr / w_sum
+            else:
+                w_arr = np.full(len(w_arr) if len(w_arr) > 0 else default_bins, 1.0 / (len(w_arr) if len(w_arr) > 0 else default_bins), dtype=np.float64)
+        self._n_bins = <int>w_arr.shape[0]
+        self._season_weights = np.ascontiguousarray(w_arr, dtype=np.float64)
+
+        r_c_nodes = np.empty(self._n_nodes, dtype=np.float64)
+        d_pv_nodes = np.empty(self._n_nodes, dtype=np.float64)
+        y_c_nodes = np.empty(self._n_nodes, dtype=np.float64)
+        cdef int i
+        cdef double t_i, tau_i, r_i, fwd_i
+        for i in range(self._n_nodes):
+            t_i = self._t_nodes[i]
+            tau_i = t_i / self._day_count_basis
+            fwd_i = self._fwd_nodes[i]
+            r_i = self._get_pre_cont(t_i, 0.0, tau_i)
+            r_c_nodes[i] = r_i
+            d_pv_nodes[i] = spot_price - fwd_i * exp(-r_i * tau_i)
+            y_c_nodes[i] = (r_i * tau_i - log(fwd_i / spot_price)) / tau_i
+
+        self._r_cont_nodes = r_c_nodes
+        self._d_pv_nodes = d_pv_nodes
+        self._y_cont_nodes = y_c_nodes
+
+        # Datas ex-dividendo discretas para interpolação de ações por evento
+        if ex_div_times is not None and len(ex_div_times) > 0:
+            ex_t = np.asarray(ex_div_times, dtype=np.float64).ravel()
+            ex_keep = ex_t > 0.0
+            ex_t = ex_t[ex_keep]
+            ex_ord = np.argsort(ex_t)
+            ex_t = ex_t[ex_ord]
+            if ex_div_weights is not None:
+                ex_w = np.maximum(0.0, np.asarray(ex_div_weights, dtype=np.float64).ravel()[ex_keep][ex_ord])
+            else:
+                bins_idx = np.floor(self._start_bin_frac + ex_t * self._n_bins).astype(int) % self._n_bins
+                ex_w = w_arr[bins_idx]
+            ex_r = np.array(
+                [self._get_pre_cont(float(et) * self._day_count_basis, 0.0, float(et)) for et in ex_t],
+                dtype=np.float64,
+            )
+            self._n_ex = <int>ex_t.shape[0]
+            self._ex_div_times = np.ascontiguousarray(ex_t, dtype=np.float64)
+            self._ex_div_weights = np.ascontiguousarray(ex_w, dtype=np.float64)
+            self._ex_div_r_cont = np.ascontiguousarray(ex_r, dtype=np.float64)
+        else:
+            self._n_ex = 0
+            self._ex_div_times = np.empty(0, dtype=np.float64)
+            self._ex_div_weights = np.empty(0, dtype=np.float64)
+            self._ex_div_r_cont = np.empty(0, dtype=np.float64)
+
+        # Dividendos declarados para separação do custo de aluguel (borrow cost)
+        if declared_div_times is not None and len(declared_div_times) > 0:
+            dc_t = np.asarray(declared_div_times, dtype=np.float64).ravel()
+            dc_a = np.asarray(declared_div_amounts, dtype=np.float64).ravel()
+            dc_keep = dc_t > 0.0
+            dc_t = dc_t[dc_keep]
+            dc_a = dc_a[dc_keep]
+            dc_ord = np.argsort(dc_t)
+            dc_t = dc_t[dc_ord]
+            dc_a = dc_a[dc_ord]
+            dc_r = np.array(
+                [self._get_pre_cont(float(dt_v) * self._day_count_basis, 0.0, float(dt_v)) for dt_v in dc_t],
+                dtype=np.float64,
+            )
+            self._n_decl = <int>dc_t.shape[0]
+            self._decl_div_times = np.ascontiguousarray(dc_t, dtype=np.float64)
+            self._decl_div_amounts = np.ascontiguousarray(dc_a, dtype=np.float64)
+            self._decl_div_r_cont = np.ascontiguousarray(dc_r, dtype=np.float64)
+        else:
+            self._n_decl = 0
+            self._decl_div_times = np.empty(0, dtype=np.float64)
+            self._decl_div_amounts = np.empty(0, dtype=np.float64)
+            self._decl_div_r_cont = np.empty(0, dtype=np.float64)
+
+        # Extrapolação de longo prazo: rendimento a termo sobre janela >= 1 ano (ou aumentada)
+        cdef int i_end, i_start
+        cdef double tau_end, tau_start, y_end, tau_h, d_pv_tot, r_h, f_h, y_cum_h
+        if long_fwd_yield is not None:
+            self._long_fwd_yield = float(long_fwd_yield)
+        elif self._n_nodes == 0:
+            self._long_fwd_yield = 0.0
+        else:
+            i_end = self._n_nodes - 1
+            tau_end = self._t_nodes[i_end] / self._day_count_basis
+            y_end = self._y_cont_nodes[i_end]
+            i_start = -1
+            for i in range(i_end - 1, -1, -1):
+                if tau_end - (self._t_nodes[i] / self._day_count_basis) >= 1.0 - 1e-9:
+                    i_start = i
+                    break
+            if i_start >= 0:
+                tau_start = self._t_nodes[i_start] / self._day_count_basis
+                self._long_fwd_yield = (
+                    y_end * tau_end - self._y_cont_nodes[i_start] * tau_start
+                ) / (tau_end - tau_start)
+            elif tau_end < 1.0 - 1e-9 and (augment_div_pv is not None or augment_yield is not None):
+                tau_h = augment_horizon if augment_horizon > tau_end + 1e-6 else 1.0
+                if tau_h < 1.0:
+                    tau_h = 1.0
+                if augment_div_pv is not None:
+                    d_pv_tot = self._d_pv_nodes[i_end] + float(augment_div_pv)
+                    r_h = self._get_pre_cont(tau_h * self._day_count_basis, 0.0, tau_h)
+                    f_h = fmax(1e-12, spot_price - d_pv_tot) * exp(r_h * tau_h)
+                    y_cum_h = r_h * tau_h - log(f_h / spot_price)
+                else:
+                    y_cum_h = y_end * tau_end + float(augment_yield) * (tau_h - tau_end)
+                self._long_fwd_yield = y_cum_h / tau_h
+            elif self._n_nodes >= 2:
+                tau_start = self._t_nodes[0] / self._day_count_basis
+                self._long_fwd_yield = (y_end * tau_end - self._y_cont_nodes[0] * tau_start) / (tau_end - tau_start)
+            else:
+                self._long_fwd_yield = y_end
+
+        self._diagnostics = dict(diagnostics) if diagnostics is not None else {}
+
+    cdef double _get_pre_cont(self, double t, double t_sec, double tau) except *:
+        return _curve_pre_cont(self._pre_curve, self._pre_compounding, t, t_sec, tau)
+
+    cpdef double forward_price(self, double t, double t_sec=0.0) except *:
+        """Retorna o preço forward implícito na maturidade `t` (mesma unidade da curva)."""
+        if t <= 0.0:
+            return self._spot_price
+        cdef double tau = t / self._day_count_basis
+        cdef double r_c = self._get_pre_cont(t, t_sec, tau)
+        if self._n_nodes == 0:
+            return self._spot_price * exp(r_c * tau)
+
+        cdef int i_end = self._n_nodes - 1
+        cdef double tau_end = self._t_nodes[i_end] / self._day_count_basis
+        cdef double y_end_cum = self._y_cont_nodes[i_end] * tau_end
+        cdef double y_cum_t
+
+        if tau > tau_end + 1e-12:
+            y_cum_t = y_end_cum + self._long_fwd_yield * (tau - tau_end)
+            return self._spot_price * exp(r_c * tau - y_cum_t)
+
+        cdef int i, lo, hi, mid, j
+        for i in range(self._n_nodes):
+            if fabs(t - self._t_nodes[i]) <= 1e-9:
+                return self._fwd_nodes[i]
+
+        cdef double tau_a, tau_b, d_a, d_b, y_a, y_b
+        if tau <= self._t_nodes[0] / self._day_count_basis:
+            tau_a = 0.0
+            d_a = 0.0
+            y_a = 0.0
+            tau_b = self._t_nodes[0] / self._day_count_basis
+            d_b = self._d_pv_nodes[0]
+            y_b = self._y_cont_nodes[0] * tau_b
+        else:
+            lo = 0
+            hi = self._n_nodes - 2
+            i = 0
+            while lo <= hi:
+                mid = (lo + hi) >> 1
+                if t < self._t_nodes[mid]:
+                    hi = mid - 1
+                elif t > self._t_nodes[mid + 1]:
+                    lo = mid + 1
+                else:
+                    i = mid
+                    break
+            tau_a = self._t_nodes[i] / self._day_count_basis
+            tau_b = self._t_nodes[i + 1] / self._day_count_basis
+            d_a = self._d_pv_nodes[i]
+            d_b = self._d_pv_nodes[i + 1]
+            y_a = self._y_cont_nodes[i] * tau_a
+            y_b = self._y_cont_nodes[i + 1] * tau_b
+
+        cdef double span = tau_b - tau_a
+        if span <= 1e-12:
+            return self._spot_price * exp(r_c * tau - y_a)
+
+        cdef double w_tot, w_part, frac
+        if self._is_index:
+            w_tot = _cum_season_exact_c(&self._season_weights[0], self._n_bins, tau_a, tau_b, self._start_bin_frac)
+            if w_tot > 1e-12:
+                w_part = _cum_season_exact_c(&self._season_weights[0], self._n_bins, tau_a, tau, self._start_bin_frac)
+                frac = w_part / w_tot
+            else:
+                frac = (tau - tau_a) / span
+            y_cum_t = y_a + (y_b - y_a) * frac
+            return self._spot_price * exp(r_c * tau - y_cum_t)
+
+        # Ações: aloca incremento de valor presente de dividendos às datas ex-dividendo ou sazonalidade mensal
+        cdef double pv_w_tot = 0.0
+        cdef double pv_w_part = 0.0
+        cdef double ex_t, pv_w
+        if self._n_ex > 0:
+            for j in range(self._n_ex):
+                ex_t = self._ex_div_times[j]
+                if ex_t > tau_a + 1e-12 and ex_t <= tau_b + 1e-12:
+                    pv_w = self._ex_div_weights[j] * exp(-self._ex_div_r_cont[j] * ex_t)
+                    pv_w_tot += pv_w
+                    if ex_t <= tau + 1e-12:
+                        pv_w_part += pv_w
+            if pv_w_tot > 1e-14:
+                frac = pv_w_part / pv_w_tot
+            else:
+                frac = (tau - tau_a) / span
+        else:
+            w_tot = _cum_season_exact_c(&self._season_weights[0], self._n_bins, tau_a, tau_b, self._start_bin_frac)
+            if w_tot > 1e-12:
+                w_part = _cum_season_exact_c(&self._season_weights[0], self._n_bins, tau_a, tau, self._start_bin_frac)
+                frac = w_part / w_tot
+            else:
+                frac = (tau - tau_a) / span
+
+        cdef double d_pv_t = d_a + (d_b - d_a) * frac
+        return fmax(1e-12, self._spot_price - d_pv_t) * exp(r_c * tau)
+
+    cpdef double get_rate(self, double t, double t_sec=0.0) except *:
+        """Retorna a taxa de convenience yield anualizada na convenção da curva."""
+        cdef double t_eff = t if t > 1e-4 * self._day_count_basis else 1e-4 * self._day_count_basis
+        cdef double tau_eff = t_eff / self._day_count_basis
+        cdef double fwd = self.forward_price(t_eff, t_sec)
+        cdef double r_c = self._get_pre_cont(t_eff, t_sec, tau_eff)
+        cdef double y_c = (r_c * tau_eff - log(fmax(1e-12, fwd) / self._spot_price)) / tau_eff
+        cdef double rate = _cont_to_target_rate(y_c, tau_eff, self._compounding, 1)
+        if self._round_decimals >= 0:
+            if self._is_trunc:
+                rate = trunc(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
+            else:
+                rate = round(rate * pow(10.0, self._round_decimals)) / pow(10.0, self._round_decimals)
+        return rate
+
+    cpdef double cash_dividend_pv(self, double t, double t_sec=0.0) except *:
+        """Valor presente acumulado de dividendos + carrego líquido até a maturidade `t`."""
+        if t <= 0.0:
+            return 0.0
+        cdef double tau = t / self._day_count_basis
+        cdef double fwd = self.forward_price(t, t_sec)
+        cdef double r_c = self._get_pre_cont(t, t_sec, tau)
+        return self._spot_price - fwd * exp(-r_c * tau)
+
+    cpdef double cash_dividend_fv(self, double t, double t_sec=0.0) except *:
+        """Valor futuro acumulado S*exp(r*T) - F(T) até a maturidade `t`."""
+        if t <= 0.0:
+            return 0.0
+        cdef double tau = t / self._day_count_basis
+        cdef double fwd = self.forward_price(t, t_sec)
+        cdef double r_c = self._get_pre_cont(t, t_sec, tau)
+        return self._spot_price * exp(r_c * tau) - fwd
+
+    cpdef double borrow_cost_rate(self, double t, double t_sec=0.0) except *:
+        """Isola o custo de aluguel anualizado implícito descontando o valor presente dos dividendos declarados."""
+        cdef double t_eff = t if t > 1e-4 * self._day_count_basis else 1e-4 * self._day_count_basis
+        cdef double tau_eff = t_eff / self._day_count_basis
+        cdef double fwd = self.forward_price(t_eff, t_sec)
+        cdef double r_c = self._get_pre_cont(t_eff, t_sec, tau_eff)
+        cdef double y_c = (r_c * tau_eff - log(fmax(1e-12, fwd) / self._spot_price)) / tau_eff
+        cdef double pv_decl = 0.0
+        cdef int j
+        cdef double dt_j
+        if self._n_decl > 0:
+            for j in range(self._n_decl):
+                dt_j = self._decl_div_times[j]
+                if 0.0 < dt_j <= tau_eff + 1e-12:
+                    pv_decl += self._decl_div_amounts[j] * exp(-self._decl_div_r_cont[j] * dt_j)
+        cdef double q_decl = -log(fmax(1e-12, 1.0 - pv_decl / self._spot_price)) / tau_eff
+        cdef double b_c = y_c - q_decl
+        return _cont_to_target_rate(b_c, tau_eff, self._compounding, 1)
+
+    def ex_dividend_schedule(self):
+        """Retorna os valores em caixa alocados a cada data ex-dividendo discreta até o último vértice."""
+        if self._n_ex == 0 or self._n_nodes == 0:
+            return []
+        out = []
+        cdef int n = self._n_nodes
+        cdef double tau_a, tau_b, d_a, d_b, pv_w_tot, scale, d_j, ex_t, pv_j
+        cdef int k, j
+        for k in range(n):
+            tau_a = 0.0 if k == 0 else (self._t_nodes[k - 1] / self._day_count_basis)
+            d_a = 0.0 if k == 0 else self._d_pv_nodes[k - 1]
+            tau_b = self._t_nodes[k] / self._day_count_basis
+            d_b = self._d_pv_nodes[k]
+            pv_w_tot = 0.0
+            for j in range(self._n_ex):
+                ex_t = self._ex_div_times[j]
+                if ex_t > tau_a + 1e-12 and ex_t <= tau_b + 1e-12:
+                    pv_w_tot += self._ex_div_weights[j] * exp(-self._ex_div_r_cont[j] * ex_t)
+            if pv_w_tot <= 1e-14:
+                continue
+            scale = (d_b - d_a) / pv_w_tot
+            for j in range(self._n_ex):
+                ex_t = self._ex_div_times[j]
+                if ex_t > tau_a + 1e-12 and ex_t <= tau_b + 1e-12:
+                    d_j = scale * self._ex_div_weights[j]
+                    pv_j = d_j * exp(-self._ex_div_r_cont[j] * ex_t)
+                    out.append({
+                        "t_years": float(ex_t),
+                        "t_curve": float(ex_t * self._day_count_basis),
+                        "cash_dividend": float(d_j),
+                        "pv": float(pv_j),
+                    })
+        return out
+
+    def extrapolated_discrete_dividends(self, div_times, double cash_cutoff_years=10.0):
+        """
+        Converte os forwards da curva (incluindo extrapolação de longo prazo) em pagamentos
+        discretos em caixa para t <= 10 anos e retorna o rendimento contínuo residual além desse prazo.
+        """
+        t_list = sorted([float(dt_v) for dt_v in div_times if float(dt_v) > 0.0])
+        cash_items = []
+        cdef double pv_prev = 0.0
+        cdef double pv_curr, d_cash_j, r_j, d_pv_j
+        for t_j in t_list:
+            if t_j <= cash_cutoff_years + 1e-12:
+                pv_curr = self.cash_dividend_pv(t_j * self._day_count_basis)
+                d_pv_j = pv_curr - pv_prev
+                r_j = self._get_pre_cont(t_j * self._day_count_basis, 0.0, t_j)
+                d_cash_j = d_pv_j * exp(r_j * t_j)
+                cash_items.append({"t_years": float(t_j), "cash_dividend": float(d_cash_j), "pv": float(d_pv_j)})
+                pv_prev = pv_curr
+        return {
+            "discrete_cash_dividends": cash_items,
+            "residual_long_yield": float(self._long_fwd_yield),
+            "cutoff_years": float(cash_cutoff_years),
+        }
+
+    def blended_decomposition(self, double t, object div_times, object div_weights=None):
+        """Aplica a decomposição híbrida Bloomberg (caixa / proporcional / contínuo) até `t`."""
+        from bz_pricing.volatility.bloomberg_surface import DividendCurveBBG
+
+        tau = t / self._day_count_basis
+        r_c = self._get_pre_cont(t, 0.0, tau)
+        fwd_t = self.forward_price(t)
+        return DividendCurveBBG.decompose_blended_dividends(
+            div_times=div_times,
+            spot_f0=self._spot_price,
+            fwd_T=fwd_t,
+            r_cont=r_c,
+            T=tau,
+            is_index=self._is_index,
+            div_weights=div_weights,
+        )
+
+    @classmethod
+    def from_futures(
+        cls,
+        double spot_price,
+        object futures_curve_or_data,
+        Curve pre_curve,
+        bint is_index=False,
+        object seasonality_weights=None,
+        double start_bin_frac=0.0,
+        double day_count_basis=252.0,
+        object compounding="exponential",
+        object pre_compounding="auto",
+        object ex_div_times=None,
+        object ex_div_weights=None,
+        object declared_div_times=None,
+        object declared_div_amounts=None,
+        **kwargs,
+    ):
+        """Constrói `BloombergConvenienceYieldCurve` a partir de preços futuros (SimpleCurve ou dict)."""
+        if isinstance(futures_curve_or_data, SimpleCurve):
+            sc = <SimpleCurve>futures_curve_or_data
+            t_raw = np.asarray(sc.t_nodes, dtype=np.float64)
+            f_raw = np.asarray(sc.y_nodes, dtype=np.float64)
+            keep = t_raw > 1.0 + 1e-9
+            if int(np.sum(keep)) > 1:
+                max_t = float(np.max(t_raw))
+                if max_t > 2.0 + 1e-9:
+                    keep = keep & (np.abs(t_raw - 2.0) > 1e-9)
+            t_arr = t_raw[keep]
+            f_arr = f_raw[keep]
+        elif isinstance(futures_curve_or_data, dict):
+            items = sorted((float(k), float(v)) for k, v in futures_curve_or_data.items() if float(k) > 0.0)
+            t_arr = np.array([k for k, _ in items], dtype=np.float64)
+            f_arr = np.array([v for _, v in items], dtype=np.float64)
+        else:
+            t_arr, f_arr = futures_curve_or_data
+            t_arr = np.asarray(t_arr, dtype=np.float64)
+            f_arr = np.asarray(f_arr, dtype=np.float64)
+
+        return cls(
+            spot_price=spot_price,
+            pre_curve=pre_curve,
+            t_nodes=t_arr,
+            fwd_nodes=f_arr,
+            is_index=is_index,
+            seasonality_weights=seasonality_weights,
+            start_bin_frac=start_bin_frac,
+            day_count_basis=day_count_basis,
+            compounding=compounding,
+            pre_compounding=pre_compounding,
+            ex_div_times=ex_div_times,
+            ex_div_weights=ex_div_weights,
+            declared_div_times=declared_div_times,
+            declared_div_amounts=declared_div_amounts,
+            **kwargs,
+        )
+
+    @classmethod
+    def from_options_chain(
+        cls,
+        object df_options,
+        double spot_price,
+        Curve pre_curve,
+        object base_date=None,
+        str exercise="EUROPEAN",
+        bint is_index=False,
+        object discrete_dividends=None,
+        object prop_dividends=None,
+        object kalman_filters=None,
+        object seasonality_dates=None,
+        object seasonality_amounts=None,
+        object seasonality_weights=None,
+        double start_bin_frac=0.0,
+        double day_count_basis=252.0,
+        object compounding="exponential",
+        object pre_compounding="auto",
+        object ex_div_times=None,
+        object ex_div_weights=None,
+        object declared_div_times=None,
+        object declared_div_amounts=None,
+        object expiry_col="XprtnDt",
+        object du_col=None,
+        int crr_steps=120,
+        bint filter_quotes=True,
+        double max_spread_short=0.0009,
+        double max_spread_long=0.021,
+        **kwargs,
+    ):
+        """
+        Infere uma `BloombergConvenienceYieldCurve` diretamente de cotações de opções via paridade
+        put-call, desamericanização binomial (com dividendos discretos opcionais), suavização por
+        Filtro de Kalman e sazonalidade histórica/prevista.
+        """
+        import pandas as pd
+        from bz_pricing.core.calendars import get_calendar
+        from bz_pricing.volatility.bloomberg_surface import (
+            DividendCurveBBG,
+            deamericanize_and_infer_forward_bbg,
+            filter_option_quotes_bbg,
+        )
+
+        if df_options is None or len(df_options) == 0:
+            raise ValueError("df_options não pode ser vazio em from_options_chain.")
+        df = df_options.copy()
+
+        k_col = next((c for c in ("strike", "ExrcPric", "Strike", "K") if c in df.columns), None)
+        tp_col = next((c for c in ("option_type", "type", "OptnTp", "Type") if c in df.columns), None)
+        p_col = next((c for c in ("mid", "price", "RefPric", "LastPric") if c in df.columns), None)
+        if k_col is None or tp_col is None:
+            raise ValueError("df_options deve conter colunas de strike e tipo de opção.")
+        has_ba = ("bid" in df.columns) and ("ask" in df.columns)
+        if p_col is None and has_ba:
+            df["_mid_calc"] = 0.5 * (pd.to_numeric(df["bid"], errors="coerce") + pd.to_numeric(df["ask"], errors="coerce"))
+            p_col = "_mid_calc"
+        if p_col is None:
+            raise ValueError("df_options deve conter coluna de preço médio ou par bid/ask.")
+
+        # Resolve prazo em unidades da curva (t_curve) por linha/vencimento
+        exp_key_col = expiry_col if expiry_col in df.columns else (du_col if (du_col and du_col in df.columns) else None)
+        if exp_key_col is None:
+            exp_key_col = next((c for c in ("expiry", "maturity", "du", "DU", "dc", "DC") if c in df.columns), None)
+        if exp_key_col is None:
+            raise ValueError("df_options deve conter coluna de vencimento ou prazo.")
+
+        cal = get_calendar("B3") if abs(day_count_basis - 252.0) < 1e-6 else None
+        base_dt = pd.to_datetime(base_date).date() if base_date is not None else None
+
+        def _resolve_t_curve(val):
+            if du_col and exp_key_col == du_col:
+                return float(val)
+            if exp_key_col.lower() in ("du", "dc", "t", "maturity_days"):
+                return float(val)
+            dt_v = pd.to_datetime(val).date()
+            if base_dt is None:
+                raise ValueError("base_date é obrigatório quando vencimentos são informados como datas.")
+            if cal is not None:
+                return float(cal.bizdays(base_dt, dt_v))
+            return float((dt_v - base_dt).days)
+
+        t_by_row = np.array([_resolve_t_curve(v) for v in df[exp_key_col]], dtype=np.float64)
+        df["_t_curve"] = t_by_row
+        df = df[df["_t_curve"] > 0.0].copy()
+
+        # Prepara sazonalidade caso datas e valores sejam informados
+        s_weights = seasonality_weights
+        if s_weights is None and seasonality_dates is not None and seasonality_amounts is not None:
+            dc_tmp = DividendCurveBBG(is_index=bool(is_index))
+            s_weights = dc_tmp.fit_seasonality(seasonality_dates, seasonality_amounts)
+
+        pre_comp_int = _infer_pre_compounding(pre_curve, _coerce_curve_compounding(compounding), pre_compounding)
+
+        def _r_cont_at(t_v):
+            return _curve_pre_cont(pre_curve, pre_comp_int, float(t_v), 0.0, float(t_v) / day_count_basis)
+
+        # Prepara dividendos discretos em anos para desamericanização e borrow cost
+        disc_pairs = None
+        if discrete_dividends is not None:
+            if isinstance(discrete_dividends, dict):
+                disc_pairs = []
+                for dk, dv in discrete_dividends.items():
+                    t_y = float(dk) if isinstance(dk, (int, float)) else _resolve_t_curve(dk) / day_count_basis
+                    if t_y > 0.0:
+                        disc_pairs.append((t_y, float(dv)))
+            else:
+                disc_pairs = [(float(x[0]), float(x[1])) for x in discrete_dividends if float(x[0]) > 0.0]
+
+        t_nodes_list = []
+        fwd_nodes_list = []
+        expiry_diag = []
+
+        for t_val, grp in df.groupby("_t_curve", sort=True):
+            t_cur = float(t_val)
+            tau_cur = t_cur / day_count_basis
+            if filter_quotes:
+                g_work = filter_option_quotes_bbg(
+                    grp,
+                    spot=spot_price,
+                    maturity_years=tau_cur,
+                    max_spread_short=max_spread_short,
+                    max_spread_long=max_spread_long,
+                ).copy()
+            else:
+                g_work = grp.copy()
+            if g_work.empty:
+                continue
+
+            g_work["_k"] = pd.to_numeric(g_work[k_col], errors="coerce")
+            g_work["_p"] = pd.to_numeric(g_work[p_col], errors="coerce")
+            g_work["_is_c"] = g_work[tp_col].astype(str).str.lower().str.startswith("c")
+
+            calls_g = g_work[g_work["_is_c"]].groupby("_k", as_index=True).first()
+            puts_g = g_work[~g_work["_is_c"]].groupby("_k", as_index=True).first()
+            paired = calls_g.join(puts_g, how="inner", lsuffix="_c", rsuffix="_p")
+            if paired.empty:
+                continue
+
+            ks_p = paired.index.to_numpy(dtype=np.float64)
+            cs_p = paired["_p_c"].to_numpy(dtype=np.float64)
+            ps_p = paired["_p_p"].to_numpy(dtype=np.float64)
+            c_bids = paired["bid_c"].to_numpy(dtype=np.float64) if "bid_c" in paired.columns else None
+            c_asks = paired["ask_c"].to_numpy(dtype=np.float64) if "ask_c" in paired.columns else None
+            p_bids = paired["bid_p"].to_numpy(dtype=np.float64) if "bid_p" in paired.columns else None
+            p_asks = paired["ask_p"].to_numpy(dtype=np.float64) if "ask_p" in paired.columns else None
+
+            r_c_eval = _r_cont_at(t_cur)
+            res_da = deamericanize_and_infer_forward_bbg(
+                ks_p, cs_p, ps_p,
+                spot=spot_price,
+                r_cont=r_c_eval,
+                T=tau_cur,
+                exercise=exercise,
+                call_bids=c_bids,
+                call_asks=c_asks,
+                put_bids=p_bids,
+                put_asks=p_asks,
+                discrete_dividends=disc_pairs,
+                prop_dividends=prop_dividends,
+                crr_steps=crr_steps,
+                deamericanize_all=True,
+            )
+
+            fwd_use = float(res_da["forward"])
+            if kalman_filters is not None:
+                kf_key = min(kalman_filters.keys(), key=lambda k: abs(float(k) - t_cur)) if len(kalman_filters) > 0 else None
+                if kf_key is not None and abs(float(kf_key) - t_cur) < 1e-3:
+                    kf = kalman_filters[kf_key]
+                    if is_index:
+                        kf_res = kf.update(
+                            float(res_da["dividend_yield"]),
+                            d_bid=float(res_da["dividend_yield_bid"]),
+                            d_ask=float(res_da["dividend_yield_ask"]),
+                        )
+                        y_sm = float(kf_res["dividend"])
+                        fwd_use = spot_price * exp((r_c_eval - y_sm) * tau_cur)
+                    else:
+                        kf_res = kf.update(
+                            float(res_da["cash_dividend"]),
+                            d_bid=float(res_da["cash_dividend_bid"]),
+                            d_ask=float(res_da["cash_dividend_ask"]),
+                        )
+                        d_sm = float(kf_res["dividend"])
+                        fwd_use = spot_price * exp(r_c_eval * tau_cur) - d_sm
+
+            t_nodes_list.append(t_cur)
+            fwd_nodes_list.append(fwd_use)
+            res_item = dict(res_da)
+            res_item["t_curve"] = t_cur
+            res_item["T_years"] = tau_cur
+            res_item["forward_smoothed"] = fwd_use
+            expiry_diag.append(res_item)
+
+        if not t_nodes_list:
+            raise ValueError("Nenhum par call/put válido restou após a filtragem das cotações.")
+
+        decl_t = declared_div_times
+        decl_a = declared_div_amounts
+        if decl_t is None and disc_pairs is not None and len(disc_pairs) > 0:
+            decl_t = [x[0] for x in disc_pairs]
+            decl_a = [x[1] for x in disc_pairs]
+        ex_t_eff = ex_div_times
+        if ex_t_eff is None and (not is_index) and disc_pairs is not None and len(disc_pairs) > 0:
+            ex_t_eff = [x[0] for x in disc_pairs]
+
+        return cls(
+            spot_price=spot_price,
+            pre_curve=pre_curve,
+            t_nodes=np.array(t_nodes_list, dtype=np.float64),
+            fwd_nodes=np.array(fwd_nodes_list, dtype=np.float64),
+            is_index=is_index,
+            seasonality_weights=s_weights,
+            start_bin_frac=start_bin_frac,
+            day_count_basis=day_count_basis,
+            compounding=compounding,
+            pre_compounding=pre_compounding,
+            ex_div_times=ex_t_eff,
+            ex_div_weights=ex_div_weights,
+            declared_div_times=decl_t,
+            declared_div_amounts=decl_a,
+            diagnostics={"expiries": expiry_diag},
+            **kwargs,
+        )
+
+    @classmethod
+    def from_futures_and_options(
+        cls,
+        double spot_price,
+        object futures_curve_or_data,
+        object df_options,
+        Curve pre_curve,
+        double tol_duplicate_t=1e-3,
+        **kwargs,
+    ):
+        """Funde pilares líquidos de contratos futuros com forwards implícitos de opções."""
+        fut_keys = {
+            "is_index", "seasonality_weights", "start_bin_frac", "day_count_basis",
+            "compounding", "pre_compounding", "ex_div_times", "ex_div_weights",
+            "declared_div_times", "declared_div_amounts", "long_fwd_yield",
+            "augment_yield", "augment_div_pv", "augment_horizon", "round_decimals", "round_mode",
+        }
+        fut_kwargs = {k: v for k, v in kwargs.items() if k in fut_keys}
+        fut_cy = cls.from_futures(spot_price, futures_curve_or_data, pre_curve, **fut_kwargs)
+        opt_cy = cls.from_options_chain(df_options, spot_price, pre_curve, **kwargs)
+
+        merged = {}
+        sources = {}
+        for t_o, f_o in zip(opt_cy.t_nodes, opt_cy.fwd_nodes):
+            merged[float(t_o)] = float(f_o)
+            sources[float(t_o)] = "option_implied"
+        for t_f, f_f in zip(fut_cy.t_nodes, fut_cy.fwd_nodes):
+            matched_k = next((k for k in list(merged.keys()) if abs(k - float(t_f)) <= tol_duplicate_t), None)
+            if matched_k is not None and matched_k != float(t_f):
+                del merged[matched_k]
+                del sources[matched_k]
+            merged[float(t_f)] = float(f_f)
+            sources[float(t_f)] = "futures"
+
+        t_sorted = sorted(merged.keys())
+        f_sorted = [merged[k] for k in t_sorted]
+        diag = dict(opt_cy.diagnostics)
+        diag["sources"] = {k: sources[k] for k in t_sorted}
+
+        return cls(
+            spot_price=spot_price,
+            pre_curve=pre_curve,
+            t_nodes=np.array(t_sorted, dtype=np.float64),
+            fwd_nodes=np.array(f_sorted, dtype=np.float64),
+            is_index=opt_cy.is_index,
+            seasonality_weights=opt_cy.seasonality_weights,
+            start_bin_frac=opt_cy.start_bin_frac,
+            day_count_basis=opt_cy.day_count_basis,
+            compounding=kwargs.get("compounding", "exponential"),
+            pre_compounding=kwargs.get("pre_compounding", "auto"),
+            ex_div_times=kwargs.get("ex_div_times", None) if "ex_div_times" in kwargs else (opt_cy.ex_div_times if len(opt_cy.ex_div_times) > 0 else None),
+            ex_div_weights=kwargs.get("ex_div_weights", None),
+            declared_div_times=kwargs.get("declared_div_times", None) if "declared_div_times" in kwargs else (opt_cy.decl_div_times if len(opt_cy.decl_div_times) > 0 else None),
+            declared_div_amounts=kwargs.get("declared_div_amounts", None) if "declared_div_amounts" in kwargs else (opt_cy.decl_div_amounts if len(opt_cy.decl_div_amounts) > 0 else None),
+            diagnostics=diag,
+        )
+
+    @property
+    def spot_price(self):
+        return self._spot_price
+
+    @property
+    def t_nodes(self):
+        return np.asarray(self._t_nodes)
+
+    @property
+    def fwd_nodes(self):
+        return np.asarray(self._fwd_nodes)
+
+    @property
+    def y_cont_nodes(self):
+        return np.asarray(self._y_cont_nodes)
+
+    @property
+    def d_pv_nodes(self):
+        return np.asarray(self._d_pv_nodes)
+
+    @property
+    def seasonality_weights(self):
+        return np.asarray(self._season_weights)
+
+    @property
+    def ex_div_times(self):
+        return np.asarray(self._ex_div_times)
+
+    @property
+    def decl_div_times(self):
+        return np.asarray(self._decl_div_times)
+
+    @property
+    def decl_div_amounts(self):
+        return np.asarray(self._decl_div_amounts)
+
+    @property
+    def is_index(self):
+        return self._is_index
+
+    @property
+    def start_bin_frac(self):
+        return self._start_bin_frac
+
+    @property
+    def day_count_basis(self):
+        return self._day_count_basis
+
+    @property
+    def long_fwd_yield(self):
+        return self._long_fwd_yield
+
+    @property
+    def diagnostics(self):
+        return self._diagnostics

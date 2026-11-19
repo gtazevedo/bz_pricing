@@ -15,7 +15,15 @@ from bz_pricing.core.interpolators import (
     Interpolation360Interpolator,
     PriceInterpolator
 )
-from bz_pricing.core.curves import SimpleCurve, FlatCurve, Curve, InflationCurve, ConvenienceYieldCurve, SpreadCurve
+from bz_pricing.core.curves import (
+    BloombergConvenienceYieldCurve,
+    ConvenienceYieldCurve,
+    Curve,
+    FlatCurve,
+    InflationCurve,
+    SimpleCurve,
+    SpreadCurve,
+)
 
 
 def _resolve_dc_from_knots(t: float, t_sec: float, t_nodes: np.ndarray, t_sec_nodes: np.ndarray) -> float:
@@ -1169,6 +1177,58 @@ class B3CurveBuilder:
         round_decimals = config.get("round_decimals", 6)
         round_mode = config.get("round_mode", "round")
         return ConvenienceYieldCurve(spot_price, futures_curve, pre_curve, round_decimals=round_decimals, round_mode=round_mode)
+
+    def build_bloomberg_convenience_yield_curve(
+        self,
+        spot_price: float,
+        futures_curve_or_data,
+        pre_curve: Curve,
+        is_index: bool = False,
+        seasonality_dates=None,
+        seasonality_amounts=None,
+        seasonality_weights=None,
+        start_bin_frac: float = 0.0,
+        day_count_basis: float = 252.0,
+        compounding: str = "exponential",
+        pre_compounding: str = "auto",
+        ex_div_times=None,
+        ex_div_weights=None,
+        declared_div_times=None,
+        declared_div_amounts=None,
+        round_decimals: int = -1,
+        round_mode: str = "round",
+        **kwargs,
+    ) -> BloombergConvenienceYieldCurve:
+        """
+        Constrói a estrutura a termo de convenience yield aprimorada segundo a metodologia
+        Bloomberg (alocação sazonal em valor presente ou yield contínuo, datas ex-dividendo,
+        extrapolação de longo prazo >= 1 ano e separação de custo de aluguel).
+        """
+        from bz_pricing.volatility.bloomberg_surface import DividendCurveBBG
+
+        s_weights = seasonality_weights
+        if s_weights is None and seasonality_dates is not None and seasonality_amounts is not None:
+            dc_bbg = DividendCurveBBG(is_index=bool(is_index))
+            s_weights = dc_bbg.fit_seasonality(seasonality_dates, seasonality_amounts)
+
+        return BloombergConvenienceYieldCurve.from_futures(
+            spot_price=float(spot_price),
+            futures_curve_or_data=futures_curve_or_data,
+            pre_curve=pre_curve,
+            is_index=bool(is_index),
+            seasonality_weights=s_weights,
+            start_bin_frac=float(start_bin_frac),
+            day_count_basis=float(day_count_basis),
+            compounding=compounding,
+            pre_compounding=pre_compounding,
+            ex_div_times=ex_div_times,
+            ex_div_weights=ex_div_weights,
+            declared_div_times=declared_div_times,
+            declared_div_amounts=declared_div_amounts,
+            round_decimals=round_decimals,
+            round_mode=round_mode,
+            **kwargs,
+        )
 
     def build_spread_curve(self,
                            curve_a: Curve,

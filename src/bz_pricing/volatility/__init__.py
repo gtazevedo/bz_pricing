@@ -17,6 +17,7 @@ from .bloomberg_surface import (
     deamericanize_and_infer_forward_bbg,
     filter_option_quotes_bbg,
     filter_surface_quotes_bbg,
+    reconcile_multi_maturity_dividends_bbg,
 )
 
 __all__ = [
@@ -30,6 +31,7 @@ __all__ = [
     "filter_option_quotes_bbg",
     "filter_surface_quotes_bbg",
     "deamericanize_and_infer_forward_bbg",
+    "reconcile_multi_maturity_dividends_bbg",
     "delta_to_strike",
     "strike_to_delta",
     "monotone_cubic_interp",

@@ -672,6 +672,23 @@ def test_bbg_surface_real_b3_bova11_calibration():
             "r_cont": rs[e_s],
         }
     surf_bbg = BloombergMixtureSurface.fit(slices_data, n_components=4, allow_default=True)
+    vs_price = VolatilitySurface.from_bloomberg_mixture(surf_bbg)
+    arb_price = vs_price.check_no_arbitrage(
+        forward_by_du={d: slices_data[d]["forward"] for d in surf_bbg.dus},
+        r_cont_by_du={d: slices_data[d]["r_cont"] for d in surf_bbg.dus},
+    )
+    assert arb_price["passed"] is True
+
+    surf_vega = BloombergMixtureSurface.fit(slices_data, n_components=4, allow_default=True, weighting="vega")
+    vs_vega = VolatilitySurface.from_bloomberg_mixture(surf_vega)
+    arb_vega = vs_vega.check_no_arbitrage(
+        forward_by_du={d: slices_data[d]["forward"] for d in surf_vega.dus},
+        r_cont_by_du={d: slices_data[d]["r_cont"] for d in surf_vega.dus},
+    )
+    assert arb_vega["passed"] is True
+    for du_v in surf_vega.dus:
+        assert surf_vega.slices[du_v].fit_diagnostics["rmse_vol_bps"] < 65.0
+
     oos = validate_slice_out_of_sample(
         strikes=slices_data[dus["2026-12-18"]]["strikes"],
         market_prices=slices_data[dus["2026-12-18"]]["market_prices"],
@@ -1111,6 +1128,328 @@ def test_cython_mandatory_no_import_fallbacks():
     val_exp = exp_smile_interp([1.0, 3.0], [0.20, 0.30], 2.0)
     assert 0.20 < val_mc < 0.22
     assert abs(val_exp - math.sqrt(0.20 * 0.30)) < 1e-12
+
+
+def test_bbg_cython_kernels_wings_jacobian_and_american_crr():
+    from bz_pricing.core.options_core import (
+        bloomberg_mixture_prices_and_jac,
+        bloomberg_mixture_prices_vec,
+        crr_american_discrete_div_price_greeks,
+        implied_vol_american_crr,
+        longest_monotonic_subsequence,
+    )
+    from bz_pricing.volatility import LognormalMixtureSlice
+
+    # 1. Subsequência monótona mais longa em Cython (crescente e decrescente)
+    vals_dec = np.array([15.0, 12.0, 14.0, 9.5, 9.5, 4.0, 1.0], dtype=np.float64)
+    idx_dec = longest_monotonic_subsequence(vals_dec, True)
+    kept_dec = vals_dec[idx_dec]
+    assert len(kept_dec) == 6
+    assert np.all(np.diff(kept_dec) <= 1e-12)
+
+    vals_inc = np.array([1.0, 3.0, 2.0, 5.0, 7.0], dtype=np.float64)
+    idx_inc = longest_monotonic_subsequence(vals_inc, False)
+    kept_inc = vals_inc[idx_inc]
+    assert len(kept_inc) == 4
+    assert np.all(np.diff(kept_inc) >= -1e-12)
+
+    # 2. Asas extremas da Fig. 15.1 sem cliff numérico de fallback em BSM
+    sl_15 = LognormalMixtureSlice(weights=[0.5, 0.5], xis=[0.95, 1.05], sigmas_total=[0.40, 0.20], forward=1.0, T=1.0)
+    wing_ks = np.array([0.02, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 25.0, 50.0, 100.0], dtype=np.float64)
+    ivs_raw = np.asarray(sl_15.implied_vol(wing_ks, r_cont=0.0, use_wing_extrap=False), dtype=np.float64)
+    assert np.all(np.isfinite(ivs_raw))
+    assert ivs_raw[0] > 0.39 and ivs_raw[1] > 0.38
+    assert ivs_raw[-1] > 0.37 and ivs_raw[4] < 0.31
+    assert np.all(np.diff(ivs_raw[:5]) < 0.0)
+    assert np.all(np.diff(ivs_raw[4:]) > 0.0)
+
+    # 3. Jacobiano analítico exato vs diferenças finitas centrais
+    ks_j = np.array([75.0, 90.0, 100.0, 115.0, 130.0], dtype=np.float64)
+    ic_j = np.array([0, 0, 1, 1, 1], dtype=np.uint8)
+    for allow_def, fixed_q, vec_base in [
+        (True, 0.01, np.array([0.4, -0.3, 0.12, 0.14, 0.34, 0.25, 0.19, 0.035], dtype=np.float64)),
+        (False, 0.0, np.array([0.3, -0.2, 0.10, 0.12, 0.32, 0.24, 0.18], dtype=np.float64)),
+    ]:
+        px, jac = bloomberg_mixture_prices_and_jac(ks_j, ic_j, 100.0, 0.05, 0.5, vec_base, 3, allow_def, fixed_q)
+        eps = 1e-6
+        jac_fd = np.zeros_like(jac)
+        for p_idx in range(len(vec_base)):
+            vp = vec_base.copy()
+            vm = vec_base.copy()
+            vp[p_idx] += eps
+            vm[p_idx] -= eps
+            pp, _ = bloomberg_mixture_prices_and_jac(ks_j, ic_j, 100.0, 0.05, 0.5, vp, 3, allow_def, fixed_q)
+            pm, _ = bloomberg_mixture_prices_and_jac(ks_j, ic_j, 100.0, 0.05, 0.5, vm, 3, allow_def, fixed_q)
+            jac_fd[:, p_idx] = (pp - pm) / (2.0 * eps)
+        assert np.max(np.abs(jac - jac_fd)) < 1e-6
+        assert np.all(np.isfinite(px)) and np.all(px > 0.0)
+
+    px_vec = bloomberg_mixture_prices_vec(ks_j, ic_j, 100.0, 0.05, 0.5, sl_15.p, sl_15.xi, sl_15.Sigma, sl_15.Q_default, 1.0)
+    assert np.all(np.isfinite(px_vec))
+
+    # 4. implied_vol_american_crr com dividendos discretos em dinheiro e proporcionais
+    dt_d = np.array([0.20, 0.55], dtype=np.float64)
+    da_d = np.array([1.40, 1.10], dtype=np.float64)
+    pt_d = np.array([0.35], dtype=np.float64)
+    py_d = np.array([0.015], dtype=np.float64)
+    for is_c, strike_a in [(True, 96.0), (False, 104.0)]:
+        p_am = crr_american_discrete_div_price_greeks(
+            100.0, strike_a, 0.10, 0.01, 0.80, 0.30, is_c, 150, dt_d, da_d, pt_d, py_d
+        )[0]
+        iv_am = implied_vol_american_crr(
+            p_am, 100.0, strike_a, 0.10, 0.01, 0.80, is_c, 150, dt_d, da_d, pt_d, py_d
+        )
+        assert abs(iv_am - 0.30) < 1e-6
+    iv_floor = implied_vol_american_crr(3.5, 100.0, 95.0, 0.10, 0.01, 0.80, True, 150, dt_d, da_d, pt_d, py_d)
+    assert not math.isfinite(iv_floor)
+
+
+def test_bbg_part1_filters_reconciliation_kalman_and_blended():
+    import pandas as pd
+    from bz_pricing.core.options_core import black76_price_greeks, crr_american_discrete_div_price_greeks
+    from bz_pricing.volatility import (
+        DividendCurveBBG,
+        KalmanDividendFilter,
+        deamericanize_and_infer_forward_bbg,
+        filter_option_quotes_bbg,
+        reconcile_multi_maturity_dividends_bbg,
+    )
+
+    # 1. filter_option_quotes_bbg agrupado por vencimento
+    rows = []
+    for exp_s, mult in [("2026-12-18", 1.0), ("2027-03-19", 0.98)]:
+        rows.extend([
+            {"XprtnDt": exp_s, "strike": 90.0, "option_type": "call", "bid": 13.97 * mult, "ask": 14.03 * mult, "mid": 14.00 * mult},
+            {"XprtnDt": exp_s, "strike": 95.0, "option_type": "call", "bid": 10.07 * mult, "ask": 10.13 * mult, "mid": 10.10 * mult},
+            {"XprtnDt": exp_s, "strike": 100.0, "option_type": "call", "bid": 12.97 * mult, "ask": 13.03 * mult, "mid": 13.00 * mult},  # quebra monotonicidade
+            {"XprtnDt": exp_s, "strike": 105.0, "option_type": "call", "bid": 4.47 * mult, "ask": 4.53 * mult, "mid": 4.50 * mult},
+            {"XprtnDt": exp_s, "strike": 100.0, "option_type": "put", "bid": 4.17 * mult, "ask": 4.23 * mult, "mid": 4.20 * mult},
+            {"XprtnDt": exp_s, "strike": 105.0, "option_type": "put", "bid": 5.00 * mult, "ask": 5.50 * mult, "mid": 5.25 * mult},  # spread > 0.0009 * spot
+        ])
+    flt_m = filter_option_quotes_bbg(
+        pd.DataFrame(rows),
+        spot=100.0,
+        maturity_years={"2026-12-18": 0.25, "2027-03-19": 0.50},
+    )
+    for exp_s in ("2026-12-18", "2027-03-19"):
+        g = flt_m[flt_m["XprtnDt"] == exp_s]
+        assert len(g[g["option_type"] == "call"]) == 3
+        assert len(g[g["option_type"] == "put"]) == 1
+
+    # 2. deamericanize_and_infer_forward_bbg com dividendos discretos, deamericanize_all e fallback bid/ask cruzado
+    spot, r_c, q_c, T_am, sig_am = 100.0, 0.10, 0.015, 0.60, 0.26
+    dt_d = np.array([0.25], dtype=np.float64)
+    da_d = np.array([2.50], dtype=np.float64)
+    pt_d = np.array([0.40], dtype=np.float64)
+    py_d = np.array([0.015], dtype=np.float64)
+    ks_am = np.array([88.0, 94.0, 100.0, 106.0, 112.0], dtype=np.float64)
+    c_am = np.array([crr_american_discrete_div_price_greeks(spot, k, r_c, q_c, T_am, sig_am, True, 120, dt_d, da_d, pt_d, py_d)[0] for k in ks_am])
+    p_am = np.array([crr_american_discrete_div_price_greeks(spot, k, r_c, q_c, T_am, sig_am, False, 120, dt_d, da_d, pt_d, py_d)[0] for k in ks_am])
+    fwd_true = (spot - 2.50 * math.exp(-r_c * 0.25)) * (1.0 - 0.015) * math.exp((r_c - q_c) * T_am)
+    out_da = deamericanize_and_infer_forward_bbg(
+        ks_am, c_am, p_am,
+        spot=spot, r_cont=r_c, T=T_am, exercise="AMERICAN",
+        call_bids=c_am - 0.05, call_asks=c_am + 0.05,
+        put_bids=p_am - 0.05, put_asks=p_am + 0.05,
+        discrete_dividends=[(0.25, 2.50)],
+        prop_dividends=[(0.40, 0.015)],
+        crr_steps=120,
+        deamericanize_all=True,
+    )
+    assert abs(out_da["forward"] - fwd_true) < 0.15
+    assert np.all(np.isfinite(out_da["implied_vols_call"]))
+    assert out_da["forward_bid"] <= out_da["forward_ask"]
+    df_r = math.exp(-r_c * T_am)
+    parity_da = (out_da["european_calls"] - out_da["european_puts"]) - df_r * (out_da["forward"] - ks_am)
+    assert np.max(np.abs(parity_da[2:3])) < 0.10
+
+    # Intervalos bid/ask cruzados entre os dois strikes centrais -> fallback para strike mais próximo
+    ks_cr = np.array([98.0, 102.0], dtype=np.float64)
+    c_m = np.array([black76_price_greeks(100.0, k, 0.0, 0.5, 0.25, True)[0] for k in ks_cr])
+    p_m = np.array([black76_price_greeks(100.0, k, 0.0, 0.5, 0.25, False)[0] for k in ks_cr])
+    out_cr = deamericanize_and_infer_forward_bbg(
+        ks_cr, c_m, p_m, spot=100.0, r_cont=0.0, T=0.5,
+        call_bids=[c_m[0] + 0.30, c_m[1] - 0.25],
+        call_asks=[c_m[0] + 0.35, c_m[1] - 0.20],
+        put_bids=[p_m[0] + 0.01, p_m[1] + 0.20],
+        put_asks=[p_m[0] + 0.02, p_m[1] + 0.25],
+    )
+    assert out_cr["forward_bid"] <= out_cr["forward_ask"] + 1e-12
+
+    # 3. Reconciliação de dividendos em múltiplos vencimentos
+    rec_ok = reconcile_multi_maturity_dividends_bbg([0.25, 0.50], [1.10, 1.15], [1.30, 1.25])
+    assert rec_ok["consistent"] is True and abs(rec_ok["dividend"] - 1.20) < 1e-12
+    rec_bad = reconcile_multi_maturity_dividends_bbg([0.25, 0.50], [1.00, 1.40], [1.20, 1.60])
+    assert rec_bad["consistent"] is False and abs(rec_bad["dividend"] - 1.10) < 1e-12
+    assert abs(rec_bad["borrow_discrepancies"][0.50] - 0.40) < 1e-12
+
+    # 4. KalmanDividendFilter com snapshot ausente e ex-dividendo de índice
+    kf = KalmanDividendFilter(alpha_over_sigma=1.0)
+    kf.update(0.030, d_bid=0.025, d_ask=0.035)
+    v_before = kf.variance
+    miss = kf.update(None, dt_steps=2.0)
+    assert miss["missing"] is True and miss["gain"] == 0.0 and abs(miss["dividend"] - 0.030) < 1e-12
+    assert miss["variance"] > v_before
+    kf.apply_ex_dividend_index(spot=5000.0, ex_dividend_points=25.0, maturity_years=0.5)
+    assert kf.state < 0.030
+
+    # 5. DividendCurveBBG (cum_seasonality, ex-dates, short-chain, spot implícito e blended weights)
+    dc = DividendCurveBBG(is_index=False)
+    dc.seasonality_weights = np.array([2.0, 1.0, 1.0, 0.5, 0.5, 1.0, 2.0, 1.0, 1.0, 0.5, 0.5, 1.0]) / 12.0
+    t_mid_v = dc.interpolate_cash_dividend(0.0, 0.0, 1.0, 12.0, 0.5)
+    assert abs(t_mid_v - 12.0 * (6.0 / 12.0)) < 1e-12
+    alloc = dc.allocate_to_ex_dates(0.0, 0.0, 1.0, 3.0, ex_times=[0.25, 0.75], r_cont=0.10)
+    assert abs(alloc[0] * math.exp(-0.10 * 0.25) + alloc[1] * math.exp(-0.10 * 0.75) - 3.0) < 1e-10
+    y_ext = DividendCurveBBG.extrapolate_long_forward_yield(
+        [0.25, 0.50], [101.0, 102.0], spot=100.0, r_cont=0.10, t_eval=2.0, augment_div_pv=2.0
+    )
+    assert y_ext > 0.0
+    cash_10y = DividendCurveBBG.extrapolate_equity_cash_dividends(
+        [0.5, 1.5], [102.0, 104.5], spot=100.0, r_cont=0.10, target_div_times=[0.5, 2.0, 5.0, 10.0, 12.0]
+    )
+    assert len(cash_10y["discrete_cash_dividends"]) == 4 and cash_10y["cutoff_years"] == 10.0
+    assert abs(DividendCurveBBG.option_implied_spot(102.0, 0.10, 0.5, forecast_div_pv=1.5) - (102.0 * math.exp(-0.05) + 1.5)) < 1e-12
+
+    bd_w = DividendCurveBBG.decompose_blended_dividends(
+        [0.5, 1.5, 3.0, 11.0], spot_f0=100.0, fwd_T=96.0, r_cont=0.05, T=11.5, div_weights=[1.0, 1.5, 1.2, 0.8]
+    )
+    assert abs(bd_w["y_prop"][0]) < 1e-12 and abs(bd_w["y_prop"][-1]) < 1e-12 and abs(bd_w["d_cash"][-1]) < 1e-12
+    f_cur, t_prev = 100.0, 0.0
+    for ti, dci, ypi in zip(bd_w["times"], bd_w["d_cash"], bd_w["y_prop"]):
+        f_cur = f_cur * math.exp((0.05 - bd_w["q"]) * (ti - t_prev)) * (1.0 - ypi) - dci
+        t_prev = ti
+    assert abs(f_cur * math.exp((0.05 - bd_w["q"]) * (11.5 - t_prev)) - 96.0) < 1e-8
+
+
+def test_bbg_part2_surface_calibration_extrap_reference_and_serialization():
+    import pandas as pd
+    from bz_pricing.core.options_core import black76_price_greeks, crr_american_discrete_div_price_greeks
+    from bz_pricing.volatility import (
+        BloombergMixtureSurface,
+        LognormalMixtureSlice,
+        SVISlice,
+        VolatilitySurface,
+        filter_surface_quotes_bbg,
+    )
+
+    # 1. filter_surface_quotes_bbg: min_options_per_maturity=3, age_days ignorado em bid/ask e americana
+    ks_f = np.array([85.0, 92.0, 100.0, 108.0, 115.0], dtype=np.float64)
+    spot_f, r_f, t_f = 100.0, 0.08, 0.5
+    fwd_f = spot_f * math.exp(r_f * t_f)
+    rows_s = []
+    for k_i in ks_f:
+        ot_i = "CALL" if k_i >= fwd_f else "PUT"
+        p_am = crr_american_discrete_div_price_greeks(spot_f, k_i, r_f, 0.01, t_f, 0.28, (ot_i == "CALL"), 100, None, None, None, None)[0]
+        rows_s.append({
+            "XprtnDt": "2027-04-30",
+            "ExrcPric": k_i,
+            "option_type": ot_i,
+            "bid": max(0.002, p_am - 0.05),
+            "ask": p_am + 0.05,
+            "age_days": 10,  # ignorado quando bid/ask ativo
+        })
+    # Vencimento com exatamente 3 opcoes válidas e um outlier de spread
+    for k_i, sp_i in [(92.0, 0.04), (100.0, 0.04), (108.0, 0.04), (112.0, 0.04)]:
+        ot_i = "CALL" if k_i >= fwd_f else "PUT"
+        p_eu = black76_price_greeks(fwd_f, k_i, r_f, 0.25, 0.26, ot_i == "CALL")[0]
+        rows_s.append({
+            "XprtnDt": "2027-01-29",
+            "ExrcPric": k_i,
+            "option_type": ot_i,
+            "bid": max(0.002, p_eu - 0.5 * sp_i),
+            "ask": p_eu + 0.5 * sp_i,
+            "age_days": 1,
+        })
+    df_surf_in = pd.DataFrame(rows_s)
+    flt_am = filter_surface_quotes_bbg(
+        df_surf_in,
+        forward_by_expiry={"2027-01-29": fwd_f, "2027-04-30": fwd_f},
+        r_cont_by_expiry={"2027-01-29": r_f, "2027-04-30": r_f},
+        t_by_expiry={"2027-01-29": 0.25, "2027-04-30": t_f},
+        use_bid_ask=True,
+        min_options_per_maturity=3,
+        exercise="AMERICAN",
+        spot=spot_f,
+        crr_steps=100,
+    )
+    assert set(flt_am["XprtnDt"].unique()) == {"2027-01-29", "2027-04-30"}
+    assert np.all(np.isfinite(flt_am["_iv"]))
+
+    # 2. LognormalMixtureSlice.fit: weighting ('price','vega','bid_ask'), preset e distressed Q
+    t_s = 0.5
+    w_dist = np.array([0.95 * 0.45, 0.95 * 0.55])
+    xi_dist = LognormalMixtureSlice._reconstruct_xis(w_dist, np.array([math.log(1.15)]))
+    sl_true = LognormalMixtureSlice(w_dist, xi_dist, np.array([0.35 * math.sqrt(t_s), 0.22 * math.sqrt(t_s)]), forward=100.0, T=t_s)
+    ks_fit = np.linspace(55.0, 145.0, 19)
+    ot_fit = ["PUT" if k < 100.0 else "CALL" for k in ks_fit]
+    ps_fit = np.array([sl_true.option_price(k, r_cont=0.05, is_call=(ot == "CALL"), apply_hazard_damping=False) for k, ot in zip(ks_fit, ot_fit)])
+    spreads_fit = np.full(len(ks_fit), 0.15)
+
+    for wm in ("price", "vega", "bid_ask"):
+        sl_f = LognormalMixtureSlice.fit(
+            ks_fit, ps_fit, ot_fit, 100.0, 0.05, t_s, n_components=4, allow_default=True,
+            weighting=wm, bid_ask_spreads=spreads_fit if wm == "bid_ask" else None,
+        )
+        assert sl_f.fit_diagnostics["weighting"] == wm
+        assert sl_f.fit_diagnostics["rmse_vol_bps"] < 20.0
+        assert abs(sl_f.Q_default - 0.05) < 0.015
+        if wm == "bid_ask":
+            assert sl_f.fit_diagnostics["bid_ask_hit_rate"] == 1.0
+
+    # Zero butterfly sem hazard damping vs damping explícito opt-in
+    vs_dist = VolatilitySurface.from_bloomberg_mixture(BloombergMixtureSurface({126: sl_f}))
+    arb_dist = vs_dist.check_no_arbitrage({126: 100.0}, {126: 0.05})
+    assert arb_dist["butterfly_violations"] == 0
+    _, _, q_far = sl_f.damped_parameters(40.0)
+    assert q_far < sl_f.Q_default
+
+    sl_idx = LognormalMixtureSlice.fit(ks_fit, ps_fit, ot_fit, 100.0, 0.05, t_s, preset="index_deep_otm")
+    assert sl_idx.N == 5 and sl_idx.Q_default < 1e-12
+
+    # 3. Extrapolação de curto e longo prazo, 2-pillar Heston, referência, bid/ask, basis 365 e JSON
+    sl_1 = LognormalMixtureSlice([0.55 * 0.99, 0.45 * 0.99], LognormalMixtureSlice._reconstruct_xis(np.array([0.55 * 0.99, 0.45 * 0.99]), [math.log(1.12)]), [0.22 * math.sqrt(0.25), 0.15 * math.sqrt(0.25)], forward=100.0, T=0.25)
+    sl_2 = LognormalMixtureSlice([0.55 * 0.98, 0.45 * 0.98], LognormalMixtureSlice._reconstruct_xis(np.array([0.55 * 0.98, 0.45 * 0.98]), [math.log(1.18)]), [0.25 * math.sqrt(0.50), 0.17 * math.sqrt(0.50)], forward=102.0, T=0.50)
+
+    surf_2 = BloombergMixtureSurface(
+        {63: sl_1, 126: sl_2},
+        short_atm_anchor={15: 0.34},
+        spread_grid={63: (np.array([80.0, 100.0, 120.0]), np.array([0.012, 0.008, 0.012])), 126: (np.array([80.0, 100.0, 120.0]), np.array([0.010, 0.006, 0.010]))},
+    )
+    assert surf_2.heston_params[1] >= 0.20 * min(sl_1.implied_vol(100.0) ** 2, sl_2.implied_vol(102.0) ** 2) - 1e-12
+    assert abs(surf_2.get_vol(15, 100.0, forward=100.0) - 0.34) < 1e-6
+    assert abs(surf_2.get_vol(15, 89.99, forward=100.0) - surf_2.get_vol(15, 90.01, forward=100.0)) < 0.01
+
+    vb, vm, va = surf_2.get_bid_ask_vol(90, 95.0)
+    assert vb < vm < va
+
+    # Estágio 2/3 de longo prazo atingindo target_atm estressado
+    surf_stress = BloombergMixtureSurface({126: sl_2}, heston_params=(0.65, 0.65, 1.0))
+    v_long_stress = surf_stress.get_vol(1260, sl_2.F, forward=sl_2.F)
+    assert abs(v_long_stress - math.sqrt(0.65)) < 1e-3
+
+    # Superfície de referência (ATM ausente, asas estreitas e prazo longo de 10 anos) + basis=365
+    ref_s = VolatilitySurface.from_svi_slices({
+        180: SVISlice(0.03, 0.05, -0.35, 0.0, 0.15, 180.0 / 365.0),
+        365: SVISlice(0.035, 0.05, -0.35, 0.0, 0.16, 1.0),
+        3650: SVISlice(0.04, 0.05, -0.30, 0.0, 0.20, 10.0),
+    })
+    ks_no_atm = np.array([75.0, 82.0, 118.0, 125.0])
+    ps_no_atm = [black76_price_greeks(100.0, k, 0.05, 180.0 / 365.0, ref_s.get_vol(180, strike=k, forward=100.0) + 0.02, k >= 100.0)[0] for k in ks_no_atm]
+    ks_narrow = np.array([92.0, 96.0, 100.0, 104.0, 108.0])
+    ps_narrow = [black76_price_greeks(103.0, k, 0.05, 1.0, ref_s.get_vol(365, strike=k, forward=103.0) + 0.02, k >= 103.0)[0] for k in ks_narrow]
+    surf_ref_fit = BloombergMixtureSurface.fit(
+        {
+            180: {"strikes": ks_no_atm, "market_prices": ps_no_atm, "option_types": ["PUT", "PUT", "CALL", "CALL"], "forward": 100.0, "r_cont": 0.05},
+            365: {"strikes": ks_narrow, "market_prices": ps_narrow, "option_types": ["PUT", "PUT", "CALL", "CALL", "CALL"], "forward": 103.0, "r_cont": 0.05},
+        },
+        day_count_basis=365.0,
+        reference_surface=ref_s,
+        reference_long_tenors=[1825, 3650],
+    )
+    assert 3650 in surf_ref_fit.slices and surf_ref_fit.day_count_basis == 365.0
+    surf_rt = BloombergMixtureSurface.from_json(surf_2.to_json())
+    assert abs(surf_rt.get_vol(90, 95.0) - surf_2.get_vol(90, 95.0)) < 1e-12
+    assert surf_rt.get_bid_ask_vol(90, 95.0) == surf_2.get_bid_ask_vol(90, 95.0)
 
 
 

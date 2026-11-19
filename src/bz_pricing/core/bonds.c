@@ -1773,6 +1773,7 @@ struct __pyx_obj_10bz_pricing_4core_6curves_ConvenienceYieldCurve;
 struct __pyx_obj_10bz_pricing_4core_6curves_SpreadCurve;
 struct __pyx_obj_10bz_pricing_4core_6curves_NelsonSiegelCurve;
 struct __pyx_obj_10bz_pricing_4core_6curves_SvenssonCurve;
+struct __pyx_obj_10bz_pricing_4core_6curves_BloombergConvenienceYieldCurve;
 struct __pyx_obj_10bz_pricing_4core_5bonds_Bond;
 struct __pyx_obj_10bz_pricing_4core_5bonds_GenericCashflowBond;
 struct __pyx_obj_10bz_pricing_4core_5bonds_LTN;
@@ -1844,6 +1845,11 @@ struct __pyx_opt_args_10bz_pricing_4core_13interpolators_12Interpolator_interpol
   double *t_sec_nodes;
 };
 struct __pyx_opt_args_10bz_pricing_4core_6curves_5Curve_get_rate;
+struct __pyx_opt_args_10bz_pricing_4core_6curves_30BloombergConvenienceYieldCurve_forward_price;
+struct __pyx_opt_args_10bz_pricing_4core_6curves_30BloombergConvenienceYieldCurve_cash_dividend_pv;
+struct __pyx_opt_args_10bz_pricing_4core_6curves_30BloombergConvenienceYieldCurve_cash_dividend_fv;
+struct __pyx_opt_args_10bz_pricing_4core_6curves_30BloombergConvenienceYieldCurve_borrow_cost_rate;
+struct __pyx_opt_args_10bz_pricing_4core_6curves_cum_seasonality_exact;
 struct __pyx_opt_args_10bz_pricing_4core_6curves_extract_linear360_knot_indices;
 
 /* "bz_pricing/core/curves.pxd":8
@@ -1858,8 +1864,68 @@ struct __pyx_opt_args_10bz_pricing_4core_6curves_5Curve_get_rate {
   double t_sec;
 };
 
-/* "bz_pricing/core/curves.pxd":72
- *     cpdef double discount_factor(self, double t) except *
+/* "bz_pricing/core/curves.pxd":99
+ *     cdef dict _diagnostics
+ *     cdef double _get_pre_cont(self, double t, double t_sec, double tau) except *
+ *     cpdef double forward_price(self, double t, double t_sec=*) except *             # <<<<<<<<<<<<<<
+ *     cpdef double cash_dividend_pv(self, double t, double t_sec=*) except *
+ *     cpdef double cash_dividend_fv(self, double t, double t_sec=*) except *
+*/
+struct __pyx_opt_args_10bz_pricing_4core_6curves_30BloombergConvenienceYieldCurve_forward_price {
+  int __pyx_n;
+  double t_sec;
+};
+
+/* "bz_pricing/core/curves.pxd":100
+ *     cdef double _get_pre_cont(self, double t, double t_sec, double tau) except *
+ *     cpdef double forward_price(self, double t, double t_sec=*) except *
+ *     cpdef double cash_dividend_pv(self, double t, double t_sec=*) except *             # <<<<<<<<<<<<<<
+ *     cpdef double cash_dividend_fv(self, double t, double t_sec=*) except *
+ *     cpdef double borrow_cost_rate(self, double t, double t_sec=*) except *
+*/
+struct __pyx_opt_args_10bz_pricing_4core_6curves_30BloombergConvenienceYieldCurve_cash_dividend_pv {
+  int __pyx_n;
+  double t_sec;
+};
+
+/* "bz_pricing/core/curves.pxd":101
+ *     cpdef double forward_price(self, double t, double t_sec=*) except *
+ *     cpdef double cash_dividend_pv(self, double t, double t_sec=*) except *
+ *     cpdef double cash_dividend_fv(self, double t, double t_sec=*) except *             # <<<<<<<<<<<<<<
+ *     cpdef double borrow_cost_rate(self, double t, double t_sec=*) except *
+ * 
+*/
+struct __pyx_opt_args_10bz_pricing_4core_6curves_30BloombergConvenienceYieldCurve_cash_dividend_fv {
+  int __pyx_n;
+  double t_sec;
+};
+
+/* "bz_pricing/core/curves.pxd":102
+ *     cpdef double cash_dividend_pv(self, double t, double t_sec=*) except *
+ *     cpdef double cash_dividend_fv(self, double t, double t_sec=*) except *
+ *     cpdef double borrow_cost_rate(self, double t, double t_sec=*) except *             # <<<<<<<<<<<<<<
+ * 
+ * cpdef double cum_seasonality_exact(double[:] weights, double t_a, double t_b, double start_bin_frac=*)
+*/
+struct __pyx_opt_args_10bz_pricing_4core_6curves_30BloombergConvenienceYieldCurve_borrow_cost_rate {
+  int __pyx_n;
+  double t_sec;
+};
+
+/* "bz_pricing/core/curves.pxd":104
+ *     cpdef double borrow_cost_rate(self, double t, double t_sec=*) except *
+ * 
+ * cpdef double cum_seasonality_exact(double[:] weights, double t_a, double t_b, double start_bin_frac=*)             # <<<<<<<<<<<<<<
+ * 
+ * cpdef list extract_linear360_knot_indices(double[:] dcs, double[:] rates, double tolerance=*)
+*/
+struct __pyx_opt_args_10bz_pricing_4core_6curves_cum_seasonality_exact {
+  int __pyx_n;
+  double start_bin_frac;
+};
+
+/* "bz_pricing/core/curves.pxd":106
+ * cpdef double cum_seasonality_exact(double[:] weights, double t_a, double t_b, double start_bin_frac=*)
  * 
  * cpdef list extract_linear360_knot_indices(double[:] dcs, double[:] rates, double tolerance=*)             # <<<<<<<<<<<<<<
  * 
@@ -2267,6 +2333,43 @@ struct __pyx_obj_10bz_pricing_4core_6curves_SvenssonCurve {
   double _day_count_basis;
   int _compounding;
   int _freq;
+};
+
+
+/* "bz_pricing/core/curves.pxd":72
+ *     cpdef double discount_factor(self, double t) except *
+ * 
+ * cdef class BloombergConvenienceYieldCurve(Curve):             # <<<<<<<<<<<<<<
+ *     cdef double _spot_price
+ *     cdef Curve _pre_curve
+*/
+struct __pyx_obj_10bz_pricing_4core_6curves_BloombergConvenienceYieldCurve {
+  struct __pyx_obj_10bz_pricing_4core_6curves_Curve __pyx_base;
+  double _spot_price;
+  struct __pyx_obj_10bz_pricing_4core_6curves_Curve *_pre_curve;
+  __Pyx_memviewslice _t_nodes;
+  __Pyx_memviewslice _fwd_nodes;
+  __Pyx_memviewslice _r_cont_nodes;
+  __Pyx_memviewslice _d_pv_nodes;
+  __Pyx_memviewslice _y_cont_nodes;
+  __Pyx_memviewslice _season_weights;
+  __Pyx_memviewslice _ex_div_times;
+  __Pyx_memviewslice _ex_div_weights;
+  __Pyx_memviewslice _ex_div_r_cont;
+  __Pyx_memviewslice _decl_div_times;
+  __Pyx_memviewslice _decl_div_amounts;
+  __Pyx_memviewslice _decl_div_r_cont;
+  int _n_nodes;
+  int _n_bins;
+  int _n_ex;
+  int _n_decl;
+  int _is_index;
+  double _start_bin_frac;
+  double _day_count_basis;
+  int _compounding;
+  int _pre_compounding;
+  double _long_fwd_yield;
+  PyObject *_diagnostics;
 };
 
 
@@ -2681,6 +2784,25 @@ struct __pyx_vtabstruct_10bz_pricing_4core_6curves_SvenssonCurve {
   double (*discount_factor)(struct __pyx_obj_10bz_pricing_4core_6curves_SvenssonCurve *, double, int __pyx_skip_dispatch);
 };
 static struct __pyx_vtabstruct_10bz_pricing_4core_6curves_SvenssonCurve *__pyx_vtabptr_10bz_pricing_4core_6curves_SvenssonCurve;
+
+
+/* "bz_pricing/core/curves.pxd":72
+ *     cpdef double discount_factor(self, double t) except *
+ * 
+ * cdef class BloombergConvenienceYieldCurve(Curve):             # <<<<<<<<<<<<<<
+ *     cdef double _spot_price
+ *     cdef Curve _pre_curve
+*/
+
+struct __pyx_vtabstruct_10bz_pricing_4core_6curves_BloombergConvenienceYieldCurve {
+  struct __pyx_vtabstruct_10bz_pricing_4core_6curves_Curve __pyx_base;
+  double (*_get_pre_cont)(struct __pyx_obj_10bz_pricing_4core_6curves_BloombergConvenienceYieldCurve *, double, double, double);
+  double (*forward_price)(struct __pyx_obj_10bz_pricing_4core_6curves_BloombergConvenienceYieldCurve *, double, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_6curves_30BloombergConvenienceYieldCurve_forward_price *__pyx_optional_args);
+  double (*cash_dividend_pv)(struct __pyx_obj_10bz_pricing_4core_6curves_BloombergConvenienceYieldCurve *, double, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_6curves_30BloombergConvenienceYieldCurve_cash_dividend_pv *__pyx_optional_args);
+  double (*cash_dividend_fv)(struct __pyx_obj_10bz_pricing_4core_6curves_BloombergConvenienceYieldCurve *, double, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_6curves_30BloombergConvenienceYieldCurve_cash_dividend_fv *__pyx_optional_args);
+  double (*borrow_cost_rate)(struct __pyx_obj_10bz_pricing_4core_6curves_BloombergConvenienceYieldCurve *, double, int __pyx_skip_dispatch, struct __pyx_opt_args_10bz_pricing_4core_6curves_30BloombergConvenienceYieldCurve_borrow_cost_rate *__pyx_optional_args);
+};
+static struct __pyx_vtabstruct_10bz_pricing_4core_6curves_BloombergConvenienceYieldCurve *__pyx_vtabptr_10bz_pricing_4core_6curves_BloombergConvenienceYieldCurve;
 
 
 /* "bz_pricing/core/bonds.pyx":9
@@ -4852,6 +4974,7 @@ namespace {
     PyTypeObject *__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve;
     PyTypeObject *__pyx_ptype_10bz_pricing_4core_6curves_NelsonSiegelCurve;
     PyTypeObject *__pyx_ptype_10bz_pricing_4core_6curves_SvenssonCurve;
+    PyTypeObject *__pyx_ptype_10bz_pricing_4core_6curves_BloombergConvenienceYieldCurve;
     PyObject *__pyx_type_10bz_pricing_4core_5bonds_Bond;
     PyObject *__pyx_type_10bz_pricing_4core_5bonds_GenericCashflowBond;
     PyObject *__pyx_type_10bz_pricing_4core_5bonds_LTN;
@@ -5204,6 +5327,7 @@ static CYTHON_SMALL_CODE int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve);
   Py_CLEAR(clear_module_state->__pyx_ptype_10bz_pricing_4core_6curves_NelsonSiegelCurve);
   Py_CLEAR(clear_module_state->__pyx_ptype_10bz_pricing_4core_6curves_SvenssonCurve);
+  Py_CLEAR(clear_module_state->__pyx_ptype_10bz_pricing_4core_6curves_BloombergConvenienceYieldCurve);
   Py_CLEAR(clear_module_state->__pyx_ptype_10bz_pricing_4core_5bonds_Bond);
   Py_CLEAR(clear_module_state->__pyx_type_10bz_pricing_4core_5bonds_Bond);
   Py_CLEAR(clear_module_state->__pyx_ptype_10bz_pricing_4core_5bonds_GenericCashflowBond);
@@ -5273,6 +5397,7 @@ static CYTHON_SMALL_CODE int __pyx_m_traverse(PyObject *m, visitproc visit, void
   Py_VISIT(traverse_module_state->__pyx_ptype_10bz_pricing_4core_6curves_SpreadCurve);
   Py_VISIT(traverse_module_state->__pyx_ptype_10bz_pricing_4core_6curves_NelsonSiegelCurve);
   Py_VISIT(traverse_module_state->__pyx_ptype_10bz_pricing_4core_6curves_SvenssonCurve);
+  Py_VISIT(traverse_module_state->__pyx_ptype_10bz_pricing_4core_6curves_BloombergConvenienceYieldCurve);
   Py_VISIT(traverse_module_state->__pyx_ptype_10bz_pricing_4core_5bonds_Bond);
   Py_VISIT(traverse_module_state->__pyx_type_10bz_pricing_4core_5bonds_Bond);
   Py_VISIT(traverse_module_state->__pyx_ptype_10bz_pricing_4core_5bonds_GenericCashflowBond);
@@ -44582,6 +44707,16 @@ static int __Pyx_modinit_Type_import_code(__pyx_mstatetype *__pyx_mstate) {
   #endif
   __Pyx_ImportType_CheckSize_Warn_3_3_0); if (!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SvenssonCurve) __PYX_ERR(3, 59, __pyx_L1_error)
   if (unlikely(__Pyx_GetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_SvenssonCurve, (void**)&__pyx_vtabptr_10bz_pricing_4core_6curves_SvenssonCurve) != 1)) __PYX_ERR(3, 59, __pyx_L1_error)
+  __pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_BloombergConvenienceYieldCurve = __Pyx_ImportType_3_3_0(__pyx_t_1, "bz_pricing.core.curves", "BloombergConvenienceYieldCurve",
+  #if defined(PYPY_VERSION_NUM) && PYPY_VERSION_NUM < 0x050B0000
+  sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_BloombergConvenienceYieldCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_BloombergConvenienceYieldCurve),
+  #elif CYTHON_COMPILING_IN_LIMITED_API
+  sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_BloombergConvenienceYieldCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_BloombergConvenienceYieldCurve),
+  #else
+  sizeof(struct __pyx_obj_10bz_pricing_4core_6curves_BloombergConvenienceYieldCurve), __PYX_GET_STRUCT_ALIGNMENT_3_3_0(struct __pyx_obj_10bz_pricing_4core_6curves_BloombergConvenienceYieldCurve),
+  #endif
+  __Pyx_ImportType_CheckSize_Warn_3_3_0); if (!__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_BloombergConvenienceYieldCurve) __PYX_ERR(3, 72, __pyx_L1_error)
+  if (unlikely(__Pyx_GetVtable(__pyx_mstate->__pyx_ptype_10bz_pricing_4core_6curves_BloombergConvenienceYieldCurve, (void**)&__pyx_vtabptr_10bz_pricing_4core_6curves_BloombergConvenienceYieldCurve) != 1)) __PYX_ERR(3, 72, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;

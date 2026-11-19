@@ -249,6 +249,24 @@ $$\text{TxCY}_n = \left[ \frac{\text{Spot}_t \times \left(1 + \text{PRE}_n\right
 
 3. **Prazos Intermediários e Extrapolação:** Os vértices $(\text{DU}_n, \text{TxCY}_n)$ são interpolados por `FlatForward252Interpolator(extrap_left=0, extrap_right=0)`, com patamar constante antes do primeiro vencimento ($2 \le \text{DU} < \text{DU}_1$) e após o último vencimento ($\text{DU} > \text{DU}_{\text{último}}$).
 
+### 7.3 Estrutura a Termo de Convenience Yield e Dividendos Implícitos (`BloombergConvenienceYieldCurve`)
+
+Complementarmente à convenção padrão de futuros da B3, a classe Cython [`BloombergConvenienceYieldCurve`](../src/bz_pricing/core/curves.pyx) modela a estrutura a termo de dividendos implícitos e custo de carrego a partir de preços a termo $F(T)$, cotações de opções ou ambos. A implementação original `ConvenienceYieldCurve` permanece inalterada para as curvas `CYI`, `CYM` e `CYX`.
+
+1. **Ações Individuais em Valor Presente de Dividendos e Datas Ex-Dividendo:** Para ações individuais, a interpolação ocorre sobre o valor presente acumulado de dividendos líquidos, definido em função do preço à vista $S_t$ e da taxa contínua sem risco $r_c(T)$:
+
+$$D_{\text{pv}}(T) = S_t - F(T) e^{-r_c(T) T}$$
+
+Entre dois vencimentos consecutivos $[T_a, T_b]$, o incremento $D_{\text{pv}}(T_b) - D_{\text{pv}}(T_a)$ é alocado proporcionalmente às datas ex-dividendo discretas $t_j \in (T_a, T_b]$ com ponderação descontada $w_j e^{-r_c(t_j) t_j}$, ou pela integral exata de pesos sazonais mensais em 12 faixas na ausência de calendário discreto. A reconstrução do preço futuro em qualquer prazo intermediário $T$ é dada por:
+
+$$F(T) = \max\left(\varepsilon, \, S_t - D_{\text{pv}}(T)\right) e^{r_c(T) T}$$
+
+2. **Índices com Sazonalidade Semanal:** Para índices acionários (`is_index=True`), a interpolação atua diretamente sobre o rendimento contínuo acumulado $y_c(T) T$, que é distribuído entre nós por integração analítica exata em Cython sobre uma grade sazonal de 52 semanas.
+
+3. **Extrapolação de Longo Prazo e Separação de Custo de Aluguel:** Além do último vértice observado $T_N$, aplica-se o rendimento contínuo a termo $y_{\text{fwd}}$ calculado sobre a última janela com amplitude igual ou superior a um ano (ou estendido por projeções de curto prazo quando $T_N < 1$ ano). O método `extrapolated_discrete_dividends` converte essa projeção em pagamentos discretos em caixa até o horizonte de corte de 10 anos e retorna o rendimento contínuo residual para prazos superiores. Quando dividendos declarados $(t_k, D_k)$ são informados, `borrow_cost_rate` isola a taxa anualizada implícita de aluguel do ativo mediante o desconto dos dividendos declarados sobre o carrego líquido.
+
+4. **Construção Multiconvenção e Offline:** A classe opera com `day_count_basis` configurável (252 em convenção doméstica exponencial ou 360/365 em mercados internacionais sob capitalização contínua) e disponibiliza os construtores `from_futures`, `from_options_chain` (com paridade *put-call*, desamericanização binomial via `deamericanize_and_infer_forward_bbg` e suavização via `KalmanDividendFilter`) e `from_futures_and_options`.
+
 ---
 
 ## 8. Construção de Curvas a partir de Vértices e Componentes do Usuário
@@ -332,7 +350,20 @@ df_ind = pd.DataFrame({"DU": [31, 72, 111], "AdjstdQt": [170165.0, 173803.0, 177
 curve_inp = manager.get_curve("INP", base_date, data=df_ind, spot_price=167938.10)
 curve_cyi = manager.get_curve("CYI", base_date, spot_price=167938.10, futures_curve=curve_inp, pre_data=df_pre)
 
-# 2. Interpolação direta de vértices arbitrários em qualquer estrutura configurada
+# 2. Convenience Yield Bloomberg com sazonalidade/datas ex-dividendo e opções implícitas
+df_fut_acao = pd.DataFrame({
+    "XprtnDt": ["2026-12-18", "2027-02-19"],
+    "AdjstdQt": [38.20, 38.95],
+})
+_, curve_cy_bbg = manager.get_stock_future_curve(
+    "PETR4", base_date, data=df_fut_acao, spot_price=38.00, pre_data=df_pre,
+    cy_model="bloomberg", ex_div_times=[0.10, 0.25],
+)
+curve_cy_opt = manager.get_implied_convenience_yield_curve(
+    base_date, spot_price=38.00, futures_data=df_fut_acao, pre_data=df_pre,
+)
+
+# 3. Interpolação direta de vértices arbitrários em qualquer estrutura configurada
 curve_pre_custom = manager.get_curve("PRE", data={1: 13.65, 21: 13.72, 63: 13.85, 252: 14.10})
 ```
 
@@ -353,3 +384,4 @@ As formulações matemáticas, convenções de contagem de prazos e regras de ar
 - **Gürkaynak, R. S., Sack, B., & Wright, J. H.** *The U.S. Treasury Yield Curve: 1961 to the Present*. Finance and Economics Discussion Series, Federal Reserve Board, 2006. Disponível em: <https://www.federalreserve.gov/econres/feds/the-us-treasury-yield-curve-1961-to-the-present.htm>.
 - **U.S. Department of the Treasury.** *Treasury Coupon-Issue and Corporate Bond Yield Curve Methodology*. Washington, D.C.: Office of Debt Management. Disponível em: <https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics>.
 - **Hagan, P. S., & West, G.** *Interpolation Methods for Curve Construction*. Applied Mathematical Finance, v. 13, n. 2, p. 89–129, 2006.
+- **Bloomberg L.P.** *Equity Implied Volatility Surface: Option Pricing & Risk Management*. Quantitative Research, 2024.

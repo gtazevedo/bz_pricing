@@ -252,7 +252,7 @@ import datetime
 import math
 import numpy as np
 from bz_pricing.curves.offshore import bootstrap_ois_curve, bootstrap_treasury_curve
-from bz_pricing.core.curves import SvenssonCurve
+from bz_pricing.core.curves import BloombergConvenienceYieldCurve, FlatCurve, SvenssonCurve
 from bz_pricing.volatility import (
     deamericanize_and_infer_forward_bbg,
     KalmanDividendFilter,
@@ -294,9 +294,35 @@ decomp = DividendCurveBBG.decompose_blended_dividends([0.25, 0.75], spot_f0=100.
 print(f"Forward inferido: {res_fwd['forward']:.4f} | Div. filtrado: {kf_out['dividend']:.4f} | q_res: {decomp['q']:.4f}")
 
 # 6.3 Part II Bloomberg: mistura de lognormais com estado de default e superfície 2D
-sl_mix = LognormalMixtureSlice.fit(strikes, np.where(strikes < fwd_true, p_eu, c_eu), np.where(strikes < fwd_true, "PUT", "CALL"), fwd_true, r_c, T_opt, n_components=2)
-surf_bbg = BloombergMixtureSurface({126: sl_mix})
-print(f"Q_default={sl_mix.Q_default:.4f} | Vol ATM (126 DU): {surf_bbg.get_vol(126, fwd_true)*100:.2f}%")
+sl_mix = LognormalMixtureSlice.fit(
+    strikes,
+    np.where(strikes < fwd_true, p_eu, c_eu),
+    np.where(strikes < fwd_true, "PUT", "CALL"),
+    fwd_true,
+    r_c,
+    T_opt,
+    n_components=4,
+    weighting="vega",
+    multistage=True,
+    preset="index_deep_otm",
+)
+surf_bbg = BloombergMixtureSurface({126: sl_mix}, spread_grid={126: (strikes, np.full(len(strikes), 0.008))})
+surf_bbg_rt = BloombergMixtureSurface.from_json(surf_bbg.to_json())
+v_b, v_m, v_a = surf_bbg_rt.get_bid_ask_vol(126, fwd_true)
+
+# 6.4 Estrutura a termo BloombergConvenienceYieldCurve com datas ex-dividendo e custo de aluguel
+cy_bbg = BloombergConvenienceYieldCurve.from_futures(
+    spot_price=100.0,
+    futures_curve_or_data={126.0: fwd_true, 252.0: 100.0 * math.exp((r_c - 0.04) * 1.0)},
+    pre_curve=FlatCurve(math.exp(r_c) - 1.0),
+    ex_div_times=[0.20, 0.70],
+    declared_div_times=[0.20, 0.70],
+    declared_div_amounts=[1.00, 1.05],
+)
+print(
+    f"Q_default={sl_mix.Q_default:.4f} | Vol ATM (126 DU): {v_m*100:.2f}% (Bid/Ask: {v_b*100:.2f}%/{v_a*100:.2f}%) | "
+    f"CY Fwd(63 DU): {cy_bbg.forward_price(63.0):.4f} | BTC 1Y: {cy_bbg.borrow_cost_rate(252.0)*100:.2f}%"
+)
 ```
 
 ---

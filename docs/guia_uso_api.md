@@ -482,12 +482,24 @@ crv_mgr = manager_off.get_curve("SOFR_OIS", data=df_sofr, method="log_linear")
 print(f"SOFR 1Y (Monotone Convex): {crv_sofr.get_rate(365.0)*100:.4f}% | Manager LogLinear: {crv_mgr.get_rate(365.0)*100:.4f}%")
 ```
 
-O módulo [`bloomberg_surface.py`](../src/bz_pricing/volatility/bloomberg_surface.py) disponibiliza a inferência de *forwards* com desamericanização binomial (`deamericanize_and_infer_forward_bbg`), filtro de Kalman adaptativo para dividendos (`KalmanDividendFilter`), interpolação sazonal e decomposição híbrida (`DividendCurveBBG`), calibração por mistura de lognormais com estado de *default* (`LognormalMixtureSlice`) e superfície temporal (`BloombergMixtureSurface`, integrável diretamente via `VolatilitySurface.from_bloomberg_mixture`):
+O módulo [`bloomberg_surface.py`](../src/bz_pricing/volatility/bloomberg_surface.py) disponibiliza a inferência de *forwards* com desamericanização binomial (`deamericanize_and_infer_forward_bbg`), filtro de Kalman adaptativo para dividendos (`KalmanDividendFilter`), interpolação sazonal e decomposição híbrida (`DividendCurveBBG`), calibração por mistura de lognormais com estado de *default* (`LognormalMixtureSlice`, com `weighting` em `"price"`, `"vega"` ou `"bid_ask"`, `multistage=True` e `preset="index_deep_otm"`) e superfície temporal (`BloombergMixtureSurface`, com suporte a `get_bid_ask_vol`, serialização `to_json`/`from_json` e integração via `VolatilitySurface.from_bloomberg_mixture`). A estrutura a termo de dividendos e carrego implícito correspondente encontra-se disponível em Cython na classe `BloombergConvenienceYieldCurve`:
 
 ```python
 import math
 import numpy as np
+from bz_pricing.core.curves import BloombergConvenienceYieldCurve, FlatCurve
 from bz_pricing.volatility import LognormalMixtureSlice, BloombergMixtureSurface, VolatilitySurface
+
+# Curva de convenience yield Bloomberg com datas ex-dividendo e separação de custo de aluguel
+cy_bbg = BloombergConvenienceYieldCurve.from_futures(
+    spot_price=100.0,
+    futures_curve_or_data={126.0: 103.8, 252.0: 107.6},
+    pre_curve=FlatCurve(0.12),
+    ex_div_times=[0.20, 0.75],
+    declared_div_times=[0.20, 0.75],
+    declared_div_amounts=[1.20, 1.30],
+)
+btc_1y = cy_bbg.borrow_cost_rate(252.0)
 
 sl_bbg = LognormalMixtureSlice(
     weights=[0.57, 0.38],
@@ -496,13 +508,21 @@ sl_bbg = LognormalMixtureSlice(
     forward=100.0,
     T=1.0,
 )
+ks_fit = np.array([80.0, 90.0, 100.0, 110.0, 120.0])
+ot_fit = np.where(ks_fit < 100.0, "PUT", "CALL")
+ps_fit = np.array([sl_bbg.option_price(float(k), r_cont=0.05, is_call=(t == "CALL")) for k, t in zip(ks_fit, ot_fit)])
+sl_idx = LognormalMixtureSlice.fit(ks_fit, ps_fit, ot_fit, forward=100.0, r_cont=0.05, T=1.0, weighting="vega", multistage=True, preset="index_deep_otm")
+
+surf_mix = BloombergMixtureSurface({252: sl_idx}, spread_grid={252: (ks_fit, np.full(5, 0.008))})
+surf_rt = BloombergMixtureSurface.from_json(surf_mix.to_json())
+v_bid, v_mid, v_ask = surf_rt.get_bid_ask_vol(252, 95.0)
 surf_bbg = VolatilitySurface.from_bloomberg_mixture(BloombergMixtureSurface({252: sl_bbg}))
 put_parity_diff = (
     sl_bbg.option_price(90.0, r_cont=0.05, is_call=True)
     - sl_bbg.option_price(90.0, r_cont=0.05, is_call=False)
     - math.exp(-0.05) * (sl_bbg.F - 90.0)
 )
-print(f"Vol(K=90): {surf_bbg.get_vol(252, 90.0, 100.0)*100:.2f}% | Erro paridade Q-default={sl_bbg.Q_default:.2%}: {abs(put_parity_diff):.2e}")
+print(f"Vol(K=90): {surf_bbg.get_vol(252, 90.0, 100.0)*100:.2f}% | Bid/Mid/Ask(95): {v_bid*100:.2f}/{v_mid*100:.2f}/{v_ask*100:.2f}% | BTC 1Y: {btc_1y*100:.2f}% | Paridade Q: {abs(put_parity_diff):.2e}")
 ```
 
 ---
