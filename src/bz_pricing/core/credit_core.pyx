@@ -3,7 +3,7 @@
 # cython: wraparound=False
 # cython: cdivision=True
 
-from libc.math cimport pow, trunc, round
+from libc.math cimport pow, trunc, round, exp
 import numpy as np
 cimport numpy as np
 
@@ -169,4 +169,131 @@ cpdef double evaluate_gross_up_pv(
     for i in range(n):
         pv += flows_arr[i] / pow(1.0 + rate, du_arr[i] / 252.0)
     return pv
+
+
+cpdef double survival_probability_piecewise(
+    double t,
+    double[:] t_nodes,
+    double[:] lambda_nodes,
+) noexcept nogil:
+    """
+    Probabilidade de sobrevivência Q(t) = exp(-integral_0^t lambda(u) du)
+    sob intensidade de default constante por partes (piecewise-constant hazard rate).
+    """
+    if t <= 0.0:
+        return 1.0
+    cdef Py_ssize_t n = t_nodes.shape[0]
+    if n == 0:
+        return 1.0
+
+    cdef double integral = 0.0
+    cdef double t_prev = 0.0
+    cdef double dt, lam
+    cdef Py_ssize_t i
+
+    for i in range(n):
+        lam = lambda_nodes[i]
+        if lam < 0.0:
+            lam = 0.0
+        if t <= t_nodes[i]:
+            integral += lam * (t - t_prev)
+            return exp(-integral)
+        dt = t_nodes[i] - t_prev
+        if dt > 0.0:
+            integral += lam * dt
+        t_prev = t_nodes[i]
+
+    lam = lambda_nodes[n - 1]
+    if lam < 0.0:
+        lam = 0.0
+    integral += lam * (t - t_prev)
+    return exp(-integral)
+
+
+cpdef tuple risky_bond_pv(
+    double[:] cf_vals,
+    double[:] df_rf,
+    double[:] q_cf,
+    double recovery_rate=0.40,
+    double principal=1000.0,
+    double[:] outstanding_notionals=None,
+):
+    """
+    Calcula o Valor Presente com risco de crédito (Duffie-Singleton / Jarrow-Turnbull):
+      PV_risky = sum(CF_i * DF_i * Q_i) + R * sum(Notional_i * 0.5*(DF_{i-1} + DF_i) * (Q_{i-1} - Q_i))
+    Retorna (pv_risky, pv_risk_free, cva).
+    """
+    cdef Py_ssize_t n = cf_vals.shape[0]
+    cdef Py_ssize_t i
+    cdef double pv_rf = 0.0
+    cdef double pv_surv = 0.0
+    cdef double pv_rec = 0.0
+    cdef double q_prev = 1.0
+    cdef double df_prev = 1.0
+    cdef double q_curr, df_curr, df_mid, d_prob, rec_base
+    cdef bint has_notionals = (outstanding_notionals is not None)
+
+    with nogil:
+        for i in range(n):
+            q_curr = q_cf[i]
+            df_curr = df_rf[i]
+            pv_rf += cf_vals[i] * df_curr
+            pv_surv += cf_vals[i] * df_curr * q_curr
+            d_prob = q_prev - q_curr
+            if d_prob > 0.0:
+                rec_base = outstanding_notionals[i] if has_notionals else principal
+                df_mid = 0.5 * (df_prev + df_curr)
+                pv_rec += recovery_rate * rec_base * df_mid * d_prob
+            q_prev = q_curr
+            df_prev = df_curr
+
+    cdef double pv_r = pv_surv + pv_rec
+    return (pv_r, pv_rf, pv_rf - pv_r)
+
+
+cpdef tuple compute_custom_credit_flows(
+    int[:] du_arr,
+    double[:] fluxo_arr,
+    double[:] r_desc_arr,
+    double value_scale,
+):
+    """Calcula fatores de desconto T-14, valor presente e métricas de risco para fluxos customizados."""
+    cdef Py_ssize_t n = du_arr.shape[0]
+    cdef np.ndarray[np.float64_t, ndim=1] out_df = np.zeros(n, dtype=np.float64)
+    cdef np.ndarray[np.float64_t, ndim=1] out_pv = np.zeros(n, dtype=np.float64)
+
+    cdef Py_ssize_t i
+    cdef int du
+    cdef double r_desc, fl, df_val, pv_val, t_ano
+    cdef double total_pv = 0.0, sum_du_pv = 0.0, sum_t_pv = 0.0
+    cdef double sum_dmod_pv = 0.0, sum_conv_pv = 0.0
+
+    with nogil:
+        for i in range(n):
+            du = du_arr[i]
+            fl = fluxo_arr[i]
+            r_desc = r_desc_arr[i]
+            df_val = trunc(pow(1.0 + r_desc, du / 252.0) * 1e14) / 1e14 if du > 0 else 1.0
+            pv_val = fl / df_val
+            out_df[i] = df_val
+            out_pv[i] = pv_val
+
+            total_pv += pv_val
+            t_ano = du / 252.0
+            sum_du_pv += du * pv_val
+            sum_t_pv += t_ano * pv_val
+            sum_dmod_pv += (t_ano / (1.0 + r_desc)) * pv_val
+            sum_conv_pv += ((t_ano * (t_ano + 1.0)) / ((1.0 + r_desc) * (1.0 + r_desc))) * pv_val
+
+    cdef double pu = 0.0 if n == 0 else (trunc(total_pv * value_scale) / value_scale)
+    cdef double dur_du = 0.0, dur_anos = 0.0, d_mod = 0.0, dv01 = 0.0, conv = 0.0
+    if total_pv > 0.0:
+        dur_du = trunc((sum_du_pv / total_pv) * 100.0) / 100.0
+        dur_anos = sum_t_pv / total_pv
+        d_mod = sum_dmod_pv / total_pv
+        dv01 = pu * d_mod * 0.0001
+        conv = sum_conv_pv / total_pv
+
+    return (out_df, out_pv, (pu, dur_du, dur_anos, d_mod, dv01, conv))
+
 

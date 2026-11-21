@@ -13,6 +13,8 @@ def curve_manager():
     builder = B3CurveBuilder()
     return CurveManager(loader=loader, builder=builder, allow_download=True)
 
+@pytest.mark.online
+@pytest.mark.market_data("dados/b3/BVBG_SPRD_20260904.csv", "dados/b3/BVBG_IN_20260904.csv")
 def test_pre_and_selic_curves(curve_manager):
     base_date = datetime.date(2026, 9, 4)
     curve_pre = curve_manager.get_curve("PRE", base_date)
@@ -27,6 +29,14 @@ def test_pre_and_selic_curves(curve_manager):
     assert abs(v1_pre - 13.90) < 1e-4
     assert abs(v1_slp - 13.90) < 1e-4
 
+
+@pytest.mark.online
+@pytest.mark.market_data(
+    "dados/b3/BVBG_SPRD_20260904.csv",
+    "dados/b3/BVBG_IN_20260904.csv",
+    "dados/b3/taxas_TFP_20260904.csv",
+    "dados/b3/taxas_TP_20260904.csv",
+)
 def test_tbf_and_tr_curves_adherence(curve_manager):
     base_date = datetime.date(2026, 9, 4)
     curve_tbf = curve_manager.get_curve("TBF_PRE", base_date)
@@ -47,6 +57,9 @@ def test_tbf_and_tr_curves_adherence(curve_manager):
     assert err_tr.mean() < 0.02
     assert err_tr.max() < 0.05
 
+
+@pytest.mark.online
+@pytest.mark.market_data("dados/b3/BVBG_SPRD_20260904.csv", "dados/b3/BVBG_IN_20260904.csv")
 def test_inflation_curves(curve_manager):
     base_date = datetime.date(2026, 9, 4)
     curve_dic = curve_manager.get_curve("DIC", base_date)
@@ -63,8 +76,9 @@ def test_inflation_curves(curve_manager):
     assert abs(curve_dic.get_rate(1.0) - v1_pre) < 1e-4
     assert abs(curve_dim.get_rate(1.0) - v1_pre) < 1e-4
 
-def test_external_data_support(curve_manager):
-    from bz_pricing.curves.manager import DataUnavailableError
+
+def test_external_data_support():
+    mgr = CurveManager(allow_download=False)
     base_date = datetime.date(2026, 10, 30)
     
     # 1. External DataFrame with DU and rate
@@ -74,38 +88,40 @@ def test_external_data_support(curve_manager):
     })
     
     # Formato A: get_curve('DOL', df_custom) - 2º argumento posicional
-    c_pos = curve_manager.get_curve('DOL', df_custom)
+    c_pos = mgr.get_curve('DOL', df_custom)
     assert abs(c_pos.get_rate(21) - 0.1380) < 1e-4
     assert abs(c_pos.get_rate(252) - 0.1420) < 1e-4
     
     # Formato B: get_curve('DOL', base_date, df_custom)
-    c_date_pos = curve_manager.get_curve('DOL', base_date, df_custom)
+    c_date_pos = mgr.get_curve('DOL', base_date, df_custom)
     assert abs(c_date_pos.get_rate(21) - 0.1380) < 1e-4
     
     # Formato C: get_curve('DOL', base_date, data=df_custom)
-    c_kw = curve_manager.get_curve('DOL', base_date, data=df_custom)
+    c_kw = mgr.get_curve('DOL', base_date, data=df_custom)
     assert abs(c_kw.get_rate(63) - 0.1390) < 1e-4
 
     # 2. External pd.Series
     s_custom = pd.Series([13.75, 13.80, 13.90], index=[1, 21, 63])
-    c_series = curve_manager.get_curve('PRE', data=s_custom)
+    c_series = mgr.get_curve('PRE', data=s_custom)
     assert abs(c_series.get_rate(21) - 0.1380) < 1e-4
 
     # 3. External dict
     dict_custom = {1: 13.75, 21: 13.80, 42: 13.85}
-    c_dict = curve_manager.get_curve('DIC', data=dict_custom)
+    c_dict = mgr.get_curve('DIC', data=dict_custom)
     assert abs(c_dict.get_rate(21) - 0.1380) < 1e-4
 
     # 4. External Flat Curve
-    c_flat = curve_manager.get_curve('TJLP', data=0.075)
+    c_flat = mgr.get_curve('TJLP', data=0.075)
     assert abs(c_flat.get_rate(100) - 0.075) < 1e-4
 
-    # 5. External Stock Future Data
+    # 5. External Stock Future Data (100% offline passando pre_curve)
     df_stock = pd.DataFrame({
         'XprtnDt': [datetime.date(2026, 11, 16), datetime.date(2026, 12, 18)],
         'AdjstdQt': [53.10, 53.60]
     })
-    fut_curve, cy_curve = curve_manager.get_stock_future_curve('PETRP', base_date=base_date, spot_price=52.71, data=df_stock)
+    fut_curve, cy_curve = mgr.get_stock_future_curve(
+        'PETRP', base_date=base_date, spot_price=52.71, data=df_stock, pre_curve=c_series
+    )
     assert fut_curve is not None
     assert cy_curve is not None
     assert fut_curve.get_rate(1.0) == 52.71
@@ -113,13 +129,19 @@ def test_external_data_support(curve_manager):
     assert abs(cy_curve.get_rate(33.0) - cy_curve.get_rate(34.0)) < 1e-8
     assert abs(cy_curve.get_rate(33.0) - cy_curve.get_rate(50.0)) < 1e-8
 
-def test_data_unavailable_error(curve_manager):
+
+def test_data_unavailable_error(tmp_path):
     from bz_pricing.curves.manager import DataUnavailableError
-    # Data no passado remoto que não existe localmente nem no histórico disponível da B3
+    mgr = CurveManager(
+        loader=B3DataLoader(data_dir=str(tmp_path)),
+        builder=B3CurveBuilder(),
+        allow_download=False,
+    )
+    # Data no passado remoto ausente localmente em modo offline
     ancient_date = datetime.date(1991, 1, 1)
     
     with pytest.raises(DataUnavailableError) as exc_info:
-        curve_manager.get_curve('DOL', ancient_date)
+        mgr.get_curve('DOL', ancient_date)
     
     msg = str(exc_info.value)
     assert "DOL" in msg
@@ -159,6 +181,8 @@ def test_allow_download_and_partial_inputs():
     assert c_dic is not None
     assert c_dic.get_rate(21) > 0.0
 
+@pytest.mark.online
+@pytest.mark.market_data("dados/b3")
 def test_provider_knots_and_interpolation(curve_manager):
     """
     Testa se para curvas de swaps offshore como ZUS e SDE,
@@ -177,6 +201,13 @@ def test_provider_knots_and_interpolation(curve_manager):
     r45 = curve_zus.get_rate(45.0)
     assert 0.0420 < r45 < 0.0435
 
+
+@pytest.mark.online
+@pytest.mark.market_data(
+    "dados/b3/BVBG_SPRD_20261030.csv",
+    "dados/b3/BVBG_IN_20261030.csv",
+    "dados/b3/taxas_PRE_20261030.csv",
+)
 def test_all_b3_curves_vertex_adherence_20261030(curve_manager):
     """
     Valida que todas as curvas da análise (PRE, DIC, DPL, DIM, DOL, DOC, EUC, SDE, PTX, EUR, JPY, INP, BRP)
@@ -316,6 +347,304 @@ def test_user_component_vertices_offline():
     c_zus_fd = mgr.get_curve('ZUS', base_date, discount_factors=fd_dict)
     expected_90 = (1.0 / 0.9895 - 1.0) * (360.0 / 90.0)
     assert abs(c_zus_fd.get_rate(90.0) - expected_90) < 1e-4
+
+
+def test_offline_calendars_ois_schedule_configs_and_provider_guard():
+    import math
+    from bz_pricing.core.calendars import get_calendar
+    from bz_pricing.curves.configs import CURVE_CONFIGS
+    from bz_pricing.curves.offshore import (
+        _coupon_schedule_dc,
+        bootstrap_ois_curve,
+        bootstrap_treasury_curve,
+    )
+
+    # O1 / E2: calendários embutidos offline e custom holidays sem mutar singleton B3
+    cal_b3 = get_calendar("B3", allow_download=False)
+    cal_us = get_calendar("US", allow_download=False)
+    cal_tgt = get_calendar("TARGET", allow_download=False)
+    cal_uk = get_calendar("UK", allow_download=False)
+    cal_act = get_calendar("ACTUAL", allow_download=False)
+    assert cal_b3 is not None and cal_us is not None and cal_tgt is not None and cal_uk is not None and cal_act is not None
+
+    # 2026-11-02 (Finados BR) é feriado na B3, mas dia útil nos EUA; 2026-07-03 (obs. 4 de Julho) é feriado US
+    assert not cal_b3.isbizday(datetime.date(2026, 11, 2))
+    assert cal_us.isbizday(datetime.date(2026, 11, 2))
+    assert not cal_us.isbizday(datetime.date(2026, 7, 3))
+    assert not cal_tgt.isbizday(datetime.date(2026, 12, 26))
+    assert not cal_uk.isbizday(datetime.date(2026, 8, 31))
+    assert cal_act.bizdays(datetime.date(2026, 10, 30), datetime.date(2026, 11, 2)) == 3
+
+    du_std = cal_b3.bizdays(datetime.date(2026, 10, 30), datetime.date(2026, 12, 1))
+    cal_custom = get_calendar("B3", holidays=["2026-11-16"])
+    assert cal_custom.bizdays(datetime.date(2026, 10, 30), datetime.date(2026, 12, 1)) == du_std - 1
+    assert cal_b3.bizdays(datetime.date(2026, 10, 30), datetime.date(2026, 12, 1)) == du_std
+
+    # E1: espaçamento anual civil (365, 730, 1095 DC) sob ACT/360 em OIS e Treasury reproduz PV par = 1.0
+    ois_cal_dcs = [90.0, 180.0, 365.0, 730.0, 1095.0, 1825.0]
+    ois_cal_pars = [0.0430, 0.0438, 0.0446, 0.0458, 0.0467, 0.0480]
+    ois_crv = bootstrap_ois_curve(
+        ois_cal_dcs, ois_cal_pars, convention="ACT/360", payment_freq_months=12, method="monotone_convex"
+    )
+    for dc_m, y_par in zip(ois_cal_dcs, ois_cal_pars):
+        pts = _coupon_schedule_dc(dc_m, 1.0, 360.0)
+        pv = 0.0
+        prev = 0.0
+        for j, pt in enumerate(pts):
+            df = math.exp(-ois_crv.get_rate(pt) * (pt / 360.0))
+            amt = y_par * ((pt - prev) / 360.0) + (1.0 if j == len(pts) - 1 else 0.0)
+            pv += amt * df
+            prev = pt
+        assert abs(pv - 1.0) < 1e-11
+
+    ust_cal_dcs = [90.0, 182.0, 365.0, 730.0, 1095.0]
+    ust_cal_pars = [0.0440, 0.0446, 0.0454, 0.0462, 0.0470]
+    ust_crv = bootstrap_treasury_curve(ust_cal_dcs, ust_cal_pars, coupon_freq=2, day_count_basis=365.25, method="monotone_convex")
+    assert ust_crv.get_rate(730.0) > 0.0
+
+    # E4: configuração de moedas offshore SGP (SONIA), SYD (TONA) e TONA_OIS
+    assert CURVE_CONFIGS["SGP"]["curve_a"] == "SONIA_OIS"
+    assert CURVE_CONFIGS["SYD"]["curve_a"] == "TONA_OIS"
+    assert "TONA_OIS" in CURVE_CONFIGS and CURVE_CONFIGS["TONA_OIS"]["convention"] == "ACT/365"
+
+    # O4: _extract_provider_vertices não toca self.loader quando allow_download=False
+    class _BrokenLoader:
+        data_dir = "dados/b3"
+        def get_curve_instruments(self, *args, **kwargs):
+            raise AssertionError("Não deve consultar loader com allow_download=False")
+
+    mgr_off = CurveManager(loader=_BrokenLoader(), builder=B3CurveBuilder(), allow_download=False)
+    df_many = pd.DataFrame({
+        "day252": np.arange(1, 70, dtype=int) * 5,
+        "day360": np.arange(1, 70, dtype=int) * 7,
+        "rate": np.linspace(12.5, 13.8, 69),
+    })
+    for c_name in ("PRE", "DAP", "DOC"):
+        crv_o = mgr_off.get_curve(c_name, datetime.date(2026, 10, 30), data=df_many, allow_download=False)
+        assert crv_o.get_rate(25.0, 35.0) > 0.0
+
+
+def test_bloomberg_convenience_yield_equity_discrete_and_seasonality():
+    import math
+    from bz_pricing.core.curves import BloombergConvenienceYieldCurve, FlatCurve
+
+    # 1. Tabela XYZ (r=0): alocação de incrementos D_pv nas datas ex-dividendo discretas
+    spot = 100.0
+    r0_curve = FlatCurve(0.0)
+    cy_xyz = BloombergConvenienceYieldCurve(
+        spot_price=spot,
+        pre_curve=r0_curve,
+        t_nodes=[63.0, 126.0],
+        fwd_nodes=[99.0, 97.5],
+        ex_div_times=[0.10, 0.20, 0.40],
+        ex_div_weights=[1.0, 1.0, 1.0],
+    )
+    assert abs(cy_xyz.forward_price(63.0) - 99.0) < 1e-10
+    assert abs(cy_xyz.forward_price(126.0) - 97.5) < 1e-10
+    sched = cy_xyz.ex_dividend_schedule()
+    assert len(sched) == 3
+    assert abs(sched[0]["cash_dividend"] - 0.5) < 1e-10
+    assert abs(sched[1]["cash_dividend"] - 0.5) < 1e-10
+    assert abs(sched[2]["cash_dividend"] - 1.5) < 1e-10
+    # Preço a termo cai apenas na data ex-dividendo quando r=0
+    assert abs(cy_xyz.forward_price(0.05 * 252.0) - 100.0) < 1e-10
+    assert abs(cy_xyz.forward_price(0.15 * 252.0) - 99.5) < 1e-10
+
+    # 2. CDI positivo (14,5% a.a. exponencial 252): capitalização exata de D_pv
+    pre_cdi = FlatCurve(0.145)
+    r_c = math.log(1.145)
+    cy_cdi = BloombergConvenienceYieldCurve(
+        spot_price=spot,
+        pre_curve=pre_cdi,
+        t_nodes=[63.0, 126.0],
+        fwd_nodes=[101.0, 103.0],
+        ex_div_times=[0.10, 0.20, 0.40],
+        ex_div_weights=[1.0, 1.0, 1.0],
+    )
+    assert abs(cy_cdi.forward_price(63.0) - 101.0) < 1e-9
+    assert abs(cy_cdi.forward_price(126.0) - 103.0) < 1e-9
+    pv_expected = spot - 101.0 * math.exp(-r_c * 0.25)
+    assert abs(cy_cdi.cash_dividend_pv(63.0) - pv_expected) < 1e-9
+    sched_cdi = cy_cdi.ex_dividend_schedule()
+    pv_alloc_1 = sum(item["cash_dividend"] * math.exp(-r_c * item["t_years"]) for item in sched_cdi[:2])
+    assert abs(pv_alloc_1 - pv_expected) < 1e-9
+
+    # 3. Sazonalidade mensal em 12 faixas + extrapolação >= 1 ano + dividendos em caixa até 10 anos
+    seas = np.array([0.05] * 3 + [0.45] + [0.05] * 8, dtype=np.float64)
+    cy_seas = BloombergConvenienceYieldCurve(
+        spot_price=100.0,
+        pre_curve=pre_cdi,
+        t_nodes=[63.0, 252.0, 504.0],
+        fwd_nodes=[102.0, 108.0, 117.0],
+        seasonality_weights=seas,
+    )
+    # Incremento de D_pv em [0.25, 0.35] concentra a maior parte no mês 4 (peso 0.45 vs 0.05)
+    dpv_before = cy_seas.cash_dividend_pv(0.25 * 252.0)
+    dpv_after_m4 = cy_seas.cash_dividend_pv((4.0 / 12.0) * 252.0)
+    dpv_end = cy_seas.cash_dividend_pv(1.0 * 252.0)
+    assert (dpv_after_m4 - dpv_before) > 0.35 * (dpv_end - dpv_before)
+
+    # Extrapolação longa sobre janela >= 1 ano (252 a 504 DU = 1Y..2Y)
+    tau1, tau2 = 1.0, 2.0
+    yc1 = cy_seas.y_cont_nodes[1]
+    yc2 = cy_seas.y_cont_nodes[2]
+    assert abs(cy_seas.long_fwd_yield - ((yc2 * tau2 - yc1 * tau1) / (tau2 - tau1))) < 1e-12
+
+    ext_divs = cy_seas.extrapolated_discrete_dividends(div_times=[0.5, 2.0, 5.0, 10.0, 12.0], cash_cutoff_years=10.0)
+    assert len(ext_divs["discrete_cash_dividends"]) == 4
+    assert abs(ext_divs["residual_long_yield"] - cy_seas.long_fwd_yield) < 1e-12
+
+    # Aumento de série curta (< 1 ano) via augment_div_pv
+    cy_short = BloombergConvenienceYieldCurve(
+        spot_price=100.0,
+        pre_curve=FlatCurve(0.10),
+        t_nodes=[63.0, 126.0],
+        fwd_nodes=[101.0, 102.0],
+        augment_div_pv=2.5,
+        augment_horizon=1.0,
+    )
+    assert cy_short.long_fwd_yield > 0.02
+
+
+def test_bloomberg_convenience_yield_index_borrow_and_offshore():
+    import math
+    from bz_pricing.core.curves import BloombergConvenienceYieldCurve, FlatCurve, SimpleCurve
+    from bz_pricing.core.interpolators import LogLinearDiscountInterpolator
+
+    # 1. Índice com sazonalidade em 52 semanas e integração analítica exata em Cython
+    seas_52 = np.ones(52, dtype=np.float64)
+    seas_52[10:20] = 3.0
+    pre_252 = FlatCurve(0.12)
+    cy_idx = BloombergConvenienceYieldCurve(
+        spot_price=1000.0,
+        pre_curve=pre_252,
+        t_nodes=[21.0, 126.0, 252.0],
+        fwd_nodes=[1005.0, 1030.0, 1062.0],
+        is_index=True,
+        seasonality_weights=seas_52,
+    )
+    assert abs(cy_idx.forward_price(126.0) - 1030.0) < 1e-9
+    y_slope_in_season = cy_idx.get_rate(85.0)
+    assert y_slope_in_season > 0.0
+
+    # 2. Recuperação analítica exata da taxa de aluguel (borrow_cost_rate)
+    spot = 100.0
+    r_c = math.log(1.12)
+    t_decl = [0.25, 0.75]
+    a_decl = [1.50, 2.00]
+    pv_decl = sum(a * math.exp(-r_c * t) for t, a in zip(t_decl, a_decl))
+    b_true_cont = 0.035
+    fwd_1y = (spot - pv_decl) * math.exp((r_c - b_true_cont) * 1.0)
+    cy_btc = BloombergConvenienceYieldCurve(
+        spot_price=spot,
+        pre_curve=pre_252,
+        t_nodes=[252.0],
+        fwd_nodes=[fwd_1y],
+        declared_div_times=t_decl,
+        declared_div_amounts=a_decl,
+        compounding="exponential",
+    )
+    expected_btc_exp = math.exp(b_true_cont) - 1.0
+    assert abs(cy_btc.borrow_cost_rate(252.0) - expected_btc_exp) < 1e-12
+
+    # 3. Modo offshore ACT/365 contínuo (multimercado sem 252 hardcoded)
+    pre_off = SimpleCurve(
+        np.array([30.0, 180.0, 365.0], dtype=np.float64),
+        np.array([0.045, 0.045, 0.045], dtype=np.float64),
+        LogLinearDiscountInterpolator(0, 0, 365.0, "continuous"),
+    )
+    fwd_off_1y = 100.0 * math.exp((0.045 - 0.02) * 1.0)
+    cy_off = BloombergConvenienceYieldCurve(
+        spot_price=100.0,
+        pre_curve=pre_off,
+        t_nodes=[182.5, 365.0],
+        fwd_nodes=[100.0 * math.exp((0.045 - 0.02) * 0.5), fwd_off_1y],
+        day_count_basis=365.0,
+        compounding="continuous",
+    )
+    assert abs(cy_off.get_rate(365.0) - 0.02) < 1e-10
+    assert abs(cy_off.forward_price(365.0) - fwd_off_1y) < 1e-9
+
+    # 4. Decomposição híbrida a partir da curva reconstrói o forward terminal
+    bd = cy_btc.blended_decomposition(252.0, div_times=[0.25, 0.75])
+    f_cur, t_prev = 100.0, 0.0
+    for ti, dci, ypi in zip(bd["times"], bd["d_cash"], bd["y_prop"]):
+        f_cur = f_cur * math.exp((r_c - bd["q"]) * (ti - t_prev)) * (1.0 - ypi) - dci
+        t_prev = ti
+    assert abs(f_cur * math.exp((r_c - bd["q"]) * (1.0 - t_prev)) - fwd_1y) < 1e-8
+
+
+def test_bloomberg_convenience_yield_from_options_and_manager():
+    import math
+    from bz_pricing.core.calendars import get_calendar
+    from bz_pricing.core.curves import BloombergConvenienceYieldCurve, FlatCurve
+    from bz_pricing.core.options_core import black76_price_greeks, crr_american_discrete_div_price_greeks
+    from bz_pricing.volatility import KalmanDividendFilter
+
+    base_dt = datetime.date(2026, 10, 30)
+    pre_crv = FlatCurve(0.12)
+    r_c = math.log(1.12)
+    spot = 100.0
+
+    # 1. from_options_chain europeia e americana com dividendos discretos + Kalman
+    rows_eu, rows_am = [], []
+    dt_d = np.array([0.20], dtype=np.float64)
+    da_d = np.array([2.00], dtype=np.float64)
+    kfs = {}
+    for du_v, q_v in [(63, 0.03), (126, 0.035)]:
+        t_v = du_v / 252.0
+        fwd_eu = spot * math.exp((r_c - q_v) * t_v)
+        fwd_am = max(1e-6, spot - 2.00 * math.exp(-r_c * 0.20) if t_v >= 0.20 else spot) * math.exp((r_c - 0.01) * t_v)
+        kfs[du_v] = KalmanDividendFilter(alpha_over_sigma=1.0)
+        for k in (90.0, 95.0, 100.0, 105.0, 110.0):
+            for ic in (True, False):
+                ot = "CALL" if ic else "PUT"
+                p_eu = black76_price_greeks(fwd_eu, k, r_c, t_v, 0.25, ic)[0]
+                rows_eu.append({"DU": du_v, "strike": k, "option_type": ot, "bid": max(0.002, p_eu - 0.03), "ask": p_eu + 0.03, "mid": p_eu})
+                p_am = crr_american_discrete_div_price_greeks(spot, k, r_c, 0.01, t_v, 0.25, ic, 120, dt_d, da_d, None, None)[0]
+                rows_am.append({"DU": du_v, "strike": k, "option_type": ot, "bid": max(0.002, p_am - 0.03), "ask": p_am + 0.03, "mid": p_am})
+
+    cy_opt_eu = BloombergConvenienceYieldCurve.from_options_chain(
+        pd.DataFrame(rows_eu), spot_price=spot, pre_curve=pre_crv, du_col="DU", exercise="EUROPEAN", kalman_filters=kfs
+    )
+    assert abs(cy_opt_eu.forward_price(63.0) - spot * math.exp((r_c - 0.03) * 0.25)) < 1e-4
+
+    cy_opt_am = BloombergConvenienceYieldCurve.from_options_chain(
+        pd.DataFrame(rows_am), spot_price=spot, pre_curve=pre_crv, du_col="DU", exercise="AMERICAN", discrete_dividends=[(0.20, 2.00)]
+    )
+    assert abs(cy_opt_am.forward_price(126.0) - (spot - 2.00 * math.exp(-r_c * 0.20)) * math.exp((r_c - 0.01) * 0.5)) < 0.15
+
+    # 2. from_futures_and_options prioriza pilares de futuros sobre opções coincidentes
+    cy_fused = BloombergConvenienceYieldCurve.from_futures_and_options(
+        spot_price=spot,
+        futures_curve_or_data={63.0: 102.5},
+        df_options=pd.DataFrame(rows_eu),
+        pre_curve=pre_crv,
+        du_col="DU",
+    )
+    assert abs(cy_fused.forward_price(63.0) - 102.5) < 1e-9
+    assert cy_fused.diagnostics["sources"][63.0] == "futures"
+    assert cy_fused.diagnostics["sources"][126.0] == "option_implied"
+
+    # 3. Integração B3CurveBuilder & CurveManager (cy_model='b3' preservado vs 'bloomberg')
+    mgr = CurveManager(allow_download=False)
+    cal = get_calendar("B3")
+    du1, du2 = 63, 126
+    exp1 = cal.offset(base_dt, du1)
+    exp2 = cal.offset(base_dt, du2)
+    df_fut = pd.DataFrame({"XprtnDt": [exp1.strftime("%Y-%m-%d"), exp2.strftime("%Y-%m-%d")], "AdjstdQt": [102.1, 104.5]})
+
+    _, cy_b3 = mgr.get_stock_future_curve("PETRP", base_dt, data=df_fut, spot_price=100.0, pre_curve=pre_crv, cy_model="b3")
+    _, cy_bbg_m = mgr.get_stock_future_curve("PETRP", base_dt, data=df_fut, spot_price=100.0, pre_curve=pre_crv, cy_model="bloomberg", ex_div_times=[0.15, 0.35])
+    assert type(cy_b3).__name__ == "ConvenienceYieldCurve"
+    assert isinstance(cy_bbg_m, BloombergConvenienceYieldCurve)
+    assert abs(cy_bbg_m.forward_price(du2) - 104.5) < 1e-9
+
+    cy_mgr_imp = mgr.get_implied_convenience_yield_curve(
+        base_dt, spot_price=spot, pre_curve=pre_crv, options_data=pd.DataFrame(rows_eu), futures_data={63.0: 102.5}, du_col="DU"
+    )
+    assert abs(cy_mgr_imp.forward_price(63.0) - 102.5) < 1e-9
+
 
 
 

@@ -15,7 +15,15 @@ from bz_pricing.core.interpolators import (
     Interpolation360Interpolator,
     PriceInterpolator
 )
-from bz_pricing.core.curves import SimpleCurve, FlatCurve, Curve, InflationCurve, ConvenienceYieldCurve, SpreadCurve
+from bz_pricing.core.curves import (
+    BloombergConvenienceYieldCurve,
+    ConvenienceYieldCurve,
+    Curve,
+    FlatCurve,
+    InflationCurve,
+    SimpleCurve,
+    SpreadCurve,
+)
 
 
 def _resolve_dc_from_knots(t: float, t_sec: float, t_nodes: np.ndarray, t_sec_nodes: np.ndarray) -> float:
@@ -187,7 +195,8 @@ class B3CurveBuilder:
                     round_decimals: int = -1,
                     round_mode: str = 'round',
                     smoothing: float = None,
-                    use_cython_smoothing: bool = False) -> SimpleCurve:
+                    use_cython_smoothing: bool = False,
+                    rates_in_percent: bool = None) -> SimpleCurve:
         """
         Pipeline principal para construir a Curva Cython a partir do DataFrame pandas.
         """
@@ -227,7 +236,8 @@ class B3CurveBuilder:
             
             t_list = df['DC' if index_by_dc else 'DU'].astype(float).tolist()
             raw_y = df[actual_rate].astype(float).values
-            if np.nanmax(np.abs(raw_y)) > 1.0:
+            is_pct = (np.nanmax(np.abs(raw_y)) > 1.0) if rates_in_percent is None else bool(rates_in_percent)
+            if is_pct:
                 y_list = (raw_y / 100.0).tolist()
             else:
                 y_list = raw_y.tolist()
@@ -249,7 +259,8 @@ class B3CurveBuilder:
             
             t_list = df[target_t_col].astype(float).tolist()
             raw_y = df[col_rate].astype(float).values
-            if np.nanmax(np.abs(raw_y)) > 1.0:
+            is_pct = (np.nanmax(np.abs(raw_y)) > 1.0) if rates_in_percent is None else bool(rates_in_percent)
+            if is_pct:
                 y_list = (raw_y / 100.0).tolist()
             else:
                 y_list = raw_y.tolist()
@@ -275,6 +286,12 @@ class B3CurveBuilder:
                 t_list.insert(0, v1_t)
                 y_list.insert(0, v1_rate)
                 dc_list.insert(0, float(v1_dc))
+                # Garante ordenação estrita caso t_list já contivesse prazos <= v1_t
+                if len(t_list) > 1 and t_list[0] > t_list[1]:
+                    triples = sorted(zip(t_list, y_list, dc_list), key=lambda x: x[0])
+                    t_list = [x[0] for x in triples]
+                    y_list = [x[1] for x in triples]
+                    dc_list = [x[2] for x in triples]
             else:
                 # Se já existe o vértice no dataset, sobrescrevemos com a taxa v1_rate
                 idx = t_list.index(v1_t)
@@ -297,9 +314,9 @@ class B3CurveBuilder:
             else:
                 base_curve = SimpleCurve(base_t, base_y, base_interp, round_decimals=-1, round_mode=round_mode)
                 
-            anchor_t = 10080.0 # Vértice âncora de 40 anos para travar a taxa forward
+            anchor_t = max(10080.0, float(max(t_list)) + 252.0) # Vértice âncora para travar a taxa forward
             anchor_y = base_curve.get_rate(anchor_t)
-            anchor_dc = 10080.0 if use_dc else 1.0
+            anchor_dc = max(1.0, round(anchor_t * 365.0 / 252.0)) if use_dc else 1.0
             
             if use_cython_smoothing:
                 from bz_pricing.core.curves import apply_cython_smoothing
@@ -331,9 +348,7 @@ class B3CurveBuilder:
                 
                 t_list = new_t_list
                 y_list = new_y_list
-                # Default DC to 1 when smoothing since exact day counting isn't as relevant for smoothed curves 
-                # if we are not evaluating complex instruments against the smoothed curve precisely.
-                dc_list = [1] * len(t_list)
+                dc_list = [max(1.0, round(float(t) * 365.0 / 252.0)) for t in t_list]
                 
             # Adiciona a âncora para forçar o interpolador a fazer o blend da suavizada com a base
             t_list.append(anchor_t)
@@ -1163,6 +1178,58 @@ class B3CurveBuilder:
         round_mode = config.get("round_mode", "round")
         return ConvenienceYieldCurve(spot_price, futures_curve, pre_curve, round_decimals=round_decimals, round_mode=round_mode)
 
+    def build_bloomberg_convenience_yield_curve(
+        self,
+        spot_price: float,
+        futures_curve_or_data,
+        pre_curve: Curve,
+        is_index: bool = False,
+        seasonality_dates=None,
+        seasonality_amounts=None,
+        seasonality_weights=None,
+        start_bin_frac: float = 0.0,
+        day_count_basis: float = 252.0,
+        compounding: str = "exponential",
+        pre_compounding: str = "auto",
+        ex_div_times=None,
+        ex_div_weights=None,
+        declared_div_times=None,
+        declared_div_amounts=None,
+        round_decimals: int = -1,
+        round_mode: str = "round",
+        **kwargs,
+    ) -> BloombergConvenienceYieldCurve:
+        """
+        Constrói a estrutura a termo de convenience yield aprimorada segundo a metodologia
+        Bloomberg (alocação sazonal em valor presente ou yield contínuo, datas ex-dividendo,
+        extrapolação de longo prazo >= 1 ano e separação de custo de aluguel).
+        """
+        from bz_pricing.volatility.bloomberg_surface import DividendCurveBBG
+
+        s_weights = seasonality_weights
+        if s_weights is None and seasonality_dates is not None and seasonality_amounts is not None:
+            dc_bbg = DividendCurveBBG(is_index=bool(is_index))
+            s_weights = dc_bbg.fit_seasonality(seasonality_dates, seasonality_amounts)
+
+        return BloombergConvenienceYieldCurve.from_futures(
+            spot_price=float(spot_price),
+            futures_curve_or_data=futures_curve_or_data,
+            pre_curve=pre_curve,
+            is_index=bool(is_index),
+            seasonality_weights=s_weights,
+            start_bin_frac=float(start_bin_frac),
+            day_count_basis=float(day_count_basis),
+            compounding=compounding,
+            pre_compounding=pre_compounding,
+            ex_div_times=ex_div_times,
+            ex_div_weights=ex_div_weights,
+            declared_div_times=declared_div_times,
+            declared_div_amounts=declared_div_amounts,
+            round_decimals=round_decimals,
+            round_mode=round_mode,
+            **kwargs,
+        )
+
     def build_spread_curve(self,
                            curve_a: Curve,
                            curve_b: Curve,
@@ -1208,22 +1275,101 @@ class B3CurveBuilder:
             round_mode=round_mode
         )
 
+    def build_ois_curve(self,
+                        pillars_dc: any,
+                        par_rates: any,
+                        convention: str = "ACT/360",
+                        payment_freq_months: int = 12,
+                        method: str = "monotone_convex",
+                        compounding: str = "continuous",
+                        futures_pillars: any = None,
+                        base_date: datetime.date = None,
+                        round_decimals: int = -1,
+                        round_mode: str = "round") -> Curve:
+        """Constrói curva zero cupom OIS internacional por bootstrapping de depósitos, futuros e swaps OIS."""
+        from bz_pricing.curves.offshore import bootstrap_ois_curve
+
+        return bootstrap_ois_curve(
+            pillars_dc=pillars_dc,
+            par_rates=par_rates,
+            convention=convention,
+            payment_freq_months=payment_freq_months,
+            method=method,
+            compounding=compounding,
+            futures_pillars=futures_pillars,
+            base_date=base_date,
+            round_decimals=round_decimals,
+            round_mode=round_mode,
+        )
+
+    def build_treasury_curve(self,
+                             pillars_dc: any,
+                             par_yields: any,
+                             coupon_freq: int = 2,
+                             day_count_basis: float = 365.0,
+                             method: str = "monotone_convex",
+                             compounding: str = "continuous",
+                             base_date: datetime.date = None,
+                             round_decimals: int = -1,
+                             round_mode: str = "round") -> Curve:
+        """Constrói curva soberana offshore (US Treasury) via Monotone Convex, Svensson, Nelson-Siegel ou Log-Linear."""
+        from bz_pricing.curves.offshore import bootstrap_treasury_curve
+
+        return bootstrap_treasury_curve(
+            pillars_dc=pillars_dc,
+            par_yields=par_yields,
+            coupon_freq=coupon_freq,
+            day_count_basis=day_count_basis,
+            method=method,
+            compounding=compounding,
+            base_date=base_date,
+            round_decimals=round_decimals,
+            round_mode=round_mode,
+        )
+
     def build_zero_coupon_curve(self,
                                 forward_curve: Curve = None,
                                 round_decimals: int = 5,
                                 round_mode: str = 'round',
-                                discount_factors: any = None) -> SimpleCurve:
+                                discount_factors: any = None,
+                                interp_method: str = 'linear_360',
+                                day_count_basis: float = 360.0,
+                                compounding: str = 'simple') -> Curve:
         """
-        Constrói a Curva Zero Cupom Internacional (ZMX, ZUS e ZEU):
-        - Caso `discount_factors` (FD_JUR por prazo DC) seja fornecido:
-          TxLinJUR(DC_v) = (1 / FD_JUR(DC_v) - 1) * (360 / DC_v)
-        - Caso contrário, constrói a partir dos fatores de desconto acumulados da curva forward:
-          FD(t) = prod_{i=1}^n 1 / (1 + f_i * delta_DC_i / 360)
-          TxLinJUR(t) = (1 / FD(t) - 1) * (360 / DC_t)
-        Interpolação linear em base 360 com extrapolação constante no fim.
+        Constrói a Curva Zero Cupom Internacional (ZMX, ZUS, ZEU ou metodologia institucional):
+        - Caso `discount_factors` (FD por prazo DC) seja fornecido: converte os fatores para a convenção alvo.
+        - Caso contrário, deriva dos fatores de desconto acumulados da curva forward.
+        Suporta `interp_method` em {'linear_360', 'monotone_convex', 'log_linear', 'log_cubic', 'nelson_siegel', 'svensson'}.
         """
-        from bz_pricing.core.interpolators import Linear360Interpolator
-        from bz_pricing.core.curves import SimpleCurve
+        from bz_pricing.curves.offshore import make_offshore_interpolator, _zero_rate_from_df
+        from bz_pricing.core.curves import SimpleCurve, NelsonSiegelCurve, SvenssonCurve
+
+        m_low = str(interp_method).strip().lower()
+        is_parametric = m_low in ("nelson_siegel", "svensson")
+        comp_eff = compounding
+        if m_low != "linear_360" and compounding == "simple" and discount_factors is None:
+            comp_eff = "simple"
+
+        def _make_target_curve(dense_dcs_arr, y_arr):
+            if m_low == "svensson":
+                return SvenssonCurve.fit(dense_dcs_arr, y_arr, day_count_basis=day_count_basis, compounding=comp_eff)
+            if m_low == "nelson_siegel":
+                return NelsonSiegelCurve.fit(dense_dcs_arr, y_arr, day_count_basis=day_count_basis, compounding=comp_eff)
+            ext_r = 0 if m_low in ("linear_360", "lin_360", "linear360") else 1
+            interp = make_offshore_interpolator(
+                m_low,
+                day_count_basis=day_count_basis,
+                compounding=comp_eff,
+                extrap_left=0,
+                extrap_right=ext_r,
+            )
+            return SimpleCurve(
+                dense_dcs_arr,
+                y_arr,
+                interp,
+                round_decimals=-1 if is_parametric else round_decimals,
+                round_mode=round_mode,
+            )
 
         if discount_factors is not None:
             dc_list = []
@@ -1249,8 +1395,8 @@ class B3CurveBuilder:
             for dc_v, fd_v in zip(dc_list, fd_list):
                 if dc_v <= 0 or fd_v <= 0:
                     continue
-                z_rate = (1.0 / fd_v - 1.0) * (360.0 / dc_v)
-                if round_decimals >= 0:
+                z_rate = _zero_rate_from_df(fd_v, dc_v, day_count_basis, comp_eff)
+                if round_decimals >= 0 and not is_parametric:
                     if round_mode == 'trunc':
                         z_rate = np.trunc(z_rate * (10 ** round_decimals)) / (10 ** round_decimals)
                     else:
@@ -1258,14 +1404,7 @@ class B3CurveBuilder:
                 dense_dcs.append(dc_v)
                 y_nodes.append(z_rate)
 
-            interp = Linear360Interpolator(extrap_left=0, extrap_right=0)
-            return SimpleCurve(
-                np.array(dense_dcs, dtype=np.float64),
-                np.array(y_nodes, dtype=np.float64),
-                interp,
-                round_decimals=round_decimals,
-                round_mode=round_mode
-            )
+            return _make_target_curve(np.array(dense_dcs, dtype=np.float64), np.array(y_nodes, dtype=np.float64))
 
         # Extrai nós de dias corridos da curva forward
         if hasattr(forward_curve, 't_nodes') and len(forward_curve.t_nodes) > 0:
@@ -1285,12 +1424,11 @@ class B3CurveBuilder:
         
         for dc in dense_dcs:
             delta = dc - prev_dc
-            # Taxa forward aplicável ao intervalo
             mid_dc = (dc + prev_dc) / 2.0
             fwd_rate = forward_curve.get_rate(mid_dc)
-            fd *= 1.0 / (1.0 + fwd_rate * (delta / 360.0))
-            z_rate = (1.0 / fd - 1.0) * (360.0 / dc)
-            if round_decimals >= 0:
+            fd *= 1.0 / (1.0 + fwd_rate * (delta / float(day_count_basis)))
+            z_rate = _zero_rate_from_df(fd, dc, day_count_basis, comp_eff)
+            if round_decimals >= 0 and not is_parametric:
                 if round_mode == 'trunc':
                     z_rate = np.trunc(z_rate * (10 ** round_decimals)) / (10 ** round_decimals)
                 else:
@@ -1298,13 +1436,6 @@ class B3CurveBuilder:
             y_nodes.append(z_rate)
             prev_dc = dc
             
-        interp = Linear360Interpolator(extrap_left=0, extrap_right=0)
-        return SimpleCurve(
-            np.array(dense_dcs, dtype=np.float64),
-            np.array(y_nodes, dtype=np.float64),
-            interp,
-            round_decimals=round_decimals,
-            round_mode=round_mode
-        )
+        return _make_target_curve(np.array(dense_dcs, dtype=np.float64), np.array(y_nodes, dtype=np.float64))
 
 

@@ -1,5 +1,12 @@
 from .tpf import TituloPublico, LTN, NTNF, LFT, NTNB, NTNBPrincipal, NTNC
+from .offshore_bonds import (
+    USTreasuryBill,
+    USTreasuryNoteBond,
+    TIPS,
+    OffshoreBond,
+)
 from .credit import (
+    HazardRateCurve,
     Debenture,
     CertificadoRecebiveis,
     CRI,
@@ -18,7 +25,25 @@ from .derivatives import (
     SwapDIxPRE,
     SwapDIxIPCA,
     NDFContract,
+    OISSwap,
+    SOFRFuture,
+    CrossCurrencySwap,
     price_di1_portfolio,
+)
+from .options import (
+    EquityOption,
+    FXOption,
+    IDIOption,
+    DI1Option,
+    CorradoSuOption,
+    Swaption,
+    CapFloor,
+    BarrierOption,
+    AsianOption,
+    price_options_portfolio,
+    price_fx_options_portfolio,
+    price_idi_options_portfolio,
+    price_di1_options_portfolio,
 )
 
 __all__ = [
@@ -29,6 +54,11 @@ __all__ = [
     "NTNB",
     "NTNBPrincipal",
     "NTNC",
+    "USTreasuryBill",
+    "USTreasuryNoteBond",
+    "TIPS",
+    "OffshoreBond",
+    "HazardRateCurve",
     "Debenture",
     "CertificadoRecebiveis",
     "CRI",
@@ -45,5 +75,21 @@ __all__ = [
     "SwapDIxPRE",
     "SwapDIxIPCA",
     "NDFContract",
+    "OISSwap",
+    "SOFRFuture",
+    "CrossCurrencySwap",
     "price_di1_portfolio",
+    "EquityOption",
+    "FXOption",
+    "IDIOption",
+    "DI1Option",
+    "CorradoSuOption",
+    "Swaption",
+    "CapFloor",
+    "BarrierOption",
+    "AsianOption",
+    "price_options_portfolio",
+    "price_fx_options_portfolio",
+    "price_idi_options_portfolio",
+    "price_di1_options_portfolio",
 ]

@@ -107,6 +107,7 @@ def test_price_di1_portfolio_cython_batch():
     assert elapsed < 0.5
 
 
+@pytest.mark.market_data("dados/b3/BVBG_SPRD_20261112.csv", "dados/b3/BVBG_IN_20261112.csv")
 def test_di1_from_b3_validation():
     ref = datetime.date(2026, 11, 12)
     ldr = B3DataLoader()
@@ -118,4 +119,135 @@ def test_di1_from_b3_validation():
     info = DI1Future.from_b3(sample_ticker, ref, loader=ldr)
     pu_calc = info["instrument"].pu(ref, info["adjstd_qt_tax"])
     assert abs(pu_calc - info["adjstd_qt"]) < 1.0
+
+
+def test_di1_from_b3_offline_loader(tmp_path):
+    import pandas as pd
+
+    ref = datetime.date(2026, 11, 12)
+    di1_ref = DI1Future("DI1F28", "2028-01-03")
+    pu_mkt = di1_ref.pu(ref, 0.135)
+
+    pd.DataFrame(
+        [
+            {
+                "Dt": "2026-11-12",
+                "TckrSymb": "DI1F28",
+                "OpnIntrst": 150000,
+                "LastPric": 13.5,
+                "AdjstdQt": pu_mkt,
+                "AdjstdQtTax": 13.5,
+            }
+        ]
+    ).to_csv(tmp_path / "BVBG_SPRD_20261112.csv", sep=";", index=False)
+
+    pd.DataFrame(
+        [
+            {
+                "TckrSymb": "DI1F28",
+                "XprtnDt": "2028-01-03",
+                "Asst": "DI1",
+                "AsstDesc": "DI1 FUT",
+            }
+        ]
+    ).to_csv(tmp_path / "BVBG_IN_20261112.csv", sep=";", index=False)
+
+    ldr = B3DataLoader(data_dir=str(tmp_path))
+    info = DI1Future.from_b3("DI1F28", ref, loader=ldr)
+    pu_calc = info["instrument"].pu(ref, info["adjstd_qt_tax"])
+    assert abs(pu_calc - info["adjstd_qt"]) < 0.01
+    assert info["open_interest"] == 150000.0
+
+
+def test_ois_swap_sofr_future_and_cross_currency_swap():
+    from bz_pricing.core.curves import FlatCurve
+    from bz_pricing.curves.offshore import bootstrap_ois_curve
+    from bz_pricing.instruments import CrossCurrencySwap, OISSwap, SOFRFuture
+
+    base_dt = datetime.date(2026, 10, 30)
+    sofr_crv = bootstrap_ois_curve(
+        [30.0, 90.0, 180.0, 360.0, 720.0, 1080.0, 1800.0],
+        [0.0410, 0.0415, 0.0422, 0.0430, 0.0442, 0.0452, 0.0465],
+        convention="ACT/360",
+    )
+
+    # 1. OISSwap (SOFR ACT/360, ESTR ACT/360, SONIA ACT/365) single & dual curve
+    ois_sofr = OISSwap(10_000_000.0, "2026-10-30", "2028-10-30", fixed_rate=0.0442, fixed_direction=1, index_name="SOFR")
+    par_r = ois_sofr.par_rate(base_dt, sofr_crv)
+    ois_at_par = OISSwap(10_000_000.0, "2026-10-30", "2028-10-30", fixed_rate=par_r, fixed_direction=1, index_name="SOFR")
+    assert abs(ois_at_par.mtm(base_dt, sofr_crv)) < 1e-6
+
+    # Curva dupla e contrato seasoned com fator overnight já acruado
+    fwd_crv = bootstrap_ois_curve(
+        [30.0, 90.0, 180.0, 360.0, 720.0, 1080.0],
+        [0.0420, 0.0425, 0.0432, 0.0440, 0.0452, 0.0462],
+        convention="ACT/360",
+    )
+    ois_seasoned = OISSwap(5_000_000.0, "2026-07-30", "2027-07-30", fixed_rate=0.043, fixed_direction=1, index_name="SOFR")
+    m_seas = ois_seasoned.risk_metrics(base_dt, discount_curve=sofr_crv, forwarding_curve=fwd_crv, accrued_overnight_factor=1.011)
+    assert m_seas["dv01"] < 0.0 and len(ois_seasoned.cashflow_table(base_dt, sofr_crv, fwd_crv, 1.011)) == 1
+
+    sonia_crv = bootstrap_ois_curve([90.0, 180.0, 365.0, 730.0], [0.044, 0.0445, 0.045, 0.0455], convention="ACT/365")
+    ois_sonia = OISSwap(1_000_000.0, "2026-10-30", "2028-10-30", fixed_rate=0.0455, index_name="SONIA")
+    assert ois_sonia.day_count == "ACT/365"
+    assert abs(ois_sonia.mtm(base_dt, sonia_crv)) < 2500.0
+
+    # 2. SOFRFuture SR3 (3M, $25/bp) e SR1 (1M, $41.67/bp)
+    sr3 = SOFRFuture("SR3H27", start_date="2027-03-17", end_date="2027-06-16", contract_type="SR3")
+    r_sr3 = sr3.fair_rate(base_dt, sofr_crv)
+    px_sr3 = sr3.fair_price(base_dt, sofr_crv)
+    assert abs(SOFRFuture.implied_rate(px_sr3) - r_sr3) < 1e-12
+    assert sr3.dv01(contracts=2.0) == 50.0
+    assert abs(sr3.daily_settlement(px_sr3 + 0.05, px_sr3, contracts=4.0) - 500.0) < 1e-9
+
+    sr1 = SOFRFuture("SR1F27", start_date="2027-01-01", end_date="2027-02-01", contract_type="SR1")
+    assert sr1.dv01(contracts=1.0) == 41.67
+    assert 0.03 < sr1.fair_rate(base_dt, sofr_crv) < 0.06
+
+    # 3. CrossCurrencySwap (USD/BRL DI x SOFR + basis spread)
+    pre_crv = FlatCurve(0.140)
+    xccy = CrossCurrencySwap(
+        notional_foreign=1_000_000.0,
+        start_date="2026-10-30",
+        maturity_date="2028-10-30",
+        initial_fx_spot=5.70,
+        brl_direction=1,
+        brl_leg_type="DI",
+        foreign_leg_type="FLOAT",
+        brl_rate=0.0,
+        foreign_rate=0.0,
+        payment_freq_months=6,
+    )
+    rm_xccy = xccy.risk_metrics(base_dt, fx_spot=5.70, pre_curve=pre_crv, foreign_discount_curve=sofr_crv)
+    # Sem spread nem markup de câmbio no início, PV_brl == N_brl e PV_fx == N_fx => MtM == 0
+    assert abs(rm_xccy["mtm_brl"]) < 1e-5
+    assert rm_xccy["fx_delta"] < 0.0
+    assert abs(rm_xccy["par_basis_spread"]) < 1e-9
+
+    # Em swap Pré BRL x USD Fixed, par_brl_rate zera o MtM exato
+    xccy_fix = CrossCurrencySwap(
+        notional_foreign=1_000_000.0,
+        start_date="2026-10-30",
+        maturity_date="2028-10-30",
+        initial_fx_spot=5.70,
+        brl_leg_type="PRE",
+        foreign_leg_type="FIXED",
+        brl_rate=0.145,
+        foreign_rate=0.045,
+        payment_freq_months=6,
+    )
+    r_par_brl = xccy_fix.par_brl_rate(base_dt, fx_spot=5.70, pre_curve=pre_crv, foreign_discount_curve=sofr_crv)
+    xccy_par = CrossCurrencySwap(
+        notional_foreign=1_000_000.0,
+        start_date="2026-10-30",
+        maturity_date="2028-10-30",
+        initial_fx_spot=5.70,
+        brl_leg_type="PRE",
+        foreign_leg_type="FIXED",
+        brl_rate=r_par_brl,
+        foreign_rate=0.045,
+        payment_freq_months=6,
+    )
+    assert abs(xccy_par.mtm(base_dt, fx_spot=5.70, pre_curve=pre_crv, foreign_discount_curve=sofr_crv)) < 1e-4
+
 

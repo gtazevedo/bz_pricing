@@ -48,6 +48,18 @@ Empregada na construção de curvas de preços futuros de índices de ações (`
 
 $$P(\text{DU}) = P_k \times \left( \frac{P_{k+1}}{P_k} \right)^{\frac{\text{DU} - \text{DU}_k}{\text{DU}_{k+1} - \text{DU}_k}}$$
 
+### 1.5 Interpoladores de Curvas Internacionais e Modelos Paramétricos
+
+Para curvas *offshore* (`SOFR_OIS`, `ESTR_OIS`, `SONIA_OIS`, `TONA_OIS`, `UST_PAR`), o núcleo em Cython implementa interpolação em espaço de fatores de desconto $\text{DF}(t)$ ou taxas instantâneas a termo $f(t)$ sob base arbitrária (`day_count_basis`) e regime `continuous`, `simple` ou `compounded`, utilizando busca binária em tempo $O(\log n)$ sobre os nós ordenados e extrapolação inicial em $(0, t_1]$ compatível com o regime de capitalização nominal configurado no construtor:
+
+- **Log-Linear nos Fatores de Desconto (`LogLinearDiscountInterpolator`):** Padrão de câmaras de compensação (CME e LCH) para descontos *overnight*. Interpola linearmente $\ln \text{DF}(t) = -r(t) \cdot t$, o que equivale a taxa instantânea constante por partes entre nós.
+- **Log-Cúbica Monotônica nos Fatores de Desconto (`LogCubicDiscountInterpolator`):** Aplica derivadas harmônicas de Fritsch-Carlson sobre os segmentos de $-\ln \text{DF}(t)$ com polinômio cúbico de Hermite, preservando monotonicidade de $r(t) \cdot t$ sem oscilações de Runge. Os segmentos e inclinações cúbicos são mantidos em cache interno em C e recalculados automaticamente apenas quando o vetor de nós `t_nodes` ou `y_nodes` sofre alteração.
+- **Convexo Monótono de Hagan-West (`MonotoneConvexInterpolator`):** Padrão oficial do Departamento do Tesouro dos EUA para derivação de taxas *zero* e a termo a partir da curva par. Sobre as taxas a termo discretas $f_i^d = [r_i t_i - r_{i-1} t_{i-1}] / (t_i - t_{i-1})$, constrói funções quadráticas por partes contínuas que reproduzem exatamente todos os nós e mantêm positividade ($f(t) \ge 0$). O pré-cálculo das taxas acumuladas e inclinações permanece em cache nativo com invalidação automática elemento a elemento em mutações de vértices.
+- **Bootstrapping com Agenda em Anos Civis:** Tanto `bootstrap_ois_curve` quanto `bootstrap_treasury_curve` geram agendas de cupom em anos civis (`365.25` ou `day_count_basis`) quando os prazos são informados em dias corridos, alinhando periodicidades anuais e semestrais de títulos do Tesouro dos EUA (`UST`) e *swaps* OIS internacionais.
+- **Modelos Paramétricos de Nelson-Siegel e Svensson (`NelsonSiegelCurve` e `SvenssonCurve`):** Utilizados pelo Federal Reserve Board e pelo Banco Central Europeu (BCE). Na formulação estendida de Svensson, a taxa zero contínua $r(t)$ segue:
+
+$$r(t) = \beta_0 + \beta_1 \left( \frac{1 - e^{-t/\lambda_1}}{t/\lambda_1} \right) + \beta_2 \left( \frac{1 - e^{-t/\lambda_1}}{t/\lambda_1} - e^{-t/\lambda_1} \right) + \beta_3 \left( \frac{1 - e^{-t/\lambda_2}}{t/\lambda_2} - e^{-t/\lambda_2} \right)$$
+
 ---
 
 ## 2. Curvas de Juros Prefixadas Domésticas (`PRE`, `SELIC_PRE` e `LTN`)
@@ -131,6 +143,10 @@ $$\text{FD}_n = \prod_{k=1}^{n} \left( 1 + f_k \times \frac{\Delta \text{DC}_k}{
 
 Na construção a partir de tabelas referenciais de *swaps*, o método `_extract_linear360_knots` identifica os nós primários onde ocorre mudança de inclinação da taxa linear acumulada e interpola os prazos intermediários via `Linear360Interpolator(0, 0)`.
 
+### 4.3 Bootstrapping Institucional de OIS e Treasuries (`SOFR_OIS`, `ESTR_OIS`, `SONIA_OIS`, `UST_PAR`)
+
+No módulo [`offshore.py`](../src/bz_pricing/curves/offshore.py), os construtores `bootstrap_ois_curve` e `bootstrap_treasury_curve` permitem selecionar entre os padrões `monotone_convex` (Tesouro dos EUA), `log_linear` (CME e LCH), `log_cubic` e os modelos paramétricos `nelson_siegel` e `svensson` (Federal Reserve Board e Banco Central Europeu). Para instrumentos cujas datas intermediárias de cupom recaem entre os vértices informados de mercado, o algoritmo executa uma solução sequencial seguida de polimento em múltiplas passagens (`_polish_sparse_schedules`) que garante o reproçamento exato de todos os títulos ao par ($\text{PV} = 1{,}0$) com tolerância numérica inferior a $10^{-11}$.
+
 ---
 
 ## 5. Estruturas a Termo de Inflação: Cupom Sujo (`DIC` e `DIM`) e Cupom Limpo (`DPL`)
@@ -173,7 +189,7 @@ $$\text{DPL}(\text{DU}) = \frac{1 + \text{PRE}(\text{DU})}{1 + \pi(\text{DU})} -
 ### 6.1 Cupons Cambiais de Dólar: Sujo (`DOL`) e Limpo (`DOC` e `DCL`)
 
 - **Cupom Cambial Sujo (`DOL`):** Construído diretamente a partir dos vencimentos do contrato futuro de Cupom Cambial (`DDI`), indexado simultaneamente em dias úteis ($\text{DU}$) e dias corridos ($\text{DC}$), e interpolado via `FlatForward252LinearInterpolator(0, 1)`.
-- **Cupom Cambial Limpo (`DOC` e `DCL`):**Corrige a defasagem da PTAX de referência do contrato `DDI` ($\text{Ptax}_{t-1}$) em relação à cotação spot do dólar cupom limpo no dia $t_0$ ($\text{DolCL}_{t_0}$):
+- **Cupom Cambial Limpo (`DOC` e `DCL`):** Corrige a defasagem da PTAX de referência do contrato `DDI` ($\text{Ptax}_{t-1}$) em relação à cotação spot do dólar cupom limpo no dia $t_0$ ($\text{DolCL}_{t_0}$):
   - **Vértice 1 ($\text{DU} = 1$, prazo corrido $\text{DC}_1$):** Quando calculado a partir da cotação do casado de 1 dia útil ($\text{Casado}_{1\text{d}}$, em pontos de milésimo de real) e da taxa $\text{CDI}_t$:
 
 $$\text{DolCL}_{d_1} = \text{DolCL}_{t_0} + \frac{\text{Casado}_{1\text{d}}}{1000}, \quad \text{DOC}_1 = \left[ \frac{\left(1 + \text{CDI}_t\right)^{\frac{1}{252}}}{\text{DolCL}_{d_1} / \text{DolCL}_{t_0}} - 1 \right] \times \frac{360}{\text{DC}_1}$$
@@ -186,7 +202,7 @@ $$\text{DOC}_n = \left[ \left( 1 + \text{DDI}_n \times \frac{\text{DC}_n}{360} \
 
 ### 6.2 Spreads de Taxas Offshore (`SDE`, `SGP`, `SMX`, `SYD`) e Cupons Cruzados (`EUC` e `YCL`)
 
-- **Curvas de Spread Offshore:** Representam o diferencial linear entre a taxa externa da moeda de referência e a taxa externa em dólar americano na base 360:
+- **Curvas de Spread Offshore:** Representam o diferencial linear entre a taxa externa da moeda de referência e a taxa externa em dólar americano na base 360 (`SDE` para Euro em `ACT/360`, `SMX` para Peso Mexicano, `SYD` para Iene e `SGP` em `ACT/365` para Libra Esterlina):
 
 $$\text{Spread}_n = y_{\text{Moeda}, n} - y_{\text{USD}, n}$$
 
@@ -219,7 +235,7 @@ Construídas a partir da cotação à vista de fechamento do índice ($\text{Spo
 
 $$P(\text{DU}_v) = \text{Spot}_t \times \left( \frac{\text{Fut}_1}{\text{Spot}_t} \right)^{\frac{\text{DU}_v}{\text{DU}_1}}$$
 
-No método `B3CurveBuilder.build_equity_index_curve`, a inserção de uma âncora exata em $\text{DU} = 2$ com valor $\text{Spot}_t \cdot (\text{Fut}_1 / \text{Spot}_t)^{2 / \text{DU}_1}$ permite que o `PriceInterpolator(0, 0)` reproduza analiticamente a expressão acima em todo o intervalo $[2, \text{DU}_1]$, preservando os nós esparsos dos vencimentos futuros.
+No método `B3CurveBuilder.build_equity_index_curve`, a inserção de uma âncora exata em $\text{DU} = 2$ com valor $\text{Spot}_t \cdot (\text{Fut}_1 / \text{Spot}_t)^{2 / \text{DU}_1}$ permite que o `PriceInterpolator(0, 0)` reproduza analiticamente a expressão acima em todo o intervalo $[2, \text{DU}_1]$ e preserve os nós esparsos dos vencimentos futuros.
 3. **Prazos entre Vencimentos e Após o Último Futuro:** Interpolados exponencialmente por `PriceInterpolator(extrap_left=0, extrap_right=0)`, o que mantém o último preço futuro constante após o derradeiro vencimento listado.
 
 ### 7.2 Estruturas a Termo de Custo de Carrego / Convenience Yield (`CYI`, `CYM`, `CYX` e Ações)
@@ -232,6 +248,24 @@ Implementadas em Cython na classe [`ConvenienceYieldCurve`](../src/bz_pricing/co
 $$\text{TxCY}_n = \left[ \frac{\text{Spot}_t \times \left(1 + \text{PRE}_n\right)^{\frac{\text{DU}_n}{252}}}{\text{Fut}_n} \right]^{\frac{252}{\text{DU}_n}} - 1$$
 
 3. **Prazos Intermediários e Extrapolação:** Os vértices $(\text{DU}_n, \text{TxCY}_n)$ são interpolados por `FlatForward252Interpolator(extrap_left=0, extrap_right=0)`, com patamar constante antes do primeiro vencimento ($2 \le \text{DU} < \text{DU}_1$) e após o último vencimento ($\text{DU} > \text{DU}_{\text{último}}$).
+
+### 7.3 Estrutura a Termo de Convenience Yield e Dividendos Implícitos (`BloombergConvenienceYieldCurve`)
+
+Complementarmente à convenção padrão de futuros da B3, a classe Cython [`BloombergConvenienceYieldCurve`](../src/bz_pricing/core/curves.pyx) modela a estrutura a termo de dividendos implícitos e custo de carrego a partir de preços a termo $F(T)$, cotações de opções ou ambos. A implementação original `ConvenienceYieldCurve` permanece inalterada para as curvas `CYI`, `CYM` e `CYX`.
+
+1. **Ações Individuais em Valor Presente de Dividendos e Datas Ex-Dividendo:** Para ações individuais, a interpolação ocorre sobre o valor presente acumulado de dividendos líquidos, definido em função do preço à vista $S_t$ e da taxa contínua sem risco $r_c(T)$:
+
+$$D_{\text{pv}}(T) = S_t - F(T) e^{-r_c(T) T}$$
+
+Entre dois vencimentos consecutivos $[T_a, T_b]$, o incremento $D_{\text{pv}}(T_b) - D_{\text{pv}}(T_a)$ é alocado proporcionalmente às datas ex-dividendo discretas $t_j \in (T_a, T_b]$ com ponderação descontada $w_j e^{-r_c(t_j) t_j}$, ou pela integral exata de pesos sazonais mensais em 12 faixas na ausência de calendário discreto. A reconstrução do preço futuro em qualquer prazo intermediário $T$ é dada por:
+
+$$F(T) = \max\left(\varepsilon, \, S_t - D_{\text{pv}}(T)\right) e^{r_c(T) T}$$
+
+2. **Índices com Sazonalidade Semanal:** Para índices acionários (`is_index=True`), a interpolação atua diretamente sobre o rendimento contínuo acumulado $y_c(T) T$, que é distribuído entre nós por integração analítica exata em Cython sobre uma grade sazonal de 52 semanas.
+
+3. **Extrapolação de Longo Prazo e Separação de Custo de Aluguel:** Além do último vértice observado $T_N$, aplica-se o rendimento contínuo a termo $y_{\text{fwd}}$ calculado sobre a última janela com amplitude igual ou superior a um ano (ou estendido por projeções de curto prazo quando $T_N < 1$ ano). O método `extrapolated_discrete_dividends` converte essa projeção em pagamentos discretos em caixa até o horizonte de corte de 10 anos e retorna o rendimento contínuo residual para prazos superiores. Quando dividendos declarados $(t_k, D_k)$ são informados, `borrow_cost_rate` isola a taxa anualizada implícita de aluguel do ativo mediante o desconto dos dividendos declarados sobre o carrego líquido.
+
+4. **Construção Multiconvenção e Offline:** A classe opera com `day_count_basis` configurável (252 em convenção doméstica exponencial ou 360/365 em mercados internacionais sob capitalização contínua) e disponibiliza os construtores `from_futures`, `from_options_chain` (com paridade *put-call*, desamericanização binomial via `deamericanize_and_infer_forward_bbg` e suavização via `KalmanDividendFilter`) e `from_futures_and_options`.
 
 ---
 
@@ -316,7 +350,20 @@ df_ind = pd.DataFrame({"DU": [31, 72, 111], "AdjstdQt": [170165.0, 173803.0, 177
 curve_inp = manager.get_curve("INP", base_date, data=df_ind, spot_price=167938.10)
 curve_cyi = manager.get_curve("CYI", base_date, spot_price=167938.10, futures_curve=curve_inp, pre_data=df_pre)
 
-# 2. Interpolação direta de vértices arbitrários em qualquer estrutura configurada
+# 2. Convenience Yield Bloomberg com sazonalidade/datas ex-dividendo e opções implícitas
+df_fut_acao = pd.DataFrame({
+    "XprtnDt": ["2026-12-18", "2027-02-19"],
+    "AdjstdQt": [38.20, 38.95],
+})
+_, curve_cy_bbg = manager.get_stock_future_curve(
+    "PETR4", base_date, data=df_fut_acao, spot_price=38.00, pre_data=df_pre,
+    cy_model="bloomberg", ex_div_times=[0.10, 0.25],
+)
+curve_cy_opt = manager.get_implied_convenience_yield_curve(
+    base_date, spot_price=38.00, futures_data=df_fut_acao, pre_data=df_pre,
+)
+
+# 3. Interpolação direta de vértices arbitrários em qualquer estrutura configurada
 curve_pre_custom = manager.get_curve("PRE", data={1: 13.65, 21: 13.72, 63: 13.85, 252: 14.10})
 ```
 
@@ -333,4 +380,8 @@ As formulações matemáticas, convenções de contagem de prazos e regras de ar
 - **Banco Central do Brasil (BCB).** *Sistema Gerenciador de Séries Temporais (SGS)*. Brasília: BCB. Disponível em: <https://www3.bcb.gov.br/sgspub/>.
 - **Secretaria do Tesouro Nacional (STN).** *Regras e Fórmulas de Cálculo dos Títulos Públicos Federais no Mercado Secundário*. Brasília: Ministério da Fazenda. Disponível em: <https://www.tesourodireto.com.br/titulos/historico-de-precos-e-taxas.htm>.
 - **Federal Reserve Bank of New York.** *Secured Overnight Financing Rate (SOFR) Data & Calculation Methodology*. New York: FRBNY. Disponível em: <https://www.newyorkfed.org/markets/reference-rates/sofr>.
-- **European Central Bank (ECB).** *Euro Short-Term Rate (€STR) Methodology and Policies*. Frankfurt: ECB. Disponível em: <https://www.ecb.europa.eu/stats/financial_markets_and_interest_rates/euro_short-term_rate/html/index.en.html>.
+- **European Central Bank (ECB).** *Euro Short-Term Rate (€STR) Methodology and Policies* e *Euro Area Yield Curves*. Frankfurt: ECB. Disponível em: <https://www.ecb.europa.eu/stats/financial_markets_and_interest_rates/euro_short-term_rate/html/index.en.html>.
+- **Gürkaynak, R. S., Sack, B., & Wright, J. H.** *The U.S. Treasury Yield Curve: 1961 to the Present*. Finance and Economics Discussion Series, Federal Reserve Board, 2006. Disponível em: <https://www.federalreserve.gov/econres/feds/the-us-treasury-yield-curve-1961-to-the-present.htm>.
+- **U.S. Department of the Treasury.** *Treasury Coupon-Issue and Corporate Bond Yield Curve Methodology*. Washington, D.C.: Office of Debt Management. Disponível em: <https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics>.
+- **Hagan, P. S., & West, G.** *Interpolation Methods for Curve Construction*. Applied Mathematical Finance, v. 13, n. 2, p. 89–129, 2006.
+- **Bloomberg L.P.** *Equity Implied Volatility Surface: Option Pricing & Risk Management*. Quantitative Research, 2024.

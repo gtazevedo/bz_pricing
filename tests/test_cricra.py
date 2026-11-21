@@ -71,6 +71,9 @@ def test_cri_ipca_act360_sac_pricing():
 def test_cra_di_spread_and_pct_di_pricing():
     base_date = datetime.date(2026, 10, 30)
     di_flat = FlatCurve(rate=0.1490)
+    di_dates = pd.bdate_range("2026-04-15", "2026-10-30")
+    r_day = (1.0 + 0.1490) ** (1.0 / 252.0) - 1.0
+    di_daily_rates = pd.Series(r_day, index=di_dates)
 
     cra_spread = CRA.from_schedule(
         ticker="CRA026001",
@@ -82,6 +85,8 @@ def test_cra_di_spread_and_pct_di_pricing():
         amort_type="bullet",
         defasagem_di=1,
         securitizadora="ECOAGRO",
+        di_daily_rates=di_daily_rates,
+        allow_download=False,
     )
     assert cra_spread.lastro == "Agronegócio"
     assert cra_spread.defasagem_di == 1
@@ -103,6 +108,8 @@ def test_cra_di_spread_and_pct_di_pricing():
         multiplicador_di=1.08,
         coupon_freq="semestral",
         amort_type="bullet",
+        di_daily_rates=di_daily_rates,
+        allow_download=False,
     )
     metrics_p = cra_pct.risk_metrics(base_date, 1.05, vna=1000.0, di_curve=di_flat)
     assert metrics_p["pu"] > metrics_p["pu_par"]  # 105% < 108% -> acima do par
@@ -134,6 +141,7 @@ def test_cri_auto_vna_integration():
     assert metrics["pu"] > 0.0
 
 
+@pytest.mark.online
 def test_cricra_anbima_public_prices():
     client = CRICRAClient(data_dir="dados/cricra")
     df_pub = client.get_anbima_public_prices()
@@ -142,6 +150,8 @@ def test_cricra_anbima_public_prices():
     assert len(df_pub) > 500
 
 
+@pytest.mark.online
+@pytest.mark.market_data("dados/cricra/anbima_data_CRA026002BD.json")
 def test_cra026002bd_real_anbima_data():
     client = CRICRAClient(data_dir="dados/cricra")
     cra = CRA.from_ticker("CRA026002BD", client=client)
@@ -162,6 +172,12 @@ def test_cra026002bd_real_anbima_data():
     assert abs(metrics["duration_du"] - dur_oficial) < 1.0
 
 
+@pytest.mark.online
+@pytest.mark.market_data(
+    "dados/cricra/anbima_data_CRA019003JY.json",
+    "dados/cricra/anbima_data_22D1289009.json",
+    "dados/cricra/anbima_data_CRA024004H7.json",
+)
 @pytest.mark.parametrize("ticker", ["CRA019003JY", "22D1289009", "CRA024004H7"])
 def test_cricra_amostra_diversificada_anbima_data(ticker):
     client = CRICRAClient(data_dir="dados/cricra")
@@ -180,4 +196,34 @@ def test_cricra_amostra_diversificada_anbima_data(ticker):
     metrics = asset.risk_metrics(ref_dt, taxa_ind, vna=vna_of, di_curve=curva_pre)
     assert abs(metrics["pu"] - pu_oficial) < 0.10
     assert abs(metrics["duration_du"] - dur_oficial) < 0.5
+
+
+def test_cricra_client_cache_and_market_file_offline(tmp_path):
+    import json
+
+    client = CRICRAClient(data_dir=str(tmp_path))
+    cache_path = tmp_path / "anbima_data_CRAOFFLINE1.json"
+    payload = {
+        "resumo": {"codigo_b3": "CRAOFFLINE1", "tipo": "CRA"},
+        "pu_indicativo": {"pu_indicativo": "1005.12", "taxa_indicativa": "101.5"},
+    }
+    cache_path.write_text(json.dumps(payload), encoding="utf-8")
+
+    loaded = client.get_anbima_data_asset("CRAOFFLINE1")
+    assert loaded["resumo"]["codigo_b3"] == "CRAOFFLINE1"
+    assert float(loaded["pu_indicativo"]["pu_indicativo"]) == 1005.12
+
+    mkt_csv = tmp_path / "cricra_mkt.csv"
+    mkt_csv.write_text(
+        "Código,Ativo,Securitizadora,Vencimento,Índice/ Correção,Taxa Indicativa,PU,Duration\n"
+        "CRAOFFLINE1,CRA,ECOAGRO,15/10/2030,IPCA + 7%,\"7,1520\",\"1.005,12\",\"612,40\"\n",
+        encoding="utf-8",
+    )
+    df_mkt = client.load_market_file(str(mkt_csv))
+    assert len(df_mkt) == 1
+    assert df_mkt["codigo"].iloc[0] == "CRAOFFLINE1"
+    assert df_mkt["vencimento"].iloc[0] == datetime.date(2030, 10, 15)
+    assert abs(float(df_mkt["taxa_indicativa"].iloc[0]) - 7.1520) < 1e-6
+    assert abs(float(df_mkt["pu_mercado"].iloc[0]) - 1005.12) < 1e-6
+    assert abs(float(df_mkt["duration"].iloc[0]) - 612.40) < 1e-6
 

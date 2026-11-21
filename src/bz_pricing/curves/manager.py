@@ -1,4 +1,5 @@
 import datetime
+import warnings
 from dateutil.relativedelta import relativedelta
 import pandas as pd
 import numpy as np
@@ -7,7 +8,7 @@ from bcb import sgs
 from bz_pricing.curves.builder import B3CurveBuilder
 from bz_pricing.data.loaders import B3DataLoader
 from bz_pricing.data.scrapers import B3Scraper
-from bz_pricing.core.curves import Curve, SimpleCurve, FlatCurve
+from bz_pricing.core.curves import BloombergConvenienceYieldCurve, Curve, FlatCurve, SimpleCurve
 from bz_pricing.curves.configs import CURVE_CONFIGS
 from bz_pricing.curves.exceptions import DataUnavailableError
 
@@ -126,32 +127,34 @@ class CurveManager:
                     'tp_curve', 'tp_data', 'media_tbf', 'tbf_factor'
                 ])
                 if data is not None and not is_contracts_df and not has_comp_kwargs:
-                    return self._build_from_nodes_data(curve_name, config, base_date, data, **kwargs)
+                    return self._build_from_nodes_data(curve_name, config, base_date, data, allow_download=allow_download, **kwargs)
                 return self._build_derived_curve(curve_name, config, base_date, data=data, allow_download=allow_download, **kwargs)
             elif curve_type == "flat":
                 return self._build_flat_curve(curve_name, config, base_date, data=data, allow_download=allow_download, **kwargs)
             elif curve_type == "spread":
                 has_spread_kwargs = any(k in kwargs for k in ['curve_a', 'curve_a_data', 'data_a', 'curve_b', 'curve_b_data', 'data_b'])
                 if data is not None and not has_spread_kwargs:
-                    return self._build_from_nodes_data(curve_name, config, base_date, data, **kwargs)
+                    return self._build_from_nodes_data(curve_name, config, base_date, data, allow_download=allow_download, **kwargs)
                 return self._build_spread_curve(curve_name, config, base_date, data=data, allow_download=allow_download, **kwargs)
             elif curve_type == "equity_index":
                 return self._build_equity_index_curve(curve_name, config, base_date, data=data, allow_download=allow_download, **kwargs)
             elif curve_type == "convenience_yield":
                 has_cy_kwargs = any(k in kwargs for k in ['spot_price', 'spot', 'futures_curve', 'futures_data', 'pre_curve', 'pre_data'])
                 if data is not None and not has_cy_kwargs:
-                    return self._build_from_nodes_data(curve_name, config, base_date, data, **kwargs)
+                    return self._build_from_nodes_data(curve_name, config, base_date, data, allow_download=allow_download, **kwargs)
                 return self._build_convenience_yield_curve(curve_name, config, base_date, data=data, allow_download=allow_download, **kwargs)
             elif curve_type == "currency_forward":
                 has_fwd_kwargs = any(k in kwargs for k in ['spot_rate', 'spot_price', 'ptax', 'spot', 'pre_curve', 'pre_data', 'foreign_curve', 'foreign_data'])
                 if data is not None and not has_fwd_kwargs:
-                    return self._build_from_nodes_data(curve_name, config, base_date, data, **kwargs)
+                    return self._build_from_nodes_data(curve_name, config, base_date, data, allow_download=allow_download, **kwargs)
                 return self._build_currency_forward_curve(curve_name, config, base_date, data=data, allow_download=allow_download, **kwargs)
             elif curve_type == "derived_zero_coupon":
                 has_zc_kwargs = any(k in kwargs for k in ['forward_curve', 'fwd_curve', 'forward_data', 'fwd_data'])
                 if data is not None and not has_zc_kwargs:
-                    return self._build_from_nodes_data(curve_name, config, base_date, data, **kwargs)
+                    return self._build_from_nodes_data(curve_name, config, base_date, data, allow_download=allow_download, **kwargs)
                 return self._build_zero_coupon_curve(curve_name, config, base_date, data=data, allow_download=allow_download, **kwargs)
+            elif curve_type in ("ois", "treasury"):
+                return self._build_offshore_curve(curve_name, config, base_date, data=data, allow_download=allow_download, **kwargs)
             else:
                 raise NotImplementedError(f"Tipo de curva '{curve_type}' não suportado.")
         except Exception as ex:
@@ -400,7 +403,7 @@ class CurveManager:
         all_rows = plateaus + long_knots
         return pd.DataFrame(all_rows, columns=['du_start', 'DU', 'DC', 'rate', 'e_inf'])
 
-    def _extract_provider_vertices(self, df_ref: pd.DataFrame, curve_name: str, config: dict, base_date: datetime.date) -> pd.DataFrame:
+    def _extract_provider_vertices(self, df_ref: pd.DataFrame, curve_name: str, config: dict, base_date: datetime.date, allow_download: bool = False) -> pd.DataFrame:
         """
         Extrai apenas os vértices primários de provedores de swaps ou vencimentos futuros subjacentes
         a partir de tabelas referenciais diárias, de modo que os prazos intermediários sejam
@@ -417,6 +420,9 @@ class CurveManager:
         if c_name in ['ZUS', 'LIB', 'ZEU', 'ZMX', 'SDE'] or prod in ['LIB', 'SDE'] or (interp_cls and interp_cls.__name__ == 'Linear360Interpolator'):
             if 'day360' in df_ref.columns and 'rate' in df_ref.columns:
                 return self._extract_linear360_knots(df_ref)
+
+        if not allow_download:
+            return df_ref
 
         # 2. Cupom Cambial Limpo (DOC, DCL)
         if c_name in ['DOC', 'DCL'] or prod in ['DOC', 'DCL']:
@@ -473,7 +479,7 @@ class CurveManager:
 
         return df_ref
 
-    def _build_from_nodes_data(self, curve_name: str, config: dict, base_date: datetime.date, data: any, **kwargs) -> SimpleCurve:
+    def _build_from_nodes_data(self, curve_name: str, config: dict, base_date: datetime.date, data: any, allow_download: bool = False, **kwargs) -> SimpleCurve:
         """
         Constrói a curva a partir de nós de prazos e taxas (DataFrame, Series, dict ou list).
         Preserva as regras de interpolação, contagem de dias (DU vs DC), extrapolação e arredondamento do configs.py.
@@ -497,7 +503,7 @@ class CurveManager:
             raise ValueError(f"Formato de dados não suportado: {type(data)}")
 
         if kwargs.get("filter_provider_knots", True) and isinstance(df, pd.DataFrame) and len(df) > 50:
-            df = self._extract_provider_vertices(df, curve_name, config, base_date)
+            df = self._extract_provider_vertices(df, curve_name, config, base_date, allow_download=allow_download)
 
         interp_cls = config.get("interpolator_class")
         if interp_cls is None:
@@ -596,7 +602,7 @@ class CurveManager:
                 if any(k in cols_lower for k in ['xprtndt', 'maturity', 'vencimento', 'cdinstr', 'ticker']):
                     is_contracts_df = True
             if not is_contracts_df and not (isinstance(data, pd.DataFrame) and 'AdjstdQtTax' in data.columns):
-                return self._build_from_nodes_data(curve_name, config, base_date, data, **kwargs)
+                return self._build_from_nodes_data(curve_name, config, base_date, data, allow_download=allow_download, **kwargs)
             df = data.copy()
         else:
             if not allow_download:
@@ -649,10 +655,14 @@ class CurveManager:
                                     round_decimals=config.get("round_decimals", 4),
                                     round_mode=config.get("round_mode", "round")
                                 )
-                    except Exception:
-                        pass
+                    except Exception as ex:
+                        warnings.warn(
+                            f"Falha ao calibrar {curve_name} por futuros DDI ({ex}); usando taxas referenciais.",
+                            RuntimeWarning,
+                            stacklevel=2,
+                        )
 
-                return self._build_from_nodes_data(curve_name, config, base_date, df_ref, **kwargs)
+                return self._build_from_nodes_data(curve_name, config, base_date, df_ref, allow_download=allow_download, **kwargs)
             elif curve_name == "LTN":
                 df = self.loader.get_anbima_bonds(base_date, "LTN")
             else:
@@ -775,8 +785,12 @@ class CurveManager:
                         if df_dpl_ref is not None and not df_dpl_ref.empty:
                             v1_rows = df_dpl_ref[df_dpl_ref['day252'] == 1]
                             v1_rate = float(v1_rows['rate'].iloc[0]) if not v1_rows.empty else float(df_dpl_ref['rate'].iloc[0])
-                    except Exception:
-                        pass
+                    except Exception as ex:
+                        warnings.warn(
+                            f"Falha ao obter V1 de {curve_name} via taxas referenciais ({ex}); usando fallback Focus.",
+                            RuntimeWarning,
+                            stacklevel=2,
+                        )
                     if v1_rate is None:
                         focus_ipca = self._fetch_focus_monthly("IPCA", base_date)
                         prev_m = base_date - relativedelta(months=1)
@@ -1142,12 +1156,18 @@ class CurveManager:
         """
         round_decimals = kwargs.get("round_decimals", config.get("round_decimals", 5))
         round_mode = kwargs.get("round_mode", config.get("round_mode", "round"))
+        interp_method = kwargs.get("interp_method", kwargs.get("method", "linear_360"))
+        day_count_basis = float(kwargs.get("day_count_basis", 360.0))
+        compounding = kwargs.get("compounding", "simple")
         discount_factors = _first_not_none(kwargs.get("discount_factors"), kwargs.get("fd_data"), kwargs.get("fd_df"))
         if discount_factors is not None:
             return self.builder.build_zero_coupon_curve(
                 discount_factors=discount_factors,
                 round_decimals=round_decimals,
-                round_mode=round_mode
+                round_mode=round_mode,
+                interp_method=interp_method,
+                day_count_basis=day_count_basis,
+                compounding=compounding,
             )
 
         if data is not None:
@@ -1157,7 +1177,76 @@ class CurveManager:
         fwd_input = _first_not_none(kwargs.get("forward_curve"), kwargs.get("fwd_curve"))
         fwd_data = _first_not_none(kwargs.get("forward_data"), kwargs.get("fwd_data"))
         fwd_curve = self._resolve_curve_input("forward_curve", fwd_name, base_date, allow_download, fwd_input, fwd_data)
-        return self.builder.build_zero_coupon_curve(fwd_curve, round_decimals=round_decimals, round_mode=round_mode)
+        return self.builder.build_zero_coupon_curve(
+            fwd_curve,
+            round_decimals=round_decimals,
+            round_mode=round_mode,
+            interp_method=interp_method,
+            day_count_basis=day_count_basis,
+            compounding=compounding,
+        )
+
+    def _build_offshore_curve(self, curve_name: str, config: dict, base_date: datetime.date,
+                              data: any = None, allow_download: bool = False, **kwargs) -> Curve:
+        """
+        Constrói curvas offshore institucionais (SOFR_OIS, ESTR_OIS, SONIA_OIS e UST_PAR)
+        em modo offline a partir de vértices de depósito/swap/títulos informados pelo usuário.
+        """
+        src = _first_not_none(data, kwargs.get("par_rates"), kwargs.get("par_yields"), kwargs.get("rates"))
+        pillars = kwargs.get("pillars_dc")
+
+        if src is None and pillars is None:
+            raise DataUnavailableError(
+                f"Insumos de mercado ('data', 'par_rates' ou 'par_yields') não informados para a curva "
+                f"offshore '{curve_name}' na data {base_date}."
+            )
+
+        if isinstance(src, dict) and pillars is None:
+            pillars = list(src.keys())
+            vals = list(src.values())
+        elif isinstance(src, pd.Series) and pillars is None:
+            pillars = list(src.index)
+            vals = list(src.values)
+        elif isinstance(src, pd.DataFrame):
+            dc_col = next((c for c in ["DC", "dc", "day360", "tenor", "maturity", "XprtnDt"] if c in src.columns), src.columns[0])
+            val_col = next((c for c in ["rate", "par_rate", "par_yield", "yield", "AdjstdQtTax", "taxa"] if c in src.columns and c != dc_col), src.columns[-1])
+            pillars = list(src[dc_col].values)
+            vals = list(src[val_col].values)
+        elif pillars is not None and src is not None:
+            vals = list(src)
+        else:
+            raise ValueError(f"Formato inválido de insumos para '{curve_name}'; informe dict, Series, DataFrame ou (pillars_dc, par_rates).")
+
+        method = kwargs.get("method", config.get("method", "monotone_convex"))
+        compounding = kwargs.get("compounding", "continuous")
+        round_decimals = kwargs.get("round_decimals", -1)
+        round_mode = kwargs.get("round_mode", "round")
+
+        if config.get("type") == "ois":
+            return self.builder.build_ois_curve(
+                pillars_dc=pillars,
+                par_rates=vals,
+                convention=kwargs.get("convention", config.get("convention", "ACT/360")),
+                payment_freq_months=int(kwargs.get("payment_freq_months", config.get("payment_freq_months", 12))),
+                method=method,
+                compounding=compounding,
+                futures_pillars=kwargs.get("futures_pillars"),
+                base_date=base_date,
+                round_decimals=round_decimals,
+                round_mode=round_mode,
+            )
+
+        return self.builder.build_treasury_curve(
+            pillars_dc=pillars,
+            par_yields=vals,
+            coupon_freq=int(kwargs.get("coupon_freq", config.get("coupon_freq", 2))),
+            day_count_basis=kwargs.get("day_count_basis", config.get("day_count_basis", 365.0)),
+            method=method,
+            compounding=compounding,
+            base_date=base_date,
+            round_decimals=round_decimals,
+            round_mode=round_mode,
+        )
 
     # =========================================================================
     # FUTUROS E CONVENIENCE YIELD DE AÇÕES
@@ -1197,13 +1286,15 @@ class CurveManager:
         return None
 
     def get_stock_future_curve(self, ticker: str, base_date: any = None, spot_price: float = None, 
-                               data: any = None, futures_data: any = None, allow_download: bool = None, **kwargs) -> tuple:
+                               data: any = None, futures_data: any = None, allow_download: bool = None,
+                               cy_model: str = "b3", **kwargs) -> tuple:
         """
         Constrói o par de curvas para um futuro de ação específico (ex: 'PETRP' ou 'VALEO'):
         Retorna (futures_curve, convenience_yield_curve).
         
         Suporta passagem de contratos externos via `data` ou `futures_data`, preço spot via `spot_price`,
-        e curva pré via `pre_curve` ou `pre_data`.
+        curva pré via `pre_curve` ou `pre_data` e escolha do modelo de convenience yield via
+        `cy_model='b3'` (padrão) ou `'bloomberg'`.
         """
         if allow_download is None:
             allow_download = self.allow_download
@@ -1245,13 +1336,74 @@ class CurveManager:
         )
 
         pre_curve = self._resolve_curve_input("pre_curve", "PRE", base_date, allow_download, kwargs.get("pre_curve"), kwargs.get("pre_data"))
-        cy_curve = self.builder.build_convenience_yield_curve(
-            spot_price=spot,
-            futures_curve=fut_curve,
-            pre_curve=pre_curve,
-            config_name="CYI"
-        )
+        if str(cy_model).strip().lower() in ("bloomberg", "bbg"):
+            bbg_keys = (
+                "is_index", "seasonality_dates", "seasonality_amounts", "seasonality_weights",
+                "start_bin_frac", "day_count_basis", "compounding", "pre_compounding",
+                "ex_div_times", "ex_div_weights", "declared_div_times", "declared_div_amounts",
+                "long_fwd_yield", "augment_yield", "augment_div_pv", "augment_horizon",
+            )
+            bbg_kwargs = {k: kwargs[k] for k in bbg_keys if k in kwargs}
+            cy_curve = self.builder.build_bloomberg_convenience_yield_curve(
+                spot_price=spot,
+                futures_curve_or_data=fut_curve,
+                pre_curve=pre_curve,
+                **bbg_kwargs,
+            )
+        else:
+            cy_curve = self.builder.build_convenience_yield_curve(
+                spot_price=spot,
+                futures_curve=fut_curve,
+                pre_curve=pre_curve,
+                config_name="CYI"
+            )
         return fut_curve, cy_curve
+
+    def get_implied_convenience_yield_curve(
+        self,
+        base_date: any,
+        spot_price: float,
+        pre_curve: Curve = None,
+        pre_data: any = None,
+        options_data: pd.DataFrame = None,
+        futures_data: any = None,
+        allow_download: bool = None,
+        **kwargs,
+    ) -> BloombergConvenienceYieldCurve:
+        """
+        Constrói a estrutura a termo `BloombergConvenienceYieldCurve` de forma offline a partir de
+        cotações de opções, contratos futuros ou fusão de ambos.
+        """
+        if allow_download is None:
+            allow_download = self.allow_download
+        if isinstance(base_date, str):
+            base_date = pd.to_datetime(base_date, dayfirst="/" in base_date).date()
+        pre_eff = self._resolve_curve_input("pre_curve", "PRE", base_date, allow_download, pre_curve, pre_data)
+        if options_data is not None and futures_data is not None:
+            return BloombergConvenienceYieldCurve.from_futures_and_options(
+                spot_price=float(spot_price),
+                futures_curve_or_data=futures_data,
+                df_options=options_data,
+                pre_curve=pre_eff,
+                base_date=base_date,
+                **kwargs,
+            )
+        if options_data is not None:
+            return BloombergConvenienceYieldCurve.from_options_chain(
+                df_options=options_data,
+                spot_price=float(spot_price),
+                pre_curve=pre_eff,
+                base_date=base_date,
+                **kwargs,
+            )
+        if futures_data is not None:
+            return BloombergConvenienceYieldCurve.from_futures(
+                spot_price=float(spot_price),
+                futures_curve_or_data=futures_data,
+                pre_curve=pre_eff,
+                **kwargs,
+            )
+        raise ValueError("Informe `options_data`, `futures_data` ou ambos para construir a curva implícita.")
 
     # =========================================================================
     # CONSULTAS EXTERNAS VIA SGS / OLINDA

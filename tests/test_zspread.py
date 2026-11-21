@@ -1,4 +1,5 @@
 import datetime
+import math
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -219,5 +220,187 @@ def test_credit_ytm_and_tir_all_indexers():
     tir_pct = deb_pct.tir(base_dt, pu_pct, vna=1000.0, pu_par_val=1020.0, di_curve=0.14)
     assert abs(ytm_pct - 1.12) < 1e-6
     assert 0.14 < tir_pct < 0.18
+
+
+def test_credit_custom_cashflows_and_debenture_schedule():
+    from bz_pricing.instruments.credit import Debenture
+
+    base_dt = datetime.date(2026, 10, 30)
+
+    # 1. Debenture construída diretamente com fluxos customizados do usuário
+    custom_flows = [
+        (datetime.date(2027, 4, 30), 60.0, "Juros"),
+        (datetime.date(2027, 10, 29), 560.0, "Amortização + Juros"),
+        (datetime.date(2028, 4, 28), 530.0, "Vencimento"),
+    ]
+    deb_cf = Debenture.from_cashflows("DEB-CUSTOM", custom_flows, indexador="PRE")
+    pu = deb_cf.present_value(base_dt, 0.13)
+    assert pu > 0.0
+    assert abs(deb_cf.ytm(base_dt, pu) - 0.13) < 1e-6
+    assert abs(deb_cf.tir(base_dt, pu) - 0.13) < 1e-6
+    assert deb_cf.duration(base_dt, 0.13) > 0.0
+    assert deb_cf.dv01(base_dt, 0.13) > 0.0
+
+    # 2. Debenture.from_schedule (sem necessidade de CSVs da ANBIMA)
+    deb_sch = Debenture.from_schedule(
+        ticker="DEB-SCH",
+        issue_date="2026-01-02",
+        maturity_date="2028-01-03",
+        indexador="PRE",
+        coupon_rate=0.12,
+        coupon_freq="semestral",
+        amort_type="bullet",
+    )
+    pu_sch = deb_sch.present_value(base_dt, 0.125)
+    assert pu_sch > 0.0
+    assert abs(deb_sch.ytm(base_dt, pu_sch) - 0.125) < 1e-6
+
+
+def test_hazard_rate_curve_and_risky_credit_pricing():
+    from bz_pricing.instruments import Debenture, HazardRateCurve
+
+    base_dt = datetime.date(2026, 10, 30)
+    hz = HazardRateCurve.from_credit_spreads([252, 504], [0.015, 0.020], recovery_rate=0.40)
+    assert abs(hz.hazard_rate(252) - (math.log(1.015) / 0.60)) < 1e-12
+    assert abs(hz.survival_prob(0) - 1.0) < 1e-12
+    assert 0.90 < hz.survival_prob(252) < 1.0
+    assert hz.default_prob(504) > hz.default_prob(252)
+
+    deb = Debenture.from_cashflows(
+        "DEB-HZ",
+        [(datetime.date(2027, 4, 30), 60.0, "Juros"), (datetime.date(2027, 10, 29), 1060.0, "Vencimento")],
+        indexador="PRE",
+    )
+    pu_rf_direct = deb.present_value(base_dt, 0.12)
+    res = deb.risky_present_value(base_dt, 0.12, hazard_curve=hz)
+    assert abs(res["pv_risk_free"] - pu_rf_direct) < 1e-4
+    assert 0.0 < res["pv_risky"] < res["pv_risk_free"]
+    assert abs(res["cva"] - (res["pv_risk_free"] - res["pv_risky"])) < 1e-8
+
+    # Inversão de hazard rate implícito a partir de pv_risky com lambda constante
+    res_flat = deb.risky_present_value(base_dt, 0.12, hazard_rate=0.03, recovery_rate=0.40)
+    lam_imp = deb.implied_hazard_rate(base_dt, res_flat["pv_risky"], 0.12, recovery_rate=0.40)
+    assert abs(lam_imp - 0.03) < 1e-6
+
+    # Acima do valor livre de risco retorna NaN; no valor exato retorna 0.0
+    assert abs(deb.implied_hazard_rate(base_dt, res["pv_risk_free"], 0.12, recovery_rate=0.40) - 0.0) < 1e-10
+    assert math.isnan(deb.implied_hazard_rate(base_dt, res["pv_risk_free"] + 25.0, 0.12, recovery_rate=0.40))
+
+    # Amortização reduz saldo exposto à recuperação vs bullet
+    deb_sac = Debenture.from_schedule("DEB-SAC", "2026-10-30", "2029-10-30", indexador="PRE", coupon_rate=0.10, coupon_freq="anual", amort_type="sac")
+    deb_bul = Debenture.from_schedule("DEB-BUL", "2026-10-30", "2029-10-30", indexador="PRE", coupon_rate=0.10, coupon_freq="anual", amort_type="bullet")
+    res_sac = deb_sac.risky_present_value(base_dt, 0.10, hazard_rate=0.05, recovery_rate=0.40)
+    res_bul = deb_bul.risky_present_value(base_dt, 0.10, hazard_rate=0.05, recovery_rate=0.40)
+    assert abs(res_sac["pv_risk_free"] - deb_sac.present_value(base_dt, 0.10)) < 1e-4
+    assert abs(res_bul["pv_risk_free"] - deb_bul.present_value(base_dt, 0.10)) < 1e-4
+    assert 0.0 < res_sac["cva"] < res_bul["cva"]
+
+    cdv01 = deb.credit_dv01(base_dt, 0.12, hazard_curve=hz)
+    assert cdv01 > 0.0
+
+
+def test_credit_offline_di_and_resolve_vna_consistency():
+    from bz_pricing.instruments import Debenture
+
+    base_dt = datetime.date(2026, 10, 30)
+    daily_di = {
+        "2026-10-27": 0.00055,
+        "2026-10-28": 0.00055,
+        "2026-10-29": 0.00055,
+        "2026-10-30": 0.00055,
+    }
+    deb_di = Debenture.from_schedule(
+        "DEB-DI-OFF",
+        issue_date="2026-10-27",
+        maturity_date="2028-10-30",
+        indexador="DI",
+        coupon_rate=0.015,
+    )
+    pu_par = deb_di.pu_par(base_dt, di_daily_rates=daily_di, allow_download=False)
+    assert abs(pu_par - 1000.0 * round((1.00055 ** 3) * round(1.015 ** (3 / 252.0), 9), 9)) < 0.05
+
+
+def test_credit_offline_propagation_and_risky_consolidation_e6():
+    import pandas as pd
+    from bz_pricing.instruments import CRA, CRI, CotaFIDC, Debenture, LetraFinanceira
+
+    base_dt = datetime.date(2026, 10, 30)
+    months = pd.date_range("2025-12-01", "2026-10-01", freq="MS")
+    ipca_hist = pd.Series(0.004, index=months)
+
+    # 1. Propagação 100% offline de vna_history e bloqueio explícito com allow_download=False
+    deb = Debenture.from_schedule(
+        "DEB-OFF-IPCA",
+        issue_date="2026-01-15",
+        maturity_date="2028-01-15",
+        indexador="IPCA",
+        coupon_rate=0.06,
+        coupon_freq="anual",
+        amort_type="bullet",
+        allow_download=False,
+    )
+    with pytest.raises(ValueError):
+        deb.present_value(base_dt, 0.07)
+
+    vna_off = deb.resolve_vna(base_dt, vna_history=ipca_hist, vna_proj=0.003, allow_download=False)
+    assert vna_off > 1000.0
+    pu_off = deb.present_value(base_dt, 0.07, vna_history=ipca_hist, vna_proj=0.003, allow_download=False)
+    pu_exp = deb.present_value(base_dt, 0.07, vna=vna_off)
+    assert abs(pu_off - pu_exp) < 1e-6
+    assert abs(deb.ytm(base_dt, pu_off, vna_history=ipca_hist, vna_proj=0.003, allow_download=False) - 0.07) < 1e-6
+
+    # 2. from_ticker offline (Debenture & CRI) com características + cashflows_df
+    carac_deb = {
+        "Data de Vencimento": "2028-01-15",
+        "Data de Emissao": "2026-01-15",
+        "indice": "PRE",
+        "Juros Criterio Novo - Taxa": "11,5",
+        "Valor Nominal na Emissao": "1000,00",
+        "Percentual Multiplicador/Rentabilidade": "100",
+        "Tipo de Amortizacao": "Vencimento",
+    }
+    cf_deb = pd.DataFrame([
+        {"data_evento": "2027-01-15", "data_pagamento": "2027-01-15", "evento": "Juros", "tipo": "Juros", "taxa_percentual": 11.5},
+        {"data_evento": "2028-01-15", "data_pagamento": "2028-01-15", "evento": "Juros", "tipo": "Juros", "taxa_percentual": 11.5},
+        {"data_evento": "2028-01-15", "data_pagamento": "2028-01-15", "evento": "Vencimento", "tipo": "Vencimento", "taxa_percentual": 100.0},
+    ])
+    deb_off_tk = Debenture.from_ticker("DEB-TK", characteristics=carac_deb, cashflows_df=cf_deb, allow_download=False)
+    assert deb_off_tk.present_value(base_dt, 0.12, allow_download=False) > 900.0
+
+    cri = CRI.from_schedule(
+        "CRI-OFF", "2026-01-15", "2028-01-15", indexador="IPCA", coupon_rate=0.07, allow_download=False, vna_history=ipca_hist, vna_proj=0.003
+    )
+    fidc = CotaFIDC.from_schedule(
+        "FIDC-OFF", "2026-01-15", "2028-01-15", indexador="PRE", coupon_rate=0.14, allow_download=False
+    )
+    lf = LetraFinanceira.from_bullet(
+        "LF-OFF", "2026-01-15", "2028-01-15", indexador="PRE", coupon_rate=0.13, allow_download=False
+    )
+    assert cri.present_value(base_dt, 0.07) > 900.0
+    assert fidc.present_value(base_dt, 0.14) > 900.0
+    assert lf.present_value(base_dt, 0.13) > 900.0
+
+    # 3. E6: consolidação por DU e reconhecimento de "Principal" / "Cupom + Principal" em risky_present_value
+    # Mesma agenda amortizante com "Amortizacao" vs "Principal" na mesma data deve produzir CVA idêntico e invariante à ordem das linhas
+    flows_amort = [
+        (datetime.date(2027, 4, 30), 60.0, "Juros"),
+        (datetime.date(2027, 4, 30), 500.0, "Amortização"),
+        (datetime.date(2028, 4, 28), 30.0, "Juros"),
+        (datetime.date(2028, 4, 28), 500.0, "Vencimento"),
+    ]
+    flows_princ_swapped = [
+        (datetime.date(2027, 4, 30), 500.0, "Principal"),
+        (datetime.date(2027, 4, 30), 60.0, "Juros"),
+        (datetime.date(2028, 4, 28), 530.0, "Cupom + Principal"),
+    ]
+    d1 = Debenture.from_cashflows("D1", flows_amort, indexador="PRE", nominal_value=1000.0)
+    d2 = Debenture.from_cashflows("D2", flows_princ_swapped, indexador="PRE", nominal_value=1000.0)
+    r1 = d1.risky_present_value(base_dt, 0.12, hazard_rate=0.04, recovery_rate=0.40)
+    r2 = d2.risky_present_value(base_dt, 0.12, hazard_rate=0.04, recovery_rate=0.40)
+    assert abs(r1["pv_risk_free"] - r2["pv_risk_free"]) < 1e-6
+    assert abs(r1["pv_risky"] - r2["pv_risky"]) < 1e-6
+    assert abs(r1["cva"] - r2["cva"]) < 1e-6
+
+
 
 

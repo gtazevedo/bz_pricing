@@ -521,3 +521,56 @@ class B3Scraper:
         # Usually released on the last/penultimate business day of the month
         dates = [datetime.date(2026, i, 28).strftime("%Y-%m-%d") for i in range(1, 13)]
         return pd.DataFrame({"DataReferencia": [f"2026-{i:02d}" for i in range(1, 13)], "DataDivulgacao": dates})
+
+    def download_cotahist(self, data: datetime.date, force: bool = False) -> str:
+        """
+        Baixa e extrai o boletim diário COTAHIST da B3 (cotações à vista e opções de ações/ETFs),
+        salvando em CSV padronizado (`COTAHIST_DYYYYMMDD.csv`).
+        """
+        ymd = data.strftime("%Y%m%d")
+        dmy = data.strftime("%d%m%Y")
+        csv_path = os.path.join(self.output_dir, f"COTAHIST_D{ymd}.csv")
+        if os.path.exists(csv_path) and not force:
+            return csv_path
+
+        url = f"https://bvmf.bmfbovespa.com.br/InstDados/SerHist/COTAHIST_D{dmy}.ZIP"
+        resp = self.session.get(url, timeout=30, verify=False)
+        resp.raise_for_status()
+
+        rows = []
+        with zipfile.ZipFile(io.BytesIO(resp.content)) as zf:
+            txt_names = [n for n in zf.namelist() if n.upper().endswith(".TXT")]
+            if not txt_names:
+                raise FileNotFoundError(f"Arquivo TXT não encontrado dentro de {url}")
+            with zf.open(txt_names[0]) as fh:
+                for raw_line in fh:
+                    line = raw_line.decode("latin-1", errors="ignore")
+                    if not line.startswith("01"):
+                        continue
+                    tp_merc = line[24:27].strip()
+                    if tp_merc not in ("010", "070", "080"):
+                        continue
+                    rows.append({
+                        "DATPRE": line[2:10].strip(),
+                        "CODBDI": line[10:12].strip(),
+                        "CODNEG": line[12:24].strip(),
+                        "TPMERC": int(tp_merc),
+                        "NOMRES": line[27:39].strip(),
+                        "PREABE": int(line[56:69]) / 100.0,
+                        "PREMAX": int(line[69:82]) / 100.0,
+                        "PREMIN": int(line[82:95]) / 100.0,
+                        "PREMED": int(line[95:108]) / 100.0,
+                        "PREULT": int(line[108:121]) / 100.0,
+                        "PREOFC": int(line[121:134]) / 100.0,
+                        "PREOFV": int(line[134:147]) / 100.0,
+                        "TOTNEG": int(line[147:152]),
+                        "QUATOT": int(line[152:170]),
+                        "VOLTOT": int(line[170:188]) / 100.0,
+                        "PREEXE": int(line[188:201]) / 100.0,
+                        "DATVEN": line[202:210].strip(),
+                        "FATCOT": int(line[210:217]),
+                    })
+
+        df = pd.DataFrame(rows)
+        df.to_csv(csv_path, index=False, sep=";")
+        return csv_path

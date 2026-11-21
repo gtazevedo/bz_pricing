@@ -6,7 +6,7 @@ Este documento detalha as interfaces programáticas dos módulos de gerenciament
 
 ## 1. Orquestrador de Estruturas a Termo (`CurveManager`)
 
-A classe [`CurveManager`](../src/bz_pricing/curves/manager.py) centraliza a instanciação de curvas *onshore* e *offshore*, gerenciando a validação de insumos fornecidos pelo usuário (`allow_download=False` por padrão) ou a resolução automática a partir de bases locais e provedores públicos (`allow_download=True`).
+A classe [`CurveManager`](../src/bz_pricing/curves/manager.py) centraliza a instanciação de curvas *onshore* e *offshore* e gerencia a validação de insumos fornecidos pelo usuário (`allow_download=False` por padrão) ou a resolução automática a partir de bases locais e provedores públicos (`allow_download=True`).
 
 ```python
 import datetime
@@ -117,6 +117,10 @@ df_ltn = loader.get_anbima_bonds(base_date, bond_type="LTN")
 
 # Tabelas referenciais para validação empírica
 df_pre_ref = loader.load_taxas_referenciais("PRE", base_date)
+
+# Séries de opções de derivativos (BVBG_IN + BVBG_SPRD) e opções de ações/ETFs (COTAHIST)
+df_dol_opts = loader.load_options(base_date, asst="DOL", only_priced=True)
+df_bova_opts = loader.load_equity_options(base_date, underlying="BOVA11", only_priced=True)
 ```
 
 ### 2.2 Coleta Automatizada (`B3Scraper`)
@@ -164,7 +168,7 @@ print(f"Taxa interpolada em 100 DU: {curva.get_rate(100.0) * 100:.4f}% a.a.")
 
 Os módulos [`bz_pricing.instruments.tpf`](../src/bz_pricing/instruments/tpf.py) e [`bz_pricing.core.bonds`](../src/bz_pricing/core/bonds.pyx) implementam a precificação analítica, a cotação percentual e as medidas de sensibilidade (*Duration* de Macaulay, *Duration* Modificada e DV01) para **LTN**, **NTN-F**, **LFT**, **NTN-B**, **NTN-B Principal** e **NTN-C** conforme os padrões oficiais da ANBIMA e do Tesouro Nacional.
 
-As funções de precificação operam sobre instâncias compiladas de [`Curve`](../src/bz_pricing/core/curves.pyx), admitindo curvas construídas diretamente a partir de nós customizados de mercado ou recuperadas via [`CurveManager`](../src/bz_pricing/curves/manager.py). Instrumentos que exigem indexadores compostos recebem múltiplas estruturas a termo de forma simultânea (multi-curvas).
+As funções de precificação operam sobre instâncias compiladas de [`Curve`](../src/bz_pricing/core/curves.pyx) e admitem curvas construídas diretamente a partir de nós customizados de mercado ou recuperadas via [`CurveManager`](../src/bz_pricing/curves/manager.py). Instrumentos que exigem indexadores compostos recebem múltiplas estruturas a termo de forma simultânea (multi-curvas).
 
 ```python
 import datetime
@@ -340,7 +344,7 @@ print(f"Total de debêntures com preços de mercado apurados: {len(df_mercado)}"
 
 ### 5.2 Avaliação Numérica e Decomposição de Fluxos (`Debenture`)
 
-A classe [`Debenture`](../src/bz_pricing/instruments/credit.py) modela o instrumento de crédito privado, integrando o histórico de liquidações para cômputo do saldo devedor e os fluxos contratuais futuros:
+A classe [`Debenture`](../src/bz_pricing/instruments/credit.py) modela o instrumento de crédito privado e integra o histórico de liquidações para cômputo do saldo devedor e os fluxos contratuais futuros:
 
 ```python
 import datetime
@@ -358,18 +362,267 @@ vna_data = 1096.791130
 pu_par = deb.pu_par(base_date, vna=vna_data)
 print(f"VALEA0 - PU Par Teórico: R$ {pu_par:.6f}")
 
-# 2. Precificação a mercado e duration por taxa indicativa ANBIMA (ex.: 6,6548% a.a.)
+# 2. Precificação a mercado, duration, YTM e TIR por taxa indicativa ANBIMA
 taxa_mercado = 0.066548
 pu_mercado, df_fluxos = deb.present_value(
     base_date=base_date,
-    rate=taxa_mercado,
+    discount_rate_or_curve=taxa_mercado,
     vna=vna_data,
     return_cashflows=True
 )
-dur_mercado = deb.duration(base_date=base_date, rate=taxa_mercado, vna=vna_data)
+dur_mercado = deb.duration(base_date=base_date, discount_rate_or_curve=taxa_mercado, vna=vna_data)
+ytm_calc = deb.ytm(base_date, pu_mercado, vna=vna_data)
 
 print(f"VALEA0 - PU Mercado:     R$ {pu_mercado:.6f}")
 print(f"VALEA0 - Duration:       {dur_mercado:.2f} DU")
-print(df_fluxos[["data_evento", "du", "tipo_evento", "valor_evento", "fator_desconto", "pv_evento"]])
+print(f"VALEA0 - YTM:            {ytm_calc * 100:.4f}% a.a.")
+print(df_fluxos[["data_pagamento", "du", "evento", "fluxo_nominal", "fator_desconto", "valor_presente"]])
 ```
+
+### 5.3 Fluxos Customizados, Securitização (`CRI`/`CRA`/`FIDC`), `LetraFinanceira` e `Z-Spread`
+
+Todos os instrumentos de renda fixa (`LTN`, `NTNF`, `LFT`, `NTNB`, `NTNBPrincipal`, `NTNC`, `Debenture`, `CRI`, `CRA`, `CotaFIDC`, `LetraFinanceira`) aceitam fluxos próprios via `custom_cashflows` (ou `Debenture.from_cashflows` / `from_schedule`), possuem modelagem de risco de crédito por *hazard rate* (`HazardRateCurve`, `risky_present_value`, `implied_hazard_rate`, `credit_dv01`), e o módulo [`bz_pricing.core.vna_engine`](../src/bz_pricing/core/vna_engine.py) calcula o VNA a partir do VNE para qualquer indexador compatível:
+
+```python
+import datetime
+from bz_pricing.core.vna_engine import calculate_lft_vna, calculate_ntnb_vna, calculate_vna_from_vne
+from bz_pricing.instruments import NTNF, Debenture, CRI, CotaFIDC, LetraFinanceira, price_credit_portfolio
+
+base_date = datetime.date(2026, 10, 30)
+
+# 1. Cálculo de VNA a partir do VNE (online via BCB/Focus ou offline com séries do usuário)
+vna_lft = calculate_lft_vna(base_date)
+vna_ntnb = calculate_ntnb_vna(base_date, ipca_proj=0.001972)
+vna_deb = calculate_vna_from_vne(
+    vne=1000.0,
+    base_date="2026-08-15",
+    target_date="2026-10-15",
+    indexador="IPCA",
+    history={"2026-08-01": 0.0030, "2026-09-01": 0.0020},
+    allow_download=False,
+)
+
+# 2. Precificação por fluxos customizados em TPF e Crédito Privado
+ntnf_user = NTNF(custom_cashflows=[(datetime.date(2027, 1, 4), 50.0, "Cupom"), (datetime.date(2027, 7, 1), 1050.0, "Principal")])
+deb_user = Debenture.from_cashflows("DEB-CUSTOM", [(datetime.date(2027, 4, 30), 1060.0, "Vencimento")], indexador="PRE")
+
+# 3. Securitização, Z-Spread com gross-up tributário e avaliação em lote
+cri = CRI.from_schedule("CRI-01", "2026-01-02", "2028-01-03", indexador="IPCA", coupon_rate=0.075, coupon_freq="mensal")
+z_sprd = cri.z_spread(base_date, discount_rate=0.082, risk_free_rate=0.065, vna=1035.0, incentivada=True)
+df_carteira = price_credit_portfolio([{"instrument": deb_user, "discount_rate": 0.13, "quantity": 10}], base_date)
+```
+
+---
+
+## 6. Derivativos Lineares (`bz_pricing.instruments.derivatives`)
+
+O módulo [`derivatives.py`](../src/bz_pricing/instruments/derivatives.py) implementa futuros listados (`DI1Future`, `DDIFuture`, `DAPFuture`, `DOLFuture`, `INDFuture`), *swaps* (`SwapDIxPRE`, `SwapDIxIPCA`) e contratos a termo de moeda (`NDFContract`), além de precificação vetorizada em lote (`price_di1_portfolio`):
+
+```python
+import datetime
+from bz_pricing.instruments import DI1Future, SwapDIxPRE, NDFContract
+
+base_date = datetime.date(2026, 10, 30)
+di1 = DI1Future("DI1F28", "2028-01-03")
+pu_di1 = di1.pu(base_date, 0.1385)
+dv01_di1 = di1.dv01(base_date, 0.1385)
+
+swap = SwapDIxPRE(notional=1_000_000.0, start_date="2026-10-30", maturity_date="2028-01-03", fixed_rate=0.1350)
+ndf = NDFContract(notional_usd=100_000.0, maturity_date="2027-01-29", strike_brl=5.65)
+mtm_ndf = ndf.mtm(base_date, spot_ptax=5.55, pre_rate_or_curve=0.1480, cupom_rate_or_curve=0.0520)
+```
+
+---
+
+## 7. Opções e Superfícies de Volatilidade (`options` e `volatility`)
+
+Os módulos [`options.py`](../src/bz_pricing/instruments/options.py) e [`surface.py`](../src/bz_pricing/volatility/surface.py) disponibilizam precificação analítica e numérica em Cython (`EquityOption`, `FXOption`, `IDIOption`, `DI1Option`, `CorradoSuOption`, `Swaption`, `CapFloor`, `BarrierOption`, `AsianOption`, além dos lotes `price_options_portfolio`, `price_fx_options_portfolio`, `price_idi_options_portfolio` e `price_di1_options_portfolio`), parametrizações de *smiles* (`SVISlice`, `SABRSlice`), superfície `VolatilitySurface`, auditoria de não arbitragem, densidade neutra ao risco (`breeden_litzenberger_density`), volatilidade local (`dupire_local_vol_grid`), validação *out-of-sample* (`validate_slice_out_of_sample`) e leitura de séries reais B3 (`B3DataLoader.load_options`):
+
+```python
+import datetime
+from bz_pricing.instruments import EquityOption, FXOption
+from bz_pricing.volatility import SVISlice, VolatilitySurface
+
+base_date = datetime.date(2026, 10, 30)
+opt_am = EquityOption("PETRO38", "2027-01-04", 38.0, "PUT", "AMERICAN")
+rm = opt_am.risk_metrics(base_date, spot=37.5, pre_rate_or_curve=0.14, vol=0.30)
+
+sl = SVISlice(a=0.015, b=0.04, rho=-0.30, m=0.0, sigma=0.12, T=63 / 252.0)
+surf = VolatilitySurface.from_svi_slices({63: sl})
+arb = surf.check_no_arbitrage(forward_by_du=5.55, r_cont_by_du=0.13)
+bl = surf.breeden_litzenberger_density(63, forward=5.55, r_cont=0.13)
+```
+
+---
+
+## 8. Curvas Internacionais (`offshore`) e Superfície de Mistura Bloomberg (`bloomberg_surface`)
+
+O módulo [`offshore.py`](../src/bz_pricing/curves/offshore.py) e os interpoladores internacionais em Cython de [`interpolators.pyx`](../src/bz_pricing/core/interpolators.pyx) e [`curves.pyx`](../src/bz_pricing/core/curves.pyx) implementam cache nativo de coeficientes e busca binária para construção integralmente *offline* de curvas OIS e soberanas (`SOFR_OIS`, `ESTR_OIS`, `SONIA_OIS`, `TONA_OIS`, `UST_PAR`) tanto diretamente pelas funções de *bootstrapping* em anos civis quanto por `CurveManager(allow_download=False)`:
+
+```python
+import pandas as pd
+from bz_pricing.curves import CurveManager, bootstrap_ois_curve, bootstrap_treasury_curve
+from bz_pricing.core.interpolators import MonotoneConvexInterpolator, LogLinearDiscountInterpolator
+
+crv_sofr = bootstrap_ois_curve(
+    pillars_dc=[30, 90, 180, 365, 730],
+    par_rates=[0.0432, 0.0428, 0.0420, 0.0405, 0.0392],
+    convention="ACT/360",
+    method="monotone_convex",
+)
+crv_ust = bootstrap_treasury_curve(
+    pillars_dc=[91, 182, 365, 730, 1825],
+    par_yields=[0.0435, 0.0430, 0.0422, 0.0410, 0.0415],
+    method="svensson",
+)
+
+manager_off = CurveManager(allow_download=False)
+df_sofr = pd.DataFrame({"DC": [30, 90, 180, 365], "par_rate": [0.0432, 0.0428, 0.0420, 0.0405]})
+crv_mgr = manager_off.get_curve("SOFR_OIS", data=df_sofr, method="log_linear")
+print(f"SOFR 1Y (Monotone Convex): {crv_sofr.get_rate(365.0)*100:.4f}% | Manager LogLinear: {crv_mgr.get_rate(365.0)*100:.4f}%")
+```
+
+O módulo [`bloomberg_surface.py`](../src/bz_pricing/volatility/bloomberg_surface.py) disponibiliza a inferência de *forwards* com desamericanização binomial (`deamericanize_and_infer_forward_bbg`), filtro de Kalman adaptativo para dividendos (`KalmanDividendFilter`), interpolação sazonal e decomposição híbrida (`DividendCurveBBG`), calibração por mistura de lognormais com estado de *default* (`LognormalMixtureSlice`, com `weighting` em `"price"`, `"vega"` ou `"bid_ask"`, `multistage=True` e `preset="index_deep_otm"`) e superfície temporal (`BloombergMixtureSurface`, com suporte a `get_bid_ask_vol`, serialização `to_json`/`from_json` e integração via `VolatilitySurface.from_bloomberg_mixture`). A estrutura a termo de dividendos e carrego implícito correspondente encontra-se disponível em Cython na classe `BloombergConvenienceYieldCurve`:
+
+```python
+import math
+import numpy as np
+from bz_pricing.core.curves import BloombergConvenienceYieldCurve, FlatCurve
+from bz_pricing.volatility import LognormalMixtureSlice, BloombergMixtureSurface, VolatilitySurface
+
+# Curva de convenience yield Bloomberg com datas ex-dividendo e separação de custo de aluguel
+cy_bbg = BloombergConvenienceYieldCurve.from_futures(
+    spot_price=100.0,
+    futures_curve_or_data={126.0: 103.8, 252.0: 107.6},
+    pre_curve=FlatCurve(0.12),
+    ex_div_times=[0.20, 0.75],
+    declared_div_times=[0.20, 0.75],
+    declared_div_amounts=[1.20, 1.30],
+)
+btc_1y = cy_bbg.borrow_cost_rate(252.0)
+
+sl_bbg = LognormalMixtureSlice(
+    weights=[0.57, 0.38],
+    xis=[0.84, 1.3715789473684212],
+    sigmas_total=[0.35, 0.25],
+    forward=100.0,
+    T=1.0,
+)
+ks_fit = np.array([80.0, 90.0, 100.0, 110.0, 120.0])
+ot_fit = np.where(ks_fit < 100.0, "PUT", "CALL")
+ps_fit = np.array([sl_bbg.option_price(float(k), r_cont=0.05, is_call=(t == "CALL")) for k, t in zip(ks_fit, ot_fit)])
+sl_idx = LognormalMixtureSlice.fit(ks_fit, ps_fit, ot_fit, forward=100.0, r_cont=0.05, T=1.0, weighting="vega", multistage=True, preset="index_deep_otm")
+
+surf_mix = BloombergMixtureSurface({252: sl_idx}, spread_grid={252: (ks_fit, np.full(5, 0.008))})
+surf_rt = BloombergMixtureSurface.from_json(surf_mix.to_json())
+v_bid, v_mid, v_ask = surf_rt.get_bid_ask_vol(252, 95.0)
+surf_bbg = VolatilitySurface.from_bloomberg_mixture(BloombergMixtureSurface({252: sl_bbg}))
+put_parity_diff = (
+    sl_bbg.option_price(90.0, r_cont=0.05, is_call=True)
+    - sl_bbg.option_price(90.0, r_cont=0.05, is_call=False)
+    - math.exp(-0.05) * (sl_bbg.F - 90.0)
+)
+print(f"Vol(K=90): {surf_bbg.get_vol(252, 90.0, 100.0)*100:.2f}% | Bid/Mid/Ask(95): {v_bid*100:.2f}/{v_mid*100:.2f}/{v_ask*100:.2f}% | BTC 1Y: {btc_1y*100:.2f}% | Paridade Q: {abs(put_parity_diff):.2e}")
+```
+
+---
+
+## 9. Renda Fixa Offshore, Derivativos Internacionais e Gregas Exóticas
+
+Todos os instrumentos *offshore* e modelos estendidos de opções utilizam calendários embutidos em memória (`US`, `TARGET`, `UK`, `B3`, `ACTUAL`) e aceitam curvas ou taxas fornecidas diretamente pelo usuário em modo integralmente *offline*.
+
+### 9.1 Títulos do Tesouro dos EUA e Bonds Corporativos (`offshore_bonds`)
+
+O módulo [`offshore_bonds.py`](../src/bz_pricing/instruments/offshore_bonds.py) implementa letras de desconto (`USTreasuryBill`), notas e bônus cupom (`USTreasuryNoteBond`), títulos indexados à inflação americana com piso de deflação (`TIPS`) e bônus corporativos/soberanos em diversas convenções (`OffshoreBond`, incluindo `Z-Spread`, `G-Spread`, `risky_present_value` e `implied_hazard_rate`):
+
+```python
+import datetime
+from bz_pricing.curves import bootstrap_ois_curve
+from bz_pricing.instruments import OffshoreBond, TIPS, USTreasuryBill, USTreasuryNoteBond
+
+base_date = datetime.date(2026, 10, 30)
+sofr_crv = bootstrap_ois_curve(
+    pillars_dc=[90, 180, 365, 730, 1825],
+    par_rates=[0.0430, 0.0425, 0.0415, 0.0408, 0.0412],
+    convention="ACT/360",
+)
+
+tbill = USTreasuryBill("2027-04-30")
+p_tbill = tbill.price_per_100(base_date, discount_rate=0.0425)
+bey_tbill = tbill.bond_equivalent_yield(base_date, discount_rate=0.0425)
+
+tnote = USTreasuryNoteBond("2031-05-15", coupon_rate=0.04125)
+rm_ust = tnote.risk_metrics(base_date, ytm=0.0420)
+
+tips = TIPS("2031-01-15", coupon_rate=0.0175, issue_cpi=305.0)
+rm_tips = tips.risk_metrics(base_date, real_ytm=0.0190, ref_cpi=318.5)
+
+corp = OffshoreBond("2031-10-30", coupon_rate=0.0525, day_count="30/360")
+clean_corp = corp.clean_price(base_date, ytm=0.0560)
+z_bp = corp.z_spread(base_date, target_price=clean_corp, zero_curve=sofr_crv) * 1e4
+print(f"T-Bill BEY: {bey_tbill*100:.3f}% | UST ModDur: {rm_ust['modified_duration']:.3f} | TIPS AdjClean: {rm_tips['adjusted_clean_price']:.4f} | Corp Z-Spread: {z_bp:.1f} bps")
+```
+
+### 9.2 Swaps OIS, Futuros SOFR, Cross-Currency e Opções com Dividendos e Gregas
+
+Os módulos [`derivatives.py`](../src/bz_pricing/instruments/derivatives.py) e [`options.py`](../src/bz_pricing/instruments/options.py) contemplam `OISSwap`, `SOFRFuture` (`SR3` e `SR1`), `CrossCurrencySwap`, `Swaption` e `CapFloor` multiconvenção (`day_count`, `rate_compounding`, `payment_freq_months`), `EquityOption` com `discrete_dividends` e `prop_dividends`, além de `risk_metrics` completo em `CorradoSuOption`, `BarrierOption` e `AsianOption` (integrado a `price_options_portfolio`):
+
+```python
+import datetime
+import numpy as np
+from bz_pricing.core.curves import FlatCurve, SimpleCurve
+from bz_pricing.core.interpolators import LogLinearDiscountInterpolator
+from bz_pricing.curves import bootstrap_ois_curve
+from bz_pricing.instruments import (
+    AsianOption,
+    BarrierOption,
+    CapFloor,
+    CorradoSuOption,
+    CrossCurrencySwap,
+    EquityOption,
+    OISSwap,
+    SOFRFuture,
+    Swaption,
+    price_options_portfolio,
+)
+
+base_date = datetime.date(2026, 10, 30)
+sofr_crv = bootstrap_ois_curve([90, 180, 365, 730, 1095], [0.043, 0.0425, 0.0415, 0.0405, 0.0402], convention="ACT/360")
+pre_crv = FlatCurve(0.138)
+cupom_crv = SimpleCurve(np.array([30.0, 1825.0]), np.array([0.050, 0.050]), LogLinearDiscountInterpolator(0, 1, 360.0, "simple"))
+
+ois = OISSwap(notional=10_000_000.0, start_date=base_date, maturity_date="2028-10-30", fixed_rate=0.0410)
+sr3 = SOFRFuture("SR3M27", start_date="2027-06-16", end_date="2027-09-15", contract_type="SR3")
+ccs = CrossCurrencySwap(
+    notional_foreign=1_000_000.0,
+    start_date=base_date,
+    maturity_date="2028-10-30",
+    initial_fx_spot=5.65,
+    brl_leg_type="DI",
+    foreign_leg_type="FLOAT",
+    foreign_rate=0.0,
+)
+par_ccs = ccs.par_basis_spread(base_date, fx_spot=5.65, pre_curve=pre_crv, foreign_discount_curve=cupom_crv, foreign_forward_curve=sofr_crv)
+
+swpt = Swaption("SWPT-SOFR", "2027-10-29", "2029-10-30", strike_rate=0.041, calendar_name="US", day_count="ACT/360", payment_freq_months=12)
+cap = CapFloor("CAP-SOFR", ["2027-04-30"], ["2027-07-30"], strike_rate=0.042, calendar_name="US", day_count="ACT/360")
+
+opt_div = EquityOption("PETR4-DIV", "2027-04-30", strike=38.0, option_type="PUT", exercise="AMERICAN", discrete_dividends={"2026-12-15": 1.60}, prop_dividends=[(0.18, 0.02)])
+bar = BarrierOption("VALE-KO", "2027-04-30", strike=40.0, barrier=32.0, barrier_type="down-and-out", monitoring_steps=52)
+asi = AsianOption("IBOV-AS", "2027-04-30", strike=40.0, average_type="arithmetic")
+cs = CorradoSuOption("IBOV-CS", "2027-04-30", strike=41.0, option_type="CALL")
+
+df_greeks = price_options_portfolio(
+    [
+        {"instrument": opt_div, "spot": 40.0, "pre_rate_or_curve": 0.12, "vol": 0.30, "quantity": 100},
+        {"instrument": bar, "spot": 40.0, "pre_rate_or_curve": 0.12, "vol": 0.30, "quantity": 50},
+        {"instrument": asi, "spot": 40.0, "pre_rate_or_curve": 0.12, "vol": 0.30, "quantity": 25},
+        {"instrument": cs, "spot": 40.0, "pre_rate_or_curve": 0.12, "vol": 0.30, "kappa3": -0.30, "kappa4": 4.0, "quantity": 10},
+    ],
+    base_date=base_date,
+)
+print(f"OIS Par: {ois.par_rate(base_date, sofr_crv)*100:.3f}% | SR3 Fair: {sr3.fair_price(base_date, sofr_crv):.3f} | CCS Par Spread: {par_ccs*1e4:.1f} bps")
+print(df_greeks[["ticker", "price", "delta", "gamma", "vega_1pct", "rho"]])
+```
+
 
