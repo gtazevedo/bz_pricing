@@ -107,6 +107,7 @@ def test_price_di1_portfolio_cython_batch():
     assert elapsed < 0.5
 
 
+@pytest.mark.market_data("dados/b3/BVBG_SPRD_20261112.csv", "dados/b3/BVBG_IN_20261112.csv")
 def test_di1_from_b3_validation():
     ref = datetime.date(2026, 11, 12)
     ldr = B3DataLoader()
@@ -118,6 +119,44 @@ def test_di1_from_b3_validation():
     info = DI1Future.from_b3(sample_ticker, ref, loader=ldr)
     pu_calc = info["instrument"].pu(ref, info["adjstd_qt_tax"])
     assert abs(pu_calc - info["adjstd_qt"]) < 1.0
+
+
+def test_di1_from_b3_offline_loader(tmp_path):
+    import pandas as pd
+
+    ref = datetime.date(2026, 11, 12)
+    di1_ref = DI1Future("DI1F28", "2028-01-03")
+    pu_mkt = di1_ref.pu(ref, 0.135)
+
+    pd.DataFrame(
+        [
+            {
+                "Dt": "2026-11-12",
+                "TckrSymb": "DI1F28",
+                "OpnIntrst": 150000,
+                "LastPric": 13.5,
+                "AdjstdQt": pu_mkt,
+                "AdjstdQtTax": 13.5,
+            }
+        ]
+    ).to_csv(tmp_path / "BVBG_SPRD_20261112.csv", sep=";", index=False)
+
+    pd.DataFrame(
+        [
+            {
+                "TckrSymb": "DI1F28",
+                "XprtnDt": "2028-01-03",
+                "Asst": "DI1",
+                "AsstDesc": "DI1 FUT",
+            }
+        ]
+    ).to_csv(tmp_path / "BVBG_IN_20261112.csv", sep=";", index=False)
+
+    ldr = B3DataLoader(data_dir=str(tmp_path))
+    info = DI1Future.from_b3("DI1F28", ref, loader=ldr)
+    pu_calc = info["instrument"].pu(ref, info["adjstd_qt_tax"])
+    assert abs(pu_calc - info["adjstd_qt"]) < 0.01
+    assert info["open_interest"] == 150000.0
 
 
 def test_ois_swap_sofr_future_and_cross_currency_swap():

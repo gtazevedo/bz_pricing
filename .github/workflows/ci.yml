@@ -10,6 +10,7 @@ jobs:
   test:
     name: Test on Python ${{ matrix.python-version }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
@@ -45,8 +46,7 @@ jobs:
       # Instala o projeto em modo editável para forçar a compilação do Cython
       run: poetry run pip install -e .
 
-    - name: Install Playwright Browsers (if needed for scraper tests)
-      run: poetry run playwright install chromium
-
     - name: Run pytest
+      env:
+        BZ_PRICING_OFFLINE: "1"
       run: poetry run pytest tests/ -v

@@ -13,6 +13,8 @@ def curve_manager():
     builder = B3CurveBuilder()
     return CurveManager(loader=loader, builder=builder, allow_download=True)
 
+@pytest.mark.online
+@pytest.mark.market_data("dados/b3/BVBG_SPRD_20260904.csv", "dados/b3/BVBG_IN_20260904.csv")
 def test_pre_and_selic_curves(curve_manager):
     base_date = datetime.date(2026, 9, 4)
     curve_pre = curve_manager.get_curve("PRE", base_date)
@@ -27,6 +29,14 @@ def test_pre_and_selic_curves(curve_manager):
     assert abs(v1_pre - 13.90) < 1e-4
     assert abs(v1_slp - 13.90) < 1e-4
 
+
+@pytest.mark.online
+@pytest.mark.market_data(
+    "dados/b3/BVBG_SPRD_20260904.csv",
+    "dados/b3/BVBG_IN_20260904.csv",
+    "dados/b3/taxas_TFP_20260904.csv",
+    "dados/b3/taxas_TP_20260904.csv",
+)
 def test_tbf_and_tr_curves_adherence(curve_manager):
     base_date = datetime.date(2026, 9, 4)
     curve_tbf = curve_manager.get_curve("TBF_PRE", base_date)
@@ -47,6 +57,9 @@ def test_tbf_and_tr_curves_adherence(curve_manager):
     assert err_tr.mean() < 0.02
     assert err_tr.max() < 0.05
 
+
+@pytest.mark.online
+@pytest.mark.market_data("dados/b3/BVBG_SPRD_20260904.csv", "dados/b3/BVBG_IN_20260904.csv")
 def test_inflation_curves(curve_manager):
     base_date = datetime.date(2026, 9, 4)
     curve_dic = curve_manager.get_curve("DIC", base_date)
@@ -63,8 +76,9 @@ def test_inflation_curves(curve_manager):
     assert abs(curve_dic.get_rate(1.0) - v1_pre) < 1e-4
     assert abs(curve_dim.get_rate(1.0) - v1_pre) < 1e-4
 
-def test_external_data_support(curve_manager):
-    from bz_pricing.curves.manager import DataUnavailableError
+
+def test_external_data_support():
+    mgr = CurveManager(allow_download=False)
     base_date = datetime.date(2026, 10, 30)
     
     # 1. External DataFrame with DU and rate
@@ -74,38 +88,40 @@ def test_external_data_support(curve_manager):
     })
     
     # Formato A: get_curve('DOL', df_custom) - 2º argumento posicional
-    c_pos = curve_manager.get_curve('DOL', df_custom)
+    c_pos = mgr.get_curve('DOL', df_custom)
     assert abs(c_pos.get_rate(21) - 0.1380) < 1e-4
     assert abs(c_pos.get_rate(252) - 0.1420) < 1e-4
     
     # Formato B: get_curve('DOL', base_date, df_custom)
-    c_date_pos = curve_manager.get_curve('DOL', base_date, df_custom)
+    c_date_pos = mgr.get_curve('DOL', base_date, df_custom)
     assert abs(c_date_pos.get_rate(21) - 0.1380) < 1e-4
     
     # Formato C: get_curve('DOL', base_date, data=df_custom)
-    c_kw = curve_manager.get_curve('DOL', base_date, data=df_custom)
+    c_kw = mgr.get_curve('DOL', base_date, data=df_custom)
     assert abs(c_kw.get_rate(63) - 0.1390) < 1e-4
 
     # 2. External pd.Series
     s_custom = pd.Series([13.75, 13.80, 13.90], index=[1, 21, 63])
-    c_series = curve_manager.get_curve('PRE', data=s_custom)
+    c_series = mgr.get_curve('PRE', data=s_custom)
     assert abs(c_series.get_rate(21) - 0.1380) < 1e-4
 
     # 3. External dict
     dict_custom = {1: 13.75, 21: 13.80, 42: 13.85}
-    c_dict = curve_manager.get_curve('DIC', data=dict_custom)
+    c_dict = mgr.get_curve('DIC', data=dict_custom)
     assert abs(c_dict.get_rate(21) - 0.1380) < 1e-4
 
     # 4. External Flat Curve
-    c_flat = curve_manager.get_curve('TJLP', data=0.075)
+    c_flat = mgr.get_curve('TJLP', data=0.075)
     assert abs(c_flat.get_rate(100) - 0.075) < 1e-4
 
-    # 5. External Stock Future Data
+    # 5. External Stock Future Data (100% offline passando pre_curve)
     df_stock = pd.DataFrame({
         'XprtnDt': [datetime.date(2026, 11, 16), datetime.date(2026, 12, 18)],
         'AdjstdQt': [53.10, 53.60]
     })
-    fut_curve, cy_curve = curve_manager.get_stock_future_curve('PETRP', base_date=base_date, spot_price=52.71, data=df_stock)
+    fut_curve, cy_curve = mgr.get_stock_future_curve(
+        'PETRP', base_date=base_date, spot_price=52.71, data=df_stock, pre_curve=c_series
+    )
     assert fut_curve is not None
     assert cy_curve is not None
     assert fut_curve.get_rate(1.0) == 52.71
@@ -113,13 +129,19 @@ def test_external_data_support(curve_manager):
     assert abs(cy_curve.get_rate(33.0) - cy_curve.get_rate(34.0)) < 1e-8
     assert abs(cy_curve.get_rate(33.0) - cy_curve.get_rate(50.0)) < 1e-8
 
-def test_data_unavailable_error(curve_manager):
+
+def test_data_unavailable_error(tmp_path):
     from bz_pricing.curves.manager import DataUnavailableError
-    # Data no passado remoto que não existe localmente nem no histórico disponível da B3
+    mgr = CurveManager(
+        loader=B3DataLoader(data_dir=str(tmp_path)),
+        builder=B3CurveBuilder(),
+        allow_download=False,
+    )
+    # Data no passado remoto ausente localmente em modo offline
     ancient_date = datetime.date(1991, 1, 1)
     
     with pytest.raises(DataUnavailableError) as exc_info:
-        curve_manager.get_curve('DOL', ancient_date)
+        mgr.get_curve('DOL', ancient_date)
     
     msg = str(exc_info.value)
     assert "DOL" in msg
@@ -159,6 +181,8 @@ def test_allow_download_and_partial_inputs():
     assert c_dic is not None
     assert c_dic.get_rate(21) > 0.0
 
+@pytest.mark.online
+@pytest.mark.market_data("dados/b3")
 def test_provider_knots_and_interpolation(curve_manager):
     """
     Testa se para curvas de swaps offshore como ZUS e SDE,
@@ -177,6 +201,13 @@ def test_provider_knots_and_interpolation(curve_manager):
     r45 = curve_zus.get_rate(45.0)
     assert 0.0420 < r45 < 0.0435
 
+
+@pytest.mark.online
+@pytest.mark.market_data(
+    "dados/b3/BVBG_SPRD_20261030.csv",
+    "dados/b3/BVBG_IN_20261030.csv",
+    "dados/b3/taxas_PRE_20261030.csv",
+)
 def test_all_b3_curves_vertex_adherence_20261030(curve_manager):
     """
     Valida que todas as curvas da análise (PRE, DIC, DPL, DIM, DOL, DOC, EUC, SDE, PTX, EUR, JPY, INP, BRP)

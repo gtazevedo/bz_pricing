@@ -244,6 +244,7 @@ def test_bond_cashflow_tables():
     assert abs(df_ntnb["valor_presente"].sum() - pu_ntnb) < 1e-2
 
 
+@pytest.mark.market_data("dados/b3/ANBIMA_MS_20261030.csv")
 def test_all_anbima_bonds_20261030():
     import os
     import pandas as pd
@@ -343,7 +344,12 @@ def test_ntnb_vna_calculation_offline_and_online():
     assert pu_auto > 0.0
     assert abs(df_auto["vna"].iloc[0] - vna_ntnb) < 1e-6
 
-    # 3. Cálculo online oficial (BCB SGS 433) na data-base 30/10/2026 com projeção de mercado ~0.20%
+
+@pytest.mark.online
+def test_ntnb_vna_calculation_online_bcb():
+    from bz_pricing.core.vna_engine import calculate_ntnb_vna
+
+    # Cálculo online oficial (BCB SGS 433) na data-base 30/10/2026 com projeção de mercado ~0.20%
     vna_2026 = calculate_ntnb_vna(datetime.date(2026, 10, 30), ipca_proj=0.001972)
     assert abs(vna_2026 - 4771.575461) < 0.05
 
@@ -380,11 +386,11 @@ def test_tpf_custom_cashflows():
     assert pu_nb > 4700.0
 
 
-def test_vna_from_vne_all_titles():
-    from bz_pricing.core.vna_engine import calculate_lft_vna, calculate_vna_from_vne
-    from bz_pricing.instruments.credit import Debenture
+@pytest.mark.online
+def test_lft_vna_online_bcb():
+    from bz_pricing.core.vna_engine import calculate_lft_vna
 
-    # 1. LFT oficial (base R$ 1.000,00 em 01/07/2000) na data 30/10/2026 = 20201.049997
+    # LFT oficial (base R$ 1.000,00 em 01/07/2000) na data 30/10/2026 = 20201.049997
     vna_lft = calculate_lft_vna(datetime.date(2026, 10, 30))
     assert abs(vna_lft - 20201.049997) < 1e-6
 
@@ -392,13 +398,24 @@ def test_vna_from_vne_all_titles():
     pu_lft = lft.present_value(datetime.date(2026, 10, 30), FlatCurve(0.001))
     assert pu_lft > 20000.0
 
-    # 2. Genérico a partir de VNE offline para SELIC/CDI, IGP-M, IPCA e PRE
+
+def test_vna_from_vne_all_titles():
+    from bz_pricing.core.vna_engine import calculate_vna_from_vne
+    from bz_pricing.instruments.credit import Debenture
+
+    # Genérico a partir de VNE offline para SELIC/CDI, IGP-M, IPCA e PRE
     vna_pre = calculate_vna_from_vne(1000.0, "2026-01-02", "2026-10-30", indexador="PRE")
     assert vna_pre == 1000.0
 
     daily = {"2026-10-28": 0.0005, "2026-10-29": 0.0005}
     vna_cdi = calculate_vna_from_vne(1000.0, "2026-10-28", "2026-10-30", indexador="CDI", history=daily, allow_download=False)
     assert abs(vna_cdi - 1001.00025) < 1e-6
+
+    vna_selic = calculate_vna_from_vne(1000.0, "2026-10-28", "2026-10-30", indexador="SELIC", history=daily, allow_download=False)
+    assert abs(vna_selic - 1001.00025) < 1e-6
+    lft = LFT(datetime.date(2029, 3, 1))
+    pu_lft_off = lft.present_value(datetime.date(2026, 10, 30), FlatCurve(0.001), vna=vna_selic)
+    assert pu_lft_off > 990.0
 
     vna_igpm = calculate_vna_from_vne(
         1000.0, "2026-08-01", "2026-10-01", indexador="IGP-M",

@@ -2,6 +2,7 @@ import datetime
 import math
 import time
 import numpy as np
+import pytest
 
 from bz_pricing.instruments import (
     AsianOption,
@@ -170,6 +171,7 @@ def test_price_options_portfolio_cython_speed():
     assert elapsed < 1.5
 
 
+@pytest.mark.market_data("dados/b3/BVBG_IN_20261030.csv", "dados/b3/BVBG_SPRD_20261030.csv")
 def test_b3_loader_options_real_data():
     import os
     from bz_pricing.data.loaders import B3DataLoader
@@ -356,6 +358,7 @@ def test_batch_portfolios_for_fx_idi_di1_and_mixed():
     assert len(price_di1_options_portfolio([{"instrument": di1, "pu_c": 93500.0, "pu_l": 81500.0, "vol": 0.15}], base_dt)) == 1
 
 
+@pytest.mark.market_data("dados/b3/COTAHIST_D20261030.csv")
 def test_b3_loader_equity_options_cotahist():
     import os
     from bz_pricing.data.loaders import B3DataLoader
@@ -622,6 +625,12 @@ def test_bbg_part2_mixture_fig15_1_and_2d_surface():
     assert abs(vs.get_vol(189, strike=102.5, forward=102.5) - v_mid) < 1e-12
 
 
+@pytest.mark.online
+@pytest.mark.market_data(
+    "dados/b3/COTAHIST_D20261030.csv",
+    "dados/b3/BVBG_SPRD_20261030.csv",
+    "dados/b3/BVBG_IN_20261030.csv",
+)
 def test_bbg_surface_real_b3_bova11_calibration():
     import pandas as pd
     from bz_pricing.core.calendars import get_calendar
@@ -984,7 +993,13 @@ def test_idi_di1_normal_bachelier_and_revalidation_2d():
     assert abs(iv_dn_rt - 0.012) < 1e-8
 
     # 2. Revalidação 2D real de IDI (2026-10-30): Black-76 e Normal com ancoragem ATM
-    if not (os.path.exists("dados/b3/BVBG_IN_20261030.csv") and os.path.exists("dados/b3/BVBG_SPRD_20261030.csv")):
+    is_ci_or_offline = (
+        os.environ.get("CI", "").strip().lower() in ("1", "true", "yes")
+        or os.environ.get("BZ_PRICING_OFFLINE", "").strip().lower() in ("1", "true", "yes")
+    )
+    if is_ci_or_offline or not (
+        os.path.exists("dados/b3/BVBG_IN_20261030.csv") and os.path.exists("dados/b3/BVBG_SPRD_20261030.csv")
+    ):
         return
 
     loader = B3DataLoader(data_dir="dados/b3")

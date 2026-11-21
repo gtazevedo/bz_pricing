@@ -1,5 +1,6 @@
 import datetime
 import math
+import os
 import re
 from pathlib import Path
 
@@ -27,19 +28,27 @@ def test_exemplos_casos_uso_blocks_execute():
         ns = {}
         exec(compile(blocks[idx], f"docs/exemplos_casos_uso.md#block_{idx+1}", "exec"), ns)
 
-    # Bloco 2: TPF com custom_cashflows (executa também por completo se BCB disponível, senão trecho offline)
+    # Bloco 2: TPF com custom_cashflows (executa completo localmente se BCB disponível, senão trecho offline)
     block2 = blocks[1]
-    try:
-        ns2 = {}
-        exec(compile(block2, "docs/exemplos_casos_uso.md#block_2", "exec"), ns2)
-    except Exception:
-        offline_part = (
-            "import datetime\nfrom bz_pricing import NTNF\nfrom bz_pricing.core.curves import FlatCurve\n"
-            "base_date = datetime.date(2026, 10, 30)\n"
-            "# 2.3" + block2.split("# 2.3")[1]
-        )
+    offline_part = (
+        "import datetime\nfrom bz_pricing import NTNF\nfrom bz_pricing.core.curves import FlatCurve\n"
+        "base_date = datetime.date(2026, 10, 30)\n"
+        "# 2.3" + block2.split("# 2.3")[1]
+    )
+    is_ci_or_offline = (
+        os.environ.get("CI", "").strip().lower() in ("1", "true", "yes")
+        or os.environ.get("BZ_PRICING_OFFLINE", "").strip().lower() in ("1", "true", "yes")
+    )
+    if is_ci_or_offline:
         ns2 = {}
         exec(compile(offline_part, "docs/exemplos_casos_uso.md#block_2_offline", "exec"), ns2)
+    else:
+        try:
+            ns2 = {}
+            exec(compile(block2, "docs/exemplos_casos_uso.md#block_2", "exec"), ns2)
+        except Exception:
+            ns2 = {}
+            exec(compile(offline_part, "docs/exemplos_casos_uso.md#block_2_offline", "exec"), ns2)
 
 
 def test_guia_uso_api_offline_blocks_execute():

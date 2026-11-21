@@ -223,4 +223,5 @@ dados/
 .agents/
 scratch/
 *.bak
+*.epub
 tests/test_quantlib_validation.py

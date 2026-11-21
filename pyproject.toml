@@ -45,3 +45,9 @@ ipykernel = "^7.3.0"
 [build-system]
 requires = ["poetry-core>=1.0.0", "setuptools>=69.0.0", "cython>=3.0.0", "numpy>=1.24.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+markers = [
+    "online: testes que consultam serviços externos online (BCB SGS, ANBIMA, B3).",
+    "market_data: testes empíricos que exigem arquivos locais em dados/ (ignorados quando ausentes ou em CI/offline).",
+]

@@ -9,6 +9,7 @@ from bz_pricing.data.debentures import DebenturesClient, DebenturesAPI
 from bz_pricing.instruments.credit import Debenture
 
 
+@pytest.mark.market_data("dados/debentures/db261030.txt")
 def test_debentures_client_offline_cache():
     client = DebenturesClient(data_dir="dados/debentures")
     assert client.data_dir == "dados/debentures"
@@ -26,6 +27,10 @@ def test_debentures_client_offline_cache():
     assert abs(valea0_mkt["taxa_indicativa"].iloc[0] - 7.6229) < 1e-4
 
 
+@pytest.mark.market_data(
+    "dados/debentures/carac_VALEA0.csv",
+    "dados/debentures/agenda_VALEA0.csv",
+)
 def test_debenture_valea0_pricing():
     client = DebenturesClient(data_dir="dados/debentures")
     deb = Debenture.from_ticker("VALEA0", client=client)
@@ -62,6 +67,10 @@ def test_debenture_valea0_pricing():
     assert abs(metrics["convexity"] - 44.6096) < 1e-2
 
 
+@pytest.mark.market_data(
+    "dados/debentures/carac_AEGPA0.csv",
+    "dados/debentures/agenda_AEGPA0.csv",
+)
 def test_debenture_aegpa0_prefixado_pricing():
     client = DebenturesClient(data_dir="dados/debentures")
     deb = Debenture.from_ticker("AEGPA0", client=client)
@@ -81,6 +90,12 @@ def test_debenture_aegpa0_prefixado_pricing():
     assert abs(metrics["duration_du"] - 504.78) < 1e-2
 
 
+@pytest.mark.online
+@pytest.mark.market_data(
+    "dados/debentures/carac_AALM12.csv",
+    "dados/debentures/agenda_AALM12.csv",
+    "dados/b3/BVBG_SPRD_20261030.csv",
+)
 def test_debenture_aalm12_di_spread_pricing():
     client = DebenturesClient(data_dir="dados/debentures")
     deb = Debenture.from_ticker("AALM12", client=client)
@@ -113,6 +128,12 @@ def test_debenture_aalm12_di_spread_pricing():
     assert metrics["dv01"] > 0.0
 
 
+@pytest.mark.online
+@pytest.mark.market_data(
+    "dados/debentures/carac_KLBNA2.csv",
+    "dados/debentures/agenda_KLBNA2.csv",
+    "dados/b3/BVBG_SPRD_20261030.csv",
+)
 def test_debenture_klbna2_pct_di_pricing():
     client = DebenturesClient(data_dir="dados/debentures")
     deb = Debenture.from_ticker("KLBNA2", client=client)
@@ -137,6 +158,11 @@ def test_debenture_klbna2_pct_di_pricing():
     assert metrics["dv01"] > 0.0
 
 
+@pytest.mark.online
+@pytest.mark.market_data(
+    "dados/debentures/db261030.txt",
+    "dados/b3/BVBG_SPRD_20261030.csv",
+)
 @pytest.mark.parametrize("ticker", ["ACRC21", "ADPA21", "RADL14", "AEGPA8", "BTEL13"])
 def test_debentures_amostra_diversificada(ticker):
     client = DebenturesClient(data_dir="dados/debentures")
@@ -158,4 +184,150 @@ def test_debentures_amostra_diversificada(ticker):
     )
     assert abs(metrics["pu"] - float(row["pu_mercado"])) < 0.02
     assert abs(metrics["duration_du"] - float(row["duration"])) < 0.1
+
+
+def test_debentures_client_parser_and_pricing_offline(tmp_path):
+    # 1. Simula cache db261030.txt da ANBIMA em diretório isolado
+    db_path = tmp_path / "db261030.txt"
+    db_content = (
+        "ANBIMA - Associação Brasileira das Entidades dos Mercados Financeiro e de Capitais\n"
+        "\n"
+        "Código@Nome@Repac./  Venc.@Índice/ Correção@Taxa de Compra@Taxa de Venda@Taxa Indicativa@"
+        "Desvio Padrão@Intervalo Indicativo Minimo@Intervalo Indicativo Máximo@PU@% PU Par / % VNE@"
+        "Duration@% Reune@Referência NTN-B\n"
+        "TSTB01@EMISSORA TESTE S.A. (*)@15/10/2029@IPCA + 6,5%@6,9500@6,8000@6,8500@"
+        "0,0200@6,8300@6,8700@1042,150000@99,2500@580,50@--@B29\n"
+    )
+    db_path.write_text(db_content, encoding="latin1")
+
+    # 2. Simula arquivos cacheados do SND (carac, agenda e pueventos) para TSTB01
+    pd.DataFrame(
+        [
+            {
+                "Codigo do Ativo": "TSTB01",
+                "Empresa": "EMISSORA TESTE S.A.",
+                "Data de Emissao": "15/10/2025",
+                "Data de Vencimento": "15/10/2029",
+                "Data de Saida / Novo Vencimento": "15/10/2029",
+                "indice": "IPCA",
+                "Valor Nominal na Emissao": "1000",
+                "Percentual Multiplicador/Rentabilidade": "0",
+                "Tipo de Amortizacao": "",
+                "Juros Criterio Novo - Taxa": "6,5",
+            }
+        ]
+    ).to_csv(tmp_path / "carac_TSTB01.csv", index=False, encoding="utf-8")
+
+    pd.DataFrame(
+        [
+            {
+                "data_evento": "2027-04-15",
+                "data_pagamento": "2027-04-15",
+                "emissor": "EMISSORA TESTE S.A.",
+                "ativo": "TSTB01",
+                "evento": "Juros",
+                "tipo": "IPCAIPCA",
+                "taxa_percentual": 6.5,
+                "liquidado": "",
+            },
+            {
+                "data_evento": "2027-10-15",
+                "data_pagamento": "2027-10-15",
+                "emissor": "EMISSORA TESTE S.A.",
+                "ativo": "TSTB01",
+                "evento": "Juros",
+                "tipo": "IPCAIPCA",
+                "taxa_percentual": 6.5,
+                "liquidado": "",
+            },
+            {
+                "data_evento": "2028-04-15",
+                "data_pagamento": "2028-04-17",
+                "emissor": "EMISSORA TESTE S.A.",
+                "ativo": "TSTB01",
+                "evento": "Juros",
+                "tipo": "IPCAIPCA",
+                "taxa_percentual": 6.5,
+                "liquidado": "",
+            },
+            {
+                "data_evento": "2028-10-15",
+                "data_pagamento": "2028-10-16",
+                "emissor": "EMISSORA TESTE S.A.",
+                "ativo": "TSTB01",
+                "evento": "Juros",
+                "tipo": "IPCAIPCA",
+                "taxa_percentual": 6.5,
+                "liquidado": "",
+            },
+            {
+                "data_evento": "2029-04-15",
+                "data_pagamento": "2029-04-16",
+                "emissor": "EMISSORA TESTE S.A.",
+                "ativo": "TSTB01",
+                "evento": "Juros",
+                "tipo": "IPCAIPCA",
+                "taxa_percentual": 6.5,
+                "liquidado": "",
+            },
+            {
+                "data_evento": "2029-10-15",
+                "data_pagamento": "2029-10-15",
+                "emissor": "EMISSORA TESTE S.A.",
+                "ativo": "TSTB01",
+                "evento": "Juros",
+                "tipo": "IPCAIPCA",
+                "taxa_percentual": 6.5,
+                "liquidado": "",
+            },
+            {
+                "data_evento": "2029-10-15",
+                "data_pagamento": "2029-10-15",
+                "emissor": "EMISSORA TESTE S.A.",
+                "ativo": "TSTB01",
+                "evento": "Vencimento",
+                "tipo": "--",
+                "taxa_percentual": 0.0,
+                "liquidado": "",
+            },
+        ]
+    ).to_csv(tmp_path / "agenda_TSTB01.csv", index=False, encoding="utf-8")
+
+    pd.DataFrame(
+        [
+            {
+                "data": "2026-10-15",
+                "ativo": "TSTB01",
+                "tipo_evento": "Juros",
+                "pu_evento": 32.5,
+                " Situação": "Registrado",
+                "liquidacao": "LIQUIDADO",
+            }
+        ]
+    ).to_csv(tmp_path / "pueventos_TSTB01.csv", index=False, encoding="utf-8")
+
+    client = DebenturesClient(data_dir=str(tmp_path))
+    base_date = datetime.date(2026, 10, 30)
+    df_mkt = client.get_market_prices(base_date)
+    assert len(df_mkt) == 1
+    row = df_mkt.iloc[0]
+    assert row["codigo"] == "TSTB01"
+    assert abs(float(row["taxa_indicativa"]) - 6.85) < 1e-6
+    assert abs(float(row["pu_mercado"]) - 1042.15) < 1e-6
+
+    deb = Debenture.from_ticker("TSTB01", client=client)
+    assert deb.indexador == "IPCA"
+    assert abs(deb.coupon_rate - 0.065) < 1e-8
+
+    vna = 1050.0
+    taxa_ind = float(row["taxa_indicativa"]) / 100.0
+    pu_calc, df_cf = deb.present_value(base_date, taxa_ind, vna=vna, return_cashflows=True)
+    dur_calc = deb.duration(base_date, taxa_ind, vna=vna)
+    metrics = deb.risk_metrics(base_date, taxa_ind, vna=vna)
+
+    assert abs(df_cf["valor_presente"].sum() - pu_calc) < 1e-4
+    assert pu_calc > 1000.0
+    assert dur_calc > 400.0
+    assert abs(metrics["pu"] - pu_calc) < 1e-6
+    assert metrics["dv01"] > 0.0 and metrics["convexity"] > 0.0
 
